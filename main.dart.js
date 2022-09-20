@@ -34370,7 +34370,7 @@ if(s==null)s=o.d=B.d.T(p,o.b,o.c)
 r=this.a
 q.push(new A.lO(s,null,r.w,r.x,r.c,r.d,r.e,r.f,r.r,null))}return q},
 N(a,b){var s=this,r=null,q=s.wQ("ZXCVBNM"),p=s.a
-q.push(A.ab2("",B.z0,p.w*1.7,p.x,p.c,p.d,p.e,p.f,p.r))
+q.push(A.ab2("",B.z1,p.w*1.7,p.x,p.c,p.d,p.e,p.f,p.r))
 p=s.a
 B.b.jg(q,0,A.ab2("ENTER",r,p.w*1.7,p.x,p.c,p.d,p.e,p.f,p.r))
 return A.dn(A.dd(A.a([A.dn(A.cc(s.wQ("QWERTYUIOP"),B.q,B.aM,B.F),r,r),A.dn(A.cc(s.wQ("ASDFGHJKL"),B.q,B.aM,B.F),r,r),A.dn(A.cc(q,B.q,B.aM,B.F),r,r)],t.p),B.q,B.aM),r,r)}}
@@ -34982,7 +34982,7 @@ g=a5.length===0
 if(g)a5=A.bw(a2,a2,A.aC(0,158,158,158),a2,0.5,a2,a2,a2)
 else{c7=Math.min(500,d8.R(c7).f.a.a)
 f=A.b3("FUN FACT",A.aQ(a2,a2,$.aL?B.j:B.m,a2,a2,a2,a2,a2,a4,a2,a2,20,a2,B.N,a2,a2,!0,a2,a2,a2,a2,a2,a2,a2,a2),a2,a2)
-a5=A.mk(A.dd(A.a([new A.ah(B.ex,f,a2),new A.ah(B.yd,A.b3(a5,A.aQ(a2,a2,$.aL?B.j:B.m,a2,a2,a2,a2,a2,a4,a2,a2,16,a2,a2,a2,a2,!0,a2,a2,a2,a2,a2,a2,a2,a2),a2,a2),a2)],h),B.q,B.D),a2,c7)}c7=A.cc(A.a([new A.ah(B.lf,A.dq(a2,B.z3,B.K,!1,a2,a2,a2,a2,a2,a2,a2,a2,a2,a2,a2,new A.Ze(c5),a2,a2,a2,a2,a2,a2),a2),new A.ah(B.lf,A.dq(a2,B.z1,B.K,!1,a2,a2,a2,a2,a2,a2,a2,a2,a2,a2,a2,new A.Zf(c4),a2,a2,a2,a2,a2,a2),a2)],h),B.q,B.aM,B.F)
+a5=A.mk(A.dd(A.a([new A.ah(B.ex,f,a2),new A.ah(B.yd,A.b3(a5,A.aQ(a2,a2,$.aL?B.j:B.m,a2,a2,a2,a2,a2,a4,a2,a2,16,a2,a2,a2,a2,!0,a2,a2,a2,a2,a2,a2,a2,a2),a2,a2),a2)],h),B.q,B.D),a2,c7)}c7=A.cc(A.a([new A.ah(B.lf,A.dq(a2,B.z3,B.K,!1,a2,a2,a2,a2,a2,a2,a2,a2,a2,a2,a2,new A.Ze(c5),a2,a2,a2,a2,a2,a2),a2),new A.ah(B.lf,A.dq(a2,B.z0,B.K,!1,a2,a2,a2,a2,a2,a2,a2,a2,a2,a2,a2,new A.Zf(c4),a2,a2,a2,a2,a2,a2),a2)],h),B.q,B.aM,B.F)
 f=A.b3("If you enjoyed this game:",A.aQ(a2,a2,$.aL?B.j:B.m,a2,a2,a2,a2,a2,a4,a2,a2,16,a2,a2,a2,a2,!0,a2,a2,a2,a2,a2,a2,a2,a2),a2,a2)
 e=A.dq(a2,A.bw(a2,new A.ah(B.le,A.cc(B.AV,B.q,B.aM,B.F),a2),a2,new A.bi(B.xx,a2,a2,B.af,a2,a2,B.B),a2,a2,a2,325),B.K,!1,a2,a2,a2,a2,a2,a2,a2,a2,a2,a2,a2,new A.Zg(c6),a2,a2,a2,a2,a2,a2)
 if(g)g=A.bw(a2,a2,A.aC(0,158,158,158),a2,0.5,a2,a2,a2)
@@ -58433,10 +58433,10 @@ B.yX=new A.lG(0,"repeat")
 B.yY=new A.lG(1,"repeatX")
 B.yZ=new A.lG(2,"repeatY")
 B.bM=new A.lG(3,"noRepeat")
-B.ui=new A.ii("delete.png")
-B.z0=new A.fx(B.ui,40,40,null,null)
 B.uf=new A.ii("assets/facebook.png")
-B.z1=new A.fx(B.uf,40,40,null,null)
+B.z0=new A.fx(B.uf,40,40,null,null)
+B.ui=new A.ii("assets/delete.png")
+B.z1=new A.fx(B.ui,40,40,null,null)
 B.ki=new A.ii("assets/twitter.png")
 B.z2=new A.fx(B.ki,22,22,null,null)
 B.z3=new A.fx(B.ki,40,40,null,null)
