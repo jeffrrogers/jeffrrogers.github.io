@@ -37174,7 +37174,7 @@ A.b(s.f,"howToPlaySubscription").al(0)
 s.b1(0)},
 hQ(){if(this.c!=null)A.ur().ah(0,new A.Rp(this),t.P)},
 TK(a){A.d6().ah(0,new A.Rb(this,a),t.P)},
-a2B(a,b,c){var s,r,q,p,o,n,m,l,k,j,i,h=null,g="leaf_loss.svg",f="IN PROGRESS",e="ClearSans"
+a2B(a,b,c){var s,r,q,p,o,n,m,l,k,j,i,h=null,g="assets/leaf_loss.svg",f="IN PROGRESS",e="ClearSans"
 if(b>=$.kT.length)return new A.Y(B.bf,A.ae(h,h,h,h,h,h,h,h),h)
 s=$.C8().A(0,A.bI(b-142,0,0,0))
 if(b<142)s=$.adx().A(0,A.bI(b,0,0,0))
@@ -37184,11 +37184,11 @@ p=A.aeH(a,new A.Rd(q))
 o=p!=null
 if(o&&p.eS())if(p.eS()||p.c.length===6){n=p.c.length
 m="GUESSES: "+n
-if(n===1)l="leaf_one_guess.svg"
-else if(n===2)l="leaf_two_guesses.svg"
-else if(n===3)l="leaf_three_guesses.svg"
-else if(n===4)l="leaf_four_guesses.svg"
-else l=n===5?"leaf_five_guesses.svg":"leaf_six_guesses.svg"}else{m=p.c.length!==0?f:"LOSS"
+if(n===1)l="assets/leaf_one_guess.svg"
+else if(n===2)l="assets/leaf_two_guesses.svg"
+else if(n===3)l="assets/leaf_three_guesses.svg"
+else if(n===4)l="assets/leaf_four_guesses.svg"
+else l=n===5?"assets/leaf_five_guesses.svg":"assets/leaf_six_guesses.svg"}else{m=p.c.length!==0?f:"LOSS"
 l=g}else{l=g
 m="LOSS"}n=$.M
 k=n?B.bC:B.bD
