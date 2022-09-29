@@ -40,8 +40,8 @@
   <script src="flutter.js" defer></script>
   <style>
   div.game {
-    height: 100%;
-    width: 100%;
+    height: calc(100vh - 50px);
+    width: 100vh;
     max-width: 600px;
     margin: 0 auto;
     display: block;
@@ -56,12 +56,13 @@
     width: calc(50vw - 280px); 
   }
   div.mobileadbox {
-    height: calc(100vh - 50px);
+    height: 50px;
     width: 100vh;
-    max-width: 600px;
     margin: 0 auto;
     display: block;
-    border: 1px solid #fff;
+    align-items: center;
+    justify-content: center;
+    max-width: 600px;
   }
   div.adbox:first-child {
     left: 0;
@@ -70,9 +71,12 @@
     right: 0;
   }
 
-  @media screen and (max-width: 600px) {
+  @media screen and (min-width: 600px) {
     div.mobileadbox {
       display: none;
+    }
+    div.game {
+      height: 100vh;
     }
   }
 </style>
