@@ -34,12 +34,45 @@
 
   <script>
     // The value below is injected by flutter build, do not touch.
-    var serviceWorkerVersion = '3738252896';
+    var serviceWorkerVersion = '1805037362';
   </script>
   <!-- This script adds the flutter initialization JS code -->
   <script src="flutter.js" defer></script>
+  <style>
+  .game {
+    height: 100%;
+    width: 100%;
+    max-width: 560px;
+    margin: 0 auto;
+    display: block;
+    border: 1px solid #fff;
+  }
+  .adbox {
+    align-items: center;
+    display: flex;
+    height: 100vh;
+    justify-content: center;
+    position: absolute;
+    width: calc(50vw - 280px); 
+  }
+  .adbox:first-child {
+    left: 0;
+  }
+  .adbox:nth-child(2) {
+    right: 0;
+  }
+</style>
 </head>
 <body>
+  <div class="adbox" style="background: #f00">
+  <div class="ympb_target" data-type="desktop-medrec-template" data-subtype="300x250,300x600,336x280" style="background: #f00">
+  </div>
+  </div>
+  <div class="adbox" style="background: #f00">
+  <div class="ympb_target" data-type="desktop-medrec-template" data-subtype="300x250,300x600,336x280" style="background: #f00">
+  </div>
+  </div>
+  <div class="game">
   <script>
     window.addEventListener('load', function(ev) {
       // Download main.dart.js
@@ -54,5 +87,6 @@
       });
     });
   </script>
+  </div>
 </body>
 </html>
