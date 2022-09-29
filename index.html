@@ -39,15 +39,15 @@
   <!-- This script adds the flutter initialization JS code -->
   <script src="flutter.js" defer></script>
   <style>
-  .game {
+  div.game {
     height: 100%;
     width: 100%;
-    max-width: 560px;
+    max-width: 600px;
     margin: 0 auto;
     display: block;
     border: 1px solid #fff;
   }
-  .adbox {
+  div.adbox {
     align-items: center;
     display: flex;
     height: 100vh;
@@ -55,21 +55,39 @@
     position: absolute;
     width: calc(50vw - 280px); 
   }
-  .adbox:first-child {
+  div.mobileadbox {
+    height: calc(100vh - 50px);
+    width: 100vh;
+    max-width: 600px;
+    margin: 0 auto;
+    display: block;
+    border: 1px solid #fff;
+  }
+  div.adbox:first-child {
     left: 0;
   }
-  .adbox:nth-child(2) {
+  div.adbox:nth-child(2) {
     right: 0;
+  }
+
+  @media screen and (max-width: 600px) {
+    div.mobileadbox {
+      display: none;
+    }
   }
 </style>
 </head>
 <body>
-  <div class="adbox" style="background: #f00">
-  <div class="ympb_target" data-type="desktop-medrec-template" data-subtype="300x250,300x600,336x280" style="background: #f00">
+  <div class="mobileadbox" style="background: #eee">
+  <div class="ympb_target" data-type="desktop-medrec-template" data-subtype="300x250,300x600,336x280" style="background: #eee">
   </div>
   </div>
-  <div class="adbox" style="background: #f00">
-  <div class="ympb_target" data-type="desktop-medrec-template" data-subtype="300x250,300x600,336x280" style="background: #f00">
+  <div class="adbox" style="background: #eee">
+  <div class="ympb_target" data-type="desktop-medrec-template" data-subtype="300x250,300x600,336x280" style="background: #eee">
+  </div>
+  </div>
+  <div class="adbox" style="background: #eee">
+  <div class="ympb_target" data-type="desktop-medrec-template" data-subtype="300x250,300x600,336x280" style="background: #eee">
   </div>
   </div>
   <div class="game">

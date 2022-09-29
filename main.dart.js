@@ -38468,7 +38468,7 @@ A.dk().af(0,new A.adn(q),t.P)},
 uR(){if(this.CW===B.fY)var s=""
 else{s=this.cx
 s=" - Canuckle #"+((s!=null?A.v1(s.a):A.pI())+1)}$.avK=s},
-T(a){var s=this,r=t.w,q=a.Z(r).f.a.a*0.15,p=Math.min(q*2,300),o=Math.max(500,Math.min(q,(a.Z(r).f.a.b-p-50)/8)*6.5),n=s.CW===B.bL&&s.cx!=null?" #"+(A.v1(s.cx.a)+1):""
+T(a){var s=this,r=t.w,q=a.Z(r).f.a.a*0.15,p=Math.min(q*2,300),o=Math.min(600,Math.min(q,(a.Z(r).f.a.b-p-50)/8)*6.5),n=s.CW===B.bL&&s.cx!=null?" #"+(A.v1(s.cx.a)+1):""
 r=s.Q
 r===$&&A.b()
 return A.jp(r,new A.adh(s,o,n),null)},
