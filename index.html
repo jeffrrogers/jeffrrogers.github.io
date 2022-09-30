@@ -43,19 +43,22 @@
   <script src="flutter.js" defer></script>
   <style>
   div.bg {
+    z-index: 1;
     height: 100vh;
-    width: 100vh;
+    width: 100vw;
     background: #ddd;
   }
   div.game {
+    z-index: 3;
     height: calc(100vh - 50px);
-    width: 100vh;
+    width: 100vw;
     max-width: 600px;
     margin: 0 auto;
     display: block;
     border: 1px solid #fff;
   }
   div.adbox {
+    z-index: 5;
     align-items: center;
     display: flex;
     height: 100vh;
@@ -64,8 +67,9 @@
     width: calc(50vw - 280px); 
   }
   div.mobileadbox {
+    z-index: 5;
     height: 50px;
-    width: 100vh;
+    width: 100vw;
     margin: 0 auto;
     display: block;
     align-items: center;
