@@ -38710,10 +38710,10 @@ $1(a){var s=this.a
 s.N(new A.acT(s,a))},
 $S:10}
 A.acT.prototype={
-$0(){var s=this.a,r=this.b,q=A.bj(J.bb(r.a,"gameType")),p=s.Bu(q==null?"canuckle":q)
-if(p===B.bL){r.B(0,"archiveGame")
+$0(){var s=this.a,r=A.bj(J.bb(this.b.a,"gameType")),q=s.Bu(r==null?"canuckle":r)
+if(q===B.bL)s.z.u(0,"PRESSED")
 s.cx=null
-s.z.u(0,"PRESSED")}s.CW=p
+s.CW=q
 s.uR()},
 $S:0}
 A.Bt.prototype={
@@ -38855,6 +38855,7 @@ $0(){this.a.d=-1},
 $S:0}
 A.a_W.prototype={
 $1(a){var s
+a.B(0,"archiveGame")
 a.cR("String","gameType","archive")
 s=this.a
 s.a.f.u(0,"DISMISS")
