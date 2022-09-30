@@ -55,7 +55,6 @@
     max-width: 600px;
     margin: 0 auto;
     display: block;
-    border: 1px solid #fff;
   }
   div.adbox {
     z-index: 5;
@@ -74,7 +73,7 @@
     display: block;
     align-items: center;
     justify-content: center;
-    max-width: 600px;
+    max-width: 800px;
   }
   div.adbox:first-child {
     left: 0;
@@ -100,34 +99,34 @@
 </head>
 <body>
   <div class="bg">
-  </div>
-  <div class="mobileadbox" style="background: #eee">
-  <div class="ympb_target" data-type="desktop-medrec-template" data-subtype="300x250,300x600,336x280" style="background: #eee">
-  </div>
-  </div>
-  <div class="adbox" style="background: #eee">
-  <div class="ympb_target" data-type="desktop-medrec-template" data-subtype="300x250,300x600,336x280" style="background: #eee">
-  </div>
-  </div>
-  <div class="adbox" style="background: #eee">
-  <div class="ympb_target" data-type="desktop-medrec-template" data-subtype="300x250,300x600,336x280" style="background: #eee">
-  </div>
-  </div>
-  <div class="game">
-  <script>
-    window.addEventListener('load', function(ev) {
-      // Download main.dart.js
-      _flutter.loader.loadEntrypoint({
-        serviceWorker: {
-          serviceWorkerVersion: serviceWorkerVersion,
-        }
-      }).then(function(engineInitializer) {
-        return engineInitializer.initializeEngine();
-      }).then(function(appRunner) {
-        return appRunner.runApp();
-      });
-    });
-  </script>
+    <div class="mobileadbox">
+      <div class="ympb_target" data-type="desktop-medrec-template" data-subtype="300x250,300x600,336x280">
+      </div>
+    </div>
+    <div class="adbox">
+      <div class="ympb_target" data-type="desktop-medrec-template" data-subtype="300x250,300x600,336x280">
+      </div>
+    </div>
+    <div class="adbox">
+      <div class="ympb_target" data-type="desktop-medrec-template" data-subtype="300x250,300x600,336x280">
+      </div>
+    </div>
+    <div class="game">
+      <script>
+        window.addEventListener('load', function(ev) {
+          // Download main.dart.js
+          _flutter.loader.loadEntrypoint({
+            serviceWorker: {
+              serviceWorkerVersion: serviceWorkerVersion,
+            }
+          }).then(function(engineInitializer) {
+            return engineInitializer.initializeEngine();
+          }).then(function(appRunner) {
+            return appRunner.runApp();
+          });
+        });
+      </script>
+    </div>
   </div>
 </body>
 </html>
