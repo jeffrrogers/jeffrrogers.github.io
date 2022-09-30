@@ -32,6 +32,9 @@
   <title>canuckle</title>
   <link rel="manifest" href="manifest.json">
 
+  <script src="https://unpkg.com/canvaskit-wasm@0.35.0/bin/canvaskit.js"></script>
+  <link rel="preload" href="https://unpkg.com/canvaskit-wasm@0.35.0/bin/canvaskit.wasm" as="fetch" crossOrigin="anonymous">
+
   <script>
     // The value below is injected by flutter build, do not touch.
     var serviceWorkerVersion = '1805037362';
@@ -39,6 +42,11 @@
   <!-- This script adds the flutter initialization JS code -->
   <script src="flutter.js" defer></script>
   <style>
+  div.bg {
+    height: 100vh;
+    width: 100vh;
+    background: #ddd;
+  }
   div.game {
     height: calc(100vh - 50px);
     width: 100vh;
@@ -79,9 +87,16 @@
       height: 100vh;
     }
   }
+  @media screen and (max-width: 800px) {
+    div.adbox {
+      display: none;
+    }
+  }
 </style>
 </head>
 <body>
+  <div class="bg">
+  </div>
   <div class="mobileadbox" style="background: #eee">
   <div class="ympb_target" data-type="desktop-medrec-template" data-subtype="300x250,300x600,336x280" style="background: #eee">
   </div>
