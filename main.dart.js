@@ -35306,7 +35306,7 @@ for(p=0;p<5;++p)if(q.a7(0,p)){o=q.h(0,p)
 if(o==null)o=B.n3
 if(o===B.e2)l+=$.bA?"\ud83d\udfe7":"\ud83d\udfe5"
 else if(o===B.n4)l+=$.bA?"\ud83d\udfe6":"\ud83d\udfe8"
-else l+=$.bA?"\u2b1b":"\u2b1c\ufe0f"}}return l},
+else l+=$.bA?"\u2b1b":"\u2b1c\ufe0f"}l+="\n\nwww.canucklegame.ca"}return l},
 R(a){var s=null
 return new A.wm(A.Ve(!0,s,!0,!0,s,s,!1),!0,new A.QC(this),new A.mO(new A.QD(this),s),s)},
 a_s(){var s,r,q,p,o,n,m,l,k,j,i,h,g,f,e,d=this,c=A.a([],t.s),b=A.A(t.S,t.N),a=d.d.a.toUpperCase()
@@ -35434,7 +35434,7 @@ r=n===6&&r?7:n
 n=$.ps?1:0
 h=$.bA?1:0
 g=$.L?1:0
-q.mk("level_end",A.aA(["level_name",b.a,"num_guesses",r,"hard_mode",n,"high_contrast",h,"dark_theme",g,"success",s,"version","Version 1.0"],t.N,t.z))},
+q.mk("level_end",A.aA(["level_name",b.a,"num_guesses",r,"hard_mode",n,"high_contrast",h,"dark_theme",g,"success",s,"version","Version 1.1"],t.N,t.z))},
 $S:9}
 A.R4.prototype={
 $0(){var s,r=this.a,q=r.c
@@ -36890,7 +36890,7 @@ k=$.L?B.h:B.e
 e=A.fr("assets/twitter.svg",22,22)
 k=A.mA(c,A.O(c,new A.R(B.dW,A.aS(A.a([e,new A.R(B.mC,A.ah("Twitter",c,A.a6(c,c,$.L?B.e:B.h,c,c,c,c,c,b,c,c,c,c,c,c,c,c,!0,c,c,c,c,c,c,c,c),c),c)],r),B.m,B.r,B.l),c),B.f,c,c,new A.aC(k,c,c,B.lx,c,c,B.p),c,c,c,c,c,c,c),B.am,!1,c,c,c,c,c,c,c,c,new A.a2U(a1),c,c,c)
 e=$.ajP
-return A.bJ(A.O(c,A.bD(A.a([n,A.dz(A.x2(A.bD(A.a([new A.R(B.BG,s,c),i,new A.R(B.mF,q,c),h,new A.R(B.fE,p,c),new A.R(B.BO,j,c),new A.R(B.BI,g,c),f,new A.R(B.fE,k,c),new A.R(B.fE,A.ah("Version 1.0"+e+"\n\n\xa9 Canuckle Games 2022",c,A.a6(c,c,$.L?B.e:B.h,c,c,c,c,c,b,c,c,c,c,c,c,c,c,!0,c,c,c,c,c,c,c,c),c),c)],r),B.aF,B.r,B.l),c,B.aD),m-52,c)],r),B.m,B.r,B.l),B.f,c,c,new A.aC(o,c,l,B.c8,c,c,B.p),c,m,c,c,c,c,a),c,c)},
+return A.bJ(A.O(c,A.bD(A.a([n,A.dz(A.x2(A.bD(A.a([new A.R(B.BG,s,c),i,new A.R(B.mF,q,c),h,new A.R(B.fE,p,c),new A.R(B.BO,j,c),new A.R(B.BI,g,c),f,new A.R(B.fE,k,c),new A.R(B.fE,A.ah("Version 1.1"+e+"\n\n\xa9 Canuckle Games 2022",c,A.a6(c,c,$.L?B.e:B.h,c,c,c,c,c,b,c,c,c,c,c,c,c,c,!0,c,c,c,c,c,c,c,c),c),c)],r),B.aF,B.r,B.l),c,B.aD),m-52,c)],r),B.m,B.r,B.l),B.f,c,c,new A.aC(o,c,l,B.c8,c,c,B.p),c,m,c,c,c,c,a),c,c)},
 kj(a,b,c,d){return A.kI(A.nt(d,b),b)}}
 A.a2W.prototype={
 $1(a){return A.lT(B.ej,a.a,B.F,!1)+"="+A.lT(B.ej,a.b,B.F,!1)},
