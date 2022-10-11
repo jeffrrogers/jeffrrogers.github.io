@@ -40958,12 +40958,13 @@ s.aj=3
 s.bo()},
 $S:1}
 A.a9z.prototype={
-$0(){var s,r=this.b,q=A.bl(r).r===B.a4||A.bl(r).r===B.X,p=this.a,o=p.D
-if(q){t.x.a(r.gF())
-s=A.aCW("https","www.facebook.com","/sharer/sharer.php",A.aB(["t",o],t.N,t.z))
-A.fX(s).ab(0,new A.a9i(s),t.P)}else{A.vp(new A.vo(o))
-this.c.$2("Copied results to the clipboard",2000)}p.aj=-1
-p.bo()},
+$0(){var s,r=this,q=r.b
+if(A.bl(q).r===B.a4||A.bl(q).r===B.X){t.x.a(q.gF())
+s=A.aCW("https","www.facebook.com","/dialog/share",A.aB(["app_id","515650983512167","display","popup","href","https://developers.facebook.com/docs/","redirect_uri","https://developers.facebook.com/tools/explorer"],t.N,t.z))
+A.fX(s).ab(0,new A.a9i(s),t.P)}else{A.vp(new A.vo(r.a.D))
+r.c.$2("Copied results to the clipboard",2000)}q=r.a
+q.aj=-1
+q.bo()},
 $S:1}
 A.a9i.prototype={
 $1(a){if(a)A.fY(this.a)},
