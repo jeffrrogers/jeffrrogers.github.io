@@ -98,16 +98,6 @@
     }
   }
 </style>
-
-<script type="text/javascript"> 
-  var x = document.getElementById("adbox");
-  console.log(x);
-  if (document.location.href.indexOf("code=123") > 0) {
-    console.log('found code');
-    x.style.display = "none";
-  }
-</script>
-
 </head>
 <body>
   <div class="bg">
@@ -140,5 +130,13 @@
       </script>
     </div>
   </div>
+  <script type="text/javascript"> 
+    var x = document.getElementById("adbox");
+    console.log(x);
+    if (document.location.href.indexOf("code=123") > 0) {
+      console.log('found code');
+      x.style.display = "none";
+    }
+  </script>
 </body>
 </html>
