@@ -131,11 +131,15 @@
     </div>
   </div>
   <script type="text/javascript"> 
-    var x = document.getElementById("adbox");
-    console.log(x);
+    var adboxes = document.getElementsByClassName("adbox");
+    console.log(adboxes);
     if (document.location.href.indexOf("code=123") > 0) {
       console.log('found code');
-      x.style.display = "none";
+      for(var i = 0; i < adboxes.length; i++) {
+        var element = adboxes[i];
+        console.log(element);
+        element.style.display = "none";
+      }
     }
   </script>
 </body>
