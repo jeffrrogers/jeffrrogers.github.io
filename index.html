@@ -44,13 +44,8 @@
   <script src="flutter.js" defer></script>
   <style>
     font-family: 'Clear Sans', 'Helvetica Neue', Arial, sans-serif;
-    @keyframes jump {
-      0%   {transform: translate(0%, 10%)}
-      50%  {transform: translate(0%, 0%)}
-      100% {transform: translate(0%, 10%)}
-    }
     div.loadingscreen {
-      width: 75%;
+      width: 450px;
       height: 100px;
       padding-top: 50%;
       margin: 0 auto;
@@ -78,17 +73,17 @@
       transform: translate(0%, 30%);
     }
     div.loadingletter {
-      width: 8%;
-      height: 60%;
+      width: 40px;
+      height: 36px;
+      padding-top: 4px;
       background: #000;
-      border: 2px solid black;
       border-radius: 10%;
       transform: translate(0%, 10%);
       display: inline-block;
       text-align: center;
       font-size: 27px;
       color: #fff;
-      animation-name: jump;
+      animation-name: jump-animation;
       animation-duration: 0.5s;
       animation-iteration-count: 30;
     }
@@ -131,6 +126,11 @@
       right: 0;
     }
 
+    @keyframes jump-animation {
+      0%   {transform: translate(0%, 10%)}
+      50%  {transform: translate(0%, 0%)}
+      100% {transform: translate(0%, 10%)}
+    }
     @media screen and (min-width: 920px) {
       div.mobileadbox {
         display: none;
@@ -163,7 +163,7 @@
     <div class="game">
       <div class="loadingscreen">
         <div class="canuckle">
-          <div class="canuckleletter", style="margin-left: 6%;">
+          <div class="canuckleletter", style="margin-left: 7%;">
           C
           </div>
           <div class="canuckleletter">
@@ -189,7 +189,7 @@
           </div>
         </div>
         <div class="loading">
-          <div class="loadingletter" style="margin-left: 15%; animation-delay: 0s">
+          <div class="loadingletter" style="margin-left: 16%; animation-delay: 0s">
           L
           </div>
           <div class="loadingletter" style="animation-delay: 0.1s">
