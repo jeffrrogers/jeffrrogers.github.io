@@ -38011,7 +38011,7 @@ if(s===A.q9(this.ee)-2&&$.jP.length<=s+1)return
 this.Mf(s+1,a)},
 Mf(a,b){A.bY().a2(0,new A.Su(this,a),t.P)
 A.c1(b).cO()},
-Sn(d4){var s,r,q,p,o,n,m,l,k,j,i,h,g,f,e,d,c,b,a,a0,a1,a2,a3,a4,a5,a6,a7,a8=this,a9=null,b0="CanuckleGame",b1="ClearSans",b2=a8.aW,b3=b2.a,b4=Math.max(1,b3),b5=B.j.fX((b3-b2.x)*100,b4),b6=B.d.V(b2.yW(),2),b7=A.im("www.facebook.com",b0,a9,"https"),b8=A.im("twitter.com",b0,a9,"https"),b9=A.im("www.ko-fi.com","canuckle",a9,"http"),c0=t.w,c1=d4.W(c0).f.a.a<=920,c2=Math.min(500,d4.W(c0).f.a.a),c3=d4.W(c0).f,c4=c1?55:0,c5=Math.min(750,c3.a.b-c4),c6=b2.c,c7=b2.d,c8=b2.e,c9=b2.f,d0=b2.r,d1=b2.w,d2=b2.x,d3=Math.max(1,A.jE(B.c.uO(A.a([c6,c7,c8,c9,d0,d1,d2],t.t),B.fu)))
+Sn(d4){var s,r,q,p,o,n,m,l,k,j,i,h,g,f,e,d,c,b,a,a0,a1,a2,a3,a4,a5,a6,a7,a8=this,a9=null,b0="CanuckleGame",b1="ClearSans",b2=a8.aW,b3=b2.a,b4=Math.max(1,b3),b5=B.j.fX((b3-b2.x)*100,b4),b6=B.d.V(b2.yW(),2),b7=A.im("www.facebook.com",b0,a9,"https"),b8=A.im("twitter.com",b0,a9,"https"),b9=A.im("www.ko-fi.com","canuckle",a9,"http"),c0=t.w,c1=d4.W(c0).f.a.a<=920,c2=Math.min(500,d4.W(c0).f.a.a),c3=d4.W(c0).f,c4=c1?58:0,c5=Math.min(750,c3.a.b-c4),c6=b2.c,c7=b2.d,c8=b2.e,c9=b2.f,d0=b2.r,d1=b2.w,d2=b2.x,d3=Math.max(1,A.jE(B.c.uO(A.a([c6,c7,c8,c9,d0,d1,d2],t.t),B.fu)))
 b2=c2*0.8
 s=Math.max(5,b2*c6/d3)
 r=Math.max(5,b2*c7/d3)
@@ -38045,7 +38045,7 @@ k=A.am("NEXT GAME",a9,A.aa(a9,a9,k,a9,a9,a9,a9,a9,b1,a9,a9,14,a9,a9,a9,a9,a9,!0,
 j=A.X(a9,a9,B.i,a9,a9,a9,a9,a9,a9,a9,a9,a9,5)
 if($.H)i=B.e
 else i=B.e
-l.push(A.af(!0,A.cm(new A.P(B.DW,A.X(a9,A.aT(A.a([k,j,A.e3(B.Ez,i,a9)],c3),B.m,B.W,B.l),B.i,a9,a9,new A.aF(c4,a9,a9,B.Q,a9,a9,B.o),a9,45,a9,a9,a9,a9,157),a9),!1,b2===6,new A.Sj(),new A.Sk(a8),new A.Sl(a8,d4),!1),!1,a9,!0,!1,a9,a9,a9,a9,"Next Game",a9,a9,a9,a9,a9,a9,a9,a9,a9,a9,a9,a9,a9))}b2=c1?A.X(a9,a9,B.i,a9,a9,a9,a9,55,a9,a9,a9,a9,a9):A.X(a9,a9,B.i,a9,a9,a9,a9,a9,a9,a9,a9,a9,a9)
+l.push(A.af(!0,A.cm(new A.P(B.DW,A.X(a9,A.aT(A.a([k,j,A.e3(B.Ez,i,a9)],c3),B.m,B.W,B.l),B.i,a9,a9,new A.aF(c4,a9,a9,B.Q,a9,a9,B.o),a9,45,a9,a9,a9,a9,157),a9),!1,b2===6,new A.Sj(),new A.Sk(a8),new A.Sl(a8,d4),!1),!1,a9,!0,!1,a9,a9,a9,a9,"Next Game",a9,a9,a9,a9,a9,a9,a9,a9,a9,a9,a9,a9,a9))}b2=c1?A.X(a9,a9,B.i,a9,a9,a9,a9,58,a9,a9,a9,a9,a9):A.X(a9,a9,B.i,a9,a9,a9,a9,a9,a9,a9,a9,a9,a9)
 c4=$.H
 k=c4?B.f:B.e
 j=A.dw(c4?B.e:B.f,1)
@@ -39612,7 +39612,7 @@ o===$&&A.b()
 return A.et(o,new A.afU(l,n,b,m,p,q-r),null)},
 $S:354}
 A.afU.prototype={
-$2(a2,a3){var s,r,q,p,o,n,m,l=this,k=null,j="CANUCKLE",i="ClearSans",h="Statistics",g="www.ko-fi.com",f="canuckle",e=l.b,d=l.d?A.X(k,k,B.i,k,k,k,k,55,k,k,k,k,k):A.X(k,k,B.i,k,k,k,k,k,k,k,k,k,k),c=$.H,b=c?B.f:B.e,a=l.a,a0=a.cx,a1=a.cy
+$2(a2,a3){var s,r,q,p,o,n,m,l=this,k=null,j="CANUCKLE",i="ClearSans",h="Statistics",g="www.ko-fi.com",f="canuckle",e=l.b,d=l.d?A.X(k,k,B.i,k,k,k,k,58,k,k,k,k,k):A.X(k,k,B.i,k,k,k,k,k,k,k,k,k,k),c=$.H,b=c?B.f:B.e,a=l.a,a0=a.cx,a1=a.cy
 if(a0!=null){a0=A.af(!0,A.cm(new A.P(B.n7,A.e3(B.nv,c?B.e:B.f,26),k),!1,a1,new A.afF(),new A.afG(a),new A.afH(a),!1),!1,k,!1,!1,k,k,k,k,"Menu",k,k,k,k,k,k,k,k,k,k,k,k,k)
 a1=a.db
 a1=A.af(!0,A.cm(new A.P(B.am,A.e3(B.nw,c?B.e:B.f,26),k),!1,a1,new A.afM(),new A.afN(a),new A.afO(a),!1),!1,k,!1,!1,k,k,k,k,"Go back to archive list",k,k,k,k,k,k,k,k,k,k,k,k,k)
@@ -39798,9 +39798,9 @@ q=$.H?B.f:B.e
 return new A.P(e,A.X(p,new A.P(B.d1,A.aT(A.a([new A.P(B.DX,n,p),A.bB(r,B.aI,B.p,B.l)],s),B.m,B.p,B.l),p),B.i,p,p,new A.aF(q,p,p,f,p,p,B.o),p,p,p,p,p,p,p),p)},
 S(a3){var s,r,q,p,o,n,m,l,k,j,i,h,g,f,e,d,c,b,a=this,a0=null,a1=t.w,a2=a3.W(a1).f.a.a<=920
 a1=a3.W(a1).f
-s=a2?55:0
+s=a2?58:0
 r=a1.a.b-s
-a1=a2?A.X(a0,a0,B.i,a0,a0,a0,a0,55,a0,a0,a0,a0,a0):A.X(a0,a0,B.i,a0,a0,a0,a0,a0,a0,a0,a0,a0,a0)
+a1=a2?A.X(a0,a0,B.i,a0,a0,a0,a0,58,a0,a0,a0,a0,a0):A.X(a0,a0,B.i,a0,a0,a0,a0,a0,a0,a0,a0,a0,a0)
 s=$.H?B.bK:B.bL
 q=A.a([new A.f8(1,B.bD,A.ak(B.d.aE(178.5),158,158,158),B.u9,3)],t.sq)
 p=$.H?B.f:B.e
@@ -40158,9 +40158,9 @@ l=A.af(a,A.iI(a,new A.P(B.fU,A.X(a,A.aT(A.a([new A.qq(1,B.nk,p,a),new A.P(B.n4,A
 a1=t.w
 k=a4.W(a1).f.a.a<=920
 r=a4.W(a1).f
-s=k?55:0
+s=k?58:0
 j=Math.min(750,r.a.b-s)
-s=k?A.X(a,a,B.i,a,a,a,a,55,a,a,a,a,a):A.X(a,a,B.i,a,a,a,a,a,a,a,a,a,a)
+s=k?A.X(a,a,B.i,a,a,a,a,58,a,a,a,a,a):A.X(a,a,B.i,a,a,a,a,a,a,a,a,a,a)
 a1=Math.min(500,a4.W(a1).f.a.a)
 r=A.uJ()
 p=$.H
@@ -40314,7 +40314,7 @@ c8=t.w
 s=d4.W(c8).f.a.a<=920
 r=Math.min(500,d4.W(c8).f.a.a)
 c7=d4.W(c8).f
-q=s?55:0
+q=s?58:0
 p=Math.min(750,c7.a.b-q)
 o=c3.a+c4.a
 n=c3.b+c4.b
@@ -40335,7 +40335,7 @@ a=Math.max(5,c4*i/h)
 a0=new A.c5(Date.now(),!1)
 c3=A.oh(A.og(a0),A.eX(a0),A.oe(a0)+1,0,0,0,0,!1)
 if(!A.f4(c3))A.a_(A.ft(c3))
-c4=s?A.X(c0,c0,B.i,c0,c0,c0,c0,55,c0,c0,c0,c0,c0):A.X(c0,c0,B.i,c0,c0,c0,c0,c0,c0,c0,c0,c0,c0)
+c4=s?A.X(c0,c0,B.i,c0,c0,c0,c0,58,c0,c0,c0,c0,c0):A.X(c0,c0,B.i,c0,c0,c0,c0,c0,c0,c0,c0,c0,c0)
 c7=$.H
 q=c7?B.f:B.e
 a1=A.dw(c7?B.e:B.f,1)
