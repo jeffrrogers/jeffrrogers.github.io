@@ -43,52 +43,60 @@
   <!-- This script adds the flutter initialization JS code -->
   <script src="flutter.js" defer></script>
   <style>
-    :root {
-    font-family: 'Clear Sans', 'Helvetica Neue', Arial, sans-serif;  
-    }
     div.loadingscreen {
-      width: 320px;
-      height: 100px;
-      padding-top: 50%;
+      width: 80%;
+      height: 80px;
+      padding-top: 33vh;
       margin: 0 auto;
     }
     div.canuckle {
       width: 100%;
       height: 50%;
       margin: 0 auto;
-      transform:  translate(7%, 0%);
+      transform: translate(7%, 0%);
     }
-    div.canuckleletter {
-      width: 32px;
-      height: 32px;
-      padding-bottom: 4px;
+    div.canuckleletterbg {
+      width: 10%;
+      aspect-ratio: 1/1;
       background: #f00;
       border-radius: 10%;
-      transform: translate(0%, 5%);
       display: inline-block;
       text-align: center;
-      font-size: 30px;
+      color: #fff;
+    }
+    div.canuckleletter {
+      width: 80%;
+      aspect-ratio: 1/1;
+      margin-top: 10%;
+      display: inline-block;
+      font-size: min(6.25vmin, 32.0px);
       color: #fff;
     }
     div.loading {
+      width: 100%;
       height: 50%;
       margin: 0 auto;
-      transform: translate(16%, 30%);
+      transform: translate(19.5%, 30%);
     }
-    div.loadingletter {
-      width: 28px;
-      height: 28px;
-      padding-top: 4px;
+    div.loadingletterbg {
+      width: 8%;
+      aspect-ratio: 1/1;
       background: #000;
       border-radius: 10%;
       transform: translate(0%, 10%);
       display: inline-block;
       text-align: center;
-      font-size: 20px;
-      color: #fff;
       animation-name: jump-animation;
       animation-duration: 0.5s;
       animation-iteration-count: 30;
+    }
+    div.loadingletter {
+      width: 80%;
+      aspect-ratio: 1/1;
+      margin-top: 20%;
+      display: inline-block;
+      font-size: min(4vmin, 22.0px);
+      color: #fff;
     }
     div.bg {
       z-index: 1;
@@ -164,54 +172,84 @@
       </div>
     </div>
     <div class="game">
-      <div class="loadingscreen">
+      <div class="loadingscreen" title="Canuckle Loading Screen">
         <div class="canuckle">
-          <div class="canuckleletter", style="margin-left: 7%;">
-          C
+          <div class="canuckleletterbg">
+            <div class="canuckleletter">
+              C
+            </div>
           </div>
-          <div class="canuckleletter">
-          A
+          <div class="canuckleletterbg">
+            <div class="canuckleletter">
+              A
+            </div>
           </div>
-          <div class="canuckleletter">
-          N
+          <div class="canuckleletterbg">
+            <div class="canuckleletter">
+              N
+            </div>
           </div>
-          <div class="canuckleletter">
-          U
+          <div class="canuckleletterbg">
+            <div class="canuckleletter">
+              U
+            </div>
           </div>
-          <div class="canuckleletter">
-          C
+          <div class="canuckleletterbg">
+            <div class="canuckleletter">
+              C
+            </div>
           </div>
-          <div class="canuckleletter">
-          K
+          <div class="canuckleletterbg">
+            <div class="canuckleletter">
+              K
+            </div>
           </div>
-          <div class="canuckleletter">
-          L
+          <div class="canuckleletterbg">
+            <div class="canuckleletter">
+              L
+            </div>
           </div>
-          <div class="canuckleletter">
-          E
+          <div class="canuckleletterbg">
+            <div class="canuckleletter">
+              E
+            </div>
           </div>
         </div>
         <div class="loading">
-          <div class="loadingletter" style="animation-delay: 0s">
-          L
+          <div class="loadingletterbg" style="animation-delay: 0s">
+            <div class="loadingletter">
+              L
+            </div>
           </div>
-          <div class="loadingletter" style="animation-delay: 0.1s">
-          O
+          <div class="loadingletterbg" style="animation-delay: 0.1s">
+            <div class="loadingletter">
+              O
+            </div>
           </div>
-          <div class="loadingletter" style="animation-delay: 0.2s">
-          A
+          <div class="loadingletterbg" style="animation-delay: 0.2s">
+            <div class="loadingletter">
+              A
+            </div>
           </div>
-          <div class="loadingletter" style="animation-delay: 0.3s">
-          D
+          <div class="loadingletterbg" style="animation-delay: 0.3s">
+            <div class="loadingletter">
+              D
+            </div>
           </div>
-          <div class="loadingletter" style="animation-delay: 0.4s">
-          I
+          <div class="loadingletterbg" style="animation-delay: 0.4s">
+            <div class="loadingletter">
+              I
+            </div>
           </div>
-          <div class="loadingletter" style="animation-delay: 0.5s">
-          N
+          <div class="loadingletterbg" style="animation-delay: 0.5s">
+            <div class="loadingletter">
+              N
+            </div>
           </div>
-          <div class="loadingletter" style="animation-delay: 0.6s">
-          G
+          <div class="loadingletterbg" style="animation-delay: 0.6s">
+            <div class="loadingletter">
+              G
+            </div>
           </div>
         </div>
         <div style="margin: 0 auto; margin-top: 20px; height: 100px; width: 100px;">
