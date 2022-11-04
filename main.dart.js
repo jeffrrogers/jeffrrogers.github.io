@@ -38871,7 +38871,7 @@ else if(B.c.v(r,s.gjT().gu7()))this.a.m4(s.gjT().gu7().toUpperCase())}},
 $S:78}
 A.Tx.prototype={
 $2(a,b){var s,r,q,p,o,n,m,l,k,j,i,h=null,g=b.b,f=b.d,e=this.a,d=g-80,c=e.d
-if(g/f>0.8){s=c.a.length
+if(g/f>1.1){s=c.a.length
 r=Math.min(d/s,(f*0.7-80)/s)}else r=d/c.a.length
 q=Math.max(110,Math.min(r*2,300))
 r=Math.max(1,Math.min(r,(f-q-0-65)/6))
