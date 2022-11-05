@@ -38874,7 +38874,7 @@ $2(a,b){var s,r,q,p,o,n,m,l,k,j,i,h=null,g=b.b,f=b.d,e=this.a,d=g-80,c=e.d
 if(g/f>1.1){s=c.a.length
 r=Math.min(d/s,(f*0.7-80)/s)}else r=d/c.a.length
 q=Math.max(110,Math.min(r*2.5,300))
-r=Math.max(1,Math.min(r,(f-q-0-75)/6))
+r=Math.max(1,Math.min(r,(f-q-0-60)/6))
 f=$.A?B.f:B.d
 d=A.J(h,h,B.h,h,h,h,h,10,h,h,h,h,h)
 c=c.a
