@@ -8052,7 +8052,7 @@ ai(a,b,c,d){return new A.l(((a&255)<<24|(b&255)<<16|(c&255)<<8|d&255)>>>0)},
 alb(a,b,c,d){return new A.l(((B.e.bn(d*255,1)&255)<<24|(a&255)<<16|(b&255)<<8|c&255)>>>0)},
 ald(a){if(a<=0.03928)return a/12.92
 return Math.pow((a+0.055)/1.055,2.4)},
-B(a,b,c){if(b==null)if(a==null)return null
+A(a,b,c){if(b==null)if(a==null)return null
 else return A.ata(a,1-c)
 else if(a==null)return A.ata(b,c)
 else return A.ai(A.ua(B.e.cs(A.aj1(a.gm(a)>>>24&255,b.gm(b)>>>24&255,c)),0,255),A.ua(B.e.cs(A.aj1(a.gm(a)>>>16&255,b.gm(b)>>>16&255,c)),0,255),A.ua(B.e.cs(A.aj1(a.gm(a)>>>8&255,b.gm(b)>>>8&255,c)),0,255),A.ua(B.e.cs(A.aj1(a.gm(a)&255,b.gm(b)&255,c)),0,255))},
@@ -8092,7 +8092,7 @@ q=new A.FJ(A.F(self.window.URL,"createObjectURL",[p]))
 s=1
 break}case 1:return A.W(q,r)}})
 return A.X($async$anl,r)},
-aB6(a,b,c){var s,r,q=A.B(a.a,b.a,c)
+aB6(a,b,c){var s,r,q=A.A(a.a,b.a,c)
 q.toString
 s=A.xi(a.b,b.b,c)
 s.toString
@@ -8619,7 +8619,7 @@ r=$.ap6[a]
 q=A.a([],t.Ne)
 for(p=0;p<s.length;++p){o=s[p]
 n=r[p]
-if(n.length===0){l=$.A?B.d:B.f
+if(n.length===0){l=$.B?B.d:B.f
 q.push(A.ea(m,m,new A.u(!0,l,m,"ClearSans",m,m,m,m,m,m,m,m,m,m,m,m,m,m,m,m,m,m,m,m,m,m),o))}else{l=A.Jy(m)
 l.b3=new A.Vj(n)
 q.push(A.ea(m,l,B.wT,o))}}return A.bl(A.aqY(A.ea(q,m,m,m)),m,m)},
@@ -8639,7 +8639,7 @@ if(k)return B.e2
 r=A.a([],t.Ne)
 for(q=0;q<m.length;++q){p=m[q]
 o=l[q]
-if(o.length===0){k=$.A?B.d:B.f
+if(o.length===0){k=$.B?B.d:B.f
 r.push(A.ea(n,n,new A.u(!0,k,n,"ClearSans",n,n,n,n,n,n,n,n,n,n,n,n,n,n,n,n,n,n,n,n,n,n),p))}else{k=A.Jy(n)
 k.b3=new A.Vk(o)
 r.push(A.ea(n,k,B.wT,p))}}return A.bl(A.aqY(A.ea(r,n,n,n)),n,n)},
@@ -9079,14 +9079,14 @@ case 0:return"Does not exist"
 case 1:return"Exists"
 case 2:return"is in the right spot"
 default:return""}},
-apz(a){switch(a.a){case 4:return $.A?B.f:B.d
-case 3:return $.A?B.f:B.d
+apz(a){switch(a.a){case 4:return $.B?B.f:B.d
+case 3:return $.B?B.f:B.d
 case 0:return B.R
 case 1:return $.aM?B.bN:B.bO
 case 2:return $.aM?B.y:B.w
 default:return B.d}},
-apy(a){switch(a.a){case 4:return $.A?B.Bx:B.fL
-case 3:return $.A?B.d:B.f
+apy(a){switch(a.a){case 4:return $.B?B.Bx:B.fL
+case 3:return B.R
 case 0:return B.R
 case 1:return $.aM?B.bN:B.bO
 case 2:return $.aM?B.y:B.w}},
@@ -9926,7 +9926,7 @@ s=new A.io(A.a4(new A.ac(m,new A.adu(c),s),!0,s.j("aU.E")))
 m=s}return m}m=A.a([],t.t_)
 for(s=b.a,r=a.a,q=r==null,p=0;p<s.length;++p){o=q?null:r[p]
 n=s[p]
-o=A.B(o,n,c)
+o=A.A(o,n,c)
 o.toString
 m.push(o)}return new A.io(m)},
 UX:function UX(a){this.a=a},
@@ -11228,7 +11228,7 @@ _.Q=l
 _.as=m
 _.at=n},
 KP:function KP(){},
-axv(a,b,c){var s,r=A.B(a.a,b.a,c),q=A.a9(a.b,b.b,c),p=A.B(a.c,b.c,c),o=A.a9(a.d,b.d,c),n=A.f2(a.e,b.e,c)
+axv(a,b,c){var s,r=A.A(a.a,b.a,c),q=A.a9(a.b,b.b,c),p=A.A(a.c,b.c,c),o=A.a9(a.d,b.d,c),n=A.f2(a.e,b.e,c)
 if(c<0.5)s=a.f
 else s=b.f
 return new A.uH(r,q,p,o,n,s,A.pL(a.r,b.r,c))},
@@ -11539,10 +11539,10 @@ _.r=g
 _.w=h
 _.x=i},
 KW:function KW(){},
-axJ(a0,a1,a2){var s,r,q,p,o,n,m,l,k,j,i=A.B(a0.a,a1.a,a2),h=A.B(a0.b,a1.b,a2),g=A.B(a0.c,a1.c,a2),f=A.B(a0.d,a1.d,a2),e=A.B(a0.e,a1.e,a2),d=A.B(a0.f,a1.f,a2),c=A.B(a0.r,a1.r,a2),b=A.B(a0.w,a1.w,a2),a=a2<0.5
+axJ(a0,a1,a2){var s,r,q,p,o,n,m,l,k,j,i=A.A(a0.a,a1.a,a2),h=A.A(a0.b,a1.b,a2),g=A.A(a0.c,a1.c,a2),f=A.A(a0.d,a1.d,a2),e=A.A(a0.e,a1.e,a2),d=A.A(a0.f,a1.f,a2),c=A.A(a0.r,a1.r,a2),b=A.A(a0.w,a1.w,a2),a=a2<0.5
 if(a)s=a0.x!==!1
 else s=a1.x!==!1
-r=A.B(a0.y,a1.y,a2)
+r=A.A(a0.y,a1.y,a2)
 q=A.ef(a0.z,a1.z,a2)
 p=A.ef(a0.Q,a1.Q,a2)
 o=A.axI(a0.as,a1.as,a2)
@@ -11650,7 +11650,7 @@ _.c=c
 _.d=d
 _.e=e},
 LD:function LD(){},
-ayL(a,b,c){var s=A.B(a.a,b.a,c),r=A.B(a.b,b.b,c),q=A.a9(a.c,b.c,c),p=A.f2(a.d,b.d,c)
+ayL(a,b,c){var s=A.A(a.a,b.a,c),r=A.A(a.b,b.b,c),q=A.a9(a.c,b.c,c),p=A.f2(a.d,b.d,c)
 return new A.vB(s,r,q,p,A.a9(a.e,b.e,c))},
 vB:function vB(a,b,c,d,e){var _=this
 _.a=a
@@ -11662,8 +11662,8 @@ LM:function LM(){},
 ayQ(a,b,c){return new A.vF(A.al4(a.a,b.a,c))},
 vF:function vF(a){this.a=a},
 LQ:function LQ(){},
-ayY(a,b,c){var s=A.B(a.a,b.a,c),r=A.B(a.b,b.b,c),q=A.ef(a.c,b.c,c),p=A.RQ(a.d,b.d,c),o=A.ef(a.e,b.e,c),n=A.B(a.f,b.f,c),m=A.B(a.r,b.r,c),l=A.B(a.w,b.w,c)
-return new A.vO(s,r,q,p,o,n,m,l,A.B(a.x,b.x,c))},
+ayY(a,b,c){var s=A.A(a.a,b.a,c),r=A.A(a.b,b.b,c),q=A.ef(a.c,b.c,c),p=A.RQ(a.d,b.d,c),o=A.ef(a.e,b.e,c),n=A.A(a.f,b.f,c),m=A.A(a.r,b.r,c),l=A.A(a.w,b.w,c)
+return new A.vO(s,r,q,p,o,n,m,l,A.A(a.x,b.x,c))},
 vO:function vO(a,b,c,d,e,f,g,h,i){var _=this
 _.a=a
 _.b=b
@@ -11741,7 +11741,7 @@ _.CW=a2
 _.cx=a3
 _.cy=a4},
 az7(a,b,c,d,e,f,g,h,i,j,k,l,m,n,o,p,q,r,s,a0){return new A.qu(k,a,i,m,a0,c,j,n,b,l,q,d,o,r,s,p,g,e,f,h)},
-az8(a0,a1,a2){var s,r,q,p,o,n,m,l,k=A.B(a0.a,a1.a,a2),j=A.B(a0.b,a1.b,a2),i=A.B(a0.c,a1.c,a2),h=A.B(a0.d,a1.d,a2),g=A.B(a0.e,a1.e,a2),f=A.a9(a0.f,a1.f,a2),e=A.a9(a0.r,a1.r,a2),d=A.a9(a0.w,a1.w,a2),c=A.a9(a0.x,a1.x,a2),b=A.a9(a0.y,a1.y,a2),a=A.f2(a0.z,a1.z,a2)
+az8(a0,a1,a2){var s,r,q,p,o,n,m,l,k=A.A(a0.a,a1.a,a2),j=A.A(a0.b,a1.b,a2),i=A.A(a0.c,a1.c,a2),h=A.A(a0.d,a1.d,a2),g=A.A(a0.e,a1.e,a2),f=A.a9(a0.f,a1.f,a2),e=A.a9(a0.r,a1.r,a2),d=A.a9(a0.w,a1.w,a2),c=A.a9(a0.x,a1.x,a2),b=A.a9(a0.y,a1.y,a2),a=A.f2(a0.z,a1.z,a2)
 if(a2<0.5)s=a0.Q
 else s=a1.Q
 r=A.a9(a0.as,a1.as,a2)
@@ -11942,12 +11942,12 @@ else s=b.a
 r=A.f2(a.b,b.b,c)
 if(e)q=a.c
 else q=b.c
-p=A.B(a.d,b.d,c)
-o=A.B(a.e,b.e,c)
-n=A.B(a.f,b.f,c)
+p=A.A(a.d,b.d,c)
+o=A.A(a.e,b.e,c)
+n=A.A(a.f,b.f,c)
 m=A.ef(a.r,b.r,c)
-l=A.B(a.w,b.w,c)
-k=A.B(a.x,b.x,c)
+l=A.A(a.w,b.w,c)
+k=A.A(a.x,b.x,c)
 j=A.a9(a.y,b.y,c)
 i=A.a9(a.z,b.z,c)
 h=A.a9(a.Q,b.Q,c)
@@ -12108,7 +12108,7 @@ this.b=b
 this.c=c},
 a10:function a10(){},
 a11:function a11(){},
-aA6(a,b,c){var s,r=A.a9(a.a,b.a,c),q=A.B(a.b,b.b,c),p=A.B(a.c,b.c,c),o=A.a9(a.d,b.d,c),n=A.B(a.e,b.e,c),m=A.f2(a.f,b.f,c),l=A.e5(a.r,b.r,c,A.auz(),t.p8),k=A.e5(a.w,b.w,c,A.aG3(),t.lF)
+aA6(a,b,c){var s,r=A.a9(a.a,b.a,c),q=A.A(a.b,b.b,c),p=A.A(a.c,b.c,c),o=A.a9(a.d,b.d,c),n=A.A(a.e,b.e,c),m=A.f2(a.f,b.f,c),l=A.e5(a.r,b.r,c,A.auz(),t.p8),k=A.e5(a.w,b.w,c,A.aG3(),t.lF)
 if(c<0.5)s=a.x
 else s=b.x
 return new A.xc(r,q,p,o,n,m,l,k,s)},
@@ -12123,12 +12123,12 @@ _.r=g
 _.w=h
 _.x=i},
 N_:function N_(){},
-aA7(a,b,c){var s,r,q,p=A.B(a.a,b.a,c),o=A.a9(a.b,b.b,c),n=A.bC(a.c,b.c,c),m=A.bC(a.d,b.d,c),l=A.iO(a.e,b.e,c),k=A.iO(a.f,b.f,c),j=A.a9(a.r,b.r,c),i=c<0.5
+aA7(a,b,c){var s,r,q,p=A.A(a.a,b.a,c),o=A.a9(a.b,b.b,c),n=A.bC(a.c,b.c,c),m=A.bC(a.d,b.d,c),l=A.iO(a.e,b.e,c),k=A.iO(a.f,b.f,c),j=A.a9(a.r,b.r,c),i=c<0.5
 if(i)s=a.w
 else s=b.w
 if(i)i=a.x
 else i=b.x
-r=A.B(a.y,b.y,c)
+r=A.A(a.y,b.y,c)
 q=A.a9(a.z,b.z,c)
 return new A.xd(p,o,n,m,l,k,j,s,i,r,q,A.a9(a.Q,b.Q,c))},
 xd:function xd(a,b,c,d,e,f,g,h,i,j,k,l){var _=this
@@ -12203,7 +12203,7 @@ E5:function E5(){},
 GZ:function GZ(){},
 a2T:function a2T(a){this.a=a},
 Ng:function Ng(){},
-aAx(a,b,c){var s,r=A.B(a.a,b.a,c),q=A.f2(a.b,b.b,c),p=A.a9(a.c,b.c,c),o=A.bC(a.d,b.d,c),n=c<0.5
+aAx(a,b,c){var s,r=A.A(a.a,b.a,c),q=A.f2(a.b,b.b,c),p=A.a9(a.c,b.c,c),o=A.bC(a.d,b.d,c),n=c<0.5
 if(n)s=a.e
 else s=b.e
 if(n)n=a.f
@@ -12217,8 +12217,8 @@ _.d=d
 _.e=e
 _.f=f},
 NQ:function NQ(){},
-aAI(a,b,c){var s=A.B(a.a,b.a,c),r=A.B(a.b,b.b,c),q=A.a9(a.c,b.c,c),p=A.B(a.d,b.d,c)
-return new A.xJ(s,r,q,p,A.B(a.e,b.e,c))},
+aAI(a,b,c){var s=A.A(a.a,b.a,c),r=A.A(a.b,b.b,c),q=A.a9(a.c,b.c,c),p=A.A(a.d,b.d,c)
+return new A.xJ(s,r,q,p,A.A(a.e,b.e,c))},
 xJ:function xJ(a,b,c,d,e){var _=this
 _.a=a
 _.b=b
@@ -12549,8 +12549,8 @@ Ph:function Ph(){},
 a13:function a13(){},
 Pj:function Pj(a,b){this.b=a
 this.a=b},
-aBI(a,b,c){var s=A.B(a.a,b.a,c),r=A.B(a.b,b.b,c)
-return new A.z_(s,r,A.B(a.c,b.c,c))},
+aBI(a,b,c){var s=A.A(a.a,b.a,c),r=A.A(a.b,b.b,c)
+return new A.z_(s,r,A.A(a.c,b.c,c))},
 z_:function z_(a,b,c){this.a=a
 this.b=b
 this.c=c},
@@ -12852,7 +12852,7 @@ _.ax=o
 _.ay=p
 _.ch=q},
 Pw:function Pw(){},
-aBN(a,b,c){var s=A.bC(a.a,b.a,c),r=A.pL(a.b,b.b,c),q=A.B(a.c,b.c,c),p=A.B(a.d,b.d,c),o=A.B(a.e,b.e,c),n=A.B(a.f,b.f,c),m=A.B(a.r,b.r,c),l=A.B(a.w,b.w,c),k=A.B(a.y,b.y,c),j=A.B(a.x,b.x,c),i=A.B(a.z,b.z,c),h=A.B(a.Q,b.Q,c),g=A.B(a.as,b.as,c),f=A.uD(a.ax,b.ax,c)
+aBN(a,b,c){var s=A.bC(a.a,b.a,c),r=A.pL(a.b,b.b,c),q=A.A(a.c,b.c,c),p=A.A(a.d,b.d,c),o=A.A(a.e,b.e,c),n=A.A(a.f,b.f,c),m=A.A(a.r,b.r,c),l=A.A(a.w,b.w,c),k=A.A(a.y,b.y,c),j=A.A(a.x,b.x,c),i=A.A(a.z,b.z,c),h=A.A(a.Q,b.Q,c),g=A.A(a.as,b.as,c),f=A.uD(a.ax,b.ax,c)
 return new A.z4(s,r,q,p,o,n,m,l,j,k,i,h,g,A.a9(a.at,b.at,c),f)},
 z4:function z4(a,b,c,d,e,f,g,h,i,j,k,l,m,n,o){var _=this
 _.a=a
@@ -13063,7 +13063,7 @@ q.toString
 if(q<0)return B.D
 p=a.c
 o=b.c
-if(p===o&&a.d===b.d){s=A.B(a.a,b.a,c)
+if(p===o&&a.d===b.d){s=A.A(a.a,b.a,c)
 s.toString
 return new A.e1(s,q,p,a.d)}switch(p.a){case 1:n=a.a
 break
@@ -13079,12 +13079,12 @@ default:m=null}l=a.d
 k=b.d
 if(l!==k){q=c>0.5
 if(q)l=k
-p=A.B(n,m,c)
+p=A.A(n,m,c)
 p.toString
 o=c*2
 if(q){s=A.a9(0,r,o-1)
 s.toString}else{s=A.a9(s,0,o)
-s.toString}return new A.e1(p,s,B.bH,l)}s=A.B(n,m,c)
+s.toString}return new A.e1(p,s,B.bH,l)}s=A.A(n,m,c)
 s.toString
 return new A.e1(s,q,B.bH,l)},
 f2(a,b,c){var s,r=b!=null?b.cA(a,c):null
@@ -13253,7 +13253,7 @@ _.d=d},
 aoD(a,b,c){var s,r,q,p,o,n,m
 if(c===0)return a
 if(c===1)return b
-s=A.B(a.a,b.a,c)
+s=A.A(a.a,b.a,c)
 r=c<0.5
 q=r?a.b:b.b
 p=A.aoC(a.c,b.c,c)
@@ -13317,7 +13317,7 @@ CV:function CV(a,b){this.a=a
 this.b=b},
 Fd:function Fd(a,b){this.a=a
 this.b=b},
-axA(a,b,c){var s,r,q,p,o=A.B(a.a,b.a,c)
+axA(a,b,c){var s,r,q,p,o=A.A(a.a,b.a,c)
 o.toString
 s=A.xi(a.b,b.b,c)
 s.toString
@@ -13542,8 +13542,8 @@ P(a,b,c,d,e,f,g,h,i,j,k,l,m,n,o,p,q,r,s,a0,a1,a2,a3,a4,a5,a6){return new A.u(r,c
 bC(a7,a8,a9){var s,r,q,p,o,n,m,l,k,j,i,h,g,f,e,d,c,b,a,a0,a1,a2,a3,a4,a5=null,a6=a7==null
 if(a6&&a8==null)return a5
 if(a6){a6=a8.a
-s=A.B(a5,a8.b,a9)
-r=A.B(a5,a8.c,a9)
+s=A.A(a5,a8.b,a9)
+r=A.A(a5,a8.c,a9)
 q=a9<0.5
 p=q?a5:a8.r
 o=A.alB(a5,a8.w,a9)
@@ -13560,15 +13560,15 @@ e=q?a5:a8.dy
 d=q?a5:a8.fr
 c=q?a5:a8.fx
 b=q?a5:a8.CW
-a=A.B(a5,a8.cx,a9)
+a=A.A(a5,a8.cx,a9)
 a0=q?a5:a8.cy
 a1=q?a5:a8.db
 a2=q?a5:a8.glV(a8)
 a3=q?a5:a8.gdF()
 a4=q?a5:a8.f
 return A.P(f,r,s,a5,b,a,a0,a1,a2,a3,d,p,n,c,o,g,j,a6,i,m,h,q?a5:a8.fy,a4,e,k,l)}if(a8==null){a6=a7.a
-s=A.B(a7.b,a5,a9)
-r=A.B(a5,a7.c,a9)
+s=A.A(a7.b,a5,a9)
+r=A.A(a5,a7.c,a9)
 q=a9<0.5
 p=q?a7.r:a5
 o=A.alB(a7.w,a5,a9)
@@ -13585,7 +13585,7 @@ e=q?a7.dy:a5
 d=q?a7.fr:a5
 c=q?a7.fx:a5
 b=q?a7.CW:a5
-a=A.B(a7.cx,a5,a9)
+a=A.A(a7.cx,a5,a9)
 a0=q?a7.cy:a5
 a1=q?a7.db:a5
 a2=q?a7.glV(a7):a5
@@ -13594,10 +13594,10 @@ a4=q?a7.f:a5
 return A.P(f,r,s,a5,b,a,a0,a1,a2,a3,d,p,n,c,o,g,j,a6,i,m,h,q?a7.fy:a5,a4,e,k,l)}a6=a8.a
 s=a7.ay
 r=s==null
-q=r&&a8.ay==null?A.B(a7.b,a8.b,a9):a5
+q=r&&a8.ay==null?A.A(a7.b,a8.b,a9):a5
 p=a7.ch
 o=p==null
-n=o&&a8.ch==null?A.B(a7.c,a8.c,a9):a5
+n=o&&a8.ch==null?A.A(a7.c,a8.c,a9):a5
 m=a7.r
 l=m==null?a8.r:m
 k=a8.r
@@ -13641,7 +13641,7 @@ p=k?a7.dy:a8.dy
 o=k?a7.fr:a8.fr
 c=k?a7.fx:a8.fx
 b=k?a7.CW:a8.CW
-a=A.B(a7.cx,a8.cx,a9)
+a=A.A(a7.cx,a8.cx,a9)
 a0=k?a7.cy:a8.cy
 a1=a7.db
 a2=a1==null?a8.db:a1
@@ -18082,7 +18082,7 @@ a_n:function a_n(a,b,c){this.a=a
 this.b=b
 this.c=c},
 iO(a,b,c){var s,r,q=null,p=a==null,o=p?q:a.a,n=b==null
-o=A.B(o,n?q:b.a,c)
+o=A.A(o,n?q:b.a,c)
 if(p)s=q
 else{s=a.b
 s=s==null?q:A.S(s,0,1)}if(n)r=q
@@ -21411,9 +21411,9 @@ return}if(typeof console=="object"&&typeof console.log!="undefined"){console.log
 return}if(typeof window=="object")return
 if(typeof print=="function"){print(a)
 return}throw"Unable to print message: "+String(a)},
-lf(){var s=$.A?B.e8:B.d5
+lf(){var s=$.B?B.e8:B.d5
 return s},
-pP(){var s=$.A?B.d5:B.e8
+pP(){var s=$.B?B.d5:B.e8
 return s},
 aya(){return B.Ej},
 ps(a){var s=B.b.a9(u.V,a>>>6)+(a&63),r=s&1,q=B.b.a9(u.M,s>>>1)
@@ -37933,17 +37933,17 @@ k=b}else{k=b
 l=c}if(o)j=a0
 else if(!(p.e2()||p.c.length===6))j=a
 else{o=p.e2()?"Number of guesses: "+l:"Unable to solve, sorry eh?"
-j=o}o=$.A
+j=o}o=$.B
 m=o?"_dark.svg":".svg"
 i=""+(a3+1)
 h=this.y
 g=o?B.bM:B.bP
 f=A.a1("#"+i,d,A.P(d,d,o?B.d:B.f,d,d,d,d,d,a1,d,d,22,d,d,B.x,d,d,!0,d,d,d,d,d,d,d,d),d)
 o=t.p
-f=A.bb(A.a([f,A.a1(r,d,A.P(d,d,$.A?B.d:B.f,d,d,d,d,d,a1,d,d,d,d,d,d,d,d,!0,d,d,d,d,d,d,d,d),d)],o),B.aA,B.o,B.k)
+f=A.bb(A.a([f,A.a1(r,d,A.P(d,d,$.B?B.d:B.f,d,d,d,d,d,a1,d,d,d,d,d,d,d,d,!0,d,d,d,d,d,d,d,d),d)],o),B.aA,B.o,B.k)
 if(n)e=p.e2()||p.c.length===6
 else e=!1
-if(e)n=A.aF(A.a([new A.I(B.DD,A.a1(l,d,A.P(d,d,$.A?B.d:B.f,d,d,d,d,d,a1,d,d,22,d,d,B.x,d,d,!0,d,d,d,d,d,d,d,d),d),d),A.eo(k+m,30,30)],o),B.l,B.o,B.k)
+if(e)n=A.aF(A.a([new A.I(B.DD,A.a1(l,d,A.P(d,d,$.B?B.d:B.f,d,d,d,d,d,a1,d,d,22,d,d,B.x,d,d,!0,d,d,d,d,d,d,d,d),d),d),A.eo(k+m,30,30)],o),B.l,B.o,B.k)
 else{n=n&&p.c.length!==0?a:a0
 n=A.a1(n,d,A.P(d,d,A.lf(),d,d,d,d,d,a1,d,d,20,d,d,d,d,d,!0,d,d,d,d,d,d,d,d),d)}return A.a5(!0,A.bV(new A.I(B.DS,A.J(d,new A.I(B.DQ,A.aF(A.a([f,n],o),B.l,B.by,B.k),d),B.h,d,d,new A.an(g,d,d,B.bG,d,d,B.n),d,d,d,d,d,d,a4),d),!1,h===a3,new A.SG(),new A.SH(this,a3),new A.SI(this,p,q,a3),!1),!1,d,!0,!1,d,d,d,d,"Game #"+i+", "+r+", "+j,d,d,d,d,d,d,d,d,d,d,d,d,d)},
 T(a){return new A.lO(new A.SJ(this),null)}}
@@ -38056,34 +38056,34 @@ $2(a0,a1){var s,r,q,p,o,n,m,l,k,j,i,h,g=null,f="Here is a complete archive of ou
 d=t.p
 s=A.a([],d)
 for(r=this.a,q=0;p=r.z,q<Math.min($.jU.length-143,B.j.bn(1000*(p.a-$.l9().a),864e8))+142;++q)s.push(r.a1p(r.x,q,b))
-p=$.A?B.f:B.d
+p=$.B?B.f:B.d
 p=A.a5(g,A.bl(A.J(g,new A.I(B.DR,A.a1(f,g,A.P(g,g,A.lf(),g,g,g,g,g,e,g,g,16,g,g,g,g,g,!0,g,g,g,g,g,g,g,g),B.ao),g),B.h,p,g,g,g,g,g,g,g,g,g),g,g),!1,g,!0,!1,g,g,!0,g,f,g,g,g,g,g,g,g,g,g,g,g,g,g)
 o=A.J(g,g,B.h,A.ai(64,0,0,0),g,g,g,1,g,g,g,g,g)
 n=r.w.Lt(r.z)
-m=$.A
+m=$.B
 l=m?B.bM:B.bP
 l=A.J(g,new A.I(B.cu,A.aF(A.a([A.a1("PLAYED",g,A.P(g,g,m?B.d:B.f,g,g,g,g,g,e,g,g,18,g,g,g,g,g,!0,g,g,g,g,g,g,g,g),g)],d),B.l,B.cH,B.k),g),B.h,l,g,g,g,g,g,g,g,g,c)
-m=$.A?B.f:B.d
+m=$.B?B.f:B.d
 k=r.w.Lt(r.z)
-n=A.a5(g,A.aF(A.a([l,A.J(g,new A.I(B.cu,A.aF(A.a([A.a1(k,g,A.P(g,g,$.A?B.d:B.f,g,g,g,g,g,e,g,g,18,g,g,B.ab,g,g,!0,g,g,g,g,g,g,g,g),g)],d),B.l,B.o,B.k),g),B.h,m,g,g,g,g,g,g,g,g,c)],d),B.l,B.o,B.k),!1,g,!0,!1,g,g,!0,g,"Archive games played: "+n,g,g,g,g,g,g,g,g,g,g,g,g,g)
+n=A.a5(g,A.aF(A.a([l,A.J(g,new A.I(B.cu,A.aF(A.a([A.a1(k,g,A.P(g,g,$.B?B.d:B.f,g,g,g,g,g,e,g,g,18,g,g,B.ab,g,g,!0,g,g,g,g,g,g,g,g),g)],d),B.l,B.o,B.k),g),B.h,m,g,g,g,g,g,g,g,g,c)],d),B.l,B.o,B.k),!1,g,!0,!1,g,g,!0,g,"Archive games played: "+n,g,g,g,g,g,g,g,g,g,g,g,g,g)
 m=A.J(g,g,B.h,A.ai(64,0,0,0),g,g,g,1,g,g,g,g,g)
 l=r.w.Cx()
-k=$.A
+k=$.B
 j=k?B.bM:B.bP
 j=A.J(g,new A.I(B.cu,A.aF(A.a([A.a1("SOLVED",g,A.P(g,g,k?B.d:B.f,g,g,g,g,g,e,g,g,18,g,g,g,g,g,!0,g,g,g,g,g,g,g,g),g)],d),B.l,B.cH,B.k),g),B.h,j,g,g,g,g,g,g,g,g,c)
-k=$.A?B.f:B.d
+k=$.B?B.f:B.d
 i=r.w.Cx()
-l=A.a5(g,A.aF(A.a([j,A.J(g,new A.I(B.cu,A.aF(A.a([A.a1(i,g,A.P(g,g,$.A?B.d:B.f,g,g,g,g,g,e,g,g,18,g,g,B.ab,g,g,!0,g,g,g,g,g,g,g,g),g)],d),B.l,B.o,B.k),g),B.h,k,g,g,g,g,g,g,g,g,c)],d),B.l,B.o,B.k),!1,g,!0,!1,g,g,!0,g,"Archive games correctly solved: "+l,g,g,g,g,g,g,g,g,g,g,g,g,g)
+l=A.a5(g,A.aF(A.a([j,A.J(g,new A.I(B.cu,A.aF(A.a([A.a1(i,g,A.P(g,g,$.B?B.d:B.f,g,g,g,g,g,e,g,g,18,g,g,B.ab,g,g,!0,g,g,g,g,g,g,g,g),g)],d),B.l,B.o,B.k),g),B.h,k,g,g,g,g,g,g,g,g,c)],d),B.l,B.o,B.k),!1,g,!0,!1,g,g,!0,g,"Archive games correctly solved: "+l,g,g,g,g,g,g,g,g,g,g,g,g,g)
 k=A.J(g,g,B.h,A.ai(64,0,0,0),g,g,g,1,g,g,g,g,g)
 j=B.e.W(r.w.yX(),2)
-i=$.A
+i=$.B
 h=i?B.bM:B.bP
 h=A.J(g,new A.I(B.cu,A.aF(A.a([A.a1("AVERAGE GUESSES",g,A.P(g,g,i?B.d:B.f,g,g,g,g,g,e,g,g,18,g,g,g,g,g,!0,g,g,g,g,g,g,g,g),g)],d),B.l,B.cH,B.k),g),B.h,h,g,g,g,g,g,g,g,g,c)
-i=$.A?B.f:B.d
+i=$.B?B.f:B.d
 r=B.e.W(r.w.yX(),2)
-r=A.a5(g,A.aF(A.a([h,A.J(g,new A.I(B.cu,A.aF(A.a([A.a1(r,g,A.P(g,g,$.A?B.d:B.f,g,g,g,g,g,e,g,g,18,g,g,B.ab,g,g,!0,g,g,g,g,g,g,g,g),g)],d),B.l,B.o,B.k),g),B.h,i,g,g,g,g,g,g,g,g,c)],d),B.l,B.o,B.k),!1,g,!0,!1,g,g,!0,g,"Average number of guesses: "+j,g,g,g,g,g,g,g,g,g,g,g,g,g)
+r=A.a5(g,A.aF(A.a([h,A.J(g,new A.I(B.cu,A.aF(A.a([A.a1(r,g,A.P(g,g,$.B?B.d:B.f,g,g,g,g,g,e,g,g,18,g,g,B.ab,g,g,!0,g,g,g,g,g,g,g,g),g)],d),B.l,B.o,B.k),g),B.h,i,g,g,g,g,g,g,g,g,c)],d),B.l,B.o,B.k),!1,g,!0,!1,g,g,!0,g,"Average number of guesses: "+j,g,g,g,g,g,g,g,g,g,g,g,g,g)
 j=A.J(g,g,B.h,A.ai(64,0,0,0),g,g,g,1,g,g,g,g,g)
-i=$.A?B.f:B.d
+i=$.B?B.f:B.d
 return A.cl(A.aqX(A.rz(A.bb(A.a([p,o,n,m,l,k,r,j,A.J(g,new A.I(B.DI,A.bb(s,B.l,B.o,B.k),g),B.h,i,g,g,g,g,g,g,g,g,g)],d),B.l,B.S,B.k),a,B.aw),a),a1.d,g)},
 $S:294}
 A.CC.prototype={
@@ -38119,9 +38119,9 @@ c3=t.p
 l=A.a([],c3)
 c4=a8.C
 if(c4>0){k=a8.R
-if($.A)j=A.pP()
+if($.B)j=A.pP()
 else j=B.f
-i=$.A
+i=$.B
 if(i)h=B.d
 else h=B.d
 h=A.dN(B.nB,h,a9)
@@ -38129,16 +38129,16 @@ g=A.J(a9,a9,B.h,a9,a9,a9,a9,a9,a9,a9,a9,a9,5)
 if(i)i=B.d
 else i=B.d
 l.push(A.a5(!0,A.bV(new A.I(B.DE,A.J(a9,A.aF(A.a([h,g,A.a1("PREVIOUS GAME",a9,A.P(a9,a9,i,a9,a9,a9,a9,a9,b1,a9,a9,14,a9,a9,a9,a9,a9,!0,a9,a9,a9,a9,a9,a9,a9,a9),B.lj)],c3),B.l,B.S,B.k),B.h,a9,a9,new A.an(j,a9,a9,B.E,a9,a9,B.n),a9,45,a9,a9,a9,a9,157),a9),!1,k===5,new A.S7(),new A.S8(a8),new A.S9(a8,d4),!1),!1,a9,!0,!1,a9,a9,a9,a9,"Previous Game",a9,a9,a9,a9,a9,a9,a9,a9,a9,a9,a9,a9,a9))}if(c4>=0&&c4<A.qc(b2)-2){b2=a8.R
-if($.A)c4=A.pP()
+if($.B)c4=A.pP()
 else c4=B.f
-if($.A)k=B.d
+if($.B)k=B.d
 else k=B.d
 k=A.a1("NEXT GAME",a9,A.P(a9,a9,k,a9,a9,a9,a9,a9,b1,a9,a9,14,a9,a9,a9,a9,a9,!0,a9,a9,a9,a9,a9,a9,a9,a9),B.fb)
 j=A.J(a9,a9,B.h,a9,a9,a9,a9,a9,a9,a9,a9,a9,5)
-if($.A)i=B.d
+if($.B)i=B.d
 else i=B.d
 l.push(A.a5(!0,A.bV(new A.I(B.DZ,A.J(a9,A.aF(A.a([k,j,A.dN(B.EC,i,a9)],c3),B.l,B.S,B.k),B.h,a9,a9,new A.an(c4,a9,a9,B.E,a9,a9,B.n),a9,45,a9,a9,a9,a9,157),a9),!1,b2===6,new A.Sk(),new A.Sl(a8),new A.Sm(a8,d4),!1),!1,a9,!0,!1,a9,a9,a9,a9,"Next Game",a9,a9,a9,a9,a9,a9,a9,a9,a9,a9,a9,a9,a9))}b2=c1?A.J(a9,a9,B.h,a9,a9,a9,a9,58,a9,a9,a9,a9,a9):A.J(a9,a9,B.h,a9,a9,a9,a9,a9,a9,a9,a9,a9,a9)
-c4=$.A
+c4=$.B
 k=c4?B.f:B.d
 j=A.cm(c4?B.d:B.f,1)
 i=c4?B.f:B.d
@@ -38148,83 +38148,83 @@ c4=!a8.av
 if(c4)c0=A.J(a9,a9,B.h,A.ai(0,158,158,158),a9,a9,a9,0.5,a9,a9,a9,a9,a9)
 else{c0=Math.min(500,d4.X(c0).f.a.a)
 h=A.alk(A.hO(a8.al))
-c0=A.cl(A.a5(a9,A.bb(A.a([new A.I(B.fW,A.am7("FUN FACT",A.P(a9,a9,$.A?B.d:B.f,a9,a9,a9,a9,a9,b1,a9,a9,20,a9,a9,B.x,a9,a9,!0,a9,a9,a9,a9,a9,a9,a9,a9)),a9),A.J(a9,new A.I(B.aX,a8.aJ,a9),B.h,a9,a9,new A.an(A.pP(),a9,a9,B.d_,a9,a9,B.n),a9,a9,a9,a9,a9,a9,a9)],c3),B.l,B.o,B.k),!1,a9,!0,!1,a9,a9,!0,a9,"Fun Fact, "+h,a9,a9,a9,a9,a9,a9,a9,a9,a9,a9,a9,a9,a9),a9,c0-50)}h=a8.R
+c0=A.cl(A.a5(a9,A.bb(A.a([new A.I(B.fW,A.am7("FUN FACT",A.P(a9,a9,$.B?B.d:B.f,a9,a9,a9,a9,a9,b1,a9,a9,20,a9,a9,B.x,a9,a9,!0,a9,a9,a9,a9,a9,a9,a9,a9)),a9),A.J(a9,new A.I(B.aX,a8.aJ,a9),B.h,a9,a9,new A.an(A.pP(),a9,a9,B.d_,a9,a9,B.n),a9,a9,a9,a9,a9,a9,a9)],c3),B.l,B.o,B.k),!1,a9,!0,!1,a9,a9,!0,a9,"Fun Fact, "+h,a9,a9,a9,a9,a9,a9,a9,a9,a9,a9,a9,a9,a9),a9,c0-50)}h=a8.R
 h=A.a5(!0,A.bV(new A.I(B.bR,A.eo("assets/twitter.svg",40,40),a9),!1,h===0,new A.Sq(),new A.Sr(a8),new A.Sa(a8,b8),!1),!1,a9,!0,!1,a9,a9,a9,a9,"Canuckle Twitter",a9,a9,a9,a9,a9,a9,a9,a9,a9,a9,a9,a9,a9)
 g=a8.R
 g=A.aF(A.a([h,A.a5(!0,A.bV(new A.I(B.bR,A.eo("assets/facebook.svg",40,40),a9),!1,g===1,new A.Sb(),new A.Sc(a8),new A.Sd(a8,b7),!1),!1,a9,!0,!1,a9,a9,a9,a9,"Canuckle Facebook",a9,a9,a9,a9,a9,a9,a9,a9,a9,a9,a9,a9,a9)],c3),B.l,B.S,B.k)
-h=A.a1("If you enjoyed this game:",a9,A.P(a9,a9,$.A?B.d:B.f,a9,a9,a9,a9,a9,b1,a9,a9,a9,a9,a9,a9,a9,a9,!0,a9,a9,a9,a9,a9,a9,a9,a9),a9)
+h=A.a1("If you enjoyed this game:",a9,A.P(a9,a9,$.B?B.d:B.f,a9,a9,a9,a9,a9,b1,a9,a9,a9,a9,a9,a9,a9,a9,!0,a9,a9,a9,a9,a9,a9,a9,a9),a9)
 f=a8.R
 f=A.a5(!0,A.bV(new A.I(B.DC,A.J(a9,new A.I(B.cw,A.aF(A.a([new A.I(B.cv,A.eo("assets/kofi.svg",20,20),a9),B.lo,new A.I(B.cv,A.eo("assets/leaf.svg",25,25),a9)],c3),B.l,B.S,B.k),a9),B.h,a9,a9,new A.an(B.fK,a9,a9,B.E,a9,a9,B.n),a9,a9,a9,a9,a9,a9,325),a9),!1,f===3,new A.Se(),new A.Sf(a8),new A.Sg(a8,b9),!1),!1,a9,!0,!1,a9,a9,a9,a9,"Buy Canuckle a coffee",a9,a9,a9,a9,a9,a9,a9,a9,a9,a9,a9,a9,a9)
 if(c4)c4=A.J(a9,a9,B.h,A.ai(0,158,158,158),a9,a9,a9,0.5,a9,a9,a9,a9,a9)
 else{c4=a8.R
 e=$.aM?B.y:B.w
 c4=A.a5(!0,A.bV(new A.I(B.DH,A.J(a9,new A.I(B.cw,A.aF(B.hs,B.l,B.S,B.k),a9),B.h,a9,a9,new A.an(e,a9,a9,B.E,a9,a9,B.n),a9,a9,a9,a9,a9,a9,325),a9),!1,c4===4,new A.Sh(),new A.Si(a8),new A.Sj(a8,d4,new A.Ss(d4)),!1),!1,a9,!0,!1,a9,a9,a9,a9,"Share result",a9,a9,a9,a9,a9,a9,a9,a9,a9,a9,a9,a9,a9)}e=A.aF(l,B.l,B.S,B.k)
-d=A.a5(a9,new A.I(B.aX,A.a1("ARCHIVE STATISTICS",a9,A.P(a9,a9,$.A?B.d:B.f,a9,a9,a9,a9,a9,b1,a9,a9,20,a9,a9,B.x,a9,a9,!0,a9,a9,a9,a9,a9,a9,a9,a9),a9),a9),!1,a9,!0,!1,a9,a9,!0,a9,"Archive statistics",a9,a9,a9,a9,a9,a9,a9,a9,a9,a9,a9,a9,a9)
+d=A.a5(a9,new A.I(B.aX,A.a1("ARCHIVE STATISTICS",a9,A.P(a9,a9,$.B?B.d:B.f,a9,a9,a9,a9,a9,b1,a9,a9,20,a9,a9,B.x,a9,a9,!0,a9,a9,a9,a9,a9,a9,a9,a9),a9),a9),!1,a9,!0,!1,a9,a9,!0,a9,"Archive statistics",a9,a9,a9,a9,a9,a9,a9,a9,a9,a9,a9,a9,a9)
 c=""+b3
-b=A.a1(c,a9,A.P(a9,a9,$.A?B.d:B.f,a9,a9,a9,a9,a9,b1,a9,a9,28,a9,a9,B.x,a9,a9,!0,a9,a9,a9,a9,a9,a9,a9,a9),a9)
-c=A.a5(a9,A.bb(A.a([b,A.a1("Played",a9,A.P(a9,a9,$.A?B.d:B.f,a9,a9,a9,a9,a9,b1,a9,a9,a9,a9,a9,a9,a9,a9,!0,a9,a9,a9,a9,a9,a9,a9,a9),a9)],c3),B.l,B.o,B.k),!1,a9,!0,!1,a9,a9,!0,a9,"Games played, "+c,a9,a9,a9,a9,a9,a9,a9,a9,a9,a9,a9,a9,a9)
+b=A.a1(c,a9,A.P(a9,a9,$.B?B.d:B.f,a9,a9,a9,a9,a9,b1,a9,a9,28,a9,a9,B.x,a9,a9,!0,a9,a9,a9,a9,a9,a9,a9,a9),a9)
+c=A.a5(a9,A.bb(A.a([b,A.a1("Played",a9,A.P(a9,a9,$.B?B.d:B.f,a9,a9,a9,a9,a9,b1,a9,a9,a9,a9,a9,a9,a9,a9,!0,a9,a9,a9,a9,a9,a9,a9,a9),a9)],c3),B.l,B.o,B.k),!1,a9,!0,!1,a9,a9,!0,a9,"Games played, "+c,a9,a9,a9,a9,a9,a9,a9,a9,a9,a9,a9,a9,a9)
 b=""+b5
-a=A.a1(b,a9,A.P(a9,a9,$.A?B.d:B.f,a9,a9,a9,a9,a9,b1,a9,a9,28,a9,a9,B.x,a9,a9,!0,a9,a9,a9,a9,a9,a9,a9,a9),a9)
-b=A.a5(a9,A.bb(A.a([a,A.a1("Win %",a9,A.P(a9,a9,$.A?B.d:B.f,a9,a9,a9,a9,a9,b1,a9,a9,a9,a9,a9,a9,a9,a9,!0,a9,a9,a9,a9,a9,a9,a9,a9),a9)],c3),B.l,B.o,B.k),!1,a9,!0,!1,a9,a9,!0,a9,"Win percentage, "+b,a9,a9,a9,a9,a9,a9,a9,a9,a9,a9,a9,a9,a9)
-a=A.a1(b6,a9,A.P(a9,a9,$.A?B.d:B.f,a9,a9,a9,a9,a9,b1,a9,a9,28,a9,a9,B.x,a9,a9,!0,a9,a9,a9,a9,a9,a9,a9,a9),a9)
-c=A.aF(A.a([c,b,A.a5(a9,A.bb(A.a([a,A.a1("Average\nGuesses",a9,A.P(a9,a9,$.A?B.d:B.f,a9,a9,a9,a9,a9,b1,a9,a9,a9,a9,a9,a9,a9,a9,!0,a9,a9,a9,a9,a9,a9,a9,a9),B.ao)],c3),B.l,B.o,B.k),!1,a9,!0,!1,a9,a9,!0,a9,"Average guesses, "+b6,a9,a9,a9,a9,a9,a9,a9,a9,a9,a9,a9,a9,a9)],c3),B.aA,B.hP,B.k)
+a=A.a1(b,a9,A.P(a9,a9,$.B?B.d:B.f,a9,a9,a9,a9,a9,b1,a9,a9,28,a9,a9,B.x,a9,a9,!0,a9,a9,a9,a9,a9,a9,a9,a9),a9)
+b=A.a5(a9,A.bb(A.a([a,A.a1("Win %",a9,A.P(a9,a9,$.B?B.d:B.f,a9,a9,a9,a9,a9,b1,a9,a9,a9,a9,a9,a9,a9,a9,!0,a9,a9,a9,a9,a9,a9,a9,a9),a9)],c3),B.l,B.o,B.k),!1,a9,!0,!1,a9,a9,!0,a9,"Win percentage, "+b,a9,a9,a9,a9,a9,a9,a9,a9,a9,a9,a9,a9,a9)
+a=A.a1(b6,a9,A.P(a9,a9,$.B?B.d:B.f,a9,a9,a9,a9,a9,b1,a9,a9,28,a9,a9,B.x,a9,a9,!0,a9,a9,a9,a9,a9,a9,a9,a9),a9)
+c=A.aF(A.a([c,b,A.a5(a9,A.bb(A.a([a,A.a1("Average\nGuesses",a9,A.P(a9,a9,$.B?B.d:B.f,a9,a9,a9,a9,a9,b1,a9,a9,a9,a9,a9,a9,a9,a9,!0,a9,a9,a9,a9,a9,a9,a9,a9),B.ao)],c3),B.l,B.o,B.k),!1,a9,!0,!1,a9,a9,!0,a9,"Average guesses, "+b6,a9,a9,a9,a9,a9,a9,a9,a9,a9,a9,a9,a9,a9)],c3),B.aA,B.hP,B.k)
 b=""+c6
-a=$.A
+a=$.B
 a0=A.cm(a?B.d:B.f,1)
 a0=A.J(a9,A.bl(A.a1("1",a9,A.P(a9,a9,a?B.d:B.f,a9,a9,a9,a9,a9,b1,a9,a9,12,a9,a9,a9,a9,a9,!0,a9,a9,a9,a9,a9,a9,a9,a9),a9),a9,a9),B.h,a9,a9,new A.an(a9,a9,a0,a9,a9,a9,B.n),a9,20,a9,a9,a9,a9,20)
 a=a8.cU
 if(a===1)a1=$.aM?B.y:B.w
 else a1=B.R
 a1=A.J(a9,a9,B.h,a9,a9,new A.an(a1,a9,a9,B.E,a9,a9,B.n),a9,20,a9,a9,a9,a9,s)
-b=A.a5(a9,A.aF(A.a([a0,new A.I(B.U,a1,a9),A.a1(b,a9,A.P(a9,a9,$.A?B.d:B.f,a9,a9,a9,a9,a9,b1,a9,a9,a9,a9,a9,a9,a9,a9,!0,a9,a9,a9,a9,a9,a9,a9,a9),a9)],c3),B.l,B.o,B.k),!1,a9,!0,!1,a9,a9,a9,a9,"Number of games solved in 1 guess, "+b,a9,a9,a9,a9,a9,a9,a9,a9,a9,a9,a9,a9,a9)
+b=A.a5(a9,A.aF(A.a([a0,new A.I(B.U,a1,a9),A.a1(b,a9,A.P(a9,a9,$.B?B.d:B.f,a9,a9,a9,a9,a9,b1,a9,a9,a9,a9,a9,a9,a9,a9,!0,a9,a9,a9,a9,a9,a9,a9,a9),a9)],c3),B.l,B.o,B.k),!1,a9,!0,!1,a9,a9,a9,a9,"Number of games solved in 1 guess, "+b,a9,a9,a9,a9,a9,a9,a9,a9,a9,a9,a9,a9,a9)
 a0=""+c7
-a1=$.A
+a1=$.B
 a2=A.cm(a1?B.d:B.f,1)
 a2=A.J(a9,A.bl(A.a1("2",a9,A.P(a9,a9,a1?B.d:B.f,a9,a9,a9,a9,a9,b1,a9,a9,12,a9,a9,a9,a9,a9,!0,a9,a9,a9,a9,a9,a9,a9,a9),a9),a9,a9),B.h,a9,a9,new A.an(a9,a9,a2,a9,a9,a9,B.n),a9,20,a9,a9,a9,a9,20)
 if(a===2)a1=$.aM?B.y:B.w
 else a1=B.R
 a1=A.J(a9,a9,B.h,a9,a9,new A.an(a1,a9,a9,B.E,a9,a9,B.n),a9,20,a9,a9,a9,a9,r)
-a0=A.a5(a9,A.aF(A.a([a2,new A.I(B.U,a1,a9),A.a1(a0,a9,A.P(a9,a9,$.A?B.d:B.f,a9,a9,a9,a9,a9,b1,a9,a9,a9,a9,a9,a9,a9,a9,!0,a9,a9,a9,a9,a9,a9,a9,a9),a9)],c3),B.l,B.o,B.k),!1,a9,!0,!1,a9,a9,a9,a9,"Number of games solved in 2 guesses, "+a0,a9,a9,a9,a9,a9,a9,a9,a9,a9,a9,a9,a9,a9)
+a0=A.a5(a9,A.aF(A.a([a2,new A.I(B.U,a1,a9),A.a1(a0,a9,A.P(a9,a9,$.B?B.d:B.f,a9,a9,a9,a9,a9,b1,a9,a9,a9,a9,a9,a9,a9,a9,!0,a9,a9,a9,a9,a9,a9,a9,a9),a9)],c3),B.l,B.o,B.k),!1,a9,!0,!1,a9,a9,a9,a9,"Number of games solved in 2 guesses, "+a0,a9,a9,a9,a9,a9,a9,a9,a9,a9,a9,a9,a9,a9)
 a1=""+c8
-a2=$.A
+a2=$.B
 a3=A.cm(a2?B.d:B.f,1)
 a3=A.J(a9,A.bl(A.a1("3",a9,A.P(a9,a9,a2?B.d:B.f,a9,a9,a9,a9,a9,b1,a9,a9,12,a9,a9,a9,a9,a9,!0,a9,a9,a9,a9,a9,a9,a9,a9),a9),a9,a9),B.h,a9,a9,new A.an(a9,a9,a3,a9,a9,a9,B.n),a9,20,a9,a9,a9,a9,20)
 if(a===3)a2=$.aM?B.y:B.w
 else a2=B.R
 a2=A.J(a9,a9,B.h,a9,a9,new A.an(a2,a9,a9,B.E,a9,a9,B.n),a9,20,a9,a9,a9,a9,q)
-a1=A.a5(a9,A.aF(A.a([a3,new A.I(B.U,a2,a9),A.a1(a1,a9,A.P(a9,a9,$.A?B.d:B.f,a9,a9,a9,a9,a9,b1,a9,a9,a9,a9,a9,a9,a9,a9,!0,a9,a9,a9,a9,a9,a9,a9,a9),a9)],c3),B.l,B.o,B.k),!1,a9,!0,!1,a9,a9,a9,a9,"Number of games solved in 3 guesses, "+a1,a9,a9,a9,a9,a9,a9,a9,a9,a9,a9,a9,a9,a9)
+a1=A.a5(a9,A.aF(A.a([a3,new A.I(B.U,a2,a9),A.a1(a1,a9,A.P(a9,a9,$.B?B.d:B.f,a9,a9,a9,a9,a9,b1,a9,a9,a9,a9,a9,a9,a9,a9,!0,a9,a9,a9,a9,a9,a9,a9,a9),a9)],c3),B.l,B.o,B.k),!1,a9,!0,!1,a9,a9,a9,a9,"Number of games solved in 3 guesses, "+a1,a9,a9,a9,a9,a9,a9,a9,a9,a9,a9,a9,a9,a9)
 a2=""+c9
-a3=$.A
+a3=$.B
 a4=A.cm(a3?B.d:B.f,1)
 a4=A.J(a9,A.bl(A.a1("4",a9,A.P(a9,a9,a3?B.d:B.f,a9,a9,a9,a9,a9,b1,a9,a9,12,a9,a9,a9,a9,a9,!0,a9,a9,a9,a9,a9,a9,a9,a9),a9),a9,a9),B.h,a9,a9,new A.an(a9,a9,a4,a9,a9,a9,B.n),a9,20,a9,a9,a9,a9,20)
 if(a===4)a3=$.aM?B.y:B.w
 else a3=B.R
 a3=A.J(a9,a9,B.h,a9,a9,new A.an(a3,a9,a9,B.E,a9,a9,B.n),a9,20,a9,a9,a9,a9,p)
-a2=A.a5(a9,A.aF(A.a([a4,new A.I(B.U,a3,a9),A.a1(a2,a9,A.P(a9,a9,$.A?B.d:B.f,a9,a9,a9,a9,a9,b1,a9,a9,a9,a9,a9,a9,a9,a9,!0,a9,a9,a9,a9,a9,a9,a9,a9),a9)],c3),B.l,B.o,B.k),!1,a9,!0,!1,a9,a9,a9,a9,"Number of games solved in 4 guesses, "+a2,a9,a9,a9,a9,a9,a9,a9,a9,a9,a9,a9,a9,a9)
+a2=A.a5(a9,A.aF(A.a([a4,new A.I(B.U,a3,a9),A.a1(a2,a9,A.P(a9,a9,$.B?B.d:B.f,a9,a9,a9,a9,a9,b1,a9,a9,a9,a9,a9,a9,a9,a9,!0,a9,a9,a9,a9,a9,a9,a9,a9),a9)],c3),B.l,B.o,B.k),!1,a9,!0,!1,a9,a9,a9,a9,"Number of games solved in 4 guesses, "+a2,a9,a9,a9,a9,a9,a9,a9,a9,a9,a9,a9,a9,a9)
 a3=""+d0
-a4=$.A
+a4=$.B
 a5=A.cm(a4?B.d:B.f,1)
 a5=A.J(a9,A.bl(A.a1("5",a9,A.P(a9,a9,a4?B.d:B.f,a9,a9,a9,a9,a9,b1,a9,a9,12,a9,a9,a9,a9,a9,!0,a9,a9,a9,a9,a9,a9,a9,a9),a9),a9,a9),B.h,a9,a9,new A.an(a9,a9,a5,a9,a9,a9,B.n),a9,20,a9,a9,a9,a9,20)
 if(a===5)a4=$.aM?B.y:B.w
 else a4=B.R
 a4=A.J(a9,a9,B.h,a9,a9,new A.an(a4,a9,a9,B.E,a9,a9,B.n),a9,20,a9,a9,a9,a9,o)
-a3=A.a5(a9,A.aF(A.a([a5,new A.I(B.U,a4,a9),A.a1(a3,a9,A.P(a9,a9,$.A?B.d:B.f,a9,a9,a9,a9,a9,b1,a9,a9,a9,a9,a9,a9,a9,a9,!0,a9,a9,a9,a9,a9,a9,a9,a9),a9)],c3),B.l,B.o,B.k),!1,a9,!0,!1,a9,a9,a9,a9,"Number of games solved in 5 guesses, "+a3,a9,a9,a9,a9,a9,a9,a9,a9,a9,a9,a9,a9,a9)
+a3=A.a5(a9,A.aF(A.a([a5,new A.I(B.U,a4,a9),A.a1(a3,a9,A.P(a9,a9,$.B?B.d:B.f,a9,a9,a9,a9,a9,b1,a9,a9,a9,a9,a9,a9,a9,a9,!0,a9,a9,a9,a9,a9,a9,a9,a9),a9)],c3),B.l,B.o,B.k),!1,a9,!0,!1,a9,a9,a9,a9,"Number of games solved in 5 guesses, "+a3,a9,a9,a9,a9,a9,a9,a9,a9,a9,a9,a9,a9,a9)
 a4=""+d1
-a5=$.A
+a5=$.B
 a6=A.cm(a5?B.d:B.f,1)
 a6=A.J(a9,A.bl(A.a1("6",a9,A.P(a9,a9,a5?B.d:B.f,a9,a9,a9,a9,a9,b1,a9,a9,12,a9,a9,a9,a9,a9,!0,a9,a9,a9,a9,a9,a9,a9,a9),a9),a9,a9),B.h,a9,a9,new A.an(a9,a9,a6,a9,a9,a9,B.n),a9,20,a9,a9,a9,a9,20)
 if(a===6)a5=$.aM?B.y:B.w
 else a5=B.R
 a5=A.J(a9,a9,B.h,a9,a9,new A.an(a5,a9,a9,B.E,a9,a9,B.n),a9,20,a9,a9,a9,a9,n)
-a4=A.a5(a9,A.aF(A.a([a6,new A.I(B.U,a5,a9),A.a1(a4,a9,A.P(a9,a9,$.A?B.d:B.f,a9,a9,a9,a9,a9,b1,a9,a9,a9,a9,a9,a9,a9,a9,!0,a9,a9,a9,a9,a9,a9,a9,a9),a9)],c3),B.l,B.o,B.k),!1,a9,!0,!1,a9,a9,a9,a9,"Number of games solved in 6 guesses, "+a4,a9,a9,a9,a9,a9,a9,a9,a9,a9,a9,a9,a9,a9)
+a4=A.a5(a9,A.aF(A.a([a6,new A.I(B.U,a5,a9),A.a1(a4,a9,A.P(a9,a9,$.B?B.d:B.f,a9,a9,a9,a9,a9,b1,a9,a9,a9,a9,a9,a9,a9,a9,!0,a9,a9,a9,a9,a9,a9,a9,a9),a9)],c3),B.l,B.o,B.k),!1,a9,!0,!1,a9,a9,a9,a9,"Number of games solved in 6 guesses, "+a4,a9,a9,a9,a9,a9,a9,a9,a9,a9,a9,a9,a9,a9)
 a5=""+d2
-a6=$.A
+a6=$.B
 a7=A.cm(a6?B.d:B.f,1)
 a7=A.J(a9,A.bl(A.a1("X",a9,A.P(a9,a9,a6?B.d:B.f,a9,a9,a9,a9,a9,b1,a9,a9,12,a9,a9,a9,a9,a9,!0,a9,a9,a9,a9,a9,a9,a9,a9),a9),a9,a9),B.h,a9,a9,new A.an(a9,a9,a7,a9,a9,a9,B.n),a9,20,a9,a9,a9,a9,20)
 if(a===7)a=$.aM?B.y:B.w
 else a=B.R
 a=A.J(a9,a9,B.h,a9,a9,new A.an(a,a9,a9,B.E,a9,a9,B.n),a9,20,a9,a9,a9,a9,m)
-return A.bb(A.a([b2,A.bl(A.J(a9,A.bb(A.a([i,A.cl(A.rz(A.bb(A.a([c0,new A.I(B.d9,g,a9),new A.I(B.ct,h,a9),f,c4,new A.I(B.DG,e,a9),d,new A.I(B.aX,c,a9),new A.I(B.da,A.bb(A.a([b,a0,a1,a2,a3,a4,A.a5(a9,A.aF(A.a([a7,new A.I(B.U,a,a9),A.a1(a5,a9,A.P(a9,a9,$.A?B.d:B.f,a9,a9,a9,a9,a9,b1,a9,a9,a9,a9,a9,a9,a9,a9,!0,a9,a9,a9,a9,a9,a9,a9,a9),a9)],c3),B.l,B.o,B.k),!1,a9,!0,!1,a9,a9,a9,a9,"Number of archive games unable to be solved, "+a5,a9,a9,a9,a9,a9,a9,a9,a9,a9,a9,a9,a9,a9)],c3),B.l,B.o,B.k),a9)],c3),B.l,B.o,B.k),a9,B.aw),c5-52,a9)],c3),B.l,B.o,B.k),B.h,a9,a9,new A.an(k,a9,j,B.bG,a9,a9,B.n),a9,c5,a9,a9,a9,a9,c2),a9,a9)],c3),B.l,B.o,B.k)},
+return A.bb(A.a([b2,A.bl(A.J(a9,A.bb(A.a([i,A.cl(A.rz(A.bb(A.a([c0,new A.I(B.d9,g,a9),new A.I(B.ct,h,a9),f,c4,new A.I(B.DG,e,a9),d,new A.I(B.aX,c,a9),new A.I(B.da,A.bb(A.a([b,a0,a1,a2,a3,a4,A.a5(a9,A.aF(A.a([a7,new A.I(B.U,a,a9),A.a1(a5,a9,A.P(a9,a9,$.B?B.d:B.f,a9,a9,a9,a9,a9,b1,a9,a9,a9,a9,a9,a9,a9,a9,!0,a9,a9,a9,a9,a9,a9,a9,a9),a9)],c3),B.l,B.o,B.k),!1,a9,!0,!1,a9,a9,a9,a9,"Number of archive games unable to be solved, "+a5,a9,a9,a9,a9,a9,a9,a9,a9,a9,a9,a9,a9,a9)],c3),B.l,B.o,B.k),a9)],c3),B.l,B.o,B.k),a9,B.aw),c5-52,a9)],c3),B.l,B.o,B.k),B.h,a9,a9,new A.an(k,a9,j,B.bG,a9,a9,B.n),a9,c5,a9,a9,a9,a9,c2),a9,a9)],c3),B.l,B.o,B.k)},
 js(a,b,c,d){return A.k4(A.md(d,b),b)}}
 A.Sv.prototype={
 $1(a){var s,r,q,p,o,n,m=a.iX("games")
@@ -38248,7 +38248,7 @@ $1(a){return a.a.toUpperCase()===this.a.toUpperCase()},
 $S:40}
 A.Ss.prototype={
 $2(a,b){var s=A.bR(this.a)
-s.bS(A.ib(a,b,$.A?B.d:B.f,!1))},
+s.bS(A.ib(a,b,$.B?B.d:B.f,!1))},
 $S:69}
 A.S8.prototype={
 $0(){var s=this.a
@@ -38417,12 +38417,12 @@ p.I(new A.TH(p,n))}else{o=p.e
 if(o.length<p.d.a.length){if(a==="ENTER"){o=p.c
 o.toString
 o=A.bR(o)
-o.bS(A.ib("Not enough letters",1000,$.A?B.d:B.f,!1))
+o.bS(A.ib("Not enough letters",1000,$.B?B.d:B.f,!1))
 s=1
 break}p.I(new A.TI(p,a))}else if(a==="ENTER"){if(!B.c.v($.ayp,o.toLowerCase())){o=p.c
 o.toString
 o=A.bR(o)
-o.bS(A.ib("Invalid Word",1000,$.A?B.d:B.f,!1))
+o.bS(A.ib("Invalid Word",1000,$.B?B.d:B.f,!1))
 s=1
 break}if(!p.a9g()){s=1
 break}p.NQ()}}case 1:return A.W(q,r)}})
@@ -38457,7 +38457,7 @@ else{s=A.f(n)
 r=d.c
 r.toString
 r=A.bR(r)
-m=$.A?B.d:B.f
+m=$.B?B.d:B.f
 m=A.ib("Your word must contain '"+s+"'",1500,m,!1)
 s=$.Cn()
 r.e.push(new A.di(m,c,B.ft,s,s,s))
@@ -38477,7 +38477,7 @@ else s=i===4?"5th":"6th"
 e=s}s=d.c
 s.toString
 s=A.bR(s)
-r=$.A?B.d:B.f
+r=$.B?B.d:B.f
 r=A.ib("The "+e+" letter must be '"+f+"'",1500,r,!1)
 m=$.Cn()
 s.e.push(new A.di(r,c,B.ft,m,m,m))
@@ -38688,20 +38688,20 @@ i=a4.c.length
 r=i===6&&r?7:i
 i=$.f_?1:0
 b=$.aM?1:0
-a=$.A?1:0
-l.jS("level_end",A.ay(["level_name",a4.a,"num_guesses",r,"hard_mode",i,"high_contrast",b,"dark_theme",a,"success",s,"version","Version 1.2.1","ad_code",c],t.N,t.z))},
+a=$.B?1:0
+l.jS("level_end",A.ay(["level_name",a4.a,"num_guesses",r,"hard_mode",i,"high_contrast",b,"dark_theme",a,"success",s,"version","Version 1.2.2","ad_code",c],t.N,t.z))},
 $S:8}
 A.TY.prototype={
 $0(){var s,r=this.a,q=r.c
 if(q!=null){r=r.d
 q=A.bR(q)
-s=$.A?B.d:B.f
+s=$.B?B.d:B.f
 q.bS(A.ib("Sorry! The word was "+r.a,3000,s,!1))}},
 $S:1}
 A.TZ.prototype={
 $0(){var s,r=this.a.c
 if(r!=null){r=A.bR(r)
-s=$.A?B.d:B.f
+s=$.B?B.d:B.f
 r.bS(A.ib(this.b,3000,s,!0))}},
 $S:1}
 A.U_.prototype={
@@ -38795,7 +38795,7 @@ r=J.af(s)
 q=A.e_(r.h(s,"isHardMode"))
 $.f_=q===!0
 q=A.e_(r.h(s,"isDarkMode"))
-$.A=q===!0
+$.B=q===!0
 q=A.e_(r.h(s,"isHighContrast"))
 $.aM=q===!0
 l.fa()
@@ -38875,7 +38875,7 @@ if(g/f>1.1){s=c.a.length
 r=Math.min(d/s,(f*0.7-80)/s)}else r=d/c.a.length
 q=Math.max(110,Math.min(r*2.5,300))
 r=Math.max(1,Math.min(r,(f-q-0-47)/6))
-f=$.A?B.f:B.d
+f=$.B?B.f:B.d
 d=A.J(h,h,B.h,h,h,h,h,1,h,h,h,h,h)
 c=c.a
 s=e.Q
@@ -39063,8 +39063,8 @@ return A.ey(s,new A.Zt(l,m),null)}},
 RK(a,b){var s=t.Y,r=new A.aT(b,new A.aD(3.141592653589793,0,s),s.j("aT<aE.T>"))
 return A.ey(r,new A.Zl(this,b,r),a)},
 qu(a,b,c,d){var s,r,q,p,o=null,n=b==="Front",m=n?A.apz(B.b8):A.apz(a)
-if(n){s=$.A?B.d:B.f
-r=s}else if(a===B.bU){s=$.A?B.d:B.f
+if(n){s=$.B?B.d:B.f
+r=s}else if(a===B.bU){s=$.B?B.d:B.f
 r=s}else r=B.d
 q=n&&a!==B.b8?A.apy(B.bU):A.apy(a)
 n=this.a
@@ -39286,26 +39286,26 @@ gjr(){return""},
 ghX(){return!0},
 kI(a,b,c){var s=null
 return A.lS(B.a5,s,A.yf(this.Xo(a)),B.h,s,0,s,s,s,s,B.aO)},
-Xo(a8){var s,r,q,p,o,n,m,l,k,j,i,h,g,f,e,d,c=null,b="ClearSans",a="Examples",a0="AAAAA",a1=A.ya(c,c,B.ce,c,c,!0,c,A.ea(B.Gr,c,A.P(c,c,$.A?B.d:B.f,c,c,c,c,c,c,c,c,16,c,c,c,c,c,!0,c,c,c,c,c,c,c,c),c),B.aH,c,c,1,B.b3),a2=A.ya(c,c,B.ce,c,c,!0,c,A.ea(B.G9,c,A.P(c,c,$.A?B.d:B.f,c,c,c,c,c,c,c,c,16,c,c,c,c,c,!0,c,c,c,c,c,c,c,c),c),B.aH,c,c,1,B.b3),a3=A.ya(c,c,B.ce,c,c,!0,c,A.ea(B.Gq,c,A.P(c,c,$.A?B.d:B.f,c,c,c,c,c,c,c,c,16,c,c,c,c,c,!0,c,c,c,c,c,c,c,c),c),B.aH,c,c,1,B.b3),a4=A.ya(c,c,B.ce,c,c,!0,c,A.ea(B.GV,c,A.P(c,c,$.A?B.d:B.f,c,c,c,c,c,c,c,c,16,c,c,c,c,c,!0,c,c,c,c,c,c,c,c),c),B.aH,c,c,1,B.b3),a5=t.w,a6=a8.X(a5).f.a.a<=920,a7=Math.min(500,a8.X(a5).f.a.a)
+Xo(a8){var s,r,q,p,o,n,m,l,k,j,i,h,g,f,e,d,c=null,b="ClearSans",a="Examples",a0="AAAAA",a1=A.ya(c,c,B.ce,c,c,!0,c,A.ea(B.Gr,c,A.P(c,c,$.B?B.d:B.f,c,c,c,c,c,c,c,c,16,c,c,c,c,c,!0,c,c,c,c,c,c,c,c),c),B.aH,c,c,1,B.b3),a2=A.ya(c,c,B.ce,c,c,!0,c,A.ea(B.G9,c,A.P(c,c,$.B?B.d:B.f,c,c,c,c,c,c,c,c,16,c,c,c,c,c,!0,c,c,c,c,c,c,c,c),c),B.aH,c,c,1,B.b3),a3=A.ya(c,c,B.ce,c,c,!0,c,A.ea(B.Gq,c,A.P(c,c,$.B?B.d:B.f,c,c,c,c,c,c,c,c,16,c,c,c,c,c,!0,c,c,c,c,c,c,c,c),c),B.aH,c,c,1,B.b3),a4=A.ya(c,c,B.ce,c,c,!0,c,A.ea(B.GV,c,A.P(c,c,$.B?B.d:B.f,c,c,c,c,c,c,c,c,16,c,c,c,c,c,!0,c,c,c,c,c,c,c,c),c),B.aH,c,c,1,B.b3),a5=t.w,a6=a8.X(a5).f.a.a<=920,a7=Math.min(500,a8.X(a5).f.a.a)
 a5=a8.X(a5).f
 s=a6?58:0
 r=Math.min(750,a5.a.b-s)
 a5=a6?58:0
 s=a6?A.J(c,c,B.h,c,c,c,c,58,c,c,c,c,c):A.J(c,c,B.h,c,c,c,c,c,c,c,c,c,c)
-q=$.A
+q=$.B
 p=q?B.f:B.d
 o=A.cm(q?B.d:B.f,1)
 q=q?B.f:B.d
 n=A.J(c,c,B.h,c,c,c,c,c,c,c,c,c,46)
 m=A.bj(a8).RG.e
 if(m==null)m=c
-else m=m.bI(A.P(c,c,$.A?B.d:B.f,c,c,c,c,c,b,c,c,25,c,c,B.x,c,c,!0,c,c,c,c,c,c,c,c))
+else m=m.bI(A.P(c,c,$.B?B.d:B.f,c,c,c,c,c,b,c,c,25,c,c,B.x,c,c,!0,c,c,c,c,c,c,c,c))
 m=A.a5(c,A.a1("HOW TO PLAY",c,m,c),!1,c,!0,!1,c,c,!0,c,"How to play",c,c,c,c,c,c,c,c,c,c,c,c,c)
 l=this.av
 k=t.p
-q=A.J(c,A.aF(A.a([n,m,A.a5(!0,A.bV(new A.I(B.cs,A.dN(B.cA,$.A?B.d:B.f,26),c),!1,l,new A.a_2(),new A.a_3(this),new A.a_4(this,a8),!1),!1,c,!0,!1,c,c,c,c,"Close how to play",c,c,c,c,c,c,c,c,c,c,c,c,c)],k),B.l,B.by,B.k),B.h,c,c,new A.an(q,c,c,B.bo,c,c,B.n),c,50,c,c,c,c,c)
+q=A.J(c,A.aF(A.a([n,m,A.a5(!0,A.bV(new A.I(B.cs,A.dN(B.cA,$.B?B.d:B.f,26),c),!1,l,new A.a_2(),new A.a_3(this),new A.a_4(this,a8),!1),!1,c,!0,!1,c,c,c,c,"Close how to play",c,c,c,c,c,c,c,c,c,c,c,c,c)],k),B.l,B.by,B.k),B.h,c,c,new A.an(q,c,c,B.bo,c,c,B.n),c,50,c,c,c,c,c)
 a1=A.a5(c,new A.I(B.ct,A.J(c,new A.I(B.DL,a1,c),B.h,c,c,new A.an(A.pP(),c,c,B.d_,c,c,B.n),c,c,c,c,c,c,c),c),!1,c,!0,!1,c,c,!0,c,"Guess the Canuckle in 6 tries.\n\nEach guess must be a valid 5 letter word. Hit the enter button to submit.\n\nAfter each guess, the colour of the tiles will change to show how close your guess was to the word.\n\nThe answer will be a word/place/Canadianism related to Canada in some way, and a fun fact will be displayed after you play!\n\nA new CANUCKLE will be available each day!",c,c,c,c,c,c,c,c,c,c,c,c,c)
-n=A.a5(c,new A.I(B.ct,A.a1(a,c,A.P(c,c,$.A?B.d:B.f,c,c,c,c,c,b,c,c,16,c,c,B.x,c,c,!0,c,c,c,c,c,c,c,c),c),c),!1,c,!0,!1,c,c,!0,c,a,c,c,c,c,c,c,c,c,c,c,c,c,c)
+n=A.a5(c,new A.I(B.ct,A.a1(a,c,A.P(c,c,$.B?B.d:B.f,c,c,c,c,c,b,c,c,16,c,c,B.x,c,c,!0,c,c,c,c,c,c,c,c),c),c),!1,c,!0,!1,c,c,!0,c,a,c,c,c,c,c,c,c,c,c,c,c,c,c)
 m=a7*0.09
 l=t.N
 j=A.df(l)
@@ -39511,21 +39511,21 @@ $S:21}
 A.a0F.prototype={
 $2(a,b){var s,r,q,p,o,n,m,l,k=null,j="ClearSans",i=A.a([],t.Rz)
 for(s=t.t,r=t.s,q=t.IM,p=t.kS,o=b.b/12,n=0;n<8;++n)i.push(new A.nF(!0,n,n,o,3,new A.ad(new A.kO(k,k,p),p.j("ad<1>")),new A.ad(new A.kO(k,k,p),p.j("ad<1>")),new A.ad(new A.kO(k,k,p),p.j("ad<1>")),A.a([new A.eh("CANUCKLE",A.a([0,1,2,3,4,5,6,7],s),A.a(["correct","correct","correct","correct","correct","correct","correct","correct"],r))],q),k))
-s=$.A?B.f:B.d
+s=$.B?B.f:B.d
 r=Math.min(a.X(t.w).f.a.a,600)
 q=A.aF(i,B.l,B.S,B.k)
-p=A.a1("will be back in:",k,A.P(k,k,$.A?B.d:B.f,k,k,k,k,k,j,k,k,22,k,k,B.x,k,k,!0,k,k,k,k,k,k,k,k),k)
+p=A.a1("will be back in:",k,A.P(k,k,$.B?B.d:B.f,k,k,k,k,k,j,k,k,22,k,k,B.x,k,k,!0,k,k,k,k,k,k,k,k),k)
 o=$.l9().a
 m=A.P(k,k,$.aM?B.y:B.w,k,k,k,k,k,j,k,k,30,k,k,B.x,k,k,!0,k,k,k,k,k,k,k,k)
 l=t.p
-r=A.cl(A.bb(A.a([q,p,new A.uN(m,new A.a0D(),o,k),new A.I(B.DF,A.a1("See you October 4th",k,A.P(k,k,$.A?B.d:B.f,k,k,k,k,k,j,k,k,14,k,k,k,k,k,!0,k,k,k,k,k,k,k,k),k),k),A.eo("assets/leaf.svg",100,100)],l),B.l,B.S,B.k),k,r)
-q=$.A?B.d:B.f
+r=A.cl(A.bb(A.a([q,p,new A.uN(m,new A.a0D(),o,k),new A.I(B.DF,A.a1("See you October 4th",k,A.P(k,k,$.B?B.d:B.f,k,k,k,k,k,j,k,k,14,k,k,k,k,k,!0,k,k,k,k,k,k,k,k),k),k),A.eo("assets/leaf.svg",100,100)],l),B.l,B.S,B.k),k,r)
+q=$.B?B.d:B.f
 p=A.a([new A.fc(1,B.bF,A.ai(B.e.aF(178.5),158,158,158),B.JC,3)],t.sq)
 o=this.a
 m=o.r
 m===$&&A.b()
 o=A.ey(m,new A.a0E(o),k)
-return A.J(k,A.yE(B.bE,A.a([r,new A.I(B.aX,A.J(k,new A.I(B.ed,A.aF(A.a([new A.I(B.fV,o,k),A.a1("Check out Archive while you wait!",k,A.P(k,k,$.A?B.f:B.d,k,k,k,k,k,j,k,k,16,k,k,k,k,k,!0,k,k,k,k,k,k,k,k),k)],l),B.l,B.S,B.k),k),B.h,k,k,new A.an(q,k,k,B.bG,p,k,B.n),k,k,k,k,k,k,300),k)],l),B.dO),B.h,s,k,k,k,k,k,k,k,k,k)},
+return A.J(k,A.yE(B.bE,A.a([r,new A.I(B.aX,A.J(k,new A.I(B.ed,A.aF(A.a([new A.I(B.fV,o,k),A.a1("Check out Archive while you wait!",k,A.P(k,k,$.B?B.f:B.d,k,k,k,k,k,j,k,k,16,k,k,k,k,k,!0,k,k,k,k,k,k,k,k),k)],l),B.l,B.S,B.k),k),B.h,k,k,new A.an(q,k,k,B.bG,p,k,B.n),k,k,k,k,k,k,300),k)],l),B.dO),B.h,s,k,k,k,k,k,k,k,k,k)},
 $S:74}
 A.a0D.prototype={
 $0(){window.location.reload()},
@@ -39535,7 +39535,7 @@ $2(a,b){var s,r=this.a.w
 r===$&&A.b()
 s=r.a
 s=r.b.S(0,s.gm(s))
-return A.amq(A.dN(B.Ev,$.A?B.f:B.d,24),new A.p(0,s))},
+return A.amq(A.dN(B.Ev,$.B?B.f:B.d,24),new A.p(0,s))},
 $S:27}
 A.A4.prototype={
 bW(){this.dc()
@@ -39715,21 +39715,21 @@ o===$&&A.b()
 return A.ey(o,new A.agf(l,n,b,m,p,q-r),null)},
 $S:354}
 A.agf.prototype={
-$2(a2,a3){var s,r,q,p,o,n,m,l=this,k=null,j="CANUCKLE",i="ClearSans",h="Statistics",g="www.ko-fi.com",f="canuckle",e=l.b,d=l.d?A.J(k,k,B.h,k,k,k,k,58,k,k,k,k,k):A.J(k,k,B.h,k,k,k,k,k,k,k,k,k,k),c=$.A,b=c?B.f:B.d,a=l.a,a0=a.cx,a1=a.cy
+$2(a2,a3){var s,r,q,p,o,n,m,l=this,k=null,j="CANUCKLE",i="ClearSans",h="Statistics",g="www.ko-fi.com",f="canuckle",e=l.b,d=l.d?A.J(k,k,B.h,k,k,k,k,58,k,k,k,k,k):A.J(k,k,B.h,k,k,k,k,k,k,k,k,k,k),c=$.B,b=c?B.f:B.d,a=l.a,a0=a.cx,a1=a.cy
 if(a0!=null){a0=A.a5(!0,A.bV(new A.I(B.nc,A.dN(B.nA,c?B.d:B.f,26),k),!1,a1,new A.ag0(),new A.ag1(a),new A.ag2(a),!1),!1,k,!1,!1,k,k,k,k,"Menu",k,k,k,k,k,k,k,k,k,k,k,k,k)
 a1=a.db
 a1=A.a5(!0,A.bV(new A.I(B.am,A.dN(B.nB,c?B.d:B.f,26),k),!1,a1,new A.ag7(),new A.ag8(a),new A.ag9(a),!1),!1,k,!1,!1,k,k,k,k,"Go back to archive list",k,k,k,k,k,k,k,k,k,k,k,k,k)
 c=a1
 c=A.aF(A.a([a0,c],t.p),B.l,B.o,B.k)}else{a0=A.a5(!0,A.bV(new A.I(B.nc,A.dN(B.nA,c?B.d:B.f,26),k),!1,a1,new A.aga(),new A.agb(a),new A.agc(a),!1),!1,k,!1,!1,k,k,k,k,"Menu",k,k,k,k,k,k,k,k,k,k,k,k,k)
 c=a0}a0=a.CW
-if(a0===B.bS&&a.cx==null)a0=A.a5(k,new A.eY(!0,A.a1(j,k,A.P(k,k,$.A?B.d:B.f,k,k,k,k,k,i,k,k,25,k,k,B.x,k,k,!0,k,k,k,k,k,k,k,k),k),k),!1,k,!1,!1,k,k,!0,k,"Canuckle",k,k,k,k,k,k,k,k,k,k,k,k,k)
+if(a0===B.bS&&a.cx==null)a0=A.a5(k,new A.eY(!0,A.a1(j,k,A.P(k,k,$.B?B.d:B.f,k,k,k,k,k,i,k,k,25,k,k,B.x,k,k,!0,k,k,k,k,k,k,k,k),k),k),!1,k,!1,!1,k,k,!0,k,"Canuckle",k,k,k,k,k,k,k,k,k,k,k,k,k)
 else{a0=a0===B.hd?"Canuckle Trivia":"Canuckle Archive"
-a1=A.cl(A.a1(j,k,A.P(k,k,$.A?B.d:B.f,k,k,k,k,k,i,k,k,25,k,k,B.x,k,k,!0,k,k,k,k,k,k,k,k),k),27,k)
+a1=A.cl(A.a1(j,k,A.P(k,k,$.B?B.d:B.f,k,k,k,k,k,i,k,k,25,k,k,B.x,k,k,!0,k,k,k,k,k,k,k,k),k),27,k)
 s=a.CW===B.hd?"TRIVIA":"ARCHIVE"+l.e
-a0=A.a5(k,new A.eY(!0,A.bb(A.a([a1,A.a1(s,k,A.P(k,k,$.A?B.d:B.f,k,k,k,k,k,i,k,k,14,k,k,B.x,k,k,!0,k,k,k,k,k,k,k,k),k)],t.p),B.l,B.o,B.k),k),!1,k,!1,!1,k,k,!0,k,a0,k,k,k,k,k,k,k,k,k,k,k,k,k)}a1=a.cx
+a0=A.a5(k,new A.eY(!0,A.bb(A.a([a1,A.a1(s,k,A.P(k,k,$.B?B.d:B.f,k,k,k,k,k,i,k,k,14,k,k,B.x,k,k,!0,k,k,k,k,k,k,k,k),k)],t.p),B.l,B.o,B.k),k),!1,k,!1,!1,k,k,!0,k,a0,k,k,k,k,k,k,k,k,k,k,k,k,k)}a1=a.cx
 s=a.dx
 if(a1!=null){a1=A.J(k,k,B.h,k,k,k,k,k,k,k,k,k,55)
-a1=A.aF(A.a([a1,A.a5(!0,A.bV(new A.I(B.fV,A.dN(B.he,$.A?B.d:B.f,26),k),!1,s,new A.agd(),new A.age(a),new A.ag3(a),!1),!1,k,!1,!1,k,k,k,k,h,k,k,k,k,k,k,k,k,k,k,k,k,k)],t.p),B.l,B.o,B.k)}else a1=A.a5(!0,A.bV(new A.I(B.fV,A.dN(B.he,$.A?B.d:B.f,26),k),!1,s,new A.ag4(),new A.ag5(a),new A.ag6(a),!1),!1,k,!1,!1,k,k,k,k,h,k,k,k,k,k,k,k,k,k,k,k,k,k)
+a1=A.aF(A.a([a1,A.a5(!0,A.bV(new A.I(B.fV,A.dN(B.he,$.B?B.d:B.f,26),k),!1,s,new A.agd(),new A.age(a),new A.ag3(a),!1),!1,k,!1,!1,k,k,k,k,h,k,k,k,k,k,k,k,k,k,k,k,k,k)],t.p),B.l,B.o,B.k)}else a1=A.a5(!0,A.bV(new A.I(B.fV,A.dN(B.he,$.B?B.d:B.f,26),k),!1,s,new A.ag4(),new A.ag5(a),new A.ag6(a),!1),!1,k,!1,!1,k,k,k,k,h,k,k,k,k,k,k,k,k,k,k,k,k,k)
 s=t.p
 b=A.J(k,A.aF(A.a([c,a0,a1],s),B.l,B.by,B.k),B.h,b,k,k,k,50,k,k,k,k,k)
 c=a.CW
@@ -39895,25 +39895,25 @@ A.Gu.prototype={
 mM(a,b,c,d,e,f){var s,r,q,p=null,o="ClearSans",n=a==null?b:a
 if(n==null)n=B.EF
 s=t.p
-r=A.a([A.a1(c,p,A.P(p,p,$.A?B.d:B.f,p,p,p,p,p,o,p,p,20,p,p,B.x,p,p,!0,p,p,p,p,p,p,p,p),p)],s)
+r=A.a([A.a1(c,p,A.P(p,p,$.B?B.d:B.f,p,p,p,p,p,o,p,p,20,p,p,B.x,p,p,!0,p,p,p,p,p,p,p,p),p)],s)
 if(d!=null)r.push(A.a1(d,p,A.P(p,p,A.lf(),p,p,p,p,p,o,p,p,14,p,p,B.B,p,p,!0,p,p,p,p,p,p,p,p),p))
-q=$.A?B.f:B.d
+q=$.B?B.f:B.d
 return new A.I(e,A.J(p,new A.I(B.ct,A.aF(A.a([new A.I(B.E_,n,p),A.bb(r,B.aA,B.o,B.k)],s),B.l,B.o,B.k),p),B.h,p,p,new A.an(q,p,p,f,p,p,B.n),p,p,p,p,p,p,p),p)},
 T(a3){var s,r,q,p,o,n,m,l,k,j,i,h,g,f,e,d,c,b,a=this,a0=null,a1=t.w,a2=a3.X(a1).f.a.a<=920
 a1=a3.X(a1).f
 s=a2?58:0
 r=a1.a.b-s
 a1=a2?A.J(a0,a0,B.h,a0,a0,a0,a0,58,a0,a0,a0,a0,a0):A.J(a0,a0,B.h,a0,a0,a0,a0,a0,a0,a0,a0,a0,a0)
-s=$.A?B.bM:B.bP
+s=$.B?B.bM:B.bP
 q=A.a([new A.fc(1,B.bF,A.ai(B.e.aF(178.5),158,158,158),B.uc,3)],t.sq)
-p=$.A?B.f:B.d
+p=$.B?B.f:B.d
 o=A.bj(a3).RG.e
 if(o==null)o=a0
-else o=o.bI(A.P(a0,a0,$.A?B.d:B.f,a0,a0,a0,a0,a0,"ClearSans",a0,a0,25,a0,a0,B.x,a0,a0,!0,a0,a0,a0,a0,a0,a0,a0,a0))
+else o=o.bI(A.P(a0,a0,$.B?B.d:B.f,a0,a0,a0,a0,a0,"ClearSans",a0,a0,25,a0,a0,B.x,a0,a0,!0,a0,a0,a0,a0,a0,a0,a0,a0))
 o=A.a5(a0,new A.I(B.DT,A.a1("MENU",a0,o,a0),a0),!1,a0,!0,!1,a0,a0,!0,a0,"Menu",a0,a0,a0,a0,a0,a0,a0,a0,a0,a0,a0,a0,a0)
 n=a.f
 m=t.p
-p=A.J(a0,A.aF(A.a([o,A.a5(!0,A.bV(new A.I(B.cs,A.dN(B.cA,$.A?B.d:B.f,26),a0),!1,n,new A.a1t(),new A.a1u(a),new A.a1v(a),!1),!1,a0,!0,!1,a0,a0,a0,a0,"Close Menu",a0,a0,a0,a0,a0,a0,a0,a0,a0,a0,a0,a0,a0)],m),B.l,B.by,B.k),B.h,a0,a0,new A.an(p,a0,a0,B.bo,a0,a0,B.n),a0,50,a0,a0,a0,a0,a0)
+p=A.J(a0,A.aF(A.a([o,A.a5(!0,A.bV(new A.I(B.cs,A.dN(B.cA,$.B?B.d:B.f,26),a0),!1,n,new A.a1t(),new A.a1u(a),new A.a1v(a),!1),!1,a0,!0,!1,a0,a0,a0,a0,"Close Menu",a0,a0,a0,a0,a0,a0,a0,a0,a0,a0,a0,a0,a0)],m),B.l,B.by,B.k),B.h,a0,a0,new A.an(p,a0,a0,B.bo,a0,a0,B.n),a0,50,a0,a0,a0,a0,a0)
 n=A.J(a0,a0,B.h,a0,a0,a0,a0,20,a0,a0,a0,a0,a0)
 o=a.d
 l=a.e
@@ -39927,17 +39927,17 @@ j=A.a5(!0,new A.eY(!0,A.bV(a.mM(a0,A.eo("assets/archive.svg",30,30),"ARCHIVE","P
 i=A.J(a0,a0,B.h,a0,a0,a0,a0,20,a0,a0,a0,a0,a0)
 h=a.d
 g=a.e
-h=A.a5(!0,new A.eY(!0,A.bV(a.mM(A.dN(B.he,$.A?B.d:B.f,30),a0,"STATISTICS",a0,B.b7,B.bo),g===3,h===3,new A.a1M(a),new A.a1N(a),new A.a1w(a),!0),a0),!1,a0,!1,!1,a0,a0,a0,a0,"Statistics",a0,a0,a0,a0,a0,a0,a0,a0,a0,a0,a0,a0,a0)
+h=A.a5(!0,new A.eY(!0,A.bV(a.mM(A.dN(B.he,$.B?B.d:B.f,30),a0,"STATISTICS",a0,B.b7,B.bo),g===3,h===3,new A.a1M(a),new A.a1N(a),new A.a1w(a),!0),a0),!1,a0,!1,!1,a0,a0,a0,a0,"Statistics",a0,a0,a0,a0,a0,a0,a0,a0,a0,a0,a0,a0,a0)
 g=A.lf()
 g=A.J(a0,a0,B.h,A.ai(k,g.gm(g)>>>16&255,g.gm(g)>>>8&255,g.gm(g)&255),a0,a0,a0,0.5,a0,a0,a0,a0,a0)
 f=a.d
 e=a.e
-f=A.a5(!0,new A.eY(!0,A.bV(a.mM(A.dN(B.Ey,$.A?B.d:B.f,30),a0,"SETTINGS",a0,B.b7,B.ax),e===4,f===4,new A.a1x(a),new A.a1y(a),new A.a1z(a),!0),a0),!1,a0,!1,!1,a0,a0,a0,a0,"Settings",a0,a0,a0,a0,a0,a0,a0,a0,a0,a0,a0,a0,a0)
+f=A.a5(!0,new A.eY(!0,A.bV(a.mM(A.dN(B.Ey,$.B?B.d:B.f,30),a0,"SETTINGS",a0,B.b7,B.ax),e===4,f===4,new A.a1x(a),new A.a1y(a),new A.a1z(a),!0),a0),!1,a0,!1,!1,a0,a0,a0,a0,"Settings",a0,a0,a0,a0,a0,a0,a0,a0,a0,a0,a0,a0,a0)
 e=A.lf()
 e=A.J(a0,a0,B.h,A.ai(k,e.gm(e)>>>16&255,e.gm(e)>>>8&255,e.gm(e)&255),a0,a0,a0,0.5,a0,a0,a0,a0,a0)
 d=a.d
 c=a.e
-d=A.a5(!0,new A.eY(!0,A.bV(a.mM(A.dN(B.nz,$.A?B.d:B.f,30),a0,"HOW TO PLAY",a0,B.b7,B.ax),c===5,d===5,new A.a1A(a),new A.a1B(a),new A.a1C(a),!0),a0),!1,a0,!1,!1,a0,a0,a0,a0,"How to play",a0,a0,a0,a0,a0,a0,a0,a0,a0,a0,a0,a0,a0)
+d=A.a5(!0,new A.eY(!0,A.bV(a.mM(A.dN(B.nz,$.B?B.d:B.f,30),a0,"HOW TO PLAY",a0,B.b7,B.ax),c===5,d===5,new A.a1A(a),new A.a1B(a),new A.a1C(a),!0),a0),!1,a0,!1,!1,a0,a0,a0,a0,"How to play",a0,a0,a0,a0,a0,a0,a0,a0,a0,a0,a0,a0,a0)
 c=A.lf()
 c=A.J(a0,a0,B.h,A.ai(k,c.gm(c)>>>16&255,c.gm(c)>>>8&255,c.gm(c)&255),a0,a0,a0,0.5,a0,a0,a0,a0,a0)
 k=a.d
@@ -40243,19 +40243,19 @@ return new A.I(B.fX,A.J(s,s,B.h,A.ai(128,158,158,158),s,s,s,0.5,s,s,s,s,s),s)},
 a34(a){A.bZ().a1(0,new A.a6V(this,a),t.P)},
 a_x(a6){var s,r,q,p,o,n,m,l,k,j,i,h,g,f,e,d,c,b,a,a0=this,a1=null,a2="ClearSans",a3=t.N,a4=A.fw(a1,"info@canucklegame.ca",a0.a3w(A.ay(["subject","Feedback"],a3,a3)),"mailto"),a5=A.fw("twitter.com","CanuckleGame",a1,"https")
 a3=$.f_
-s=$.A
+s=$.B
 r=s?B.f:B.d
 q=t.p
 p=A.bb(A.a([new A.I(B.na,A.a1("Hard Mode",a1,A.P(a1,a1,s?B.d:B.f,a1,a1,a1,a1,a1,a2,a1,a1,17,a1,a1,a1,a1,a1,!0,a1,a1,a1,a1,a1,a1,a1,a1),a1),a1),new A.I(B.n8,A.a1("Any revealed hints must be used in subsequent guesses",a1,A.P(a1,a1,B.cp,a1,a1,a1,a1,a1,a2,a1,a1,11,a1,a1,a1,a1,a1,!0,a1,a1,a1,a1,a1,a1,a1,a1),a1),a1)],q),B.aA,B.o,B.k)
 s=($.aM?B.y:B.w).a
 o=A.a5(a1,A.iL(a1,new A.I(B.DM,A.J(a1,A.aF(A.a([new A.qt(1,B.np,p,a1),new A.I(B.n9,A.amh(B.d,A.ai(127,s>>>16&255,s>>>8&255,s&255),B.cp,new A.a6H(a0),$.f_),a1)],q),B.l,B.by,B.k),B.h,a1,a1,new A.an(r,a1,a1,B.lV,a1,a1,B.n),a1,a1,a1,a1,a1,a1,a1),a1),B.aa,!1,a1,a1,a1,a1,a1,a1,a1,a1,new A.a6I(a0),a1,a1,a1),!1,a1,!0,!1,a1,a1,a1,a1,"Hard mode, any revealed hints must be used in subsequent guesses",a1,a1,a1,a1,a1,a1,new A.a6J(a0),a1,a1,a1,a1,a3,a1)
-a3=$.A
+a3=$.B
 s=a3?B.f:B.d
 r=A.a1("Dark Theme",a1,A.P(a1,a1,a3?B.d:B.f,a1,a1,a1,a1,a1,a2,a1,a1,17,a1,a1,a1,a1,a1,!0,a1,a1,a1,a1,a1,a1,a1,a1),a1)
 p=($.aM?B.y:B.w).a
-n=A.a5(a1,A.iL(a1,new A.I(B.fX,A.J(a1,A.aF(A.a([new A.I(B.nb,r,a1),new A.I(B.nb,A.amh(B.d,A.ai(127,p>>>16&255,p>>>8&255,p&255),B.cp,new A.a6N(a0),$.A),a1)],q),B.l,B.by,B.k),B.h,a1,a1,new A.an(s,a1,a1,a1,a1,a1,B.n),a1,a1,a1,a1,a1,a1,a1),a1),B.aa,!1,a1,a1,a1,a1,a1,a1,a1,a1,new A.a6O(a0),a1,a1,a1),!1,a1,!0,!1,a1,a1,a1,a1,"Dark theme",a1,a1,a1,a1,a1,a1,new A.a6P(a0),a1,a1,a1,a1,a3,a1)
+n=A.a5(a1,A.iL(a1,new A.I(B.fX,A.J(a1,A.aF(A.a([new A.I(B.nb,r,a1),new A.I(B.nb,A.amh(B.d,A.ai(127,p>>>16&255,p>>>8&255,p&255),B.cp,new A.a6N(a0),$.B),a1)],q),B.l,B.by,B.k),B.h,a1,a1,new A.an(s,a1,a1,a1,a1,a1,B.n),a1,a1,a1,a1,a1,a1,a1),a1),B.aa,!1,a1,a1,a1,a1,a1,a1,a1,a1,new A.a6O(a0),a1,a1,a1),!1,a1,!0,!1,a1,a1,a1,a1,"Dark theme",a1,a1,a1,a1,a1,a1,new A.a6P(a0),a1,a1,a1,a1,a3,a1)
 a3=$.aM
-s=$.A
+s=$.B
 r=s?B.f:B.d
 p=A.bb(A.a([new A.I(B.na,A.a1("High Contrast Mode",a1,A.P(a1,a1,s?B.d:B.f,a1,a1,a1,a1,a1,a2,a1,a1,17,a1,a1,a1,a1,a1,!0,a1,a1,a1,a1,a1,a1,a1,a1),a1),a1),new A.I(B.n8,A.a1("For improved colour vision",a1,A.P(a1,a1,B.cp,a1,a1,a1,a1,a1,a2,a1,a1,11,a1,a1,a1,a1,a1,!0,a1,a1,a1,a1,a1,a1,a1,a1),a1),a1)],q),B.aA,B.o,B.k)
 s=$.aM
@@ -40271,29 +40271,29 @@ r=k?58:0
 p=k?A.J(a1,a1,B.h,a1,a1,a1,a1,58,a1,a1,a1,a1,a1):A.J(a1,a1,B.h,a1,a1,a1,a1,a1,a1,a1,a1,a1,a1)
 a3=Math.min(500,a6.X(a3).f.a.a)
 m=A.pP()
-i=$.A
+i=$.B
 h=A.cm(i?B.d:B.f,1)
 i=i?B.f:B.d
 g=A.J(a1,a1,B.h,a1,a1,a1,a1,a1,a1,a1,a1,a1,46)
 f=A.bj(a6).RG.e
 if(f==null)f=a1
-else f=f.bI(A.P(a1,a1,$.A?B.d:B.f,a1,a1,a1,a1,a1,a2,a1,a1,25,a1,a1,B.x,a1,a1,!0,a1,a1,a1,a1,a1,a1,a1,a1))
+else f=f.bI(A.P(a1,a1,$.B?B.d:B.f,a1,a1,a1,a1,a1,a2,a1,a1,25,a1,a1,B.x,a1,a1,!0,a1,a1,a1,a1,a1,a1,a1,a1))
 f=A.a5(a1,A.a1("SETTINGS",a1,f,a1),!1,a1,!0,!1,a1,a1,!0,a1,"Settings",a1,a1,a1,a1,a1,a1,a1,a1,a1,a1,a1,a1,a1)
 e=a0.aJ
-i=A.J(a1,A.aF(A.a([g,f,A.a5(!0,A.bV(new A.I(B.cs,A.dN(B.cA,$.A?B.d:B.f,26),a1),!1,e,new A.a6T(),new A.a6U(a0),new A.a6K(a0,a6),!1),!1,a1,!0,!1,a1,a1,a1,a1,"Close settings",a1,a1,a1,a1,a1,a1,a1,a1,a1,a1,a1,a1,a1)],q),B.l,B.by,B.k),B.h,a1,a1,new A.an(i,a1,a1,B.bo,a1,a1,B.n),a1,50,a1,a1,a1,a1,a1)
+i=A.J(a1,A.aF(A.a([g,f,A.a5(!0,A.bV(new A.I(B.cs,A.dN(B.cA,$.B?B.d:B.f,26),a1),!1,e,new A.a6T(),new A.a6U(a0),new A.a6K(a0,a6),!1),!1,a1,!0,!1,a1,a1,a1,a1,"Close settings",a1,a1,a1,a1,a1,a1,a1,a1,a1,a1,a1,a1,a1)],q),B.l,B.by,B.k),B.h,a1,a1,new A.an(i,a1,a1,B.bo,a1,a1,B.n),a1,50,a1,a1,a1,a1,a1)
 g=a0.vC()
 f=a0.vC()
 e=A.a5(a1,new A.I(B.DU,A.a1("FEEDBACK",a1,A.P(a1,a1,A.lf(),a1,a1,a1,a1,a1,a2,a1,a1,a1,a1,a1,a1,a1,a1,!0,a1,a1,a1,a1,a1,a1,a1,a1),a1),a1),!1,a1,!0,!1,a1,a1,!0,a1,"Feedback",a1,a1,a1,a1,a1,a1,a1,a1,a1,a1,a1,a1,a1)
-d=$.A
+d=$.B
 c=d?B.f:B.d
 b=A.dN(B.Ew,$.aM?B.y:B.w,a1)
 c=A.a5(!0,new A.I(B.DO,A.iL(a1,A.J(a1,new A.I(B.d9,A.aF(A.a([b,new A.I(B.n6,A.a1("Email",a1,A.P(a1,a1,d?B.d:B.f,a1,a1,a1,a1,a1,a2,a1,a1,a1,a1,a1,a1,a1,a1,!0,a1,a1,a1,a1,a1,a1,a1,a1),a1),a1)],q),B.l,B.o,B.k),a1),B.h,a1,a1,new A.an(c,a1,a1,B.lV,a1,a1,B.n),a1,a1,a1,a1,a1,a1,a1),B.aa,!1,a1,a1,a1,a1,a1,a1,a1,a1,new A.a6L(a4),a1,a1,a1),a1),!1,a1,!0,!1,a1,a1,a1,a1,"Email Canuckle",!0,a1,a1,a1,a1,a1,a1,a1,a1,a1,a1,a1,a1)
 b=a0.vC()
-d=$.A?B.f:B.d
+d=$.B?B.f:B.d
 a=A.eo("assets/twitter.svg",22,22)
-d=A.a5(!0,new A.I(B.fY,A.iL(a1,A.J(a1,new A.I(B.d9,A.aF(A.a([a,new A.I(B.n6,A.a1("Twitter",a1,A.P(a1,a1,$.A?B.d:B.f,a1,a1,a1,a1,a1,a2,a1,a1,a1,a1,a1,a1,a1,a1,!0,a1,a1,a1,a1,a1,a1,a1,a1),a1),a1)],q),B.l,B.o,B.k),a1),B.h,a1,a1,new A.an(d,a1,a1,B.lW,a1,a1,B.n),a1,a1,a1,a1,a1,a1,a1),B.aa,!1,a1,a1,a1,a1,a1,a1,a1,a1,new A.a6M(a5),a1,a1,a1),a1),!1,a1,!0,!1,a1,a1,a1,a1,"Canuckle Twitter",!0,a1,a1,a1,a1,a1,a1,a1,a1,a1,a1,a1,a1)
-a="Version 1.2.1"+$.apw+"\n\n\xa9 Canuckle Games 2022"
-return A.bl(A.cl(A.bb(A.a([p,A.J(a1,A.bb(A.a([i,A.cl(A.rz(A.bb(A.a([o,g,n,f,l,e,c,b,d,A.a5(a1,new A.I(B.fY,A.a1(a,a1,A.P(a1,a1,$.A?B.d:B.f,a1,a1,a1,a1,a1,a2,a1,a1,a1,a1,a1,a1,a1,a1,!0,a1,a1,a1,a1,a1,a1,a1,a1),a1),a1),!1,a1,!0,!1,a1,a1,!0,a1,a,a1,a1,a1,a1,a1,a1,a1,a1,a1,a1,a1,a1,a1)],q),B.aA,B.o,B.k),a1,B.aw),j-52,a1)],q),B.l,B.o,B.k),B.h,a1,a1,new A.an(m,a1,h,B.bG,a1,a1,B.n),a1,j,a1,a1,a1,a1,a3)],q),B.l,B.o,B.k),j+r,s),a1,a1)},
+d=A.a5(!0,new A.I(B.fY,A.iL(a1,A.J(a1,new A.I(B.d9,A.aF(A.a([a,new A.I(B.n6,A.a1("Twitter",a1,A.P(a1,a1,$.B?B.d:B.f,a1,a1,a1,a1,a1,a2,a1,a1,a1,a1,a1,a1,a1,a1,!0,a1,a1,a1,a1,a1,a1,a1,a1),a1),a1)],q),B.l,B.o,B.k),a1),B.h,a1,a1,new A.an(d,a1,a1,B.lW,a1,a1,B.n),a1,a1,a1,a1,a1,a1,a1),B.aa,!1,a1,a1,a1,a1,a1,a1,a1,a1,new A.a6M(a5),a1,a1,a1),a1),!1,a1,!0,!1,a1,a1,a1,a1,"Canuckle Twitter",!0,a1,a1,a1,a1,a1,a1,a1,a1,a1,a1,a1,a1)
+a="Version 1.2.2"+$.apw+"\n\n\xa9 Canuckle Games 2022"
+return A.bl(A.cl(A.bb(A.a([p,A.J(a1,A.bb(A.a([i,A.cl(A.rz(A.bb(A.a([o,g,n,f,l,e,c,b,d,A.a5(a1,new A.I(B.fY,A.a1(a,a1,A.P(a1,a1,$.B?B.d:B.f,a1,a1,a1,a1,a1,a2,a1,a1,a1,a1,a1,a1,a1,a1,!0,a1,a1,a1,a1,a1,a1,a1,a1),a1),a1),!1,a1,!0,!1,a1,a1,!0,a1,a,a1,a1,a1,a1,a1,a1,a1,a1,a1,a1,a1,a1,a1)],q),B.aA,B.o,B.k),a1,B.aw),j-52,a1)],q),B.l,B.o,B.k),B.h,a1,a1,new A.an(m,a1,h,B.bG,a1,a1,B.n),a1,j,a1,a1,a1,a1,a3)],q),B.l,B.o,B.k),j+r,s),a1,a1)},
 js(a,b,c,d){return A.k4(A.md(d,b),b)}}
 A.a6W.prototype={
 $1(a){return A.mT(B.eA,a.a,B.K,!1)+"="+A.mT(B.eA,a.b,B.K,!1)},
@@ -40302,7 +40302,7 @@ A.a6V.prototype={
 $1(a){var s=a.a,r=J.af(s),q=A.e_(r.h(s,"isHardMode"))
 $.f_=q===!0
 q=A.e_(r.h(s,"isDarkMode"))
-$.A=q===!0
+$.B=q===!0
 s=A.e_(r.h(s,"isHighContrast"))
 $.aM=s===!0
 this.a.av.u(0,"REFRESH")
@@ -40333,23 +40333,23 @@ A.a6G.prototype={
 $1(a){return a.bp("Bool","isHardMode",this.a)},
 $S:23}
 A.a6P.prototype={
-$0(){$.A=!$.A
+$0(){$.B=!$.B
 A.bZ().a1(0,new A.a6B(),t.y)
 this.a.az()},
 $S:0}
 A.a6B.prototype={
-$1(a){return a.bp("Bool","isDarkMode",$.A)},
+$1(a){return a.bp("Bool","isDarkMode",$.B)},
 $S:23}
 A.a6O.prototype={
-$0(){$.A=!$.A
+$0(){$.B=!$.B
 A.bZ().a1(0,new A.a6C(),t.y)
 this.a.az()},
 $S:0}
 A.a6C.prototype={
-$1(a){return a.bp("Bool","isDarkMode",$.A)},
+$1(a){return a.bp("Bool","isDarkMode",$.B)},
 $S:23}
 A.a6N.prototype={
-$1(a){$.A=a
+$1(a){$.B=a
 A.bZ().a1(0,new A.a6D(a),t.y)
 this.a.az()},
 $S:7}
@@ -40445,7 +40445,7 @@ c4=A.jc(A.ja(a0),A.e7(a0),A.j9(a0)+1,0,0,0,0,!1)
 if(!A.eb(c4))A.T(A.eu(c4))
 c5=s?58:0
 c8=s?A.J(c1,c1,B.h,c1,c1,c1,c1,58,c1,c1,c1,c1,c1):A.J(c1,c1,B.h,c1,c1,c1,c1,c1,c1,c1,c1,c1,c1)
-q=$.A
+q=$.B
 a1=q?B.f:B.d
 a2=A.cm(q?B.d:B.f,1)
 a3=q?B.f:B.d
@@ -40456,93 +40456,93 @@ q=!c0.av
 if(q)c9=A.J(c1,c1,B.h,A.ai(0,158,158,158),c1,c1,c1,0.5,c1,c1,c1,c1,c1)
 else{c9=Math.min(500,d5.X(c9).f.a.a)
 a4=A.alk(A.hO(c0.al))
-c9=A.cl(A.a5(c1,A.bb(A.a([new A.I(B.fW,A.am7("FUN FACT",A.P(c1,c1,$.A?B.d:B.f,c1,c1,c1,c1,c1,c3,c1,c1,20,c1,c1,B.x,c1,c1,!0,c1,c1,c1,c1,c1,c1,c1,c1)),c1),A.J(c1,new A.I(B.aX,c0.aJ,c1),B.h,c1,c1,new A.an(A.pP(),c1,c1,B.d_,c1,c1,B.n),c1,c1,c1,c1,c1,c1,c1)],a5),B.l,B.o,B.k),!1,c1,!0,!1,c1,c1,!0,c1,"Fun Fact, "+a4,c1,c1,c1,c1,c1,c1,c1,c1,c1,c1,c1,c1,c1),c1,c9-50)}a4=c0.aw
+c9=A.cl(A.a5(c1,A.bb(A.a([new A.I(B.fW,A.am7("FUN FACT",A.P(c1,c1,$.B?B.d:B.f,c1,c1,c1,c1,c1,c3,c1,c1,20,c1,c1,B.x,c1,c1,!0,c1,c1,c1,c1,c1,c1,c1,c1)),c1),A.J(c1,new A.I(B.aX,c0.aJ,c1),B.h,c1,c1,new A.an(A.pP(),c1,c1,B.d_,c1,c1,B.n),c1,c1,c1,c1,c1,c1,c1)],a5),B.l,B.o,B.k),!1,c1,!0,!1,c1,c1,!0,c1,"Fun Fact, "+a4,c1,c1,c1,c1,c1,c1,c1,c1,c1,c1,c1,c1,c1),c1,c9-50)}a4=c0.aw
 a4=A.a5(!0,A.bV(new A.I(B.bR,A.eo("assets/twitter.svg",40,40),c1),!1,a4===0,new A.a8T(),new A.a8U(c0),new A.a8V(c0,d3),!1),!1,c1,!0,!1,c1,c1,c1,c1,"Canuckle Twitter",c1,c1,c1,c1,c1,c1,c1,c1,c1,c1,c1,c1,c1)
 a6=c0.aw
 a6=A.aF(A.a([a4,A.a5(!0,A.bV(new A.I(B.bR,A.eo("assets/facebook.svg",40,40),c1),!1,a6===1,new A.a8W(),new A.a8X(c0),new A.a8Y(c0,d2),!1),!1,c1,!0,!1,c1,c1,c1,c1,"Canuckle Facebook",c1,c1,c1,c1,c1,c1,c1,c1,c1,c1,c1,c1,c1)],a5),B.l,B.S,B.k)
-a4=A.a1("If you enjoyed this game:",c1,A.P(c1,c1,$.A?B.d:B.f,c1,c1,c1,c1,c1,c3,c1,c1,c1,c1,c1,c1,c1,c1,!0,c1,c1,c1,c1,c1,c1,c1,c1),c1)
+a4=A.a1("If you enjoyed this game:",c1,A.P(c1,c1,$.B?B.d:B.f,c1,c1,c1,c1,c1,c3,c1,c1,c1,c1,c1,c1,c1,c1,!0,c1,c1,c1,c1,c1,c1,c1,c1),c1)
 a7=c0.aw
 a7=A.a5(!0,A.bV(A.J(c1,new A.I(B.cw,A.aF(A.a([new A.I(B.cv,A.eo("assets/kofi.svg",20,20),c1),B.lo,new A.I(B.cv,A.eo("assets/leaf.svg",25,25),c1)],a5),B.l,B.S,B.k),c1),B.h,c1,c1,new A.an(B.fK,c1,c1,B.E,c1,c1,B.n),c1,c1,c1,c1,c1,c1,325),!1,a7===2,new A.a8Z(),new A.a9_(c0),new A.a8P(c0,d4),!1),!1,c1,!0,!1,c1,c1,c1,c1,"Buy Canuckle a coffee",c1,c1,c1,c1,c1,c1,c1,c1,c1,c1,c1,c1,c1)
 if(q)q=A.J(c1,c1,B.h,A.ai(0,158,158,158),c1,c1,c1,0.5,c1,c1,c1,c1,c1)
 else{q=c0.aw
 a8=$.aM?B.y:B.w
 q=A.a5(!0,A.bV(new A.I(B.n5,A.J(c1,new A.I(B.cw,A.aF(B.hs,B.l,B.S,B.k),c1),B.h,c1,c1,new A.an(a8,c1,c1,B.E,c1,c1,B.n),c1,c1,c1,c1,c1,c1,325),c1),!1,q===3,new A.a8Q(),new A.a8R(c0),new A.a8S(c0,new A.a91(d5),d5),!1),!1,c1,!0,!1,c1,c1,c1,c1,"Share result",c1,c1,c1,c1,c1,c1,c1,c1,c1,c1,c1,c1,c1)}a8=A.f(new A.a90().$1(c4))
-a9=A.a1("Next Canuckle:",c1,A.P(c1,c1,$.A?B.d:B.f,c1,c1,c1,c1,c1,c3,c1,c1,c1,c1,c1,c1,c1,c1,!0,c1,c1,c1,c1,c1,c1,c1,c1),c1)
+a9=A.a1("Next Canuckle:",c1,A.P(c1,c1,$.B?B.d:B.f,c1,c1,c1,c1,c1,c3,c1,c1,c1,c1,c1,c1,c1,c1,!0,c1,c1,c1,c1,c1,c1,c1,c1),c1)
 c4=A.a5(c1,new A.I(B.ed,A.bb(A.a([a9,A.aoV(c4,A.P(c1,c1,$.aM?B.y:B.w,c1,c1,c1,c1,c1,c3,c1,c1,30,c1,c1,B.x,c1,c1,!0,c1,c1,c1,c1,c1,c1,c1,c1))],a5),B.l,B.o,B.k),c1),!1,c1,!0,!1,c1,c1,c1,c1,"Next Canuckle in "+a8,c1,c1,c1,c1,c1,c1,c1,c1,c1,c1,c1,c1,c1)
-a8=A.a5(c1,new A.I(B.aX,A.a1("STATISTICS",c1,A.P(c1,c1,$.A?B.d:B.f,c1,c1,c1,c1,c1,c3,c1,c1,20,c1,c1,B.x,c1,c1,!0,c1,c1,c1,c1,c1,c1,c1,c1),c1),c1),!1,c1,!0,!1,c1,c1,!0,c1,"Statistics",c1,c1,c1,c1,c1,c1,c1,c1,c1,c1,c1,c1,c1)
+a8=A.a5(c1,new A.I(B.aX,A.a1("STATISTICS",c1,A.P(c1,c1,$.B?B.d:B.f,c1,c1,c1,c1,c1,c3,c1,c1,20,c1,c1,B.x,c1,c1,!0,c1,c1,c1,c1,c1,c1,c1,c1),c1),c1),!1,c1,!0,!1,c1,c1,!0,c1,"Statistics",c1,c1,c1,c1,c1,c1,c1,c1,c1,c1,c1,c1,c1)
 a9=""+c6
-b0=A.a1(a9,c1,A.P(c1,c1,$.A?B.d:B.f,c1,c1,c1,c1,c1,c3,c1,c1,28,c1,c1,B.x,c1,c1,!0,c1,c1,c1,c1,c1,c1,c1,c1),c1)
-a9=A.a5(c1,A.bb(A.a([b0,A.a1("Played",c1,A.P(c1,c1,$.A?B.d:B.f,c1,c1,c1,c1,c1,c3,c1,c1,c1,c1,c1,c1,c1,c1,!0,c1,c1,c1,c1,c1,c1,c1,c1),c1)],a5),B.l,B.o,B.k),!1,c1,!0,!1,c1,c1,!0,c1,"Games Played, "+a9,c1,c1,c1,c1,c1,c1,c1,c1,c1,c1,c1,c1,c1)
+b0=A.a1(a9,c1,A.P(c1,c1,$.B?B.d:B.f,c1,c1,c1,c1,c1,c3,c1,c1,28,c1,c1,B.x,c1,c1,!0,c1,c1,c1,c1,c1,c1,c1,c1),c1)
+a9=A.a5(c1,A.bb(A.a([b0,A.a1("Played",c1,A.P(c1,c1,$.B?B.d:B.f,c1,c1,c1,c1,c1,c3,c1,c1,c1,c1,c1,c1,c1,c1,!0,c1,c1,c1,c1,c1,c1,c1,c1),c1)],a5),B.l,B.o,B.k),!1,c1,!0,!1,c1,c1,!0,c1,"Games Played, "+a9,c1,c1,c1,c1,c1,c1,c1,c1,c1,c1,c1,c1,c1)
 b0=""+d0
-b1=A.a1(b0,c1,A.P(c1,c1,$.A?B.d:B.f,c1,c1,c1,c1,c1,c3,c1,c1,28,c1,c1,B.x,c1,c1,!0,c1,c1,c1,c1,c1,c1,c1,c1),c1)
-b0=A.a5(c1,A.bb(A.a([b1,A.a1("Win %",c1,A.P(c1,c1,$.A?B.d:B.f,c1,c1,c1,c1,c1,c3,c1,c1,c1,c1,c1,c1,c1,c1,!0,c1,c1,c1,c1,c1,c1,c1,c1),c1)],a5),B.l,B.o,B.k),!1,c1,!0,!1,c1,c1,!0,c1,"Win percentage, "+b0,c1,c1,c1,c1,c1,c1,c1,c1,c1,c1,c1,c1,c1)
+b1=A.a1(b0,c1,A.P(c1,c1,$.B?B.d:B.f,c1,c1,c1,c1,c1,c3,c1,c1,28,c1,c1,B.x,c1,c1,!0,c1,c1,c1,c1,c1,c1,c1,c1),c1)
+b0=A.a5(c1,A.bb(A.a([b1,A.a1("Win %",c1,A.P(c1,c1,$.B?B.d:B.f,c1,c1,c1,c1,c1,c3,c1,c1,c1,c1,c1,c1,c1,c1,!0,c1,c1,c1,c1,c1,c1,c1,c1),c1)],a5),B.l,B.o,B.k),!1,c1,!0,!1,c1,c1,!0,c1,"Win percentage, "+b0,c1,c1,c1,c1,c1,c1,c1,c1,c1,c1,c1,c1,c1)
 b1=""+c0.cU
-b2=A.a1(b1,c1,A.P(c1,c1,$.A?B.d:B.f,c1,c1,c1,c1,c1,c3,c1,c1,28,c1,c1,B.x,c1,c1,!0,c1,c1,c1,c1,c1,c1,c1,c1),c1)
-b1=A.a5(c1,A.bb(A.a([b2,A.a1("Current\nStreak",c1,A.P(c1,c1,$.A?B.d:B.f,c1,c1,c1,c1,c1,c3,c1,c1,c1,c1,c1,c1,c1,c1,!0,c1,c1,c1,c1,c1,c1,c1,c1),B.ao)],a5),B.l,B.o,B.k),!1,c1,!0,!1,c1,c1,!0,c1,"Current streak, "+b1,c1,c1,c1,c1,c1,c1,c1,c1,c1,c1,c1,c1,c1)
+b2=A.a1(b1,c1,A.P(c1,c1,$.B?B.d:B.f,c1,c1,c1,c1,c1,c3,c1,c1,28,c1,c1,B.x,c1,c1,!0,c1,c1,c1,c1,c1,c1,c1,c1),c1)
+b1=A.a5(c1,A.bb(A.a([b2,A.a1("Current\nStreak",c1,A.P(c1,c1,$.B?B.d:B.f,c1,c1,c1,c1,c1,c3,c1,c1,c1,c1,c1,c1,c1,c1,!0,c1,c1,c1,c1,c1,c1,c1,c1),B.ao)],a5),B.l,B.o,B.k),!1,c1,!0,!1,c1,c1,!0,c1,"Current streak, "+b1,c1,c1,c1,c1,c1,c1,c1,c1,c1,c1,c1,c1,c1)
 b2=""+c0.C
-b3=A.a1(b2,c1,A.P(c1,c1,$.A?B.d:B.f,c1,c1,c1,c1,c1,c3,c1,c1,28,c1,c1,B.x,c1,c1,!0,c1,c1,c1,c1,c1,c1,c1,c1),c1)
-b2=A.a5(c1,A.bb(A.a([b3,A.a1("Max\nStreak",c1,A.P(c1,c1,$.A?B.d:B.f,c1,c1,c1,c1,c1,c3,c1,c1,c1,c1,c1,c1,c1,c1,!0,c1,c1,c1,c1,c1,c1,c1,c1),B.ao)],a5),B.l,B.o,B.k),!1,c1,!0,!1,c1,c1,!0,c1,"Max streak, "+b2,c1,c1,c1,c1,c1,c1,c1,c1,c1,c1,c1,c1,c1)
+b3=A.a1(b2,c1,A.P(c1,c1,$.B?B.d:B.f,c1,c1,c1,c1,c1,c3,c1,c1,28,c1,c1,B.x,c1,c1,!0,c1,c1,c1,c1,c1,c1,c1,c1),c1)
+b2=A.a5(c1,A.bb(A.a([b3,A.a1("Max\nStreak",c1,A.P(c1,c1,$.B?B.d:B.f,c1,c1,c1,c1,c1,c3,c1,c1,c1,c1,c1,c1,c1,c1,!0,c1,c1,c1,c1,c1,c1,c1,c1),B.ao)],a5),B.l,B.o,B.k),!1,c1,!0,!1,c1,c1,!0,c1,"Max streak, "+b2,c1,c1,c1,c1,c1,c1,c1,c1,c1,c1,c1,c1,c1)
 b3=B.e.W(d1,2)
 b4=B.e.W(d1,2)
-b4=A.a1(b4,c1,A.P(c1,c1,$.A?B.d:B.f,c1,c1,c1,c1,c1,c3,c1,c1,28,c1,c1,B.x,c1,c1,!0,c1,c1,c1,c1,c1,c1,c1,c1),c1)
-a9=A.aF(A.a([a9,b0,b1,b2,A.a5(c1,A.bb(A.a([b4,A.a1("Average\nGuesses",c1,A.P(c1,c1,$.A?B.d:B.f,c1,c1,c1,c1,c1,c3,c1,c1,c1,c1,c1,c1,c1,c1,!0,c1,c1,c1,c1,c1,c1,c1,c1),B.ao)],a5),B.l,B.o,B.k),!1,c1,!0,!1,c1,c1,!0,c1,"Average guesses, "+b3,c1,c1,c1,c1,c1,c1,c1,c1,c1,c1,c1,c1,c1)],a5),B.aA,B.hP,B.k)
+b4=A.a1(b4,c1,A.P(c1,c1,$.B?B.d:B.f,c1,c1,c1,c1,c1,c3,c1,c1,28,c1,c1,B.x,c1,c1,!0,c1,c1,c1,c1,c1,c1,c1,c1),c1)
+a9=A.aF(A.a([a9,b0,b1,b2,A.a5(c1,A.bb(A.a([b4,A.a1("Average\nGuesses",c1,A.P(c1,c1,$.B?B.d:B.f,c1,c1,c1,c1,c1,c3,c1,c1,c1,c1,c1,c1,c1,c1,!0,c1,c1,c1,c1,c1,c1,c1,c1),B.ao)],a5),B.l,B.o,B.k),!1,c1,!0,!1,c1,c1,!0,c1,"Average guesses, "+b3,c1,c1,c1,c1,c1,c1,c1,c1,c1,c1,c1,c1,c1)],a5),B.aA,B.hP,B.k)
 b0=""+o
-b1=$.A
+b1=$.B
 b2=A.cm(b1?B.d:B.f,1)
 b2=A.J(c1,A.bl(A.a1("1",c1,A.P(c1,c1,b1?B.d:B.f,c1,c1,c1,c1,c1,c3,c1,c1,12,c1,c1,c1,c1,c1,!0,c1,c1,c1,c1,c1,c1,c1,c1),c1),c1,c1),B.h,c1,c1,new A.an(c1,c1,b2,c1,c1,c1,B.n),c1,20,c1,c1,c1,c1,20)
 b1=c0.ee
 if(b1===1)b3=$.aM?B.y:B.w
 else b3=B.R
 b3=A.J(c1,c1,B.h,c1,c1,new A.an(b3,c1,c1,B.E,c1,c1,B.n),c1,20,c1,c1,c1,c1,g)
-b0=A.a5(c1,A.aF(A.a([b2,new A.I(B.U,b3,c1),A.a1(b0,c1,A.P(c1,c1,$.A?B.d:B.f,c1,c1,c1,c1,c1,c3,c1,c1,c1,c1,c1,c1,c1,c1,!0,c1,c1,c1,c1,c1,c1,c1,c1),c1)],a5),B.l,B.o,B.k),!1,c1,!0,!1,c1,c1,c1,c1,"Number of games solved in 1 guess, "+b0,c1,c1,c1,c1,c1,c1,c1,c1,c1,c1,c1,c1,c1)
+b0=A.a5(c1,A.aF(A.a([b2,new A.I(B.U,b3,c1),A.a1(b0,c1,A.P(c1,c1,$.B?B.d:B.f,c1,c1,c1,c1,c1,c3,c1,c1,c1,c1,c1,c1,c1,c1,!0,c1,c1,c1,c1,c1,c1,c1,c1),c1)],a5),B.l,B.o,B.k),!1,c1,!0,!1,c1,c1,c1,c1,"Number of games solved in 1 guess, "+b0,c1,c1,c1,c1,c1,c1,c1,c1,c1,c1,c1,c1,c1)
 b2=""+n
-b3=$.A
+b3=$.B
 b4=A.cm(b3?B.d:B.f,1)
 b4=A.J(c1,A.bl(A.a1("2",c1,A.P(c1,c1,b3?B.d:B.f,c1,c1,c1,c1,c1,c3,c1,c1,12,c1,c1,c1,c1,c1,!0,c1,c1,c1,c1,c1,c1,c1,c1),c1),c1,c1),B.h,c1,c1,new A.an(c1,c1,b4,c1,c1,c1,B.n),c1,20,c1,c1,c1,c1,20)
 if(b1===2)b3=$.aM?B.y:B.w
 else b3=B.R
 b3=A.J(c1,c1,B.h,c1,c1,new A.an(b3,c1,c1,B.E,c1,c1,B.n),c1,20,c1,c1,c1,c1,f)
-b2=A.a5(c1,A.aF(A.a([b4,new A.I(B.U,b3,c1),A.a1(b2,c1,A.P(c1,c1,$.A?B.d:B.f,c1,c1,c1,c1,c1,c3,c1,c1,c1,c1,c1,c1,c1,c1,!0,c1,c1,c1,c1,c1,c1,c1,c1),c1)],a5),B.l,B.o,B.k),!1,c1,!0,!1,c1,c1,c1,c1,"Number of games solved in 2 guesses, "+b2,c1,c1,c1,c1,c1,c1,c1,c1,c1,c1,c1,c1,c1)
+b2=A.a5(c1,A.aF(A.a([b4,new A.I(B.U,b3,c1),A.a1(b2,c1,A.P(c1,c1,$.B?B.d:B.f,c1,c1,c1,c1,c1,c3,c1,c1,c1,c1,c1,c1,c1,c1,!0,c1,c1,c1,c1,c1,c1,c1,c1),c1)],a5),B.l,B.o,B.k),!1,c1,!0,!1,c1,c1,c1,c1,"Number of games solved in 2 guesses, "+b2,c1,c1,c1,c1,c1,c1,c1,c1,c1,c1,c1,c1,c1)
 b3=""+m
-b4=$.A
+b4=$.B
 b5=A.cm(b4?B.d:B.f,1)
 b5=A.J(c1,A.bl(A.a1("3",c1,A.P(c1,c1,b4?B.d:B.f,c1,c1,c1,c1,c1,c3,c1,c1,12,c1,c1,c1,c1,c1,!0,c1,c1,c1,c1,c1,c1,c1,c1),c1),c1,c1),B.h,c1,c1,new A.an(c1,c1,b5,c1,c1,c1,B.n),c1,20,c1,c1,c1,c1,20)
 if(b1===3)b4=$.aM?B.y:B.w
 else b4=B.R
 b4=A.J(c1,c1,B.h,c1,c1,new A.an(b4,c1,c1,B.E,c1,c1,B.n),c1,20,c1,c1,c1,c1,e)
-b3=A.a5(c1,A.aF(A.a([b5,new A.I(B.U,b4,c1),A.a1(b3,c1,A.P(c1,c1,$.A?B.d:B.f,c1,c1,c1,c1,c1,c3,c1,c1,c1,c1,c1,c1,c1,c1,!0,c1,c1,c1,c1,c1,c1,c1,c1),c1)],a5),B.l,B.o,B.k),!1,c1,!0,!1,c1,c1,c1,c1,"Number of games solved in 3 guesses, "+b3,c1,c1,c1,c1,c1,c1,c1,c1,c1,c1,c1,c1,c1)
+b3=A.a5(c1,A.aF(A.a([b5,new A.I(B.U,b4,c1),A.a1(b3,c1,A.P(c1,c1,$.B?B.d:B.f,c1,c1,c1,c1,c1,c3,c1,c1,c1,c1,c1,c1,c1,c1,!0,c1,c1,c1,c1,c1,c1,c1,c1),c1)],a5),B.l,B.o,B.k),!1,c1,!0,!1,c1,c1,c1,c1,"Number of games solved in 3 guesses, "+b3,c1,c1,c1,c1,c1,c1,c1,c1,c1,c1,c1,c1,c1)
 b4=""+l
-b5=$.A
+b5=$.B
 b6=A.cm(b5?B.d:B.f,1)
 b6=A.J(c1,A.bl(A.a1("4",c1,A.P(c1,c1,b5?B.d:B.f,c1,c1,c1,c1,c1,c3,c1,c1,12,c1,c1,c1,c1,c1,!0,c1,c1,c1,c1,c1,c1,c1,c1),c1),c1,c1),B.h,c1,c1,new A.an(c1,c1,b6,c1,c1,c1,B.n),c1,20,c1,c1,c1,c1,20)
 if(b1===4)b5=$.aM?B.y:B.w
 else b5=B.R
 b5=A.J(c1,c1,B.h,c1,c1,new A.an(b5,c1,c1,B.E,c1,c1,B.n),c1,20,c1,c1,c1,c1,d)
-b4=A.a5(c1,A.aF(A.a([b6,new A.I(B.U,b5,c1),A.a1(b4,c1,A.P(c1,c1,$.A?B.d:B.f,c1,c1,c1,c1,c1,c3,c1,c1,c1,c1,c1,c1,c1,c1,!0,c1,c1,c1,c1,c1,c1,c1,c1),c1)],a5),B.l,B.o,B.k),!1,c1,!0,!1,c1,c1,c1,c1,"Number of games solved in 4 guesses, "+b4,c1,c1,c1,c1,c1,c1,c1,c1,c1,c1,c1,c1,c1)
+b4=A.a5(c1,A.aF(A.a([b6,new A.I(B.U,b5,c1),A.a1(b4,c1,A.P(c1,c1,$.B?B.d:B.f,c1,c1,c1,c1,c1,c3,c1,c1,c1,c1,c1,c1,c1,c1,!0,c1,c1,c1,c1,c1,c1,c1,c1),c1)],a5),B.l,B.o,B.k),!1,c1,!0,!1,c1,c1,c1,c1,"Number of games solved in 4 guesses, "+b4,c1,c1,c1,c1,c1,c1,c1,c1,c1,c1,c1,c1,c1)
 b5=""+k
-b6=$.A
+b6=$.B
 b7=A.cm(b6?B.d:B.f,1)
 b7=A.J(c1,A.bl(A.a1("5",c1,A.P(c1,c1,b6?B.d:B.f,c1,c1,c1,c1,c1,c3,c1,c1,12,c1,c1,c1,c1,c1,!0,c1,c1,c1,c1,c1,c1,c1,c1),c1),c1,c1),B.h,c1,c1,new A.an(c1,c1,b7,c1,c1,c1,B.n),c1,20,c1,c1,c1,c1,20)
 if(b1===5)b6=$.aM?B.y:B.w
 else b6=B.R
 b6=A.J(c1,c1,B.h,c1,c1,new A.an(b6,c1,c1,B.E,c1,c1,B.n),c1,20,c1,c1,c1,c1,c)
-b5=A.a5(c1,A.aF(A.a([b7,new A.I(B.U,b6,c1),A.a1(b5,c1,A.P(c1,c1,$.A?B.d:B.f,c1,c1,c1,c1,c1,c3,c1,c1,c1,c1,c1,c1,c1,c1,!0,c1,c1,c1,c1,c1,c1,c1,c1),c1)],a5),B.l,B.o,B.k),!1,c1,!0,!1,c1,c1,c1,c1,"Number of games solved in 5 guesses, "+b5,c1,c1,c1,c1,c1,c1,c1,c1,c1,c1,c1,c1,c1)
+b5=A.a5(c1,A.aF(A.a([b7,new A.I(B.U,b6,c1),A.a1(b5,c1,A.P(c1,c1,$.B?B.d:B.f,c1,c1,c1,c1,c1,c3,c1,c1,c1,c1,c1,c1,c1,c1,!0,c1,c1,c1,c1,c1,c1,c1,c1),c1)],a5),B.l,B.o,B.k),!1,c1,!0,!1,c1,c1,c1,c1,"Number of games solved in 5 guesses, "+b5,c1,c1,c1,c1,c1,c1,c1,c1,c1,c1,c1,c1,c1)
 b6=""+j
-b7=$.A
+b7=$.B
 b8=A.cm(b7?B.d:B.f,1)
 b8=A.J(c1,A.bl(A.a1("6",c1,A.P(c1,c1,b7?B.d:B.f,c1,c1,c1,c1,c1,c3,c1,c1,12,c1,c1,c1,c1,c1,!0,c1,c1,c1,c1,c1,c1,c1,c1),c1),c1,c1),B.h,c1,c1,new A.an(c1,c1,b8,c1,c1,c1,B.n),c1,20,c1,c1,c1,c1,20)
 if(b1===6)b7=$.aM?B.y:B.w
 else b7=B.R
 b7=A.J(c1,c1,B.h,c1,c1,new A.an(b7,c1,c1,B.E,c1,c1,B.n),c1,20,c1,c1,c1,c1,b)
-b6=A.a5(c1,A.aF(A.a([b8,new A.I(B.U,b7,c1),A.a1(b6,c1,A.P(c1,c1,$.A?B.d:B.f,c1,c1,c1,c1,c1,c3,c1,c1,c1,c1,c1,c1,c1,c1,!0,c1,c1,c1,c1,c1,c1,c1,c1),c1)],a5),B.l,B.o,B.k),!1,c1,!0,!1,c1,c1,c1,c1,"Number of games solved in 6 guesses, "+b6,c1,c1,c1,c1,c1,c1,c1,c1,c1,c1,c1,c1,c1)
+b6=A.a5(c1,A.aF(A.a([b8,new A.I(B.U,b7,c1),A.a1(b6,c1,A.P(c1,c1,$.B?B.d:B.f,c1,c1,c1,c1,c1,c3,c1,c1,c1,c1,c1,c1,c1,c1,!0,c1,c1,c1,c1,c1,c1,c1,c1),c1)],a5),B.l,B.o,B.k),!1,c1,!0,!1,c1,c1,c1,c1,"Number of games solved in 6 guesses, "+b6,c1,c1,c1,c1,c1,c1,c1,c1,c1,c1,c1,c1,c1)
 b7=""+i
-b8=$.A
+b8=$.B
 b9=A.cm(b8?B.d:B.f,1)
 b9=A.J(c1,A.bl(A.a1("X",c1,A.P(c1,c1,b8?B.d:B.f,c1,c1,c1,c1,c1,c3,c1,c1,12,c1,c1,c1,c1,c1,!0,c1,c1,c1,c1,c1,c1,c1,c1),c1),c1,c1),B.h,c1,c1,new A.an(c1,c1,b9,c1,c1,c1,B.n),c1,20,c1,c1,c1,c1,20)
 if(b1===7)b1=$.aM?B.y:B.w
 else b1=B.R
 b1=A.J(c1,c1,B.h,c1,c1,new A.an(b1,c1,c1,B.E,c1,c1,B.n),c1,20,c1,c1,c1,c1,a)
-return A.bl(A.cl(A.bb(A.a([c8,A.J(c1,A.bb(A.a([a3,A.cl(A.rz(A.bb(A.a([c9,new A.I(B.d9,a6,c1),new A.I(B.ct,a4,c1),a7,q,c4,a8,new A.I(B.aX,a9,c1),new A.I(B.da,A.bb(A.a([b0,b2,b3,b4,b5,b6,A.a5(c1,A.aF(A.a([b9,new A.I(B.U,b1,c1),A.a1(b7,c1,A.P(c1,c1,$.A?B.d:B.f,c1,c1,c1,c1,c1,c3,c1,c1,c1,c1,c1,c1,c1,c1,!0,c1,c1,c1,c1,c1,c1,c1,c1),c1)],a5),B.l,B.o,B.k),!1,c1,!0,!1,c1,c1,c1,c1,"Number of games unable to be solved, "+b7,c1,c1,c1,c1,c1,c1,c1,c1,c1,c1,c1,c1,c1)],a5),B.l,B.o,B.k),c1)],a5),B.l,B.o,B.k),c1,B.aw),p-52,c1)],a5),B.l,B.o,B.k),B.h,c1,c1,new A.an(a1,c1,a2,B.bG,c1,c1,B.n),c1,p,c1,c1,c1,c1,r)],a5),B.l,B.o,B.k),p+c5,r),c1,c1)},
+return A.bl(A.cl(A.bb(A.a([c8,A.J(c1,A.bb(A.a([a3,A.cl(A.rz(A.bb(A.a([c9,new A.I(B.d9,a6,c1),new A.I(B.ct,a4,c1),a7,q,c4,a8,new A.I(B.aX,a9,c1),new A.I(B.da,A.bb(A.a([b0,b2,b3,b4,b5,b6,A.a5(c1,A.aF(A.a([b9,new A.I(B.U,b1,c1),A.a1(b7,c1,A.P(c1,c1,$.B?B.d:B.f,c1,c1,c1,c1,c1,c3,c1,c1,c1,c1,c1,c1,c1,c1,!0,c1,c1,c1,c1,c1,c1,c1,c1),c1)],a5),B.l,B.o,B.k),!1,c1,!0,!1,c1,c1,c1,c1,"Number of games unable to be solved, "+b7,c1,c1,c1,c1,c1,c1,c1,c1,c1,c1,c1,c1,c1)],a5),B.l,B.o,B.k),c1)],a5),B.l,B.o,B.k),c1,B.aw),p-52,c1)],a5),B.l,B.o,B.k),B.h,c1,c1,new A.an(a1,c1,a2,B.bG,c1,c1,B.n),c1,p,c1,c1,c1,c1,r)],a5),B.l,B.o,B.k),p+c5,r),c1,c1)},
 js(a,b,c,d){return A.k4(A.md(d,b),b)}}
 A.a90.prototype={
 $1(a){var s,r,q=B.j.bn(A.b6(0,0,0,A.nm(a,!1).a-Date.now(),0,0).a,36e8),p=q*60,o=B.j.bn(A.b6(0,0,0,A.nm(a,!1).a-Date.now(),0,0).a,6e7)-p,n=B.j.bn(A.b6(0,0,0,A.nm(a,!1).a-Date.now(),0,0).a,1e6)-p*60-o*60
@@ -40553,7 +40553,7 @@ return""+q+" "+p+", "+o+" "+s+", "+n+" "+r},
 $S:39}
 A.a91.prototype={
 $2(a,b){var s=A.bR(this.a)
-s.bS(A.ib(a,b,$.A?B.d:B.f,!1))},
+s.bS(A.ib(a,b,$.B?B.d:B.f,!1))},
 $S:69}
 A.a8N.prototype={
 $0(){var s=this.a
@@ -40660,7 +40660,7 @@ A.dM(A.b6(0,0,0,q.aJ,0,0),new A.aas(q,a),t.P)
 s=q.av
 A.jn(s,B.v)
 r=q.aP?a.X(t.w).f.a.b*0.55:0
-return A.bl(new A.I(new A.aj(0,0,0,r),A.J(p,new A.I(B.da,A.a1(s,p,A.P(p,p,$.A?B.f:B.d,p,p,p,p,p,"ClearSans",p,p,18,p,p,B.B,p,p,!0,p,p,p,p,p,p,p,p),B.ao),p),B.h,p,p,new A.an(q.al,p,p,B.d_,p,p,B.n),p,p,p,p,p,p,p),p),p,p)},
+return A.bl(new A.I(new A.aj(0,0,0,r),A.J(p,new A.I(B.da,A.a1(s,p,A.P(p,p,$.B?B.f:B.d,p,p,p,p,p,"ClearSans",p,p,18,p,p,B.B,p,p,!0,p,p,p,p,p,p,p,p),B.ao),p),B.h,p,p,new A.an(q.al,p,p,B.d_,p,p,B.n),p,p,p,p,p,p,p),p),p,p)},
 js(a,b,c,d){return A.k4(A.md(d,b),b)}}
 A.aas.prototype={
 $0(){A.bR(this.b).a8h(this.a)},
@@ -40730,8 +40730,8 @@ if(q.length!==2)return-1
 return q[B.mf.Lf(2)]}},
 fa(){if(this.c!=null)this.I(new A.abx())},
 Ho(a){A.bZ().a1(0,new A.ab2(this,a),t.P)},
-L7(){var s=this.a.w,r=this.CW,q=r.f,p=r.c,o=this.dy,n=$.aM?1:0,m=$.A?1:0
-s.jS("trivia_level_end",A.ay(["level_index",r.a,"guess_time",q,"chosen_index",p,"correct_index",o,"high_contrast",n,"dark_theme",m,"success",r.b,"version","Version 1.2.1"],t.N,t.z))},
+L7(){var s=this.a.w,r=this.CW,q=r.f,p=r.c,o=this.dy,n=$.aM?1:0,m=$.B?1:0
+s.jS("trivia_level_end",A.ay(["level_index",r.a,"guess_time",q,"chosen_index",p,"correct_index",o,"high_contrast",n,"dark_theme",m,"success",r.b,"version","Version 1.2.2"],t.N,t.z))},
 Mn(a){var s,r,q,p,o="triviaStats",n="triviaStreak",m="triviaMaxStreak",l="Int",k=a.a,j=J.af(k),i=A.bg(j.h(k,o))
 if(i==null)i=""
 s=new A.za(0,0,0,0,0,0,0)
@@ -40765,9 +40765,9 @@ q=r.CW.b
 s=r.c
 if(q){s.toString
 q=A.bR(s)
-q.bS(A.ib("CORRECT!",2000,$.A?B.d:B.f,!1))}else{s.toString
+q.bS(A.ib("CORRECT!",2000,$.B?B.d:B.f,!1))}else{s.toString
 q=A.bR(s)
-q.bS(A.ib("SORRY!",2000,$.A?B.d:B.f,!1))
+q.bS(A.ib("SORRY!",2000,$.B?B.d:B.f,!1))
 A.jn("Correct answer, "+r.dx[r.dy],B.v)}r.L7()
 A.bZ().a1(0,new A.ab4(r),t.H)
 q=r.w
@@ -40836,7 +40836,7 @@ q=J.af(m)
 p=A.e_(q.h(m,"isHardMode"))
 $.f_=p===!0
 p=A.e_(q.h(m,"isDarkMode"))
-$.A=p===!0
+$.B=p===!0
 m=A.e_(q.h(m,"isHighContrast"))
 $.aM=m===!0
 if(r.CW.f7())A.dM(B.eb,new A.abo(r),t.P)
@@ -40878,7 +40878,7 @@ s.I(new A.abn())
 r=s.c
 r.toString
 r=A.bR(r)
-r.bS(A.ib("SORRY! Times up!",2000,$.A?B.d:B.f,!1))
+r.bS(A.ib("SORRY! Times up!",2000,$.B?B.d:B.f,!1))
 A.jn("Correct answer, "+s.dx[s.dy],B.v)
 r=s.w
 r===$&&A.b()
@@ -41028,7 +41028,7 @@ p=p!==-1&&p!==a?0.3:1}if(q.c===-1&&!q.f7())if(s.cy===a)q=A.ai(B.e.aF(127.5),0,19
 else q=A.ai(0,255,255,255)
 else if(s.dy===a)q=B.d4
 else q=$.aM?B.y:B.w
-l=$.A
+l=$.B
 k=A.cm(l?B.d:B.f,1)
 j=s.dx[a]
 if(s.CW.c!==-1)l=B.d
@@ -41060,7 +41060,7 @@ if(this.b)s.cy=this.c
 else s.cy=-1},
 $S:0}
 A.abh.prototype={
-$2(a,a0){var s,r,q,p,o,n,m,l,k=null,j="ClearSans",i=a0.d,h=(i/2-69)/4,g=a0.b,f=$.A,e=f?B.f:B.d,d=this.a,c=d.db,b=g-24
+$2(a,a0){var s,r,q,p,o,n,m,l,k=null,j="ClearSans",i=a0.d,h=(i/2-69)/4,g=a0.b,f=$.B,e=f?B.f:B.d,d=this.a,c=d.db,b=g-24
 c=A.a5(k,new A.I(B.DX,A.cl(A.app(B.a3,A.a1(c,k,A.P(k,k,f?B.d:B.f,k,k,k,k,k,j,k,k,k,k,k,B.x,k,k,!0,k,k,k,k,k,k,k,k),B.ao),B.h,B.lY),(i-48)/2-50,b),k),!1,k,!0,!1,k,k,!0,k,"Trivia Question, "+c,k,k,k,k,k,k,k,k,k,k,k,k,k)
 s=d.ay
 s===$&&A.b()
@@ -41122,7 +41122,7 @@ r===$&&A.b()
 q=r.a
 q=r.b.S(0,q.gm(q))
 r=q}else r=1
-return A.JZ(B.a3,A.J(s,s,B.h,$.A?B.d:B.f,s,s,s,20,s,s,s,s,2),s,r,s)},
+return A.JZ(B.a3,A.J(s,s,B.h,$.B?B.d:B.f,s,s,s,20,s,s,s,s,2),s,r,s)},
 $S:27}
 A.ab8.prototype={
 $2(a,b){var s=null,r=this.a,q=r.Q
@@ -41133,7 +41133,7 @@ r===$&&A.b()
 q=r.a
 q=r.b.S(0,q.gm(q))
 r=q}else r=1
-return A.JZ(B.a3,A.J(s,s,B.h,$.A?B.d:B.f,s,s,s,20,s,s,s,s,2),s,r,s)},
+return A.JZ(B.a3,A.J(s,s,B.h,$.B?B.d:B.f,s,s,s,20,s,s,s,s,2),s,r,s)},
 $S:27}
 A.ab9.prototype={
 $2(a,b){var s,r,q=null,p=this.a
@@ -41199,7 +41199,7 @@ d1=A.jc(A.ja(a6),A.e7(a6),A.j9(a6)+d1,0,0,0,0,!1)
 if(!A.eb(d1))A.T(A.eu(d1))
 l=n?58:0
 k=n?A.J(c8,c8,B.h,c8,c8,c8,c8,58,c8,c8,c8,c8,c8):A.J(c8,c8,B.h,c8,c8,c8,c8,c8,c8,c8,c8,c8,c8)
-a7=$.A
+a7=$.B
 a8=a7?B.f:B.d
 a9=A.cm(a7?B.d:B.f,1)
 b0=a7?B.f:B.d
@@ -41210,92 +41210,92 @@ a7=!c7.av
 if(a7)o=A.J(c8,c8,B.h,A.ai(0,158,158,158),c8,c8,c8,0.5,c8,c8,c8,c8,c8)
 else{o=Math.min(500,d5.X(o).f.a.a)
 b1=B.c.bb(A.all(c7.al),"")
-o=A.cl(A.a5(c8,A.bb(A.a([new A.I(B.fW,A.am7("FUN FACT",A.P(c8,c8,$.A?B.d:B.f,c8,c8,c8,c8,c8,d0,c8,c8,20,c8,c8,B.x,c8,c8,!0,c8,c8,c8,c8,c8,c8,c8,c8)),c8),A.J(c8,new A.I(B.aX,c7.aJ,c8),B.h,c8,c8,new A.an(A.pP(),c8,c8,B.d_,c8,c8,B.n),c8,c8,c8,c8,c8,c8,c8)],b2),B.l,B.o,B.k),!1,c8,!0,!1,c8,c8,!0,c8,"Fun Fact, "+b1,c8,c8,c8,c8,c8,c8,c8,c8,c8,c8,c8,c8,c8),c8,o-50)}b1=c7.R
+o=A.cl(A.a5(c8,A.bb(A.a([new A.I(B.fW,A.am7("FUN FACT",A.P(c8,c8,$.B?B.d:B.f,c8,c8,c8,c8,c8,d0,c8,c8,20,c8,c8,B.x,c8,c8,!0,c8,c8,c8,c8,c8,c8,c8,c8)),c8),A.J(c8,new A.I(B.aX,c7.aJ,c8),B.h,c8,c8,new A.an(A.pP(),c8,c8,B.d_,c8,c8,B.n),c8,c8,c8,c8,c8,c8,c8)],b2),B.l,B.o,B.k),!1,c8,!0,!1,c8,c8,!0,c8,"Fun Fact, "+b1,c8,c8,c8,c8,c8,c8,c8,c8,c8,c8,c8,c8,c8),c8,o-50)}b1=c7.R
 b1=A.a5(!0,A.bV(new A.I(B.bR,A.eo("assets/twitter.svg",40,40),c8),!1,b1===0,new A.aaS(),new A.aaT(c7),new A.aaU(c7,q),!1),!1,c8,!0,!1,c8,c8,c8,c8,"Canuckle Twitter",c8,c8,c8,c8,c8,c8,c8,c8,c8,c8,c8,c8,c8)
 b3=c7.R
 b3=A.aF(A.a([b1,A.a5(!0,A.bV(new A.I(B.bR,A.eo("assets/facebook.svg",40,40),c8),!1,b3===1,new A.aaV(),new A.aaW(c7),new A.aaX(c7,r),!1),!1,c8,!0,!1,c8,c8,c8,c8,"Canuckle Facebook",c8,c8,c8,c8,c8,c8,c8,c8,c8,c8,c8,c8,c8)],b2),B.l,B.S,B.k)
-b1=A.a1("If you enjoyed this game:",c8,A.P(c8,c8,$.A?B.d:B.f,c8,c8,c8,c8,c8,d0,c8,c8,c8,c8,c8,c8,c8,c8,!0,c8,c8,c8,c8,c8,c8,c8,c8),c8)
+b1=A.a1("If you enjoyed this game:",c8,A.P(c8,c8,$.B?B.d:B.f,c8,c8,c8,c8,c8,d0,c8,c8,c8,c8,c8,c8,c8,c8,!0,c8,c8,c8,c8,c8,c8,c8,c8),c8)
 b4=c7.R
 b4=A.a5(!0,A.bV(A.J(c8,new A.I(B.cw,A.aF(A.a([new A.I(B.cv,A.eo("assets/kofi.svg",20,20),c8),B.lo,new A.I(B.cv,A.eo("assets/leaf.svg",25,25),c8)],b2),B.l,B.S,B.k),c8),B.h,c8,c8,new A.an(B.fK,c8,c8,B.E,c8,c8,B.n),c8,c8,c8,c8,c8,c8,325),!1,b4===2,new A.aaY(),new A.aaZ(c7),new A.aaO(c7,p),!1),!1,c8,!0,!1,c8,c8,c8,c8,"Buy Canuckle a coffee",c8,c8,c8,c8,c8,c8,c8,c8,c8,c8,c8,c8,c8)
 if(a7)a7=A.J(c8,c8,B.h,A.ai(0,158,158,158),c8,c8,c8,0.5,c8,c8,c8,c8,c8)
 else{a7=c7.R
 b5=$.aM?B.y:B.w
 a7=A.a5(!0,A.bV(new A.I(B.n5,A.J(c8,new A.I(B.cw,A.aF(B.hs,B.l,B.S,B.k),c8),B.h,c8,c8,new A.an(b5,c8,c8,B.E,c8,c8,B.n),c8,c8,c8,c8,c8,c8,325),c8),!1,a7===3,new A.aaP(),new A.aaQ(c7),new A.aaR(c7,new A.ab0(d5),d5),!1),!1,c8,!0,!1,c8,c8,c8,c8,"Share result",c8,c8,c8,c8,c8,c8,c8,c8,c8,c8,c8,c8,c8)}b5=A.f(new A.ab_().$1(d1))
-b6=A.a1("Next Trivia:",c8,A.P(c8,c8,$.A?B.d:B.f,c8,c8,c8,c8,c8,d0,c8,c8,c8,c8,c8,c8,c8,c8,!0,c8,c8,c8,c8,c8,c8,c8,c8),c8)
+b6=A.a1("Next Trivia:",c8,A.P(c8,c8,$.B?B.d:B.f,c8,c8,c8,c8,c8,d0,c8,c8,c8,c8,c8,c8,c8,c8,!0,c8,c8,c8,c8,c8,c8,c8,c8),c8)
 d1=A.a5(c8,new A.I(B.ed,A.bb(A.a([b6,A.aoV(d1,A.P(c8,c8,$.aM?B.y:B.w,c8,c8,c8,c8,c8,d0,c8,c8,30,c8,c8,B.x,c8,c8,!0,c8,c8,c8,c8,c8,c8,c8,c8))],b2),B.l,B.o,B.k),c8),!1,c8,!0,!1,c8,c8,c8,c8,"Next Trivia in "+b5,c8,c8,c8,c8,c8,c8,c8,c8,c8,c8,c8,c8,c8)
-b5=A.a5(c8,new A.I(B.aX,A.a1("TRIVIA STATISTICS",c8,A.P(c8,c8,$.A?B.d:B.f,c8,c8,c8,c8,c8,d0,c8,c8,20,c8,c8,B.x,c8,c8,!0,c8,c8,c8,c8,c8,c8,c8,c8),c8),c8),!1,c8,!0,!1,c8,c8,!0,c8,"Trivia Statistics",c8,c8,c8,c8,c8,c8,c8,c8,c8,c8,c8,c8,c8)
+b5=A.a5(c8,new A.I(B.aX,A.a1("TRIVIA STATISTICS",c8,A.P(c8,c8,$.B?B.d:B.f,c8,c8,c8,c8,c8,d0,c8,c8,20,c8,c8,B.x,c8,c8,!0,c8,c8,c8,c8,c8,c8,c8,c8),c8),c8),!1,c8,!0,!1,c8,c8,!0,c8,"Trivia Statistics",c8,c8,c8,c8,c8,c8,c8,c8,c8,c8,c8,c8,c8)
 b6=""+d2
-b7=A.a1(b6,c8,A.P(c8,c8,$.A?B.d:B.f,c8,c8,c8,c8,c8,d0,c8,c8,28,c8,c8,B.x,c8,c8,!0,c8,c8,c8,c8,c8,c8,c8,c8),c8)
-b6=A.a5(c8,A.bb(A.a([b7,A.a1("Played",c8,A.P(c8,c8,$.A?B.d:B.f,c8,c8,c8,c8,c8,d0,c8,c8,c8,c8,c8,c8,c8,c8,!0,c8,c8,c8,c8,c8,c8,c8,c8),c8)],b2),B.l,B.o,B.k),!1,c8,!0,!1,c8,c8,!0,c8,"Games Played, "+b6,c8,c8,c8,c8,c8,c8,c8,c8,c8,c8,c8,c8,c8)
+b7=A.a1(b6,c8,A.P(c8,c8,$.B?B.d:B.f,c8,c8,c8,c8,c8,d0,c8,c8,28,c8,c8,B.x,c8,c8,!0,c8,c8,c8,c8,c8,c8,c8,c8),c8)
+b6=A.a5(c8,A.bb(A.a([b7,A.a1("Played",c8,A.P(c8,c8,$.B?B.d:B.f,c8,c8,c8,c8,c8,d0,c8,c8,c8,c8,c8,c8,c8,c8,!0,c8,c8,c8,c8,c8,c8,c8,c8),c8)],b2),B.l,B.o,B.k),!1,c8,!0,!1,c8,c8,!0,c8,"Games Played, "+b6,c8,c8,c8,c8,c8,c8,c8,c8,c8,c8,c8,c8,c8)
 b7=""+d4
-b8=A.a1(b7,c8,A.P(c8,c8,$.A?B.d:B.f,c8,c8,c8,c8,c8,d0,c8,c8,28,c8,c8,B.x,c8,c8,!0,c8,c8,c8,c8,c8,c8,c8,c8),c8)
-b7=A.a5(c8,A.bb(A.a([b8,A.a1("Win %",c8,A.P(c8,c8,$.A?B.d:B.f,c8,c8,c8,c8,c8,d0,c8,c8,c8,c8,c8,c8,c8,c8,!0,c8,c8,c8,c8,c8,c8,c8,c8),c8)],b2),B.l,B.o,B.k),!1,c8,!0,!1,c8,c8,!0,c8,"Win percentage, "+b7,c8,c8,c8,c8,c8,c8,c8,c8,c8,c8,c8,c8,c8)
+b8=A.a1(b7,c8,A.P(c8,c8,$.B?B.d:B.f,c8,c8,c8,c8,c8,d0,c8,c8,28,c8,c8,B.x,c8,c8,!0,c8,c8,c8,c8,c8,c8,c8,c8),c8)
+b7=A.a5(c8,A.bb(A.a([b8,A.a1("Win %",c8,A.P(c8,c8,$.B?B.d:B.f,c8,c8,c8,c8,c8,d0,c8,c8,c8,c8,c8,c8,c8,c8,!0,c8,c8,c8,c8,c8,c8,c8,c8),c8)],b2),B.l,B.o,B.k),!1,c8,!0,!1,c8,c8,!0,c8,"Win percentage, "+b7,c8,c8,c8,c8,c8,c8,c8,c8,c8,c8,c8,c8,c8)
 b8=""+c7.bL
-b9=A.a1(b8,c8,A.P(c8,c8,$.A?B.d:B.f,c8,c8,c8,c8,c8,d0,c8,c8,28,c8,c8,B.x,c8,c8,!0,c8,c8,c8,c8,c8,c8,c8,c8),c8)
-b8=A.a5(c8,A.bb(A.a([b9,A.a1("Current\nStreak",c8,A.P(c8,c8,$.A?B.d:B.f,c8,c8,c8,c8,c8,d0,c8,c8,c8,c8,c8,c8,c8,c8,!0,c8,c8,c8,c8,c8,c8,c8,c8),B.ao)],b2),B.l,B.o,B.k),!1,c8,!0,!1,c8,c8,!0,c8,"Current streak, "+b8,c8,c8,c8,c8,c8,c8,c8,c8,c8,c8,c8,c8,c8)
+b9=A.a1(b8,c8,A.P(c8,c8,$.B?B.d:B.f,c8,c8,c8,c8,c8,d0,c8,c8,28,c8,c8,B.x,c8,c8,!0,c8,c8,c8,c8,c8,c8,c8,c8),c8)
+b8=A.a5(c8,A.bb(A.a([b9,A.a1("Current\nStreak",c8,A.P(c8,c8,$.B?B.d:B.f,c8,c8,c8,c8,c8,d0,c8,c8,c8,c8,c8,c8,c8,c8,!0,c8,c8,c8,c8,c8,c8,c8,c8),B.ao)],b2),B.l,B.o,B.k),!1,c8,!0,!1,c8,c8,!0,c8,"Current streak, "+b8,c8,c8,c8,c8,c8,c8,c8,c8,c8,c8,c8,c8,c8)
 b9=""+c7.cU
-c0=A.a1(b9,c8,A.P(c8,c8,$.A?B.d:B.f,c8,c8,c8,c8,c8,d0,c8,c8,28,c8,c8,B.x,c8,c8,!0,c8,c8,c8,c8,c8,c8,c8,c8),c8)
-b9=A.a5(c8,A.bb(A.a([c0,A.a1("Max\nStreak",c8,A.P(c8,c8,$.A?B.d:B.f,c8,c8,c8,c8,c8,d0,c8,c8,c8,c8,c8,c8,c8,c8,!0,c8,c8,c8,c8,c8,c8,c8,c8),B.ao)],b2),B.l,B.o,B.k),!1,c8,!0,!1,c8,c8,!0,c8,"Max streak, "+b9,c8,c8,c8,c8,c8,c8,c8,c8,c8,c8,c8,c8,c8)
+c0=A.a1(b9,c8,A.P(c8,c8,$.B?B.d:B.f,c8,c8,c8,c8,c8,d0,c8,c8,28,c8,c8,B.x,c8,c8,!0,c8,c8,c8,c8,c8,c8,c8,c8),c8)
+b9=A.a5(c8,A.bb(A.a([c0,A.a1("Max\nStreak",c8,A.P(c8,c8,$.B?B.d:B.f,c8,c8,c8,c8,c8,d0,c8,c8,c8,c8,c8,c8,c8,c8,!0,c8,c8,c8,c8,c8,c8,c8,c8),B.ao)],b2),B.l,B.o,B.k),!1,c8,!0,!1,c8,c8,!0,c8,"Max streak, "+b9,c8,c8,c8,c8,c8,c8,c8,c8,c8,c8,c8,c8,c8)
 c0=""+s
-c1=A.a1(c0,c8,A.P(c8,c8,$.A?B.d:B.f,c8,c8,c8,c8,c8,d0,c8,c8,28,c8,c8,B.x,c8,c8,!0,c8,c8,c8,c8,c8,c8,c8,c8),c8)
-b6=A.aF(A.a([b6,b7,b8,b9,A.a5(c8,A.bb(A.a([c1,A.a1("Average\nPoints",c8,A.P(c8,c8,$.A?B.d:B.f,c8,c8,c8,c8,c8,d0,c8,c8,c8,c8,c8,c8,c8,c8,!0,c8,c8,c8,c8,c8,c8,c8,c8),B.ao)],b2),B.l,B.o,B.k),!1,c8,!0,!1,c8,c8,!0,c8,"Average points, "+c0,c8,c8,c8,c8,c8,c8,c8,c8,c8,c8,c8,c8,c8)],b2),B.aA,B.hP,B.k)
+c1=A.a1(c0,c8,A.P(c8,c8,$.B?B.d:B.f,c8,c8,c8,c8,c8,d0,c8,c8,28,c8,c8,B.x,c8,c8,!0,c8,c8,c8,c8,c8,c8,c8,c8),c8)
+b6=A.aF(A.a([b6,b7,b8,b9,A.a5(c8,A.bb(A.a([c1,A.a1("Average\nPoints",c8,A.P(c8,c8,$.B?B.d:B.f,c8,c8,c8,c8,c8,d0,c8,c8,c8,c8,c8,c8,c8,c8,!0,c8,c8,c8,c8,c8,c8,c8,c8),B.ao)],b2),B.l,B.o,B.k),!1,c8,!0,!1,c8,c8,!0,c8,"Average points, "+c0,c8,c8,c8,c8,c8,c8,c8,c8,c8,c8,c8,c8,c8)],b2),B.aA,B.hP,B.k)
 b7=""+i
-b8=$.A
+b8=$.B
 b9=A.cm(b8?B.d:B.f,1)
 b9=A.J(c8,A.bl(A.a1("900+",c8,A.P(c8,c8,b8?B.d:B.f,c8,c8,c8,c8,c8,d0,c8,c8,12,c8,c8,c8,c8,c8,!0,c8,c8,c8,c8,c8,c8,c8,c8),c8),c8,c8),B.h,c8,c8,new A.an(c8,c8,b9,c8,c8,c8,B.n),c8,20,c8,c8,c8,c8,60)
 b8=c7.D
 if(b8<=3)c0=$.aM?B.y:B.w
 else c0=B.R
 c0=A.J(c8,c8,B.h,c8,c8,new A.an(c0,c8,c8,B.E,c8,c8,B.n),c8,20,c8,c8,c8,c8,a)
-b7=A.a5(c8,A.aF(A.a([b9,new A.I(B.U,c0,c8),A.a1(b7,c8,A.P(c8,c8,$.A?B.d:B.f,c8,c8,c8,c8,c8,d0,c8,c8,c8,c8,c8,c8,c8,c8,!0,c8,c8,c8,c8,c8,c8,c8,c8),c8)],b2),B.l,B.o,B.k),!1,c8,!0,!1,c8,c8,c8,c8,"Number of games with 900+ points, "+b7,c8,c8,c8,c8,c8,c8,c8,c8,c8,c8,c8,c8,c8)
+b7=A.a5(c8,A.aF(A.a([b9,new A.I(B.U,c0,c8),A.a1(b7,c8,A.P(c8,c8,$.B?B.d:B.f,c8,c8,c8,c8,c8,d0,c8,c8,c8,c8,c8,c8,c8,c8,!0,c8,c8,c8,c8,c8,c8,c8,c8),c8)],b2),B.l,B.o,B.k),!1,c8,!0,!1,c8,c8,c8,c8,"Number of games with 900+ points, "+b7,c8,c8,c8,c8,c8,c8,c8,c8,c8,c8,c8,c8,c8)
 b9=""+h
-c0=$.A
+c0=$.B
 c1=A.cm(c0?B.d:B.f,1)
 c1=A.J(c8,A.bl(A.a1("700-899",c8,A.P(c8,c8,c0?B.d:B.f,c8,c8,c8,c8,c8,d0,c8,c8,12,c8,c8,c8,c8,c8,!0,c8,c8,c8,c8,c8,c8,c8,c8),c8),c8,c8),B.h,c8,c8,new A.an(c8,c8,c1,c8,c8,c8,B.n),c8,20,c8,c8,c8,c8,60)
 if(b8<=9&&b8>3)c0=$.aM?B.y:B.w
 else c0=B.R
 c0=A.J(c8,c8,B.h,c8,c8,new A.an(c0,c8,c8,B.E,c8,c8,B.n),c8,20,c8,c8,c8,c8,a0)
-b9=A.a5(c8,A.aF(A.a([c1,new A.I(B.U,c0,c8),A.a1(b9,c8,A.P(c8,c8,$.A?B.d:B.f,c8,c8,c8,c8,c8,d0,c8,c8,c8,c8,c8,c8,c8,c8,!0,c8,c8,c8,c8,c8,c8,c8,c8),c8)],b2),B.l,B.o,B.k),!1,c8,!0,!1,c8,c8,c8,c8,"Number of games with 700-899 points, "+b9,c8,c8,c8,c8,c8,c8,c8,c8,c8,c8,c8,c8,c8)
+b9=A.a5(c8,A.aF(A.a([c1,new A.I(B.U,c0,c8),A.a1(b9,c8,A.P(c8,c8,$.B?B.d:B.f,c8,c8,c8,c8,c8,d0,c8,c8,c8,c8,c8,c8,c8,c8,!0,c8,c8,c8,c8,c8,c8,c8,c8),c8)],b2),B.l,B.o,B.k),!1,c8,!0,!1,c8,c8,c8,c8,"Number of games with 700-899 points, "+b9,c8,c8,c8,c8,c8,c8,c8,c8,c8,c8,c8,c8,c8)
 c0=""+g
-c1=$.A
+c1=$.B
 c2=A.cm(c1?B.d:B.f,1)
 c2=A.J(c8,A.bl(A.a1("500-699",c8,A.P(c8,c8,c1?B.d:B.f,c8,c8,c8,c8,c8,d0,c8,c8,12,c8,c8,c8,c8,c8,!0,c8,c8,c8,c8,c8,c8,c8,c8),c8),c8,c8),B.h,c8,c8,new A.an(c8,c8,c2,c8,c8,c8,B.n),c8,20,c8,c8,c8,c8,60)
 if(b8<=15&&b8>9)c1=$.aM?B.y:B.w
 else c1=B.R
 c1=A.J(c8,c8,B.h,c8,c8,new A.an(c1,c8,c8,B.E,c8,c8,B.n),c8,20,c8,c8,c8,c8,a1)
-c0=A.a5(c8,A.aF(A.a([c2,new A.I(B.U,c1,c8),A.a1(c0,c8,A.P(c8,c8,$.A?B.d:B.f,c8,c8,c8,c8,c8,d0,c8,c8,c8,c8,c8,c8,c8,c8,!0,c8,c8,c8,c8,c8,c8,c8,c8),c8)],b2),B.l,B.o,B.k),!1,c8,!0,!1,c8,c8,c8,c8,"Number of games with 500-699 points, "+c0,c8,c8,c8,c8,c8,c8,c8,c8,c8,c8,c8,c8,c8)
+c0=A.a5(c8,A.aF(A.a([c2,new A.I(B.U,c1,c8),A.a1(c0,c8,A.P(c8,c8,$.B?B.d:B.f,c8,c8,c8,c8,c8,d0,c8,c8,c8,c8,c8,c8,c8,c8,!0,c8,c8,c8,c8,c8,c8,c8,c8),c8)],b2),B.l,B.o,B.k),!1,c8,!0,!1,c8,c8,c8,c8,"Number of games with 500-699 points, "+c0,c8,c8,c8,c8,c8,c8,c8,c8,c8,c8,c8,c8,c8)
 c1=""+f
-c2=$.A
+c2=$.B
 c3=A.cm(c2?B.d:B.f,1)
 c3=A.J(c8,A.bl(A.a1("300-599",c8,A.P(c8,c8,c2?B.d:B.f,c8,c8,c8,c8,c8,d0,c8,c8,12,c8,c8,c8,c8,c8,!0,c8,c8,c8,c8,c8,c8,c8,c8),c8),c8,c8),B.h,c8,c8,new A.an(c8,c8,c3,c8,c8,c8,B.n),c8,20,c8,c8,c8,c8,60)
 if(b8<=21&&b8>15)c2=$.aM?B.y:B.w
 else c2=B.R
 c2=A.J(c8,c8,B.h,c8,c8,new A.an(c2,c8,c8,B.E,c8,c8,B.n),c8,20,c8,c8,c8,c8,a2)
-c1=A.a5(c8,A.aF(A.a([c3,new A.I(B.U,c2,c8),A.a1(c1,c8,A.P(c8,c8,$.A?B.d:B.f,c8,c8,c8,c8,c8,d0,c8,c8,c8,c8,c8,c8,c8,c8,!0,c8,c8,c8,c8,c8,c8,c8,c8),c8)],b2),B.l,B.o,B.k),!1,c8,!0,!1,c8,c8,c8,c8,"Number of games with 300-599 points, "+c1,c8,c8,c8,c8,c8,c8,c8,c8,c8,c8,c8,c8,c8)
+c1=A.a5(c8,A.aF(A.a([c3,new A.I(B.U,c2,c8),A.a1(c1,c8,A.P(c8,c8,$.B?B.d:B.f,c8,c8,c8,c8,c8,d0,c8,c8,c8,c8,c8,c8,c8,c8,!0,c8,c8,c8,c8,c8,c8,c8,c8),c8)],b2),B.l,B.o,B.k),!1,c8,!0,!1,c8,c8,c8,c8,"Number of games with 300-599 points, "+c1,c8,c8,c8,c8,c8,c8,c8,c8,c8,c8,c8,c8,c8)
 c2=""+e
-c3=$.A
+c3=$.B
 c4=A.cm(c3?B.d:B.f,1)
 c4=A.J(c8,A.bl(A.a1("100-299",c8,A.P(c8,c8,c3?B.d:B.f,c8,c8,c8,c8,c8,d0,c8,c8,12,c8,c8,c8,c8,c8,!0,c8,c8,c8,c8,c8,c8,c8,c8),c8),c8,c8),B.h,c8,c8,new A.an(c8,c8,c4,c8,c8,c8,B.n),c8,20,c8,c8,c8,c8,60)
 if(b8<=27&&b8>21)c3=$.aM?B.y:B.w
 else c3=B.R
 c3=A.J(c8,c8,B.h,c8,c8,new A.an(c3,c8,c8,B.E,c8,c8,B.n),c8,20,c8,c8,c8,c8,a3)
-c2=A.a5(c8,A.aF(A.a([c4,new A.I(B.U,c3,c8),A.a1(c2,c8,A.P(c8,c8,$.A?B.d:B.f,c8,c8,c8,c8,c8,d0,c8,c8,c8,c8,c8,c8,c8,c8,!0,c8,c8,c8,c8,c8,c8,c8,c8),c8)],b2),B.l,B.o,B.k),!1,c8,!0,!1,c8,c8,c8,c8,"Number of games with 100-299 points, "+c2,c8,c8,c8,c8,c8,c8,c8,c8,c8,c8,c8,c8,c8)
+c2=A.a5(c8,A.aF(A.a([c4,new A.I(B.U,c3,c8),A.a1(c2,c8,A.P(c8,c8,$.B?B.d:B.f,c8,c8,c8,c8,c8,d0,c8,c8,c8,c8,c8,c8,c8,c8,!0,c8,c8,c8,c8,c8,c8,c8,c8),c8)],b2),B.l,B.o,B.k),!1,c8,!0,!1,c8,c8,c8,c8,"Number of games with 100-299 points, "+c2,c8,c8,c8,c8,c8,c8,c8,c8,c8,c8,c8,c8,c8)
 c3=""+d
-c4=$.A
+c4=$.B
 c5=A.cm(c4?B.d:B.f,1)
 c5=A.J(c8,A.bl(A.a1("1-99",c8,A.P(c8,c8,c4?B.d:B.f,c8,c8,c8,c8,c8,d0,c8,c8,12,c8,c8,c8,c8,c8,!0,c8,c8,c8,c8,c8,c8,c8,c8),c8),c8,c8),B.h,c8,c8,new A.an(c8,c8,c5,c8,c8,c8,B.n),c8,20,c8,c8,c8,c8,60)
 if(b8<30&&b8>27)c4=$.aM?B.y:B.w
 else c4=B.R
 c4=A.J(c8,c8,B.h,c8,c8,new A.an(c4,c8,c8,B.E,c8,c8,B.n),c8,20,c8,c8,c8,c8,a4)
-c3=A.a5(c8,A.aF(A.a([c5,new A.I(B.U,c4,c8),A.a1(c3,c8,A.P(c8,c8,$.A?B.d:B.f,c8,c8,c8,c8,c8,d0,c8,c8,c8,c8,c8,c8,c8,c8,!0,c8,c8,c8,c8,c8,c8,c8,c8),c8)],b2),B.l,B.o,B.k),!1,c8,!0,!1,c8,c8,c8,c8,"Number of games with 1-99 points, "+c3,c8,c8,c8,c8,c8,c8,c8,c8,c8,c8,c8,c8,c8)
+c3=A.a5(c8,A.aF(A.a([c5,new A.I(B.U,c4,c8),A.a1(c3,c8,A.P(c8,c8,$.B?B.d:B.f,c8,c8,c8,c8,c8,d0,c8,c8,c8,c8,c8,c8,c8,c8,!0,c8,c8,c8,c8,c8,c8,c8,c8),c8)],b2),B.l,B.o,B.k),!1,c8,!0,!1,c8,c8,c8,c8,"Number of games with 1-99 points, "+c3,c8,c8,c8,c8,c8,c8,c8,c8,c8,c8,c8,c8,c8)
 c4=""+c
-c5=$.A
+c5=$.B
 c6=A.cm(c5?B.d:B.f,1)
 c6=A.J(c8,A.bl(A.a1("0",c8,A.P(c8,c8,c5?B.d:B.f,c8,c8,c8,c8,c8,d0,c8,c8,12,c8,c8,c8,c8,c8,!0,c8,c8,c8,c8,c8,c8,c8,c8),c8),c8,c8),B.h,c8,c8,new A.an(c8,c8,c6,c8,c8,c8,B.n),c8,20,c8,c8,c8,c8,60)
 if(b8===30)b8=$.aM?B.y:B.w
 else b8=B.R
 b8=A.J(c8,c8,B.h,c8,c8,new A.an(b8,c8,c8,B.E,c8,c8,B.n),c8,20,c8,c8,c8,c8,a5)
-return A.bl(A.cl(A.bb(A.a([k,A.J(c8,A.bb(A.a([b0,A.cl(A.rz(A.bb(A.a([o,new A.I(B.d9,b3,c8),new A.I(B.ct,b1,c8),b4,a7,d1,b5,new A.I(B.aX,b6,c8),new A.I(B.da,A.bb(A.a([b7,b9,c0,c1,c2,c3,A.a5(c8,A.aF(A.a([c6,new A.I(B.U,b8,c8),A.a1(c4,c8,A.P(c8,c8,$.A?B.d:B.f,c8,c8,c8,c8,c8,d0,c8,c8,c8,c8,c8,c8,c8,c8,!0,c8,c8,c8,c8,c8,c8,c8,c8),c8)],b2),B.l,B.o,B.k),!1,c8,!0,!1,c8,c8,c8,c8,"Number of games with an incorrect answer, "+c4,c8,c8,c8,c8,c8,c8,c8,c8,c8,c8,c8,c8,c8)],b2),B.l,B.o,B.k),c8)],b2),B.l,B.o,B.k),c8,B.aw),j-52,c8)],b2),B.l,B.o,B.k),B.h,c8,c8,new A.an(a8,c8,a9,B.bG,c8,c8,B.n),c8,j,c8,c8,c8,c8,m)],b2),B.l,B.o,B.k),j+l,m),c8,c8)},
+return A.bl(A.cl(A.bb(A.a([k,A.J(c8,A.bb(A.a([b0,A.cl(A.rz(A.bb(A.a([o,new A.I(B.d9,b3,c8),new A.I(B.ct,b1,c8),b4,a7,d1,b5,new A.I(B.aX,b6,c8),new A.I(B.da,A.bb(A.a([b7,b9,c0,c1,c2,c3,A.a5(c8,A.aF(A.a([c6,new A.I(B.U,b8,c8),A.a1(c4,c8,A.P(c8,c8,$.B?B.d:B.f,c8,c8,c8,c8,c8,d0,c8,c8,c8,c8,c8,c8,c8,c8,!0,c8,c8,c8,c8,c8,c8,c8,c8),c8)],b2),B.l,B.o,B.k),!1,c8,!0,!1,c8,c8,c8,c8,"Number of games with an incorrect answer, "+c4,c8,c8,c8,c8,c8,c8,c8,c8,c8,c8,c8,c8,c8)],b2),B.l,B.o,B.k),c8)],b2),B.l,B.o,B.k),c8,B.aw),j-52,c8)],b2),B.l,B.o,B.k),B.h,c8,c8,new A.an(a8,c8,a9,B.bG,c8,c8,B.n),c8,j,c8,c8,c8,c8,m)],b2),B.l,B.o,B.k),j+l,m),c8,c8)},
 js(a,b,c,d){return A.k4(A.md(d,b),b)}}
 A.ab_.prototype={
 $1(a){var s,r,q=B.j.bn(A.b6(0,0,0,A.nm(a,!1).a-Date.now(),0,0).a,36e8),p=q*60,o=B.j.bn(A.b6(0,0,0,A.nm(a,!1).a-Date.now(),0,0).a,6e7)-p,n=B.j.bn(A.b6(0,0,0,A.nm(a,!1).a-Date.now(),0,0).a,1e6)-p*60-o*60
@@ -41306,7 +41306,7 @@ return""+q+" "+p+", "+o+" "+s+", "+n+" "+r},
 $S:39}
 A.ab0.prototype={
 $2(a,b){var s=A.bR(this.a)
-s.bS(A.ib(a,b,$.A?B.d:B.f,!1))},
+s.bS(A.ib(a,b,$.B?B.d:B.f,!1))},
 $S:69}
 A.aaM.prototype={
 $0(){var s=this.a
@@ -42366,7 +42366,7 @@ sdD(a,b){return this.b=b}}
 A.y9.prototype={
 cV(a){return this.c.cV(1-a)}}
 A.h_.prototype={
-cV(a){return A.B(this.a,this.b,a)}}
+cV(a){return A.A(this.a,this.b,a)}}
 A.xT.prototype={
 cV(a){return A.aAN(this.a,this.b,a)}}
 A.lH.prototype={
@@ -42591,12 +42591,12 @@ s=r}else s=!1
 return s},
 gq(a){return J.t(this.a)}}
 A.adt.prototype={
-$1(a){var s=A.B(null,a,this.a)
+$1(a){var s=A.A(null,a,this.a)
 s.toString
 return s},
 $S:86}
 A.adu.prototype={
-$1(a){var s=A.B(null,a,1-this.a)
+$1(a){var s=A.A(null,a,1-this.a)
 s.toString
 return s},
 $S:86}
@@ -42617,7 +42617,7 @@ break
 default:n=null
 m=null}for(s=b.b,r=s+p,l=0,k=0;k<q;++k){if(B.j.eQ(k,o)!==l)++l
 j=$.aO()?A.bk():new A.bd(new A.bf())
-i=A.B(h[l],h[l+1],B.j.c9(k,o)/o)
+i=A.A(h[l],h[l+1],B.j.c9(k,o)/o)
 i.toString
 j.sab(0,i)
 i=n+m*k-1
@@ -46541,7 +46541,7 @@ s=s.ch
 s===$&&A.b()
 s=s.x
 s===$&&A.b()
-s=A.B(r,q,s)
+s=A.A(r,q,s)
 s.toString
 return s},
 $S:43}
@@ -47117,13 +47117,13 @@ default:q=null}s=d.fx
 s.toString
 p=d.fr
 p.toString
-p=A.B(s,p,r)
+p=A.A(s,p,r)
 p.toString
 s=d.f
 s.toString
 o=d.e
 o.toString
-o=A.B(s,o,r)
+o=A.A(s,o,r)
 o.toString
 s=d.id
 s.toString
@@ -47153,15 +47153,15 @@ c.toString
 s=d.w
 s.toString
 p=d.a
-p=A.B(c,s,p.gm(p))
+p=A.A(c,s,p.gm(p))
 s=d.x
 s.toString
 c=d.d
-c=A.B(p,s,c.gm(c))
+c=A.A(p,s,c.gm(c))
 s=d.y
 s.toString
 p=d.c
-p=A.B(c,s,p.gm(p))
+p=A.A(c,s,p.gm(p))
 p.toString
 f.sab(0,p)
 p=d.Q
@@ -47261,7 +47261,7 @@ A.A5.prototype={
 Z(a){var s,r=this.a,q=r==null?null:r.Z(a)
 r=this.b
 s=r==null?null:r.Z(a)
-return A.B(q,s,this.c)},
+return A.A(q,s,this.c)},
 gq(a){return A.O(this.a,this.b,this.c,B.a,B.a,B.a,B.a,B.a,B.a,B.a,B.a,B.a,B.a,B.a,B.a,B.a,B.a,B.a,B.a,B.a)},
 k(a,b){var s=this
 if(b==null)return!1
@@ -47473,180 +47473,180 @@ a7=A.a9(a5.a,a6.a,v9)
 a7.toString
 a6=A.a9(a5.b,a6.b,v9)
 a6.toString
-a5=A.B(v8.Q,s.Q,v9)
+a5=A.A(v8.Q,s.Q,v9)
 a5.toString
-a8=A.B(v8.as,s.as,v9)
+a8=A.A(v8.as,s.as,v9)
 a8.toString
-a9=A.B(v8.at,s.at,v9)
+a9=A.A(v8.at,s.at,v9)
 a9.toString
-b0=A.B(v8.ax,s.ax,v9)
+b0=A.A(v8.ax,s.ax,v9)
 b0.toString
 b1=v8.ay
 b2=s.ay
 b3=r?b1.a:b2.a
 b4=b1.b
 b5=b2.b
-b6=A.B(b4,b5,v9)
+b6=A.A(b4,b5,v9)
 b6.toString
 b7=b1.c
 b8=b2.c
-b9=A.B(b7,b8,v9)
+b9=A.A(b7,b8,v9)
 b9.toString
 c0=b1.d
 if(c0==null)c0=b4
 c1=b2.d
-c0=A.B(c0,c1==null?b5:c1,v9)
+c0=A.A(c0,c1==null?b5:c1,v9)
 c1=b1.e
 if(c1==null)c1=b7
 c2=b2.e
-c1=A.B(c1,c2==null?b8:c2,v9)
+c1=A.A(c1,c2==null?b8:c2,v9)
 c2=b1.f
 c3=b2.f
-c4=A.B(c2,c3,v9)
+c4=A.A(c2,c3,v9)
 c4.toString
 c5=b1.r
 c6=b2.r
-c7=A.B(c5,c6,v9)
+c7=A.A(c5,c6,v9)
 c7.toString
 c8=b1.w
 if(c8==null)c8=c2
 c9=b2.w
-c8=A.B(c8,c9==null?c3:c9,v9)
+c8=A.A(c8,c9==null?c3:c9,v9)
 c9=b1.x
 if(c9==null)c9=c5
 d0=b2.x
-c9=A.B(c9,d0==null?c6:d0,v9)
+c9=A.A(c9,d0==null?c6:d0,v9)
 d0=b1.y
 d1=d0==null
 d2=d1?c2:d0
 d3=b2.y
 d4=d3==null
-d2=A.B(d2,d4?c3:d3,v9)
+d2=A.A(d2,d4?c3:d3,v9)
 d5=b1.z
 d6=d5==null
 d7=d6?c5:d5
 d8=b2.z
 d9=d8==null
-d7=A.B(d7,d9?c6:d8,v9)
+d7=A.A(d7,d9?c6:d8,v9)
 e0=b1.Q
 if(e0==null){if(d1)d0=c2}else d0=e0
 d1=b2.Q
 if(d1==null)d1=d4?c3:d3
-d1=A.B(d0,d1,v9)
+d1=A.A(d0,d1,v9)
 d0=b1.as
 if(d0==null)c5=d6?c5:d5
 else c5=d0
 d0=b2.as
 if(d0==null)c6=d9?c6:d8
 else c6=d0
-c6=A.B(c5,c6,v9)
+c6=A.A(c5,c6,v9)
 c5=b1.at
 d0=b2.at
-d3=A.B(c5,d0,v9)
+d3=A.A(c5,d0,v9)
 d3.toString
 d4=b1.ax
 d5=b2.ax
-d6=A.B(d4,d5,v9)
+d6=A.A(d4,d5,v9)
 d6.toString
 d8=b1.ay
 c5=d8==null?c5:d8
 d8=b2.ay
-c5=A.B(c5,d8==null?d0:d8,v9)
+c5=A.A(c5,d8==null?d0:d8,v9)
 d0=b1.ch
 if(d0==null)d0=d4
 d4=b2.ch
-d0=A.B(d0,d4==null?d5:d4,v9)
-d4=A.B(b1.CW,b2.CW,v9)
+d0=A.A(d0,d4==null?d5:d4,v9)
+d4=A.A(b1.CW,b2.CW,v9)
 d4.toString
 d5=b1.cx
 d8=b2.cx
-d9=A.B(d5,d8,v9)
+d9=A.A(d5,d8,v9)
 d9.toString
 e0=b1.cy
 e1=b2.cy
-e2=A.B(e0,e1,v9)
+e2=A.A(e0,e1,v9)
 e2.toString
 e3=b1.db
 e4=b2.db
-e5=A.B(e3,e4,v9)
+e5=A.A(e3,e4,v9)
 e5.toString
 e6=b1.dx
 if(e6==null)e6=e0
 e7=b2.dx
-e6=A.B(e6,e7==null?e1:e7,v9)
+e6=A.A(e6,e7==null?e1:e7,v9)
 e7=b1.dy
 if(e7==null)e7=e3
 e8=b2.dy
-e7=A.B(e7,e8==null?e4:e8,v9)
+e7=A.A(e7,e8==null?e4:e8,v9)
 e8=b1.fr
 d5=e8==null?d5:e8
 e8=b2.fr
-d5=A.B(d5,e8==null?d8:e8,v9)
+d5=A.A(d5,e8==null?d8:e8,v9)
 d8=b1.fx
 if(d8==null)d8=B.u
 e8=b2.fx
-d8=A.B(d8,e8==null?B.u:e8,v9)
+d8=A.A(d8,e8==null?B.u:e8,v9)
 e8=b1.fy
 e3=e8==null?e3:e8
 e8=b2.fy
-e3=A.B(e3,e8==null?e4:e8,v9)
+e3=A.A(e3,e8==null?e4:e8,v9)
 e4=b1.go
 e0=e4==null?e0:e4
 e4=b2.go
-e0=A.B(e0,e4==null?e1:e4,v9)
+e0=A.A(e0,e4==null?e1:e4,v9)
 e1=b1.id
 b7=e1==null?b7:e1
 e1=b2.id
-b7=A.B(b7,e1==null?b8:e1,v9)
+b7=A.A(b7,e1==null?b8:e1,v9)
 b8=b1.k2
 if(b8==null)b8=b4
 e1=b2.k2
-b8=A.B(b8,e1==null?b5:e1,v9)
+b8=A.A(b8,e1==null?b5:e1,v9)
 e1=b1.k3
 c2=e1==null?c2:e1
 e1=b2.k3
-c2=A.B(c2,e1==null?c3:e1,v9)
+c2=A.A(c2,e1==null?c3:e1,v9)
 b1=b1.k1
 if(b1==null)b1=b4
 b2=b2.k1
-b1=A.alc(d4,b3,d3,c5,b7,e3,d9,d6,d0,e0,b9,c1,c7,c9,e5,e7,d7,c6,d5,b6,c0,b8,c4,c8,c2,d8,e2,A.B(b1,b2==null?b5:b2,v9),e6,d2,d1)
-b2=A.B(v8.ch,s.ch,v9)
+b1=A.alc(d4,b3,d3,c5,b7,e3,d9,d6,d0,e0,b9,c1,c7,c9,e5,e7,d7,c6,d5,b6,c0,b8,c4,c8,c2,d8,e2,A.A(b1,b2==null?b5:b2,v9),e6,d2,d1)
+b2=A.A(v8.ch,s.ch,v9)
 b2.toString
-b3=A.B(v8.CW,s.CW,v9)
+b3=A.A(v8.CW,s.CW,v9)
 b3.toString
-b4=A.B(v8.cx,s.cx,v9)
+b4=A.A(v8.cx,s.cx,v9)
 b4.toString
-b5=A.B(v8.cy,s.cy,v9)
+b5=A.A(v8.cy,s.cy,v9)
 b5.toString
-b6=A.B(v8.db,s.db,v9)
+b6=A.A(v8.db,s.db,v9)
 b6.toString
-b7=A.B(v8.dx,s.dx,v9)
+b7=A.A(v8.dx,s.dx,v9)
 b7.toString
-b8=A.B(v8.dy,s.dy,v9)
+b8=A.A(v8.dy,s.dy,v9)
 b8.toString
-b9=A.B(v8.fr,s.fr,v9)
+b9=A.A(v8.fr,s.fr,v9)
 b9.toString
-c0=A.B(v8.fx,s.fx,v9)
+c0=A.A(v8.fx,s.fx,v9)
 c0.toString
-c1=A.B(v8.fy,s.fy,v9)
+c1=A.A(v8.fy,s.fy,v9)
 c1.toString
-c2=A.B(v8.go,s.go,v9)
+c2=A.A(v8.go,s.go,v9)
 c2.toString
-c3=A.B(v8.id,s.id,v9)
+c3=A.A(v8.id,s.id,v9)
 c3.toString
-c4=A.B(v8.k1,s.k1,v9)
+c4=A.A(v8.k1,s.k1,v9)
 c4.toString
-c5=A.B(v8.k2,s.k2,v9)
+c5=A.A(v8.k2,s.k2,v9)
 c5.toString
-c6=A.B(v8.k3,s.k3,v9)
+c6=A.A(v8.k3,s.k3,v9)
 c6.toString
-c7=A.B(v8.k4,s.k4,v9)
+c7=A.A(v8.k4,s.k4,v9)
 c7.toString
-c8=A.B(v8.ok,s.ok,v9)
+c8=A.A(v8.ok,s.ok,v9)
 c8.toString
-c9=A.B(v8.p1,s.p1,v9)
+c9=A.A(v8.p1,s.p1,v9)
 c9.toString
-d0=A.B(v8.p2,s.p2,v9)
+d0=A.A(v8.p2,s.p2,v9)
 d0.toString
 d1=A.iO(v8.p3,s.p3,v9)
 d2=A.iO(v8.p4,s.p4,v9)
@@ -47663,12 +47663,12 @@ d5=v8.ry
 e1=s.ry
 if(r)e2=d5.a
 else e2=e1.a
-e3=A.B(d5.b,e1.b,v9)
-e4=A.B(d5.c,e1.c,v9)
+e3=A.A(d5.b,e1.b,v9)
+e4=A.A(d5.c,e1.c,v9)
 e5=A.a9(d5.d,e1.d,v9)
 e6=A.a9(d5.e,e1.e,v9)
-e7=A.B(d5.f,e1.f,v9)
-e8=A.B(d5.r,e1.r,v9)
+e7=A.A(d5.f,e1.f,v9)
+e8=A.A(d5.r,e1.r,v9)
 e9=A.f2(d5.w,e1.w,v9)
 f0=A.iO(d5.x,e1.x,v9)
 f1=A.iO(d5.y,e1.y,v9)
@@ -47686,25 +47686,25 @@ else d5=e1.CW
 e1=e3==null?null:e3
 e3=v8.to
 f9=s.to
-g0=A.B(e3.a,f9.a,v9)
+g0=A.A(e3.a,f9.a,v9)
 g1=A.bC(e3.b,f9.b,v9)
 g2=A.a9(e3.c,f9.c,v9)
 g3=A.ef(e3.d,f9.d,v9)
 e3=A.ef(e3.e,f9.e,v9)
 f9=v8.x1
 g4=s.x1
-g5=A.B(f9.a,g4.a,v9)
+g5=A.A(f9.a,g4.a,v9)
 g6=A.a9(f9.b,g4.b,v9)
 if(r)f9=f9.c
 else f9=g4.c
 g4=v8.x2
 g7=s.x2
-g8=A.B(g4.a,g7.a,v9)
+g8=A.A(g4.a,g7.a,v9)
 g9=A.a9(g4.b,g7.b,v9)
 h0=A.iO(g4.c,g7.c,v9)
 h1=A.iO(g4.d,g7.d,v9)
-h2=A.B(g4.e,g7.e,v9)
-h3=A.B(g4.f,g7.f,v9)
+h2=A.A(g4.e,g7.e,v9)
+h3=A.A(g4.f,g7.f,v9)
 h4=A.bC(g4.r,g7.r,v9)
 h5=A.bC(g4.w,g7.w,v9)
 if(r)h6=g4.x
@@ -47728,9 +47728,9 @@ i3=v8.b3
 i4=s.b3
 if(r)i5=i3.a
 else i5=i4.a
-i6=A.B(i3.b,i4.b,v9)
-i7=A.B(i3.c,i4.c,v9)
-i8=A.B(i3.d,i4.d,v9)
+i6=A.A(i3.b,i4.b,v9)
+i7=A.A(i3.c,i4.c,v9)
+i8=A.A(i3.d,i4.d,v9)
 i9=A.a9(i3.e,i4.e,v9)
 j0=A.ef(i3.f,i4.f,v9)
 i3=A.f2(i3.r,i4.r,v9)
@@ -47766,17 +47766,17 @@ l2=A.a9(k1.y,k2.y,v9)
 k2=A.a9(k1.z,k2.z,v9)
 k1=v8.aP
 l3=s.aP
-l4=A.B(k1.a,l3.a,v9)
+l4=A.A(k1.a,l3.a,v9)
 l5=A.a9(k1.b,l3.b,v9)
 l6=A.f2(k1.c,l3.c,v9)
 l7=A.RQ(k1.d,l3.d,v9)
-l8=A.B(k1.w,l3.w,v9)
+l8=A.A(k1.w,l3.w,v9)
 l9=A.bC(k1.e,l3.e,v9)
 m0=A.bC(k1.f,l3.f,v9)
 k1=A.ef(k1.r,l3.r,v9)
 l3=v8.bL
 m1=s.bL
-m2=A.B(l3.a,m1.a,v9)
+m2=A.A(l3.a,m1.a,v9)
 m3=A.a9(l3.b,m1.b,v9)
 m4=A.a9(l3.c,m1.c,v9)
 m5=A.a9(l3.d,m1.d,v9)
@@ -47815,19 +47815,19 @@ else n5=n6.f
 n6=v8.dE
 o2=s.dE
 o3=A.a9(n6.a,o2.a,v9)
-o4=A.B(n6.b,o2.b,v9)
-o5=A.B(n6.c,o2.c,v9)
-o6=A.B(n6.d,o2.d,v9)
-o7=A.B(n6.e,o2.e,v9)
-o8=A.B(n6.f,o2.f,v9)
-o9=A.B(n6.r,o2.r,v9)
-p0=A.B(n6.w,o2.w,v9)
-p1=A.B(n6.x,o2.x,v9)
-p2=A.B(n6.y,o2.y,v9)
-p3=A.B(n6.z,o2.z,v9)
-p4=A.B(n6.Q,o2.Q,v9)
-p5=A.B(n6.as,o2.as,v9)
-p6=A.B(n6.at,o2.at,v9)
+o4=A.A(n6.b,o2.b,v9)
+o5=A.A(n6.c,o2.c,v9)
+o6=A.A(n6.d,o2.d,v9)
+o7=A.A(n6.e,o2.e,v9)
+o8=A.A(n6.f,o2.f,v9)
+o9=A.A(n6.r,o2.r,v9)
+p0=A.A(n6.w,o2.w,v9)
+p1=A.A(n6.x,o2.x,v9)
+p2=A.A(n6.y,o2.y,v9)
+p3=A.A(n6.z,o2.z,v9)
+p4=A.A(n6.Q,o2.Q,v9)
+p5=A.A(n6.as,o2.as,v9)
+p6=A.A(n6.at,o2.at,v9)
 p7=r?n6.ax:o2.ax
 p8=r?n6.ay:o2.ay
 p9=r?n6.ch:o2.ch
@@ -47844,9 +47844,9 @@ q9=r?n6.go:o2.go
 n6=r?n6.id:o2.id
 o2=v8.cL
 r0=s.cL
-r1=A.B(o2.a,r0.a,v9)
-r2=A.B(o2.b,r0.b,v9)
-r3=A.B(o2.c,r0.c,v9)
+r1=A.A(o2.a,r0.a,v9)
+r2=A.A(o2.b,r0.b,v9)
+r3=A.A(o2.c,r0.c,v9)
 r4=A.bC(o2.d,r0.d,v9)
 r5=A.a9(o2.e,r0.e,v9)
 r6=A.f2(o2.f,r0.f,v9)
@@ -47866,10 +47866,10 @@ r7=v8.aC
 s2=s.aC
 s3=A.Va(r7.a,s2.a,v9)
 s4=r?r7.b:s2.b
-s5=A.B(r7.c,s2.c,v9)
+s5=A.A(r7.c,s2.c,v9)
 s6=A.ef(r7.d,s2.d,v9)
 s7=A.bC(r7.e,s2.e,v9)
-s8=A.B(r7.f,s2.f,v9)
+s8=A.A(r7.f,s2.f,v9)
 s9=A.bC(r7.r,s2.r,v9)
 t0=r?r7.x:s2.x
 t1=r?r7.y:s2.y
@@ -47887,15 +47887,15 @@ else if(t6==null)t6=t5.ay
 else{t7=t5.ay
 if(!(t7==null)){t6.toString
 t7.toString
-t6=A.aQ(t6,t7,v9)}}t7=A.B(t4.a,t5.a,v9)
-t8=A.B(t4.b,t5.b,v9)
-t9=A.B(t4.c,t5.c,v9)
-u0=A.B(t4.d,t5.d,v9)
-u1=A.B(t4.e,t5.e,v9)
-u2=A.B(t4.f,t5.f,v9)
-u3=A.B(t4.r,t5.r,v9)
-u4=A.B(t4.w,t5.w,v9)
-u5=A.B(t4.x,t5.x,v9)
+t6=A.aQ(t6,t7,v9)}}t7=A.A(t4.a,t5.a,v9)
+t8=A.A(t4.b,t5.b,v9)
+t9=A.A(t4.c,t5.c,v9)
+u0=A.A(t4.d,t5.d,v9)
+u1=A.A(t4.e,t5.e,v9)
+u2=A.A(t4.f,t5.f,v9)
+u3=A.A(t4.r,t5.r,v9)
+u4=A.A(t4.w,t5.w,v9)
+u5=A.A(t4.x,t5.x,v9)
 u6=A.bC(t4.y,t5.y,v9)
 u7=A.bC(t4.z,t5.z,v9)
 u8=A.bC(t4.Q,t5.Q,v9)
@@ -47912,7 +47912,7 @@ v2=v8.iE
 v2.toString
 v3=s.iE
 v3.toString
-v3=A.B(v2,v3,v9)
+v3=A.A(v2,v3,v9)
 v2=r?v8.kW:s.kW
 v4=A.my(v8.e1,s.e1,v9)
 v5=A.iO(v8.f3,s.f3,v9)
@@ -47920,7 +47920,7 @@ v6=v8.f4
 v6.toString
 v7=s.f4
 v7.toString
-v7=A.B(v6,v7,v9)
+v7=A.A(v6,v7,v9)
 v6=r?v8.ac:s.ac
 v8=r?v8.jB:s.jB
 return A.amj(v3,v2,v5,v4,v8,new A.ux(e2,e1,e4,e5,e6,e7,e8,e9,f0,f1,f2,f3,f4,f5,f6,f7,f8,d5),q,a5,new A.wR(g0,g1,g2,g3,e3),a8,new A.uF(g5,g6,f9),new A.uG(g8,g9,h0,h1,h2,h3,h4,h5,h6,h7,h8,h9,i0,g4),g7,i1,v7,i2,a9,b0,new A.uS(i5,i6,i7,i8,i9,j0,i3),new A.uT(j2,j3,j4,j5,j6,j7,j8,k0,i4),j1,b1,p,new A.vk(k3,k4,k5,k6,k7,k8,k9,l0,l1,l2,k2),b2,new A.vo(l4,l5,l6,l7,l9,m0,k1,l8),b3,b4,new A.vq(m2,m3,m4,m5,l3),m1,m6,b5,m7,o,!0,m8,b6,b7,b8,b9,d1,c0,n,m9,m,n0,n1,n2,l,k,n3,c1,v6,c2,c3,d2,d3,n4,new A.xN(n7,n8,o0,o1,n9,n5),c4,new A.yo(g,f,h,e,d,c,b,a0,a1,a2,a3,a4,j),c5,c6,c7,new A.yC(o3,o4,o5,o6,o7,o8,o9,p0,p1,p2,p3,p4,p5,p6,p7,p8,p9,q0,q1,q2,q3,q4,q5,q6,q7,q8,q9,n6),new A.yD(r1,r2,r3,r4,r5,r6,o2),c8,i,new A.yQ(r8,r9,s0,s1,a,r0),new A.yS(s3,s4,s5,s6,s7,s8,s9,new A.A5(r7.w,s2.w,v9),t0,t1),t2,t3,d4,new A.z3(t7,t8,t9,u0,u1,u2,u3,u4,u5,u6,u7,u8,u9,v0,j9,t6,t4),t5,c9,v1,new A.zd(d7,d8,d9,e0,d6),d0,!1,new A.kM(a7,a6))}}
@@ -48745,7 +48745,7 @@ q.er(r.Z(b).c8(a))
 return q}r=A.cj()
 r.jn(a)
 return r}},
-aS(a,b){var s=this,r=null,q=A.B(r,s.a,b),p=A.aoC(r,s.c,b),o=A.nb(r,s.d,b),n=A.aoE(r,s.e,b)
+aS(a,b){var s=this,r=null,q=A.A(r,s.a,b),p=A.aoC(r,s.c,b),o=A.nb(r,s.d,b),n=A.aoE(r,s.e,b)
 return new A.an(q,s.b,p,o,n,r,s.w)},
 gAs(){return this.e!=null},
 cA(a,b){if(a==null)return this.aS(0,b)
@@ -71058,7 +71058,7 @@ r(A,"aGi","amV",479)
 k(A,"aGp",2,null,["$1$2","$2"],["au6",function(a,b){return A.au6(a,b,t.Ci)}],480,1)
 k(A,"anG",3,null,["$3"],["aBb"],481,0)
 k(A,"auB",3,null,["$3"],["a9"],482,0)
-k(A,"ew",3,null,["$3"],["B"],483,0)
+k(A,"ew",3,null,["$3"],["A"],483,0)
 p(A.Ba.prototype,"gKL","c7",19)
 q(A.kQ.prototype,"gEA","TH",0)
 l(A.zu.prototype,"gz2","z3",135)
@@ -75360,7 +75360,7 @@ return A.a([A.a([""],s),A.a([""],s),A.a([""],s),A.a([""],s),A.a([""],s),A.a([""]
 $.jU=A.a(["Y2Fub2U=","bWFwbGU=","aW51aXQ=","cGxhaWQ=","aWdsb28=","aG9zZXI=","c3lydXA=","YmFjb24=","c29ycnk=","d2hhbGU=","bm9ydGg=","YWJvb3Q=","YmFuZmY=","ZmFsbHM=","dG90ZW0=","cXVlZW4=","bG9vbnM=","bWV0aXM=","dG9xdWU=","Y2FuYWw=","Y3J1ZGU=","Z29vc2U=","bGFrZXM=","Y3Jvd24=","c3B1ZHM=","cm9vdHM=","c25vd3k=","eXVrb24=","cG9sYXI=","Ymlzb24=","dG93ZXI=","YmVhcnM=","bGVhZnM=","d2hlYXQ=","cGFya3M=","a2F5YWs=","bW9vc2U=","cHJpZGU=","cm9ja3k=","c2NvZmY=","Y2FiaW4=","YmVlcnM=","cGFya2E=","cmlua3M=","ZnJpZXM=","Y29hc3Q=","b3JkZXI=","cGhvbmU=","YmlyY2g=","cG9ydHM=","ZGFpcnk=","c2thdGU=","ZmFybXM=","cml2ZXI=","c3BvcnQ=","Z2xvYmU=","Y3VyZHM=","Zm94ZXM=","Y3JvcHM=","Y2FtcHM=","cm9kZW8=","dHJhZGU=","cGVhY2U=","bWluZXM=","c2hvcmU=","Y2VkYXI=","bGFyZ2U=","YnJpZXI=","dGlkZXM=","a2xpY2s=","ZGVuaW0=","c2hpcHM=","cG9wcHk=","Y291cnQ=","bG9kZ2U=","b2NlYW4=","cnVnYnk=","bWV0cmU=","ZWxkZXI=","c3BhY2U=","aG9yc2U=","Zm9nZ3k=","dGF4ZXM=","dHJhaW4=","bXVzaWM=","bWl0dHM=","Z3JhaW4=","cm91Z2U=","dHVsaXA=","d2luZXM=","c2VyZ2U=","cnVyYWw=","dHJvb3A=","anVub3M=","dHJhY2s=","c3Vubnk=","em9uZXM=","YmVhY2g=","c2tpZXI=","Z3VhcmQ=","ZXhwb3M=","aHlkcm8=","dHJhaWw=","ZHVja3M=","d2F0ZXI=","Ym9vdHM=","dGFydHM=","YXBwbGU=","aG9vcHM=","dGFpZ2E=","c3RlZWw=","Z2FtZXM=","ZWxlY3Q=","dHJlZXM=","ZmllbGQ=","cHJpbWU=","Y2hpcHM=","cGFnZXI=","ZG9udXQ=","c2NyZXc=","Y2hpZWY=","cGVha3M=","YXJlbmE=","c2xlZHM=","aG91c2U=","YmFnZWw=","Zm9yY2U=","cm93ZXI=","cmFkaW8=","bGl0cmU=","cm95YWw=","YmVhZHM=","Y2xvY2s=","dHJvdXQ=","c3RpY2s=","ZGlub3M=","c3Rvcm0=","cGl6emE=","dGFmZnk=","Z3JlYXQ=","cHVja3M=","cHJvdWQ=","U1BJS0U=","UklER0U=","R0VFU0U=","UkVJR04=","VVBQRVI=","UExBSU4=","TU9ORVk=","SFVST04=","TEFHRVI=","RE9NRVM=","U1BJTEU=","Q0FORFk=","VE9OTkU=","Uk9DS1M=","UVVJTFQ=","RkxBTUU=","TEFSQ0g=","Q1JFRUs=","T1JDQVM=","U0VWRU4=","Vk9URVI=","QkFTSU4=","V0FMTFM=","UExBTkU=","R1JBVlk=","UElOR08=","QklMTFM=","UkFWRU4=","QlJBSU4=","UE9JTlQ=","Uk9QRVI=","U0VBTFM=","RkxFRVQ=","U01BUlQ=","Q0VMTFM=","U0hFRVA=","UElBTk8=","RkVSUlk=","U0VSVkU=","UEVSQ0g=","QVJHT1M=","Q0lERVI="],t.s)
 $.ayp=A.a(["cigar","rebut","sissy","humph","awake","blush","focal","evade","naval","serve","heath","dwarf","model","karma","stink","grade","quiet","bench","abate","feign","major","death","fresh","crust","stool","colon","abase","marry","react","batty","pride","floss","helix","croak","staff","paper","unfed","whelp","trawl","outdo","adobe","crazy","sower","repay","digit","crate","cluck","spike","mimic","pound","maxim","linen","unmet","flesh","booby","forth","first","stand","belly","ivory","seedy","print","yearn","drain","bribe","stout","panel","crass","flume","offal","agree","error","swirl","argue","bleed","delta","flick","totem","wooer","front","shrub","parry","biome","lapel","start","greet","goner","golem","lusty","loopy","round","audit","lying","gamma","labor","islet","civic","forge","corny","moult","basic","salad","agate","spicy","spray","essay","fjord","spend","kebab","guild","aback","motor","alone","hatch","hyper","thumb","dowry","ought","belch","dutch","pilot","tweed","comet","jaunt","enema","steed","abyss","growl","fling","dozen","boozy","erode","world","gouge","click","briar","great","altar","pulpy","blurt","coast","duchy","groin","fixer","group","rogue","badly","smart","pithy","gaudy","chill","heron","vodka","finer","surer","radio","rouge","perch","retch","wrote","clock","tilde","store","prove","bring","solve","cheat","grime","exult","usher","epoch","triad","break","rhino","viral","conic","masse","sonic","vital","trace","using","peach","champ","baton","brake","pluck","craze","gripe","weary","picky","acute","ferry","aside","tapir","troll","unify","rebus","boost","truss","siege","tiger","banal","slump","crank","gorge","query","drink","favor","abbey","tangy","panic","solar","shire","proxy","point","robot","prick","wince","crimp","knoll","sugar","whack","mount","perky","could","wrung","light","those","moist","shard","pleat","aloft","skill","elder","frame","terry","canoe","maple","inuit","plaid","igloo","hoser","syrup","bacon","sorry","whale","north","aboot","banff","falls","totem","queen","loons","metis","toque","canal","crude","goose","lakes","crown","spuds","roots","snowy","yukon","polar","bison","tower","bears","leafs","wheat","parks","kayak","moose","pride","rocky","scoff","cabin","beers","parka","rinks","fries","coast","order","phone","birch","ports","dairy","skate","farms","river","sport","globe","curds","foxes","crops","camps","rodeo","trade","peace","mines","shore","cedar","large","brier","tides","klick","denim","ships","poppy","court","lodge","ocean","rugby","metre","elder","space","horse","foggy","taxes","train","music","mitts","grain","rouge","tulip","wines","serge","rural","troop","junos","track","sunny","zones","beach","skier","guard","expos","hydro","trail","ducks","water","boots","tarts","apple","hoops","taiga","steel","games","elect","trees","field","prime","chips","pager","donut","screw","chief","peaks","arena","sleds","house","bagel","force","rower","radio","litre","royal","beads","clock","pizza","stick","dinos","storm","lager","taffy","great","pucks","proud","argos","gimli","comox","digby","edson","essex","gaspe","leduc","magog","perth","truro","sioux","haida","huron","odawa","rouyn","madam","night","bland","liver","wedge","augur","roomy","wacky","flock","angry","bobby","trite","aphid","tryst","midge","power","elope","cinch","motto","stomp","upset","bluff","cramp","quart","coyly","youth","rhyme","buggy","alien","smear","unfit","patty","cling","glean","label","hunky","khaki","poker","gruel","twice","twang","shrug","treat","unlit","waste","merit","woven","octal","needy","clown","widow","irony","ruder","gauze","chief","onset","prize","fungi","charm","gully","inter","whoop","taunt","leery","class","theme","lofty","tibia","booze","alpha","thyme","eclat","doubt","parer","chute","stick","trice","alike","sooth","recap","saint","liege","glory","grate","admit","brisk","soggy","usurp","scald","scorn","leave","twine","sting","bough","marsh","sloth","dandy","vigor","howdy","enjoy","valid","ionic","equal","unset","floor","catch","spade","stein","exist","quirk","denim","grove","spiel","mummy","fault","foggy","flout","carry","sneak","libel","waltz","aptly","piney","inept","aloud","photo","dream","stale","vomit","ombre","fanny","unite","snarl","baker","there","glyph","pooch","hippy","spell","folly","louse","gulch","vault","godly","threw","fleet","grave","inane","shock","crave","spite","valve","skimp","claim","rainy","musty","pique","daddy","quasi","arise","aging","valet","opium","avert","stuck","recut","mulch","genre","plume","rifle","count","incur","total","wrest","mocha","deter","study","lover","safer","rivet","funny","smoke","mound","undue","sedan","pagan","swine","guile","gusty","equip","tough","canoe","chaos","covet","human","udder","lunch","blast","stray","manga","melee","lefty","quick","paste","given","octet","risen","groan","leaky","grind","carve","loose","sadly","spilt","apple","slack","honey","final","sheen","eerie","minty","slick","derby","wharf","spelt","coach","erupt","singe","price","spawn","fairy","jiffy","filmy","stack","chose","sleep","ardor","nanny","niece","woozy","handy","grace","ditto","stank","cream","usual","diode","valor","angle","ninja","muddy","chase","reply","prone","spoil","heart","shade","diner","arson","onion","sleet","dowel","couch","palsy","bowel","smile","evoke","creek","lance","eagle","idiot","siren","built","embed","award","dross","annul","goody","frown","patio","laden","humid","elite","lymph","edify","might","reset","visit","gusto","purse","vapor","crock","write","sunny","loath","chaff","slide","queer","venom","stamp","sorry","still","acorn","aping","pushy","tamer","hater","mania","awoke","brawn","swift","exile","birch","lucky","freer","risky","ghost","plier","lunar","winch","snare","nurse","house","borax","nicer","lurch","exalt","about","savvy","toxin","tunic","pried","inlay","chump","lanky","cress","eater","elude","cycle","kitty","boule","moron","tenet","place","lobby","plush","vigil","index","blink","clung","qualm","croup","clink","juicy","stage","decay","nerve","flier","shaft","crook","clean","china","ridge","vowel","gnome","snuck","icing","spiny","rigor","snail","flown","rabid","prose","thank","poppy","budge","fiber","moldy","dowdy","kneel","track","caddy","quell","dumpy","paler","swore","rebar","scuba","splat","flyer","horny","mason","doing","ozone","amply","molar","ovary","beset","queue","cliff","magic","truce","sport","fritz","edict","twirl","verse","llama","eaten","range","whisk","hovel","rehab","macaw","sigma","spout","verve","sushi","dying","fetid","brain","buddy","thump","scion","candy","chord","basin","march","crowd","arbor","gayly","musky","stain","dally","bless","bravo","stung","title","ruler","kiosk","blond","ennui","layer","fluid","tatty","score","cutie","zebra","barge","matey","bluer","aider","shook","river","privy","betel","frisk","bongo","begun","azure","weave","genie","sound","glove","braid","scope","wryly","rover","assay","ocean","bloom","irate","later","woken","silky","wreck","dwelt","slate","smack","solid","amaze","hazel","wrist","jolly","globe","flint","rouse","civil","vista","relax","cover","alive","beech","jetty","bliss","vocal","often","dolly","eight","joker","since","event","ensue","shunt","diver","poser","worst","sweep","alley","creed","anime","leafy","bosom","dunce","stare","pudgy","waive","choir","stood","spoke","outgo","delay","bilge","ideal","clasp","seize","hotly","laugh","sieve","block","meant","grape","noose","hardy","shied","drawl","daisy","putty","strut","burnt","tulip","crick","idyll","vixen","furor","geeky","cough","naive","shoal","stork","bathe","aunty","check","prime","brass","outer","furry","razor","elect","evict","imply","demur","quota","haven","cavil","swear","crump","dough","gavel","wagon","salon","nudge","harem","pitch","sworn","pupil","excel","stony","cabin","unzip","queen","trout","polyp","earth","storm","until","taper","enter","child","adopt","minor","fatty","husky","brave","filet","slime","glint","tread","steal","regal","guest","every","murky","share","spore","hoist","buxom","inner","otter","dimly","level","sumac","donut","stilt","arena","sheet","scrub","fancy","slimy","pearl","silly","porch","dingo","sepia","amble","shady","bread","friar","reign","dairy","quill","cross","brood","tuber","shear","posit","blank","villa","shank","piggy","freak","which","among","fecal","shell","would","algae","large","rabbi","agony","amuse","bushy","copse","swoon","knife","pouch","ascot","plane","crown","urban","snide","relay","abide","viola","rajah","straw","dilly","crash","amass","third","trick","tutor","woody","blurb","grief","disco","where","sassy","beach","sauna","comic","clued","creep","caste","graze","snuff","frock","gonad","drunk","prong","lurid","steel","halve","buyer","vinyl","utile","smell","adage","worry","tasty","local","trade","finch","ashen","modal","gaunt","clove","enact","adorn","roast","speck","sheik","missy","grunt","snoop","party","touch","mafia","emcee","array","south","vapid","jelly","skulk","angst","tubal","lower","crest","sweat","cyber","adore","tardy","swami","notch","groom","roach","hitch","young","align","ready","frond","strap","puree","realm","venue","swarm","offer","seven","dryer","diary","dryly","drank","acrid","heady","theta","junto","pixie","quoth","bonus","shalt","penne","amend","datum","build","piano","shelf","lodge","suing","rearm","coral","ramen","worth","psalm","infer","overt","mayor","ovoid","glide","usage","poise","randy","chuck","prank","fishy","tooth","ether","drove","idler","swath","stint","while","begat","apply","slang","tarot","radar","credo","aware","canon","shift","timer","bylaw","serum","three","steak","iliac","shirk","blunt","puppy","penal","joist","bunny","shape","beget","wheel","adept","stunt","stole","topaz","chore","fluke","afoot","bloat","bully","dense","caper","sneer","boxer","jumbo","lunge","space","avail","short","slurp","loyal","flirt","pizza","conch","tempo","droop","plate","bible","plunk","afoul","savoy","steep","agile","stake","dwell","knave","beard","arose","motif","smash","broil","glare","shove","baggy","mammy","swamp","along","rugby","wager","quack","squat","snaky","debit","mange","skate","ninth","joust","tramp","spurn","medal","micro","rebel","flank","learn","nadir","maple","comfy","remit","gruff","ester","least","mogul","fetch","cause","oaken","aglow","meaty","gaffe","shyly","racer","prowl","thief","stern","poesy","rocky","tweet","waist","spire","grope","havoc","patsy","truly","forty","deity","uncle","swish","giver","preen","bevel","lemur","draft","slope","annoy","lingo","bleak","ditty","curly","cedar","dirge","grown","horde","drool","shuck","crypt","cumin","stock","gravy","locus","wider","breed","quite","chafe","cache","blimp","deign","fiend","logic","cheap","elide","rigid","false","renal","pence","rowdy","shoot","blaze","envoy","posse","brief","never","abort","mouse","mucky","sulky","fiery","media","trunk","yeast","clear","skunk","scalp","bitty","cider","koala","duvet","segue","creme","super","grill","after","owner","ember","reach","nobly","empty","speed","gipsy","recur","smock","dread","merge","burst","kappa","amity","shaky","hover","carol","snort","synod","faint","haunt","flour","chair","detox","shrew","tense","plied","quark","burly","novel","waxen","stoic","jerky","blitz","beefy","lyric","hussy","towel","quilt","below","bingo","wispy","brash","scone","toast","easel","saucy","value","spice","honor","route","sharp","bawdy","radii","skull","phony","issue","lager","swell","urine","gassy","trial","flora","upper","latch","wight","brick","retry","holly","decal","grass","shack","dogma","mover","defer","sober","optic","crier","vying","nomad","flute","hippo","shark","drier","obese","bugle","tawny","chalk","feast","ruddy","pedal","scarf","cruel","bleat","tidal","slush","semen","windy","dusty","sally","igloo","nerdy","jewel","shone","whale","hymen","abuse","fugue","elbow","crumb","pansy","welsh","syrup","terse","suave","gamut","swung","drake","freed","afire","shirt","grout","oddly","tithe","plaid","dummy","broom","blind","torch","enemy","again","tying","pesky","alter","gazer","noble","ethos","bride","extol","decor","hobby","beast","idiom","utter","these","sixth","alarm","erase","elegy","spunk","piper","scaly","scold","hefty","chick","sooty","canal","whiny","slash","quake","joint","swept","prude","heavy","wield","femme","lasso","maize","shale","screw","spree","smoky","whiff","scent","glade","spent","prism","stoke","riper","orbit","cocoa","guilt","humus","shush","table","smirk","wrong","noisy","alert","shiny","elate","resin","whole","hunch","pixel","polar","hotel","sword","cleat","mango","rumba","puffy","filly","billy","leash","clout","dance","ovate","facet","chili","paint","liner","curio","salty","audio","snake","fable","cloak","navel","spurt","pesto","balmy","flash","unwed","early","churn","weedy","stump","lease","witty","wimpy","spoof","saner","blend","salsa","thick","warty","manic","blare","squib","spoon","probe","crepe","knack","force","debut","order","haste","teeth","agent","widen","icily","slice","ingot","clash","juror","blood","abode","throw","unity","pivot","slept","troop","spare","sewer","parse","morph","cacti","tacky","spool","demon","moody","annex","begin","fuzzy","patch","water","lumpy","admin","omega","limit","tabby","macho","aisle","skiff","basis","plank","verge","botch","crawl","lousy","slain","cubic","raise","wrack","guide","foist","cameo","under","actor","revue","fraud","harpy","scoop","climb","refer","olden","clerk","debar","tally","ethic","cairn","tulle","ghoul","hilly","crude","apart","scale","older","plain","sperm","briny","abbot","rerun","quest","crisp","bound","befit","drawn","suite","itchy","cheer","bagel","guess","broad","axiom","chard","caput","leant","harsh","curse","proud","swing","opine","taste","lupus","gumbo","miner","green","chasm","lipid","topic","armor","brush","crane","mural","abled","habit","bossy","maker","dusky","dizzy","lithe","brook","jazzy","fifty","sense","giant","surly","legal","fatal","flunk","began","prune","small","slant","scoff","torus","ninny","covey","viper","taken","moral","vogue","owing","token","entry","booth","voter","chide","elfin","ebony","neigh","minim","melon","kneed","decoy","voila","ankle","arrow","mushy","tribe","cease","eager","birth","graph","odder","terra","weird","tried","clack","color","rough","weigh","uncut","ladle","strip","craft","minus","dicey","titan","lucid","vicar","dress","ditch","gypsy","pasta","taffy","flame","swoop","aloof","sight","broke","teary","chart","sixty","wordy","sheer","leper","nosey","bulge","savor","clamp","funky","foamy","toxic","brand","plumb","dingy","butte","drill","tripe","bicep","tenor","krill","worse","drama","hyena","think","ratio","cobra","basil","scrum","bused","phone","court","camel","proof","heard","angel","petal","pouty","throb","maybe","fetal","sprig","spine","shout","cadet","macro","dodgy","satyr","rarer","binge","trend","nutty","leapt","amiss","split","myrrh","width","sonar","tower","baron","fever","waver","spark","belie","sloop","expel","smote","baler","above","north","wafer","scant","frill","awash","snack","scowl","frail","drift","limbo","fence","motel","ounce","wreak","revel","talon","prior","knelt","cello","flake","debug","anode","crime","salve","scout","imbue","pinky","stave","vague","chock","fight","video","stone","teach","cleft","frost","prawn","booty","twist","apnea","stiff","plaza","ledge","tweak","board","grant","medic","bacon","cable","brawl","slunk","raspy","forum","drone","women","mucus","boast","toddy","coven","tumor","truer","wrath","stall","steam","axial","purer","daily","trail","niche","mealy","juice","nylon","plump","merry","flail","papal","wheat","berry","cower","erect","brute","leggy","snipe","sinew","skier","penny","jumpy","rally","umbra","scary","modem","gross","avian","greed","satin","tonic","parka","sniff","livid","stark","trump","giddy","reuse","taboo","avoid","quote","devil","liken","gloss","gayer","beret","noise","gland","dealt","sling","rumor","opera","thigh","tonga","flare","wound","white","bulky","etude","horse","circa","paddy","inbox","fizzy","grain","exert","surge","gleam","belle","salvo","crush","fruit","sappy","taker","tract","ovine","spiky","frank","reedy","filth","spasm","heave","mambo","right","clank","trust","lumen","borne","spook","sauce","amber","lathe","carat","corer","dirty","slyly","affix","alloy","taint","sheep","kinky","wooly","mauve","flung","yacht","fried","quail","brunt","grimy","curvy","cagey","rinse","deuce","state","grasp","milky","bison","graft","sandy","baste","flask","hedge","girly","swash","boney","coupe","endow","abhor","welch","blade","tight","geese","miser","mirth","cloud","cabal","leech","close","tenth","pecan","droit","grail","clone","guise","ralph","tango","biddy","smith","mower","payee","serif","drape","fifth","spank","glaze","allot","truck","kayak","virus","testy","tepee","fully","zonal","metro","curry","grand","banjo","axion","bezel","occur","chain","nasal","gooey","filer","brace","allay","pubic","raven","plead","gnash","flaky","munch","dully","eking","thing","slink","hurry","theft","shorn","pygmy","ranch","wring","lemon","shore","mamma","froze","newer","style","moose","antic","drown","vegan","chess","guppy","union","lever","lorry","image","cabby","druid","exact","truth","dopey","spear","cried","chime","crony","stunk","timid","batch","gauge","rotor","crack","curve","latte","witch","bunch","repel","anvil","soapy","meter","broth","madly","dried","scene","known","magma","roost","woman","thong","punch","pasty","downy","knead","whirl","rapid","clang","anger","drive","goofy","email","music","stuff","bleep","rider","mecca","folio","setup","verso","quash","fauna","gummy","happy","newly","fussy","relic","guava","ratty","fudge","femur","chirp","forte","alibi","whine","petty","golly","plait","fleck","felon","gourd","brown","thrum","ficus","stash","decry","wiser","junta","visor","daunt","scree","impel","await","press","whose","turbo","stoop","speak","mangy","eying","inlet","crone","pulse","mossy","staid","hence","pinch","teddy","sully","snore","ripen","snowy","attic","going","leach","mouth","hound","clump","tonal","bigot","peril","piece","blame","haute","spied","undid","intro","basal","shine","gecko","rodeo","guard","steer","loamy","scamp","scram","manly","hello","vaunt","organ","feral","knock","extra","condo","adapt","willy","polka","rayon","skirt","faith","torso","match","mercy","tepid","sleek","riser","twixt","peace","flush","catty","login","eject","roger","rival","untie","refit","aorta","adult","judge","rower","artsy","rural","shave","humor","pause","ulcer","ultra","robin","cynic","agora","aroma","caulk","shake","pupal","dodge","swill","tacit","other","thorn","trove","bloke","vivid","spill","chant","choke","rupee","nasty","mourn","ahead","brine","cloth","hoard","sweet","month","lapse","watch","today","focus","smelt","tease","cater","movie","lynch","saute","allow","renew","their","slosh","purge","chest","depot","epoxy","nymph","found","shall","harry","stove","lowly","snout","trope","fewer","shawl","natal","fibre","comma","foray","scare","stair","black","squad","royal","chunk","mince","slave","shame","cheek","ample","flair","foyer","cargo","oxide","plant","olive","inert","askew","heist","shown","zesty","hasty","trash","fella","larva","forgo","story","hairy","train","homer","badge","midst","canny","fetus","butch","farce","slung","tipsy","metal","yield","delve","being","scour","glass","gamer","scrap","money","hinge","album","vouch","asset","tiara","crept","bayou","atoll","manor","creak","showy","phase","froth","depth","gloom","flood","trait","girth","piety","payer","goose","float","donor","atone","primo","apron","blown","cacao","loser","input","gloat","awful","brink","smite","beady","rusty","retro","droll","gawky","hutch","pinto","gaily","egret","lilac","sever","field","fluff","hydro","flack","agape","wench","voice","stead","stalk","berth","aahed","aalii","aargh","aarti","abaca","abaci","abacs","abaft","abaka","abamp","aband","abash","abask","abaya","abbas","abbed","abbes","abcee","abeam","abear","abele","abers","abets","abies","abler","ables","ablet","ablow","abmho","abohm","aboil","aboma","aboon","abord","abore","abram","abray","abrim","abrin","abris","absey","absit","abuna","abune","abuts","abuzz","abyes","abysm","acais","acari","accas","accoy","acerb","acers","aceta","achar","ached","aches","achoo","acids","acidy","acing","acini","ackee","acker","acmes","acmic","acned","acnes","acock","acold","acred","acres","acros","acted","actin","acton","acyls","adaws","adays","adbot","addax","added","adder","addio","addle","adeem","adhan","adieu","adios","adits","adman","admen","admix","adobo","adown","adoze","adrad","adred","adsum","aduki","adunc","adust","advew","adyta","adzed","adzes","aecia","aedes","aegis","aeons","aerie","aeros","aesir","afald","afara","afars","afear","aflaj","afore","afrit","afros","agama","agami","agars","agast","agave","agaze","agene","agers","agger","aggie","aggri","aggro","aggry","aghas","agila","agios","agism","agist","agita","aglee","aglet","agley","agloo","aglus","agmas","agoge","agone","agons","agood","agria","agrin","agros","agued","agues","aguna","aguti","aheap","ahent","ahigh","ahind","ahing","ahint","ahold","ahull","ahuru","aidas","aided","aides","aidoi","aidos","aiery","aigas","aight","ailed","aimed","aimer","ainee","ainga","aioli","aired","airer","airns","airth","airts","aitch","aitus","aiver","aiyee","aizle","ajies","ajiva","ajuga","ajwan","akees","akela","akene","aking","akita","akkas","alaap","alack","alamo","aland","alane","alang","alans","alant","alapa","alaps","alary","alate","alays","albas","albee","alcid","alcos","aldea","alder","aldol","aleck","alecs","alefs","aleft","aleph","alews","aleye","alfas","algal","algas","algid","algin","algor","algum","alias","alifs","aline","alist","aliya","alkie","alkos","alkyd","alkyl","allee","allel","allis","allod","allyl","almah","almas","almeh","almes","almud","almug","alods","aloed","aloes","aloha","aloin","aloos","alowe","altho","altos","alula","alums","alure","alvar","alway","amahs","amain","amate","amaut","amban","ambit","ambos","ambry","ameba","ameer","amene","amens","ament","amias","amice","amici","amide","amido","amids","amies","amiga","amigo","amine","amino","amins","amirs","amlas","amman","ammon","ammos","amnia","amnic","amnio","amoks","amole","amort","amour","amove","amowt","amped","ampul","amrit","amuck","amyls","anana","anata","ancho","ancle","ancon","andro","anear","anele","anent","angas","anglo","anigh","anile","anils","anima","animi","anion","anise","anker","ankhs","ankus","anlas","annal","annas","annat","anoas","anole","anomy","ansae","antae","antar","antas","anted","antes","antis","antra","antre","antsy","anura","anyon","apace","apage","apaid","apayd","apays","apeak","apeek","apers","apert","apery","apgar","aphis","apian","apiol","apish","apism","apode","apods","apoop","aport","appal","appay","appel","appro","appui","appuy","apres","apses","apsis","apsos","apted","apter","aquae","aquas","araba","araks","arame","arars","arbas","arced","archi","arcos","arcus","ardeb","ardri","aread","areae","areal","arear","areas","areca","aredd","arede","arefy","areic","arene","arepa","arere","arete","arets","arett","argal","argan","argil","argle","argol","argon","argot","argus","arhat","arias","ariel","ariki","arils","ariot","arish","arked","arled","arles","armed","armer","armet","armil","arnas","arnut","aroba","aroha","aroid","arpas","arpen","arrah","arras","arret","arris","arroz","arsed","arses","arsey","arsis","artal","artel","artic","artis","aruhe","arums","arval","arvee","arvos","aryls","asana","ascon","ascus","asdic","ashed","ashes","ashet","asked","asker","askoi","askos","aspen","asper","aspic","aspie","aspis","aspro","assai","assam","asses","assez","assot","aster","astir","astun","asura","asway","aswim","asyla","ataps","ataxy","atigi","atilt","atimy","atlas","atman","atmas","atmos","atocs","atoke","atoks","atoms","atomy","atony","atopy","atria","atrip","attap","attar","atuas","audad","auger","aught","aulas","aulic","auloi","aulos","aumil","aunes","aunts","aurae","aural","aurar","auras","aurei","aures","auric","auris","aurum","autos","auxin","avale","avant","avast","avels","avens","avers","avgas","avine","avion","avise","aviso","avize","avows","avyze","awarn","awato","awave","aways","awdls","aweel","aweto","awing","awmry","awned","awner","awols","awork","axels","axile","axils","axing","axite","axled","axles","axman","axmen","axoid","axone","axons","ayahs","ayaya","ayelp","aygre","ayins","ayont","ayres","ayrie","azans","azide","azido","azine","azlon","azoic","azole","azons","azote","azoth","azuki","azurn","azury","azygy","azyme","azyms","baaed","baals","babas","babel","babes","babka","baboo","babul","babus","bacca","bacco","baccy","bacha","bachs","backs","baddy","baels","baffs","baffy","bafts","baghs","bagie","bahts","bahus","bahut","bails","bairn","baisa","baith","baits","baiza","baize","bajan","bajra","bajri","bajus","baked","baken","bakes","bakra","balas","balds","baldy","baled","bales","balks","balky","balls","bally","balms","baloo","balsa","balti","balun","balus","bambi","banak","banco","bancs","banda","bandh","bands","bandy","baned","banes","bangs","bania","banks","banns","bants","bantu","banty","banya","bapus","barbe","barbs","barby","barca","barde","bardo","bards","bardy","bared","barer","bares","barfi","barfs","baric","barks","barky","barms","barmy","barns","barny","barps","barra","barre","barro","barry","barye","basan","based","basen","baser","bases","basho","basij","basks","bason","basse","bassi","basso","bassy","basta","basti","basto","basts","bated","bates","baths","batik","batta","batts","battu","bauds","bauks","baulk","baurs","bavin","bawds","bawks","bawls","bawns","bawrs","bawty","bayed","bayer","bayes","bayle","bayts","bazar","bazoo","beads","beaks","beaky","beals","beams","beamy","beano","beans","beany","beare","bears","beath","beats","beaty","beaus","beaut","beaux","bebop","becap","becke","becks","bedad","bedel","bedes","bedew","bedim","bedye","beedi","beefs","beeps","beers","beery","beets","befog","begad","begar","begem","begot","begum","beige","beigy","beins","bekah","belah","belar","belay","belee","belga","bells","belon","belts","bemad","bemas","bemix","bemud","bends","bendy","benes","benet","benga","benis","benne","benni","benny","bento","bents","benty","bepat","beray","beres","bergs","berko","berks","berme","berms","berob","beryl","besat","besaw","besee","beses","besit","besom","besot","besti","bests","betas","beted","betes","beths","betid","beton","betta","betty","bever","bevor","bevue","bevvy","bewet","bewig","bezes","bezil","bezzy","bhais","bhaji","bhang","bhats","bhels","bhoot","bhuna","bhuts","biach","biali","bialy","bibbs","bibes","biccy","bices","bided","bider","bides","bidet","bidis","bidon","bield","biers","biffo","biffs","biffy","bifid","bigae","biggs","biggy","bigha","bight","bigly","bigos","bijou","biked","biker","bikes","bikie","bilbo","bilby","biled","biles","bilgy","bilks","bills","bimah","bimas","bimbo","binal","bindi","binds","biner","bines","bings","bingy","binit","binks","bints","biogs","biont","biota","biped","bipod","birds","birks","birle","birls","biros","birrs","birse","birsy","bises","bisks","bisom","bitch","biter","bites","bitos","bitou","bitsy","bitte","bitts","bivia","bivvy","bizes","bizzo","bizzy","blabs","blads","blady","blaer","blaes","blaff","blags","blahs","blain","blams","blart","blase","blash","blate","blats","blatt","blaud","blawn","blaws","blays","blear","blebs","blech","blees","blent","blert","blest","blets","bleys","blimy","bling","blini","blins","bliny","blips","blist","blite","blits","blive","blobs","blocs","blogs","blook","bloop","blore","blots","blows","blowy","blubs","blude","bluds","bludy","blued","blues","bluet","bluey","bluid","blume","blunk","blurs","blype","boabs","boaks","boars","boart","boats","bobac","bobak","bobas","bobol","bobos","bocca","bocce","bocci","boche","bocks","boded","bodes","bodge","bodhi","bodle","boeps","boets","boeuf","boffo","boffs","bogan","bogey","boggy","bogie","bogle","bogue","bogus","bohea","bohos","boils","boing","boink","boite","boked","bokeh","bokes","bokos","bolar","bolas","bolds","boles","bolix","bolls","bolos","bolts","bolus","bomas","bombe","bombo","bombs","bonce","bonds","boned","boner","bones","bongs","bonie","bonks","bonne","bonny","bonza","bonze","booai","booay","boobs","boody","booed","boofy","boogy","boohs","books","booky","bools","booms","boomy","boong","boons","boord","boors","boose","boots","boppy","borak","boral","boras","borde","bords","bored","boree","borel","borer","bores","borgo","boric","borks","borms","borna","boron","borts","borty","bortz","bosie","bosks","bosky","boson","bosun","botas","botel","botes","bothy","botte","botts","botty","bouge","bouks","boult","bouns","bourd","bourg","bourn","bouse","bousy","bouts","bovid","bowat","bowed","bower","bowes","bowet","bowie","bowls","bowne","bowrs","bowse","boxed","boxen","boxes","boxla","boxty","boyar","boyau","boyed","boyfs","boygs","boyla","boyos","boysy","bozos","braai","brach","brack","bract","brads","braes","brags","brail","braks","braky","brame","brane","brank","brans","brant","brast","brats","brava","bravi","braws","braxy","brays","braza","braze","bream","brede","breds","breem","breer","brees","breid","breis","breme","brens","brent","brere","brers","breve","brews","breys","brier","bries","brigs","briki","briks","brill","brims","brins","brios","brise","briss","brith","brits","britt","brize","broch","brock","brods","brogh","brogs","brome","bromo","bronc","brond","brool","broos","brose","brosy","brows","brugh","bruin","bruit","brule","brume","brung","brusk","brust","bruts","buats","buaze","bubal","bubas","bubba","bubbe","bubby","bubus","buchu","bucko","bucks","bucku","budas","budis","budos","buffa","buffe","buffi","buffo","buffs","buffy","bufos","bufty","buhls","buhrs","buiks","buist","bukes","bulbs","bulgy","bulks","bulla","bulls","bulse","bumbo","bumfs","bumph","bumps","bumpy","bunas","bunce","bunco","bunde","bundh","bunds","bundt","bundu","bundy","bungs","bungy","bunia","bunje","bunjy","bunko","bunks","bunns","bunts","bunty","bunya","buoys","buppy","buran","buras","burbs","burds","buret","burfi","burgh","burgs","burin","burka","burke","burks","burls","burns","buroo","burps","burqa","burro","burrs","burry","bursa","burse","busby","buses","busks","busky","bussu","busti","busts","busty","buteo","butes","butle","butoh","butts","butty","butut","butyl","buzzy","bwana","bwazi","byded","bydes","byked","bykes","byres","byrls","byssi","bytes","byway","caaed","cabas","caber","cabob","caboc","cabre","cacas","cacks","cacky","cadee","cades","cadge","cadgy","cadie","cadis","cadre","caeca","caese","cafes","caffs","caged","cager","cages","cagot","cahow","caids","cains","caird","cajon","cajun","caked","cakes","cakey","calfs","calid","calif","calix","calks","calla","calls","calms","calmy","calos","calpa","calps","calve","calyx","caman","camas","cames","camis","camos","campi","campo","camps","campy","camus","caned","caneh","caner","canes","cangs","canid","canna","canns","canso","canst","canto","cants","canty","capas","caped","capes","capex","caphs","capiz","caple","capon","capos","capot","capri","capul","carap","carbo","carbs","carby","cardi","cards","cardy","cared","carer","cares","caret","carex","carks","carle","carls","carns","carny","carob","carom","caron","carpi","carps","carrs","carse","carta","carte","carts","carvy","casas","casco","cased","cases","casks","casky","casts","casus","cates","cauda","cauks","cauld","cauls","caums","caups","cauri","causa","cavas","caved","cavel","caver","caves","cavie","cawed","cawks","caxon","ceaze","cebid","cecal","cecum","ceded","ceder","cedes","cedis","ceiba","ceili","ceils","celeb","cella","celli","cells","celom","celts","cense","cento","cents","centu","ceorl","cepes","cerci","cered","ceres","cerge","ceria","ceric","cerne","ceroc","ceros","certs","certy","cesse","cesta","cesti","cetes","cetyl","cezve","chace","chack","chaco","chado","chads","chaft","chais","chals","chams","chana","chang","chank","chape","chaps","chapt","chara","chare","chark","charr","chars","chary","chats","chave","chavs","chawk","chaws","chaya","chays","cheep","chefs","cheka","chela","chelp","chemo","chems","chere","chert","cheth","chevy","chews","chewy","chiao","chias","chibs","chica","chich","chico","chics","chiel","chiks","chile","chimb","chimo","chimp","chine","ching","chink","chino","chins","chips","chirk","chirl","chirm","chiro","chirr","chirt","chiru","chits","chive","chivs","chivy","chizz","choco","chocs","chode","chogs","choil","choko","choky","chola","choli","cholo","chomp","chons","choof","chook","choom","choon","chops","chota","chott","chout","choux","chowk","chows","chubs","chufa","chuff","chugs","chums","churl","churr","chuse","chuts","chyle","chyme","chynd","cibol","cided","cides","ciels","ciggy","cilia","cills","cimar","cimex","cinct","cines","cinqs","cions","cippi","circs","cires","cirls","cirri","cisco","cissy","cists","cital","cited","citer","cites","cives","civet","civie","civvy","clach","clade","clads","claes","clags","clame","clams","clans","claps","clapt","claro","clart","clary","clast","clats","claut","clave","clavi","claws","clays","cleck","cleek","cleep","clefs","clegs","cleik","clems","clepe","clept","cleve","clews","clied","clies","clift","clime","cline","clint","clipe","clips","clipt","clits","cloam","clods","cloff","clogs","cloke","clomb","clomp","clonk","clons","cloop","cloot","clops","clote","clots","clour","clous","clows","cloye","cloys","cloze","clubs","clues","cluey","clunk","clype","cnida","coact","coady","coala","coals","coaly","coapt","coarb","coate","coati","coats","cobbs","cobby","cobia","coble","cobza","cocas","cocci","cocco","cocks","cocky","cocos","codas","codec","coded","coden","coder","codes","codex","codon","coeds","coffs","cogie","cogon","cogue","cohab","cohen","cohoe","cohog","cohos","coifs","coign","coils","coins","coirs","coits","coked","cokes","colas","colby","colds","coled","coles","coley","colic","colin","colls","colly","colog","colts","colza","comae","comal","comas","combe","combi","combo","combs","comby","comer","comes","comix","commo","comms","commy","compo","comps","compt","comte","comus","coned","cones","coney","confs","conga","conge","congo","conia","conin","conks","conky","conne","conns","conte","conto","conus","convo","cooch","cooed","cooee","cooer","cooey","coofs","cooks","cooky","cools","cooly","coomb","cooms","coomy","coons","coops","coopt","coost","coots","cooze","copal","copay","coped","copen","coper","copes","coppy","copra","copsy","coqui","coram","corbe","corby","cords","cored","cores","corey","corgi","coria","corks","corky","corms","corni","corno","corns","cornu","corps","corse","corso","cosec","cosed","coses","coset","cosey","cosie","costa","coste","costs","cotan","coted","cotes","coths","cotta","cotts","coude","coups","courb","courd","coure","cours","couta","couth","coved","coves","covin","cowal","cowan","cowed","cowks","cowls","cowps","cowry","coxae","coxal","coxed","coxes","coxib","coyau","coyed","coyer","coypu","cozed","cozen","cozes","cozey","cozie","craal","crabs","crags","craic","craig","crake","crame","crams","crans","crape","craps","crapy","crare","craws","crays","creds","creel","crees","crems","crena","creps","crepy","crewe","crews","crias","cribs","cries","crims","crine","crios","cripe","crips","crise","crith","crits","croci","crocs","croft","crogs","cromb","crome","cronk","crons","crool","croon","crops","crore","crost","crout","crows","croze","cruck","crudo","cruds","crudy","crues","cruet","cruft","crunk","cruor","crura","cruse","crusy","cruve","crwth","cryer","ctene","cubby","cubeb","cubed","cuber","cubes","cubit","cuddy","cuffo","cuffs","cuifs","cuing","cuish","cuits","cukes","culch","culet","culex","culls","cully","culms","culpa","culti","cults","culty","cumec","cundy","cunei","cunit","cunts","cupel","cupid","cuppa","cuppy","curat","curbs","curch","curds","curdy","cured","curer","cures","curet","curfs","curia","curie","curli","curls","curns","curny","currs","cursi","curst","cusec","cushy","cusks","cusps","cuspy","cusso","cusum","cutch","cuter","cutes","cutey","cutin","cutis","cutto","cutty","cutup","cuvee","cuzes","cwtch","cyano","cyans","cycad","cycas","cyclo","cyder","cylix","cymae","cymar","cymas","cymes","cymol","cysts","cytes","cyton","czars","daals","dabba","daces","dacha","dacks","dadah","dadas","dados","daffs","daffy","dagga","daggy","dagos","dahls","daiko","daine","daint","daker","daled","dales","dalis","dalle","dalts","daman","damar","dames","damme","damns","damps","dampy","dancy","dangs","danio","danks","danny","dants","daraf","darbs","darcy","dared","darer","dares","darga","dargs","daric","daris","darks","darky","darns","darre","darts","darzi","dashi","dashy","datal","dated","dater","dates","datos","datto","daube","daubs","dauby","dauds","dault","daurs","dauts","daven","davit","dawah","dawds","dawed","dawen","dawks","dawns","dawts","dayan","daych","daynt","dazed","dazer","dazes","deads","deair","deals","deans","deare","dearn","dears","deary","deash","deave","deaws","deawy","debag","debby","debel","debes","debts","debud","debur","debus","debye","decad","decaf","decan","decko","decks","decos","dedal","deeds","deedy","deely","deems","deens","deeps","deere","deers","deets","deeve","deevs","defat","deffo","defis","defog","degas","degum","degus","deice","deids","deify","deils","deism","deist","deked","dekes","dekko","deled","deles","delfs","delft","delis","dells","delly","delos","delph","delts","deman","demes","demic","demit","demob","demoi","demos","dempt","denar","denay","dench","denes","denet","denis","dents","deoxy","derat","deray","dered","deres","derig","derma","derms","derns","derny","deros","derro","derry","derth","dervs","desex","deshi","desis","desks","desse","devas","devel","devis","devon","devos","devot","dewan","dewar","dewax","dewed","dexes","dexie","dhaba","dhaks","dhals","dhikr","dhobi","dhole","dholl","dhols","dhoti","dhows","dhuti","diact","dials","diane","diazo","dibbs","diced","dicer","dices","dicht","dicks","dicky","dicot","dicta","dicts","dicty","diddy","didie","didos","didst","diebs","diels","diene","diets","diffs","dight","dikas","diked","diker","dikes","dikey","dildo","dilli","dills","dimbo","dimer","dimes","dimps","dinar","dined","dines","dinge","dings","dinic","dinks","dinky","dinna","dinos","dints","diols","diota","dippy","dipso","diram","direr","dirke","dirks","dirls","dirts","disas","disci","discs","dishy","disks","disme","dital","ditas","dited","dites","ditsy","ditts","ditzy","divan","divas","dived","dives","divis","divna","divos","divot","divvy","diwan","dixie","dixit","diyas","dizen","djinn","djins","doabs","doats","dobby","dobes","dobie","dobla","dobra","dobro","docht","docks","docos","docus","doddy","dodos","doeks","doers","doest","doeth","doffs","dogan","doges","dogey","doggo","doggy","dogie","dohyo","doilt","doily","doits","dojos","dolce","dolci","doled","doles","dolia","dolls","dolma","dolor","dolos","dolts","domal","domed","domes","domic","donah","donas","donee","doner","donga","dongs","donko","donna","donne","donny","donsy","doobs","dooce","doody","dooks","doole","dools","dooly","dooms","doomy","doona","doorn","doors","doozy","dopas","doped","doper","dopes","dorad","dorba","dorbs","doree","dores","doric","doris","dorks","dorky","dorms","dormy","dorps","dorrs","dorsa","dorse","dorts","dorty","dosai","dosas","dosed","doseh","doser","doses","dosha","dotal","doted","doter","dotes","dotty","douar","douce","doucs","douks","doula","douma","doums","doups","doura","douse","douts","doved","doven","dover","doves","dovie","dowar","dowds","dowed","dower","dowie","dowle","dowls","dowly","downa","downs","dowps","dowse","dowts","doxed","doxes","doxie","doyen","doyly","dozed","dozer","dozes","drabs","drack","draco","draff","drags","drail","drams","drant","draps","drats","drave","draws","drays","drear","dreck","dreed","dreer","drees","dregs","dreks","drent","drere","drest","dreys","dribs","drice","dries","drily","drips","dript","droid","droil","droke","drole","drome","drony","droob","droog","drook","drops","dropt","drouk","drows","drubs","drugs","drums","drupe","druse","drusy","druxy","dryad","dryas","dsobo","dsomo","duads","duals","duans","duars","dubbo","ducal","ducat","duces","ducks","ducky","ducts","duddy","duded","dudes","duels","duets","duett","duffs","dufus","duing","duits","dukas","duked","dukes","dukka","dulce","dules","dulia","dulls","dulse","dumas","dumbo","dumbs","dumka","dumky","dumps","dunam","dunch","dunes","dungs","dungy","dunks","dunno","dunny","dunsh","dunts","duomi","duomo","duped","duper","dupes","duple","duply","duppy","dural","duras","dured","dures","durgy","durns","duroc","duros","duroy","durra","durrs","durry","durst","durum","durzi","dusks","dusts","duxes","dwaal","dwale","dwalm","dwams","dwang","dwaum","dweeb","dwile","dwine","dyads","dyers","dyked","dykes","dykey","dykon","dynel","dynes","dzhos","eagre","ealed","eales","eaned","eards","eared","earls","earns","earnt","earst","eased","easer","eases","easle","easts","eathe","eaved","eaves","ebbed","ebbet","ebons","ebook","ecads","eched","eches","echos","ecrus","edema","edged","edger","edges","edile","edits","educe","educt","eejit","eensy","eeven","eevns","effed","egads","egers","egest","eggar","egged","egger","egmas","ehing","eider","eidos","eigne","eiked","eikon","eilds","eisel","ejido","ekkas","elain","eland","elans","elchi","eldin","elemi","elfed","eliad","elint","elmen","eloge","elogy","eloin","elops","elpee","elsin","elute","elvan","elven","elver","elves","emacs","embar","embay","embog","embow","embox","embus","emeer","emend","emerg","emery","emeus","emics","emirs","emits","emmas","emmer","emmet","emmew","emmys","emoji","emong","emote","emove","empts","emule","emure","emyde","emyds","enarm","enate","ended","ender","endew","endue","enews","enfix","eniac","enlit","enmew","ennog","enoki","enols","enorm","enows","enrol","ensew","ensky","entia","enure","enurn","envoi","enzym","eorls","eosin","epact","epees","ephah","ephas","ephod","ephor","epics","epode","epopt","epris","eques","equid","erbia","erevs","ergon","ergos","ergot","erhus","erica","erick","erics","ering","erned","ernes","erose","erred","erses","eruct","erugo","eruvs","erven","ervil","escar","escot","esile","eskar","esker","esnes","esses","estoc","estop","estro","etage","etape","etats","etens","ethal","ethne","ethyl","etics","etnas","ettin","ettle","etuis","etwee","etyma","eughs","euked","eupad","euros","eusol","evens","evert","evets","evhoe","evils","evite","evohe","ewers","ewest","ewhow","ewked","exams","exeat","execs","exeem","exeme","exfil","exies","exine","exing","exits","exode","exome","exons","expat","expos","exude","exuls","exurb","eyass","eyers","eyots","eyras","eyres","eyrie","eyrir","ezine","fabby","faced","facer","faces","facia","facta","facts","faddy","faded","fader","fades","fadge","fados","faena","faery","faffs","faffy","faggy","fagin","fagot","faiks","fails","faine","fains","fairs","faked","faker","fakes","fakey","fakie","fakir","falaj","falls","famed","fames","fanal","fands","fanes","fanga","fango","fangs","fanks","fanon","fanos","fanum","faqir","farad","farci","farcy","fards","fared","farer","fares","farle","farls","farms","faros","farro","farse","farts","fasci","fasti","fasts","fated","fates","fatly","fatso","fatwa","faugh","fauld","fauns","faurd","fauts","fauve","favas","favel","faver","faves","favus","fawns","fawny","faxed","faxes","fayed","fayer","fayne","fayre","fazed","fazes","feals","feare","fears","feart","fease","feats","feaze","feces","fecht","fecit","fecks","fedex","feebs","feeds","feels","feens","feers","feese","feeze","fehme","feint","feist","felch","felid","fells","felly","felts","felty","femal","femes","femmy","fends","fendy","fenis","fenks","fenny","fents","feods","feoff","ferer","feres","feria","ferly","fermi","ferms","ferns","ferny","fesse","festa","fests","festy","fetas","feted","fetes","fetor","fetta","fetts","fetwa","feuar","feuds","feued","feyed","feyer","feyly","fezes","fezzy","fiars","fiats","fibro","fices","fiche","fichu","ficin","ficos","fides","fidge","fidos","fiefs","fient","fiere","fiers","fiest","fifed","fifer","fifes","fifis","figgy","figos","fiked","fikes","filar","filch","filed","files","filii","filks","fille","fillo","fills","filmi","films","filos","filum","finca","finds","fined","fines","finis","finks","finny","finos","fiord","fiqhs","fique","fired","firer","fires","firie","firks","firms","firns","firry","firth","fiscs","fisks","fists","fisty","fitch","fitly","fitna","fitte","fitts","fiver","fives","fixed","fixes","fixit","fjeld","flabs","flaff","flags","flaks","flamm","flams","flamy","flane","flans","flaps","flary","flats","flava","flawn","flaws","flawy","flaxy","flays","fleam","fleas","fleek","fleer","flees","flegs","fleme","fleur","flews","flexi","flexo","fleys","flics","flied","flies","flimp","flims","flips","flirs","flisk","flite","flits","flitt","flobs","flocs","floes","flogs","flong","flops","flors","flory","flosh","flota","flote","flows","flubs","flued","flues","fluey","fluky","flump","fluor","flurr","fluty","fluyt","flyby","flype","flyte","foals","foams","foehn","fogey","fogie","fogle","fogou","fohns","foids","foils","foins","folds","foley","folia","folic","folie","folks","folky","fomes","fonda","fonds","fondu","fones","fonly","fonts","foods","foody","fools","foots","footy","foram","forbs","forby","fordo","fords","forel","fores","forex","forks","forky","forme","forms","forts","forza","forze","fossa","fosse","fouat","fouds","fouer","fouet","foule","fouls","fount","fours","fouth","fovea","fowls","fowth","foxed","foxes","foxie","foyle","foyne","frabs","frack","fract","frags","fraim","franc","frape","fraps","frass","frate","frati","frats","fraus","frays","frees","freet","freit","fremd","frena","freon","frere","frets","fribs","frier","fries","frigs","frise","frist","frith","frits","fritt","frize","frizz","froes","frogs","frons","frore","frorn","frory","frosh","frows","frowy","frugs","frump","frush","frust","fryer","fubar","fubby","fubsy","fucks","fucus","fuddy","fudgy","fuels","fuero","fuffs","fuffy","fugal","fuggy","fugie","fugio","fugle","fugly","fugus","fujis","fulls","fumed","fumer","fumes","fumet","fundi","funds","fundy","fungo","fungs","funks","fural","furan","furca","furls","furol","furrs","furth","furze","furzy","fused","fusee","fusel","fuses","fusil","fusks","fusts","fusty","futon","fuzed","fuzee","fuzes","fuzil","fyces","fyked","fykes","fyles","fyrds","fytte","gabba","gabby","gable","gaddi","gades","gadge","gadid","gadis","gadje","gadjo","gadso","gaffs","gaged","gager","gages","gaids","gains","gairs","gaita","gaits","gaitt","gajos","galah","galas","galax","galea","galed","gales","galls","gally","galop","galut","galvo","gamas","gamay","gamba","gambe","gambo","gambs","gamed","games","gamey","gamic","gamin","gamme","gammy","gamps","ganch","gandy","ganef","ganev","gangs","ganja","ganof","gants","gaols","gaped","gaper","gapes","gapos","gappy","garbe","garbo","garbs","garda","gares","garis","garms","garni","garre","garth","garum","gases","gasps","gaspy","gasts","gatch","gated","gater","gates","gaths","gator","gauch","gaucy","gauds","gauje","gault","gaums","gaumy","gaups","gaurs","gauss","gauzy","gavot","gawcy","gawds","gawks","gawps","gawsy","gayal","gazal","gazar","gazed","gazes","gazon","gazoo","geals","geans","geare","gears","geats","gebur","gecks","geeks","geeps","geest","geist","geits","gelds","gelee","gelid","gelly","gelts","gemel","gemma","gemmy","gemot","genal","genas","genes","genet","genic","genii","genip","genny","genoa","genom","genro","gents","genty","genua","genus","geode","geoid","gerah","gerbe","geres","gerle","germs","germy","gerne","gesse","gesso","geste","gests","getas","getup","geums","geyan","geyer","ghast","ghats","ghaut","ghazi","ghees","ghest","ghyll","gibed","gibel","giber","gibes","gibli","gibus","gifts","gigas","gighe","gigot","gigue","gilas","gilds","gilet","gills","gilly","gilpy","gilts","gimel","gimme","gimps","gimpy","ginch","ginge","gings","ginks","ginny","ginzo","gipon","gippo","gippy","girds","girls","girns","giron","giros","girrs","girsh","girts","gismo","gisms","gists","gitch","gites","giust","gived","gives","gizmo","glace","glads","glady","glaik","glair","glams","glans","glary","glaum","glaur","glazy","gleba","glebe","gleby","glede","gleds","gleed","gleek","glees","gleet","gleis","glens","glent","gleys","glial","glias","glibs","gliff","glift","glike","glime","glims","glisk","glits","glitz","gloam","globi","globs","globy","glode","glogg","gloms","gloop","glops","glost","glout","glows","gloze","glued","gluer","glues","gluey","glugs","glume","glums","gluon","glute","gluts","gnarl","gnarr","gnars","gnats","gnawn","gnaws","gnows","goads","goafs","goals","goary","goats","goaty","goban","gobar","gobbi","gobbo","gobby","gobis","gobos","godet","godso","goels","goers","goest","goeth","goety","gofer","goffs","gogga","gogos","goier","gojis","golds","goldy","goles","golfs","golpe","golps","gombo","gomer","gompa","gonch","gonef","gongs","gonia","gonif","gonks","gonna","gonof","gonys","gonzo","gooby","goods","goofs","googs","gooks","gooky","goold","gools","gooly","goons","goony","goops","goopy","goors","goory","goosy","gopak","gopik","goral","goras","gored","gores","goris","gorms","gormy","gorps","gorse","gorsy","gosht","gosse","gotch","goths","gothy","gotta","gouch","gouks","goura","gouts","gouty","gowan","gowds","gowfs","gowks","gowls","gowns","goxes","goyim","goyle","graal","grabs","grads","graff","graip","grama","grame","gramp","grams","grana","grans","grapy","gravs","grays","grebe","grebo","grece","greek","grees","grege","grego","grein","grens","grese","greve","grews","greys","grice","gride","grids","griff","grift","grigs","grike","grins","griot","grips","gript","gripy","grise","grist","grisy","grith","grits","grize","groat","grody","grogs","groks","groma","grone","groof","grosz","grots","grouf","grovy","grows","grrls","grrrl","grubs","grued","grues","grufe","grume","grump","grund","gryce","gryde","gryke","grype","grypt","guaco","guana","guano","guans","guars","gucks","gucky","gudes","guffs","gugas","guids","guimp","guiro","gulag","gular","gulas","gules","gulet","gulfs","gulfy","gulls","gulph","gulps","gulpy","gumma","gummi","gumps","gundy","gunge","gungy","gunks","gunky","gunny","guqin","gurdy","gurge","gurls","gurly","gurns","gurry","gursh","gurus","gushy","gusla","gusle","gusli","gussy","gusts","gutsy","gutta","gutty","guyed","guyle","guyot","guyse","gwine","gyals","gyans","gybed","gybes","gyeld","gymps","gynae","gynie","gynny","gynos","gyoza","gypos","gyppo","gyppy","gyral","gyred","gyres","gyron","gyros","gyrus","gytes","gyved","gyves","haafs","haars","hable","habus","hacek","hacks","hadal","haded","hades","hadji","hadst","haems","haets","haffs","hafiz","hafts","haggs","hahas","haick","haika","haiks","haiku","hails","haily","hains","haint","hairs","haith","hajes","hajis","hajji","hakam","hakas","hakea","hakes","hakim","hakus","halal","haled","haler","hales","halfa","halfs","halid","hallo","halls","halma","halms","halon","halos","halse","halts","halva","halwa","hamal","hamba","hamed","hames","hammy","hamza","hanap","hance","hanch","hands","hangi","hangs","hanks","hanky","hansa","hanse","hants","haole","haoma","hapax","haply","happi","hapus","haram","hards","hared","hares","harim","harks","harls","harms","harns","haros","harps","harts","hashy","hasks","hasps","hasta","hated","hates","hatha","hauds","haufs","haugh","hauld","haulm","hauls","hault","hauns","hause","haver","haves","hawed","hawks","hawms","hawse","hayed","hayer","hayey","hayle","hazan","hazed","hazer","hazes","heads","heald","heals","heame","heaps","heapy","heare","hears","heast","heats","heben","hebes","hecht","hecks","heder","hedgy","heeds","heedy","heels","heeze","hefte","hefts","heids","heigh","heils","heirs","hejab","hejra","heled","heles","helio","hells","helms","helos","helot","helps","helve","hemal","hemes","hemic","hemin","hemps","hempy","hench","hends","henge","henna","henny","henry","hents","hepar","herbs","herby","herds","heres","herls","herma","herms","herns","heros","herry","herse","hertz","herye","hesps","hests","hetes","heths","heuch","heugh","hevea","hewed","hewer","hewgh","hexad","hexed","hexer","hexes","hexyl","heyed","hiant","hicks","hided","hider","hides","hiems","highs","hight","hijab","hijra","hiked","hiker","hikes","hikoi","hilar","hilch","hillo","hills","hilts","hilum","hilus","himbo","hinau","hinds","hings","hinky","hinny","hints","hiois","hiply","hired","hiree","hirer","hires","hissy","hists","hithe","hived","hiver","hives","hizen","hoaed","hoagy","hoars","hoary","hoast","hobos","hocks","hocus","hodad","hodja","hoers","hogan","hogen","hoggs","hoghs","hohed","hoick","hoied","hoiks","hoing","hoise","hokas","hoked","hokes","hokey","hokis","hokku","hokum","holds","holed","holes","holey","holks","holla","hollo","holme","holms","holon","holos","holts","homas","homed","homes","homey","homie","homme","homos","honan","honda","honds","honed","honer","hones","hongi","hongs","honks","honky","hooch","hoods","hoody","hooey","hoofs","hooka","hooks","hooky","hooly","hoons","hoops","hoord","hoors","hoosh","hoots","hooty","hoove","hopak","hoped","hoper","hopes","hoppy","horah","horal","horas","horis","horks","horme","horns","horst","horsy","hosed","hosel","hosen","hoser","hoses","hosey","hosta","hosts","hotch","hoten","hotty","houff","houfs","hough","houri","hours","houts","hovea","hoved","hoven","hoves","howbe","howes","howff","howfs","howks","howls","howre","howso","hoxed","hoxes","hoyas","hoyed","hoyle","hubby","hucks","hudna","hudud","huers","huffs","huffy","huger","huggy","huhus","huias","hulas","hules","hulks","hulky","hullo","hulls","hully","humas","humfs","humic","humps","humpy","hunks","hunts","hurds","hurls","hurly","hurra","hurst","hurts","hushy","husks","husos","hutia","huzza","huzzy","hwyls","hydra","hyens","hygge","hying","hykes","hylas","hyleg","hyles","hylic","hymns","hynde","hyoid","hyped","hypes","hypha","hyphy","hypos","hyrax","hyson","hythe","iambi","iambs","ibrik","icers","iched","iches","ichor","icier","icker","ickle","icons","ictal","ictic","ictus","idant","ideas","idees","ident","idled","idles","idola","idols","idyls","iftar","igapo","igged","iglus","ihram","ikans","ikats","ikons","ileac","ileal","ileum","ileus","iliad","ilial","ilium","iller","illth","imago","imams","imari","imaum","imbar","imbed","imide","imido","imids","imine","imino","immew","immit","immix","imped","impis","impot","impro","imshi","imshy","inapt","inarm","inbye","incel","incle","incog","incus","incut","indew","india","indie","indol","indow","indri","indue","inerm","infix","infos","infra","ingan","ingle","inion","inked","inker","inkle","inned","innit","inorb","inrun","inset","inspo","intel","intil","intis","intra","inula","inure","inurn","inust","invar","inwit","iodic","iodid","iodin","iotas","ippon","irade","irids","iring","irked","iroko","irone","irons","isbas","ishes","isled","isles","isnae","issei","istle","items","ither","ivied","ivies","ixias","ixnay","ixora","ixtle","izard","izars","izzat","jaaps","jabot","jacal","jacks","jacky","jaded","jades","jafas","jaffa","jagas","jager","jaggs","jaggy","jagir","jagra","jails","jaker","jakes","jakey","jalap","jalop","jambe","jambo","jambs","jambu","james","jammy","jamon","janes","janns","janny","janty","japan","japed","japer","japes","jarks","jarls","jarps","jarta","jarul","jasey","jaspe","jasps","jatos","jauks","jaups","javas","javel","jawan","jawed","jaxie","jeans","jeats","jebel","jedis","jeels","jeely","jeeps","jeers","jeeze","jefes","jeffs","jehad","jehus","jelab","jello","jells","jembe","jemmy","jenny","jeons","jerid","jerks","jerry","jesse","jests","jesus","jetes","jeton","jeune","jewed","jewie","jhala","jiaos","jibba","jibbs","jibed","jiber","jibes","jiffs","jiggy","jigot","jihad","jills","jilts","jimmy","jimpy","jingo","jinks","jinne","jinni","jinns","jirds","jirga","jirre","jisms","jived","jiver","jives","jivey","jnana","jobed","jobes","jocko","jocks","jocky","jocos","jodel","joeys","johns","joins","joked","jokes","jokey","jokol","joled","joles","jolls","jolts","jolty","jomon","jomos","jones","jongs","jonty","jooks","joram","jorum","jotas","jotty","jotun","joual","jougs","jouks","joule","jours","jowar","jowed","jowls","jowly","joyed","jubas","jubes","jucos","judas","judgy","judos","jugal","jugum","jujus","juked","jukes","jukus","julep","jumar","jumby","jumps","junco","junks","junky","jupes","jupon","jural","jurat","jurel","jures","justs","jutes","jutty","juves","juvie","kaama","kabab","kabar","kabob","kacha","kacks","kadai","kades","kadis","kafir","kagos","kagus","kahal","kaiak","kaids","kaies","kaifs","kaika","kaiks","kails","kaims","kaing","kains","kakas","kakis","kalam","kales","kalif","kalis","kalpa","kamas","kames","kamik","kamis","kamme","kanae","kanas","kandy","kaneh","kanes","kanga","kangs","kanji","kants","kanzu","kaons","kapas","kaphs","kapok","kapow","kapus","kaput","karas","karat","karks","karns","karoo","karos","karri","karst","karsy","karts","karzy","kasha","kasme","katal","katas","katis","katti","kaugh","kauri","kauru","kaury","kaval","kavas","kawas","kawau","kawed","kayle","kayos","kazis","kazoo","kbars","kebar","kebob","kecks","kedge","kedgy","keech","keefs","keeks","keels","keema","keeno","keens","keeps","keets","keeve","kefir","kehua","keirs","kelep","kelim","kells","kelly","kelps","kelpy","kelts","kelty","kembo","kembs","kemps","kempt","kempy","kenaf","kench","kendo","kenos","kente","kents","kepis","kerbs","kerel","kerfs","kerky","kerma","kerne","kerns","keros","kerry","kerve","kesar","kests","ketas","ketch","ketes","ketol","kevel","kevil","kexes","keyed","keyer","khadi","khafs","khans","khaph","khats","khaya","khazi","kheda","kheth","khets","khoja","khors","khoum","khuds","kiaat","kiack","kiang","kibbe","kibbi","kibei","kibes","kibla","kicks","kicky","kiddo","kiddy","kidel","kidge","kiefs","kiers","kieve","kievs","kight","kikes","kikoi","kiley","kilim","kills","kilns","kilos","kilps","kilts","kilty","kimbo","kinas","kinda","kinds","kindy","kines","kings","kinin","kinks","kinos","kiore","kipes","kippa","kipps","kirby","kirks","kirns","kirri","kisan","kissy","kists","kited","kiter","kites","kithe","kiths","kitul","kivas","kiwis","klang","klaps","klett","klick","klieg","kliks","klong","kloof","kluge","klutz","knags","knaps","knarl","knars","knaur","knawe","knees","knell","knish","knits","knive","knobs","knops","knosp","knots","knout","knowe","knows","knubs","knurl","knurr","knurs","knuts","koans","koaps","koban","kobos","koels","koffs","kofta","kogal","kohas","kohen","kohls","koine","kojis","kokam","kokas","koker","kokra","kokum","kolas","kolos","kombu","konbu","kondo","konks","kooks","kooky","koori","kopek","kophs","kopje","koppa","korai","koras","korat","kores","korma","koros","korun","korus","koses","kotch","kotos","kotow","koura","kraal","krabs","kraft","krais","krait","krang","krans","kranz","kraut","krays","kreep","kreng","krewe","krona","krone","kroon","krubi","krunk","ksars","kubie","kudos","kudus","kudzu","kufis","kugel","kuias","kukri","kukus","kulak","kulan","kulas","kulfi","kumis","kumys","kuris","kurre","kurta","kurus","kusso","kutas","kutch","kutis","kutus","kuzus","kvass","kvell","kwela","kyack","kyaks","kyang","kyars","kyats","kybos","kydst","kyles","kylie","kylin","kylix","kyloe","kynde","kynds","kypes","kyrie","kytes","kythe","laari","labda","labia","labis","labra","laced","lacer","laces","lacet","lacey","lacks","laddy","laded","lader","lades","laers","laevo","lagan","lahal","lahar","laich","laics","laids","laigh","laika","laiks","laird","lairs","lairy","laith","laity","laked","laker","lakes","lakhs","lakin","laksa","laldy","lalls","lamas","lambs","lamby","lamed","lamer","lames","lamia","lammy","lamps","lanai","lanas","lanch","lande","lands","lanes","lanks","lants","lapin","lapis","lapje","larch","lards","lardy","laree","lares","largo","laris","larks","larky","larns","larnt","larum","lased","laser","lases","lassi","lassu","lassy","lasts","latah","lated","laten","latex","lathi","laths","lathy","latke","latus","lauan","lauch","lauds","laufs","laund","laura","laval","lavas","laved","laver","laves","lavra","lavvy","lawed","lawer","lawin","lawks","lawns","lawny","laxed","laxer","laxes","laxly","layed","layin","layup","lazar","lazed","lazes","lazos","lazzi","lazzo","leads","leady","leafs","leaks","leams","leans","leany","leaps","leare","lears","leary","leats","leavy","leaze","leben","leccy","ledes","ledgy","ledum","leear","leeks","leeps","leers","leese","leets","leeze","lefte","lefts","leger","leges","legge","leggo","legit","lehrs","lehua","leirs","leish","leman","lemed","lemel","lemes","lemma","lemme","lends","lenes","lengs","lenis","lenos","lense","lenti","lento","leone","lepid","lepra","lepta","lered","leres","lerps","lesbo","leses","lests","letch","lethe","letup","leuch","leuco","leuds","leugh","levas","levee","leves","levin","levis","lewis","lexes","lexis","lezes","lezza","lezzy","liana","liane","liang","liard","liars","liart","liber","libra","libri","lichi","licht","licit","licks","lidar","lidos","liefs","liens","liers","lieus","lieve","lifer","lifes","lifts","ligan","liger","ligge","ligne","liked","liker","likes","likin","lills","lilos","lilts","liman","limas","limax","limba","limbi","limbs","limby","limed","limen","limes","limey","limma","limns","limos","limpa","limps","linac","linch","linds","lindy","lined","lines","liney","linga","lings","lingy","linin","links","linky","linns","linny","linos","lints","linty","linum","linux","lions","lipas","lipes","lipin","lipos","lippy","liras","lirks","lirot","lisks","lisle","lisps","lists","litai","litas","lited","liter","lites","litho","liths","litre","lived","liven","lives","livor","livre","llano","loach","loads","loafs","loams","loans","loast","loave","lobar","lobed","lobes","lobos","lobus","loche","lochs","locie","locis","locks","locos","locum","loden","lodes","loess","lofts","logan","loges","loggy","logia","logie","logoi","logon","logos","lohan","loids","loins","loipe","loirs","lokes","lolls","lolly","lolog","lomas","lomed","lomes","loner","longa","longe","longs","looby","looed","looey","loofa","loofs","looie","looks","looky","looms","loons","loony","loops","loord","loots","loped","loper","lopes","loppy","loral","loran","lords","lordy","lorel","lores","loric","loris","losed","losel","losen","loses","lossy","lotah","lotas","lotes","lotic","lotos","lotsa","lotta","lotte","lotto","lotus","loued","lough","louie","louis","louma","lound","louns","loupe","loups","loure","lours","loury","louts","lovat","loved","loves","lovey","lovie","lowan","lowed","lowes","lownd","lowne","lowns","lowps","lowry","lowse","lowts","loxed","loxes","lozen","luach","luaus","lubed","lubes","lubra","luces","lucks","lucre","ludes","ludic","ludos","luffa","luffs","luged","luger","luges","lulls","lulus","lumas","lumbi","lumme","lummy","lumps","lunas","lunes","lunet","lungi","lungs","lunks","lunts","lupin","lured","lurer","lures","lurex","lurgi","lurgy","lurks","lurry","lurve","luser","lushy","lusks","lusts","lusus","lutea","luted","luter","lutes","luvvy","luxed","luxer","luxes","lweis","lyams","lyard","lyart","lyase","lycea","lycee","lycra","lymes","lynes","lyres","lysed","lyses","lysin","lysis","lysol","lyssa","lyted","lytes","lythe","lytic","lytta","maaed","maare","maars","mabes","macas","maced","macer","maces","mache","machi","machs","macks","macle","macon","madge","madid","madre","maerl","mafic","mages","maggs","magot","magus","mahoe","mahua","mahwa","maids","maiko","maiks","maile","maill","mails","maims","mains","maire","mairs","maise","maist","makar","makes","makis","makos","malam","malar","malas","malax","males","malic","malik","malis","malls","malms","malmy","malts","malty","malus","malva","malwa","mamas","mamba","mamee","mamey","mamie","manas","manat","mandi","maneb","maned","maneh","manes","manet","mangs","manis","manky","manna","manos","manse","manta","manto","manty","manul","manus","mapau","maqui","marae","marah","maras","marcs","mardy","mares","marge","margs","maria","marid","marka","marks","marle","marls","marly","marms","maron","maror","marra","marri","marse","marts","marvy","masas","mased","maser","mases","mashy","masks","massa","massy","masts","masty","masus","matai","mated","mater","mates","maths","matin","matlo","matte","matts","matza","matzo","mauby","mauds","mauls","maund","mauri","mausy","mauts","mauzy","maven","mavie","mavin","mavis","mawed","mawks","mawky","mawns","mawrs","maxed","maxes","maxis","mayan","mayas","mayed","mayos","mayst","mazed","mazer","mazes","mazey","mazut","mbira","meads","meals","meane","means","meany","meare","mease","meath","meats","mebos","mechs","mecks","medii","medle","meeds","meers","meets","meffs","meins","meint","meiny","meith","mekka","melas","melba","melds","melic","melik","mells","melts","melty","memes","memos","menad","mends","mened","menes","menge","mengs","mensa","mense","mensh","menta","mento","menus","meous","meows","merch","mercs","merde","mered","merel","merer","meres","meril","meris","merks","merle","merls","merse","mesal","mesas","mesel","meses","meshy","mesic","mesne","meson","messy","mesto","meted","metes","metho","meths","metic","metif","metis","metol","metre","meuse","meved","meves","mewed","mewls","meynt","mezes","mezze","mezzo","mhorr","miaou","miaow","miasm","miaul","micas","miche","micht","micks","micky","micos","micra","middy","midgy","midis","miens","mieve","miffs","miffy","mifty","miggs","mihas","mihis","miked","mikes","mikra","mikva","milch","milds","miler","miles","milfs","milia","milko","milks","mille","mills","milor","milos","milpa","milts","milty","miltz","mimed","mimeo","mimer","mimes","mimsy","minae","minar","minas","mincy","minds","mined","mines","minge","mings","mingy","minis","minke","minks","minny","minos","mints","mired","mires","mirex","mirid","mirin","mirks","mirky","mirly","miros","mirvs","mirza","misch","misdo","mises","misgo","misos","missa","mists","misty","mitch","miter","mites","mitis","mitre","mitts","mixed","mixen","mixer","mixes","mixte","mixup","mizen","mizzy","mneme","moans","moats","mobby","mobes","mobey","mobie","moble","mochi","mochs","mochy","mocks","moder","modes","modge","modii","modus","moers","mofos","moggy","mohel","mohos","mohrs","mohua","mohur","moile","moils","moira","moire","moits","mojos","mokes","mokis","mokos","molal","molas","molds","moled","moles","molla","molls","molly","molto","molts","molys","momes","momma","mommy","momus","monad","monal","monas","monde","mondo","moner","mongo","mongs","monic","monie","monks","monos","monte","monty","moobs","mooch","moods","mooed","mooks","moola","mooli","mools","mooly","moong","moons","moony","moops","moors","moory","moots","moove","moped","moper","mopes","mopey","moppy","mopsy","mopus","morae","moras","morat","moray","morel","mores","moria","morne","morns","morra","morro","morse","morts","mosed","moses","mosey","mosks","mosso","moste","mosts","moted","moten","motes","motet","motey","moths","mothy","motis","motte","motts","motty","motus","motza","mouch","moues","mould","mouls","moups","moust","mousy","moved","moves","mowas","mowed","mowra","moxas","moxie","moyas","moyle","moyls","mozed","mozes","mozos","mpret","mucho","mucic","mucid","mucin","mucks","mucor","mucro","mudge","mudir","mudra","muffs","mufti","mugga","muggs","muggy","muhly","muids","muils","muirs","muist","mujik","mulct","muled","mules","muley","mulga","mulie","mulla","mulls","mulse","mulsh","mumms","mumps","mumsy","mumus","munga","munge","mungo","mungs","munis","munts","muntu","muons","muras","mured","mures","murex","murid","murks","murls","murly","murra","murre","murri","murrs","murry","murti","murva","musar","musca","mused","muser","muses","muset","musha","musit","musks","musos","musse","mussy","musth","musts","mutch","muted","muter","mutes","mutha","mutis","muton","mutts","muxed","muxes","muzak","muzzy","mvule","myall","mylar","mynah","mynas","myoid","myoma","myope","myops","myopy","mysid","mythi","myths","mythy","myxos","mzees","naams","naans","nabes","nabis","nabks","nabla","nabob","nache","nacho","nacre","nadas","naeve","naevi","naffs","nagas","naggy","nagor","nahal","naiad","naifs","naiks","nails","naira","nairu","naked","naker","nakfa","nalas","naled","nalla","named","namer","names","namma","namus","nanas","nance","nancy","nandu","nanna","nanos","nanua","napas","naped","napes","napoo","nappa","nappe","nappy","naras","narco","narcs","nards","nares","naric","naris","narks","narky","narre","nashi","natch","nates","natis","natty","nauch","naunt","navar","naves","navew","navvy","nawab","nazes","nazir","nazis","nduja","neafe","neals","neaps","nears","neath","neats","nebek","nebel","necks","neddy","needs","neeld","neele","neemb","neems","neeps","neese","neeze","negro","negus","neifs","neist","neive","nelis","nelly","nemas","nemns","nempt","nenes","neons","neper","nepit","neral","nerds","nerka","nerks","nerol","nerts","nertz","nervy","nests","netes","netop","netts","netty","neuks","neume","neums","nevel","neves","nevus","newbs","newed","newel","newie","newsy","newts","nexts","nexus","ngaio","ngana","ngati","ngoma","ngwee","nicad","nicht","nicks","nicol","nidal","nided","nides","nidor","nidus","niefs","nieve","nifes","niffs","niffy","nifty","niger","nighs","nihil","nikab","nikah","nikau","nills","nimbi","nimbs","nimps","niner","nines","ninon","nipas","nippy","niqab","nirls","nirly","nisei","nisse","nisus","niter","nites","nitid","niton","nitre","nitro","nitry","nitty","nival","nixed","nixer","nixes","nixie","nizam","nkosi","noahs","nobby","nocks","nodal","noddy","nodes","nodus","noels","noggs","nohow","noils","noily","noint","noirs","noles","nolls","nolos","nomas","nomen","nomes","nomic","nomoi","nomos","nonas","nonce","nones","nonet","nongs","nonis","nonny","nonyl","noobs","nooit","nooks","nooky","noons","noops","nopal","noria","noris","norks","norma","norms","nosed","noser","noses","notal","noted","noter","notes","notum","nould","noule","nouls","nouns","nouny","noups","novae","novas","novum","noway","nowed","nowls","nowts","nowty","noxal","noxes","noyau","noyed","noyes","nubby","nubia","nucha","nuddy","nuder","nudes","nudie","nudzh","nuffs","nugae","nuked","nukes","nulla","nulls","numbs","numen","nummy","nunny","nurds","nurdy","nurls","nurrs","nutso","nutsy","nyaff","nyala","nying","nyssa","oaked","oaker","oakum","oared","oases","oasis","oasts","oaten","oater","oaths","oaves","obang","obeah","obeli","obeys","obias","obied","obiit","obits","objet","oboes","obole","oboli","obols","occam","ocher","oches","ochre","ochry","ocker","ocrea","octad","octan","octas","octyl","oculi","odahs","odals","odeon","odeum","odism","odist","odium","odors","odour","odyle","odyls","ofays","offed","offie","oflag","ofter","ogams","ogeed","ogees","oggin","ogham","ogive","ogled","ogler","ogles","ogmic","ogres","ohias","ohing","ohmic","ohone","oidia","oiled","oiler","oinks","oints","ojime","okapi","okays","okehs","okras","oktas","oldie","oleic","olein","olent","oleos","oleum","olios","ollas","ollav","oller","ollie","ology","olpae","olpes","omasa","omber","ombus","omens","omers","omits","omlah","omovs","omrah","oncer","onces","oncet","oncus","onely","oners","onery","onium","onkus","onlay","onned","ontic","oobit","oohed","oomph","oonts","ooped","oorie","ooses","ootid","oozed","oozes","opahs","opals","opens","opepe","oping","oppos","opsin","opted","opter","orach","oracy","orals","orang","orant","orate","orbed","orcas","orcin","ordos","oread","orfes","orgia","orgic","orgue","oribi","oriel","orixa","orles","orlon","orlop","ormer","ornis","orpin","orris","ortho","orval","orzos","oscar","oshac","osier","osmic","osmol","ossia","ostia","otaku","otary","ottar","ottos","oubit","oucht","ouens","ouija","oulks","oumas","oundy","oupas","ouped","ouphe","ouphs","ourie","ousel","ousts","outby","outed","outre","outro","outta","ouzel","ouzos","ovals","ovels","ovens","overs","ovist","ovoli","ovolo","ovule","owche","owies","owled","owler","owlet","owned","owres","owrie","owsen","oxbow","oxers","oxeye","oxids","oxies","oxime","oxims","oxlip","oxter","oyers","ozeki","ozzie","paals","paans","pacas","paced","pacer","paces","pacey","pacha","packs","pacos","pacta","pacts","padis","padle","padma","padre","padri","paean","paedo","paeon","paged","pager","pages","pagle","pagod","pagri","paiks","pails","pains","paire","pairs","paisa","paise","pakka","palas","palay","palea","paled","pales","palet","palis","palki","palla","palls","pally","palms","palmy","palpi","palps","palsa","pampa","panax","pance","panda","pands","pandy","paned","panes","panga","pangs","panim","panko","panne","panni","panto","pants","panty","paoli","paolo","papas","papaw","papes","pappi","pappy","parae","paras","parch","pardi","pards","pardy","pared","paren","pareo","pares","pareu","parev","parge","pargo","paris","parki","parks","parky","parle","parly","parma","parol","parps","parra","parrs","parti","parts","parve","parvo","paseo","pases","pasha","pashm","paska","paspy","passe","pasts","pated","paten","pater","pates","paths","patin","patka","patly","patte","patus","pauas","pauls","pavan","paved","paven","paver","paves","pavid","pavin","pavis","pawas","pawaw","pawed","pawer","pawks","pawky","pawls","pawns","paxes","payed","payor","paysd","peage","peags","peaks","peaky","peals","peans","peare","pears","peart","pease","peats","peaty","peavy","peaze","pebas","pechs","pecke","pecks","pecky","pedes","pedis","pedro","peece","peeks","peels","peens","peeoy","peepe","peeps","peers","peery","peeve","peggy","peghs","peins","peise","peize","pekan","pekes","pekin","pekoe","pelas","pelau","peles","pelfs","pells","pelma","pelon","pelta","pelts","pends","pendu","pened","penes","pengo","penie","penis","penks","penna","penni","pents","peons","peony","pepla","pepos","peppy","pepsi","perai","perce","percs","perdu","perdy","perea","peres","peris","perks","perms","perns","perog","perps","perry","perse","perst","perts","perve","pervo","pervs","pervy","pesos","pests","pesty","petar","peter","petit","petre","petri","petti","petto","pewee","pewit","peyse","phage","phang","phare","pharm","pheer","phene","pheon","phese","phial","phish","phizz","phlox","phoca","phono","phons","phots","phpht","phuts","phyla","phyle","piani","pians","pibal","pical","picas","piccy","picks","picot","picra","picul","piend","piers","piert","pieta","piets","piezo","pight","pigmy","piing","pikas","pikau","piked","piker","pikes","pikey","pikis","pikul","pilae","pilaf","pilao","pilar","pilau","pilaw","pilch","pilea","piled","pilei","piler","piles","pilis","pills","pilow","pilum","pilus","pimas","pimps","pinas","pined","pines","pingo","pings","pinko","pinks","pinna","pinny","pinon","pinot","pinta","pints","pinup","pions","piony","pious","pioye","pioys","pipal","pipas","piped","pipes","pipet","pipis","pipit","pippy","pipul","pirai","pirls","pirns","pirog","pisco","pises","pisky","pisos","pissy","piste","pitas","piths","piton","pitot","pitta","piums","pixes","pized","pizes","plaas","plack","plage","plans","plaps","plash","plasm","plast","plats","platt","platy","playa","plays","pleas","plebe","plebs","plena","pleon","plesh","plews","plica","plies","plims","pling","plink","ploat","plods","plong","plonk","plook","plops","plots","plotz","plouk","plows","ploye","ploys","plues","pluff","plugs","plums","plumy","pluot","pluto","plyer","poach","poaka","poake","poboy","pocks","pocky","podal","poddy","podex","podge","podgy","podia","poems","poeps","poets","pogey","pogge","pogos","pohed","poilu","poind","pokal","poked","pokes","pokey","pokie","poled","poler","poles","poley","polio","polis","polje","polks","polls","polly","polos","polts","polys","pombe","pomes","pommy","pomos","pomps","ponce","poncy","ponds","pones","poney","ponga","pongo","pongs","pongy","ponks","ponts","ponty","ponzu","poods","pooed","poofs","poofy","poohs","pooja","pooka","pooks","pools","poons","poops","poopy","poori","poort","poots","poove","poovy","popes","poppa","popsy","porae","poral","pored","porer","pores","porge","porgy","porin","porks","porky","porno","porns","porny","porta","ports","porty","posed","poses","posey","posho","posts","potae","potch","poted","potes","potin","potoo","potsy","potto","potts","potty","pouff","poufs","pouke","pouks","poule","poulp","poult","poupe","poupt","pours","pouts","powan","powin","pownd","powns","powny","powre","poxed","poxes","poynt","poyou","poyse","pozzy","praam","prads","prahu","prams","prana","prang","praos","prase","prate","prats","pratt","praty","praus","prays","predy","preed","prees","preif","prems","premy","prent","preon","preop","preps","presa","prese","prest","preve","prexy","preys","prial","pricy","prief","prier","pries","prigs","prill","prima","primi","primp","prims","primy","prink","prion","prise","priss","proas","probs","prods","proem","profs","progs","proin","proke","prole","proll","promo","proms","pronk","props","prore","proso","pross","prost","prosy","proto","proul","prows","proyn","prunt","pruta","pryer","pryse","pseud","pshaw","psion","psoae","psoai","psoas","psora","psych","psyop","pubco","pubes","pubis","pucan","pucer","puces","pucka","pucks","puddy","pudge","pudic","pudor","pudsy","pudus","puers","puffa","puffs","puggy","pugil","puhas","pujah","pujas","pukas","puked","puker","pukes","pukey","pukka","pukus","pulao","pulas","puled","puler","pules","pulik","pulis","pulka","pulks","pulli","pulls","pully","pulmo","pulps","pulus","pumas","pumie","pumps","punas","punce","punga","pungs","punji","punka","punks","punky","punny","punto","punts","punty","pupae","pupas","pupus","purda","pured","pures","purin","puris","purls","purpy","purrs","pursy","purty","puses","pusle","pussy","putid","puton","putti","putto","putts","puzel","pwned","pyats","pyets","pygal","pyins","pylon","pyned","pynes","pyoid","pyots","pyral","pyran","pyres","pyrex","pyric","pyros","pyxed","pyxes","pyxie","pyxis","pzazz","qadis","qaids","qajaq","qanat","qapik","qibla","qophs","qorma","quads","quaff","quags","quair","quais","quaky","quale","quant","quare","quass","quate","quats","quayd","quays","qubit","quean","queme","quena","quern","queyn","queys","quich","quids","quiff","quims","quina","quine","quino","quins","quint","quipo","quips","quipu","quire","quirt","quist","quits","quoad","quods","quoif","quoin","quoit","quoll","quonk","quops","qursh","quyte","rabat","rabic","rabis","raced","races","rache","racks","racon","radge","radix","radon","raffs","rafts","ragas","ragde","raged","ragee","rager","rages","ragga","raggs","raggy","ragis","ragus","rahed","rahui","raias","raids","raiks","raile","rails","raine","rains","raird","raita","raits","rajas","rajes","raked","rakee","raker","rakes","rakia","rakis","rakus","rales","ramal","ramee","ramet","ramie","ramin","ramis","rammy","ramps","ramus","ranas","rance","rands","ranee","ranga","rangi","rangs","rangy","ranid","ranis","ranke","ranks","rants","raped","raper","rapes","raphe","rappe","rared","raree","rares","rarks","rased","raser","rases","rasps","rasse","rasta","ratal","ratan","ratas","ratch","rated","ratel","rater","rates","ratha","rathe","raths","ratoo","ratos","ratus","rauns","raupo","raved","ravel","raver","raves","ravey","ravin","rawer","rawin","rawly","rawns","raxed","raxes","rayah","rayas","rayed","rayle","rayne","razed","razee","razer","razes","razoo","readd","reads","reais","reaks","realo","reals","reame","reams","reamy","reans","reaps","rears","reast","reata","reate","reave","rebbe","rebec","rebid","rebit","rebop","rebuy","recal","recce","recco","reccy","recit","recks","recon","recta","recti","recto","redan","redds","reddy","reded","redes","redia","redid","redip","redly","redon","redos","redox","redry","redub","redux","redye","reech","reede","reeds","reefs","reefy","reeks","reeky","reels","reens","reest","reeve","refed","refel","reffo","refis","refix","refly","refry","regar","reges","reggo","regie","regma","regna","regos","regur","rehem","reifs","reify","reiki","reiks","reink","reins","reird","reist","reive","rejig","rejon","reked","rekes","rekey","relet","relie","relit","rello","reman","remap","remen","remet","remex","remix","renay","rends","reney","renga","renig","renin","renne","renos","rente","rents","reoil","reorg","repeg","repin","repla","repos","repot","repps","repro","reran","rerig","resat","resaw","resay","resee","reses","resew","resid","resit","resod","resow","resto","rests","resty","resus","retag","retax","retem","retia","retie","retox","revet","revie","rewan","rewax","rewed","rewet","rewin","rewon","rewth","rexes","rezes","rheas","rheme","rheum","rhies","rhime","rhine","rhody","rhomb","rhone","rhumb","rhyne","rhyta","riads","rials","riant","riata","ribas","ribby","ribes","riced","ricer","rices","ricey","richt","ricin","ricks","rides","ridgy","ridic","riels","riems","rieve","rifer","riffs","rifte","rifts","rifty","riggs","rigol","riled","riles","riley","rille","rills","rimae","rimed","rimer","rimes","rimus","rinds","rindy","rines","rings","rinks","rioja","riots","riped","ripes","ripps","rises","rishi","risks","risps","risus","rites","ritts","ritzy","rivas","rived","rivel","riven","rives","riyal","rizas","roads","roams","roans","roars","roary","roate","robed","robes","roble","rocks","roded","rodes","roguy","rohes","roids","roils","roily","roins","roist","rojak","rojis","roked","roker","rokes","rolag","roles","rolfs","rolls","romal","roman","romeo","romps","ronde","rondo","roneo","rones","ronin","ronne","ronte","ronts","roods","roofs","roofy","rooks","rooky","rooms","roons","roops","roopy","roosa","roose","roots","rooty","roped","roper","ropes","ropey","roque","roral","rores","roric","rorid","rorie","rorts","rorty","rosed","roses","roset","roshi","rosin","rosit","rosti","rosts","rotal","rotan","rotas","rotch","roted","rotes","rotis","rotls","roton","rotos","rotte","rouen","roues","roule","rouls","roums","roups","roupy","roust","routh","routs","roved","roven","roves","rowan","rowed","rowel","rowen","rowie","rowme","rownd","rowth","rowts","royne","royst","rozet","rozit","ruana","rubai","rubby","rubel","rubes","rubin","ruble","rubli","rubus","ruche","rucks","rudas","rudds","rudes","rudie","rudis","rueda","ruers","ruffe","ruffs","rugae","rugal","ruggy","ruing","ruins","rukhs","ruled","rules","rumal","rumbo","rumen","rumes","rumly","rummy","rumpo","rumps","rumpy","runch","runds","runed","runes","rungs","runic","runny","runts","runty","rupia","rurps","rurus","rusas","ruses","rushy","rusks","rusma","russe","rusts","ruths","rutin","rutty","ryals","rybat","ryked","rykes","rymme","rynds","ryots","ryper","saags","sabal","sabed","saber","sabes","sabha","sabin","sabir","sable","sabot","sabra","sabre","sacks","sacra","saddo","sades","sadhe","sadhu","sadis","sados","sadza","safed","safes","sagas","sager","sages","saggy","sagos","sagum","saheb","sahib","saice","saick","saics","saids","saiga","sails","saims","saine","sains","sairs","saist","saith","sajou","sakai","saker","sakes","sakia","sakis","sakti","salal","salat","salep","sales","salet","salic","salix","salle","salmi","salol","salop","salpa","salps","salse","salto","salts","salue","salut","saman","samas","samba","sambo","samek","samel","samen","sames","samey","samfu","sammy","sampi","samps","sands","saned","sanes","sanga","sangh","sango","sangs","sanko","sansa","santo","sants","saola","sapan","sapid","sapor","saran","sards","sared","saree","sarge","sargo","sarin","saris","sarks","sarky","sarod","saros","sarus","saser","sasin","sasse","satai","satay","sated","satem","sates","satis","sauba","sauch","saugh","sauls","sault","saunt","saury","sauts","saved","saver","saves","savey","savin","sawah","sawed","sawer","saxes","sayed","sayer","sayid","sayne","sayon","sayst","sazes","scabs","scads","scaff","scags","scail","scala","scall","scams","scand","scans","scapa","scape","scapi","scarp","scars","scart","scath","scats","scatt","scaud","scaup","scaur","scaws","sceat","scena","scend","schav","schmo","schul","schwa","sclim","scody","scogs","scoog","scoot","scopa","scops","scots","scoug","scoup","scowp","scows","scrab","scrae","scrag","scran","scrat","scraw","scray","scrim","scrip","scrob","scrod","scrog","scrow","scudi","scudo","scuds","scuff","scuft","scugs","sculk","scull","sculp","sculs","scums","scups","scurf","scurs","scuse","scuta","scute","scuts","scuzz","scyes","sdayn","sdein","seals","seame","seams","seamy","seans","seare","sears","sease","seats","seaze","sebum","secco","sechs","sects","seder","sedes","sedge","sedgy","sedum","seeds","seeks","seeld","seels","seely","seems","seeps","seepy","seers","sefer","segar","segni","segno","segol","segos","sehri","seifs","seils","seine","seirs","seise","seism","seity","seiza","sekos","sekts","selah","seles","selfs","sella","selle","sells","selva","semee","semes","semie","semis","senas","sends","senes","sengi","senna","senor","sensa","sensi","sente","senti","sents","senvy","senza","sepad","sepal","sepic","sepoy","septa","septs","serac","serai","seral","sered","serer","seres","serfs","serge","seric","serin","serks","seron","serow","serra","serre","serrs","serry","servo","sesey","sessa","setae","setal","seton","setts","sewan","sewar","sewed","sewel","sewen","sewin","sexed","sexer","sexes","sexto","sexts","seyen","shads","shags","shahs","shako","shakt","shalm","shaly","shama","shams","shand","shans","shaps","sharn","shash","shaul","shawm","shawn","shaws","shaya","shays","shchi","sheaf","sheal","sheas","sheds","sheel","shend","shent","sheol","sherd","shere","shero","shets","sheva","shewn","shews","shiai","shiel","shier","shies","shill","shily","shims","shins","ships","shirr","shirs","shish","shiso","shist","shite","shits","shiur","shiva","shive","shivs","shlep","shlub","shmek","shmoe","shoat","shoed","shoer","shoes","shogi","shogs","shoji","shojo","shola","shool","shoon","shoos","shope","shops","shorl","shote","shots","shott","showd","shows","shoyu","shred","shris","shrow","shtik","shtum","shtup","shule","shuln","shuls","shuns","shura","shute","shuts","shwas","shyer","sials","sibbs","sibyl","sices","sicht","sicko","sicks","sicky","sidas","sided","sider","sides","sidha","sidhe","sidle","sield","siens","sient","sieth","sieur","sifts","sighs","sigil","sigla","signa","signs","sijos","sikas","siker","sikes","silds","siled","silen","siler","siles","silex","silks","sills","silos","silts","silty","silva","simar","simas","simba","simis","simps","simul","sinds","sined","sines","sings","sinhs","sinks","sinky","sinus","siped","sipes","sippy","sired","siree","sires","sirih","siris","siroc","sirra","sirup","sisal","sises","sista","sists","sitar","sited","sites","sithe","sitka","situp","situs","siver","sixer","sixes","sixmo","sixte","sizar","sized","sizel","sizer","sizes","skags","skail","skald","skank","skart","skats","skatt","skaws","skean","skear","skeds","skeed","skeef","skeen","skeer","skees","skeet","skegg","skegs","skein","skelf","skell","skelm","skelp","skene","skens","skeos","skeps","skers","skets","skews","skids","skied","skies","skiey","skimo","skims","skink","skins","skint","skios","skips","skirl","skirr","skite","skits","skive","skivy","sklim","skoal","skody","skoff","skogs","skols","skool","skort","skosh","skran","skrik","skuas","skugs","skyed","skyer","skyey","skyfs","skyre","skyrs","skyte","slabs","slade","slaes","slags","slaid","slake","slams","slane","slank","slaps","slart","slats","slaty","slaws","slays","slebs","sleds","sleer","slews","sleys","slier","slily","slims","slipe","slips","slipt","slish","slits","slive","sloan","slobs","sloes","slogs","sloid","slojd","slomo","sloom","sloot","slops","slopy","slorm","slots","slove","slows","sloyd","slubb","slubs","slued","slues","sluff","slugs","sluit","slums","slurb","slurs","sluse","sluts","slyer","slype","smaak","smaik","smalm","smalt","smarm","smaze","smeek","smees","smeik","smeke","smerk","smews","smirr","smirs","smits","smogs","smoko","smolt","smoor","smoot","smore","smorg","smout","smowt","smugs","smurs","smush","smuts","snabs","snafu","snags","snaps","snarf","snark","snars","snary","snash","snath","snaws","snead","sneap","snebs","sneck","sneds","sneed","snees","snell","snibs","snick","snies","snift","snigs","snips","snipy","snirt","snits","snobs","snods","snoek","snoep","snogs","snoke","snood","snook","snool","snoot","snots","snowk","snows","snubs","snugs","snush","snyes","soaks","soaps","soare","soars","soave","sobas","socas","soces","socko","socks","socle","sodas","soddy","sodic","sodom","sofar","sofas","softa","softs","softy","soger","sohur","soils","soily","sojas","sojus","sokah","soken","sokes","sokol","solah","solan","solas","solde","soldi","soldo","solds","soled","solei","soler","soles","solon","solos","solum","solus","soman","somas","sonce","sonde","sones","songs","sonly","sonne","sonny","sonse","sonsy","sooey","sooks","sooky","soole","sools","sooms","soops","soote","soots","sophs","sophy","sopor","soppy","sopra","soral","soras","sorbo","sorbs","sorda","sordo","sords","sored","soree","sorel","sorer","sores","sorex","sorgo","sorns","sorra","sorta","sorts","sorus","soths","sotol","souce","souct","sough","souks","souls","soums","soups","soupy","sours","souse","souts","sowar","sowce","sowed","sowff","sowfs","sowle","sowls","sowms","sownd","sowne","sowps","sowse","sowth","soyas","soyle","soyuz","sozin","spacy","spado","spaed","spaer","spaes","spags","spahi","spail","spain","spait","spake","spald","spale","spall","spalt","spams","spane","spang","spans","spard","spars","spart","spate","spats","spaul","spawl","spaws","spayd","spays","spaza","spazz","speal","spean","speat","specs","spect","speel","speer","speil","speir","speks","speld","spelk","speos","spets","speug","spews","spewy","spial","spica","spick","spics","spide","spier","spies","spiff","spifs","spiks","spile","spims","spina","spink","spins","spirt","spiry","spits","spitz","spivs","splay","splog","spode","spods","spoom","spoor","spoot","spork","sposh","spots","sprad","sprag","sprat","spred","sprew","sprit","sprod","sprog","sprue","sprug","spuds","spued","spuer","spues","spugs","spule","spume","spumy","spurs","sputa","spyal","spyre","squab","squaw","squeg","squid","squit","squiz","stabs","stade","stags","stagy","staig","stane","stang","staph","staps","starn","starr","stars","stats","staun","staws","stays","stean","stear","stedd","stede","steds","steek","steem","steen","steil","stela","stele","stell","steme","stems","stend","steno","stens","stent","steps","stept","stere","stets","stews","stewy","steys","stich","stied","sties","stilb","stile","stime","stims","stimy","stipa","stipe","stire","stirk","stirp","stirs","stive","stivy","stoae","stoai","stoas","stoat","stobs","stoep","stogy","stoit","stoln","stoma","stond","stong","stonk","stonn","stook","stoor","stope","stops","stopt","stoss","stots","stott","stoun","stoup","stour","stown","stowp","stows","strad","strae","strag","strak","strep","strew","stria","strig","strim","strop","strow","stroy","strum","stubs","stude","studs","stull","stulm","stumm","stums","stuns","stupa","stupe","sture","sturt","styed","styes","styli","stylo","styme","stymy","styre","styte","subah","subas","subby","suber","subha","succi","sucks","sucky","sucre","sudds","sudor","sudsy","suede","suent","suers","suete","suets","suety","sugan","sughs","sugos","suhur","suids","suint","suits","sujee","sukhs","sukuk","sulci","sulfa","sulfo","sulks","sulph","sulus","sumis","summa","sumos","sumph","sumps","sunis","sunks","sunna","sunns","sunup","supes","supra","surah","sural","suras","surat","surds","sured","sures","surfs","surfy","surgy","surra","sused","suses","susus","sutor","sutra","sutta","swabs","swack","swads","swage","swags","swail","swain","swale","swaly","swamy","swang","swank","swans","swaps","swapt","sward","sware","swarf","swart","swats","swayl","sways","sweal","swede","sweed","sweel","sweer","swees","sweir","swelt","swerf","sweys","swies","swigs","swile","swims","swink","swipe","swire","swiss","swith","swits","swive","swizz","swobs","swole","swoln","swops","swopt","swots","swoun","sybbe","sybil","syboe","sybow","sycee","syces","sycon","syens","syker","sykes","sylis","sylph","sylva","symar","synch","syncs","synds","syned","synes","synth","syped","sypes","syphs","syrah","syren","sysop","sythe","syver","taals","taata","taber","tabes","tabid","tabis","tabla","tabor","tabun","tabus","tacan","taces","tacet","tache","tacho","tachs","tacks","tacos","tacts","taels","tafia","taggy","tagma","tahas","tahrs","taiga","taigs","taiko","tails","tains","taira","taish","taits","tajes","takas","takes","takhi","takin","takis","takky","talak","talaq","talar","talas","talcs","talcy","talea","taler","tales","talks","talky","talls","talma","talpa","taluk","talus","tamal","tamed","tames","tamin","tamis","tammy","tamps","tanas","tanga","tangi","tangs","tanhs","tanka","tanks","tanky","tanna","tansy","tanti","tanto","tanty","tapas","taped","tapen","tapes","tapet","tapis","tappa","tapus","taras","tardo","tared","tares","targa","targe","tarns","taroc","tarok","taros","tarps","tarre","tarry","tarsi","tarts","tarty","tasar","tased","taser","tases","tasks","tassa","tasse","tasso","tatar","tater","tates","taths","tatie","tatou","tatts","tatus","taube","tauld","tauon","taupe","tauts","tavah","tavas","taver","tawai","tawas","tawed","tawer","tawie","tawse","tawts","taxed","taxer","taxes","taxis","taxol","taxon","taxor","taxus","tayra","tazza","tazze","teade","teads","teaed","teaks","teals","teams","tears","teats","teaze","techs","techy","tecta","teels","teems","teend","teene","teens","teeny","teers","teffs","teggs","tegua","tegus","tehrs","teiid","teils","teind","teins","telae","telco","teles","telex","telia","telic","tells","telly","teloi","telos","temed","temes","tempi","temps","tempt","temse","tench","tends","tendu","tenes","tenge","tenia","tenne","tenno","tenny","tenon","tents","tenty","tenue","tepal","tepas","tepoy","terai","teras","terce","terek","teres","terfe","terfs","terga","terms","terne","terns","terry","terts","tesla","testa","teste","tests","tetes","teths","tetra","tetri","teuch","teugh","tewed","tewel","tewit","texas","texes","texts","thack","thagi","thaim","thale","thali","thana","thane","thang","thans","thanx","tharm","thars","thaws","thawy","thebe","theca","theed","theek","thees","thegn","theic","thein","thelf","thema","thens","theow","therm","thesp","thete","thews","thewy","thigs","thilk","thill","thine","thins","thiol","thirl","thoft","thole","tholi","thoro","thorp","thous","thowl","thrae","thraw","thrid","thrip","throe","thuds","thugs","thuja","thunk","thurl","thuya","thymi","thymy","tians","tiars","tical","ticca","ticed","tices","tichy","ticks","ticky","tiddy","tided","tides","tiers","tiffs","tifos","tifts","tiges","tigon","tikas","tikes","tikis","tikka","tilak","tiled","tiler","tiles","tills","tilly","tilth","tilts","timbo","timed","times","timon","timps","tinas","tinct","tinds","tinea","tined","tines","tinge","tings","tinks","tinny","tints","tinty","tipis","tippy","tired","tires","tirls","tiros","tirrs","titch","titer","titis","titre","titty","titup","tiyin","tiyns","tizes","tizzy","toads","toady","toaze","tocks","tocky","tocos","todde","toeas","toffs","toffy","tofts","tofus","togae","togas","toged","toges","togue","tohos","toile","toils","toing","toise","toits","tokay","toked","toker","tokes","tokos","tolan","tolar","tolas","toled","toles","tolls","tolly","tolts","tolus","tolyl","toman","tombs","tomes","tomia","tommy","tomos","tondi","tondo","toned","toner","tones","toney","tongs","tonka","tonks","tonne","tonus","tools","tooms","toons","toots","toped","topee","topek","toper","topes","tophe","tophi","tophs","topis","topoi","topos","toppy","toque","torah","toran","toras","torcs","tores","toric","torii","toros","torot","torrs","torse","torsi","torsk","torta","torte","torts","tosas","tosed","toses","toshy","tossy","toted","toter","totes","totty","touks","touns","tours","touse","tousy","touts","touze","touzy","towed","towie","towns","towny","towse","towsy","towts","towze","towzy","toyed","toyer","toyon","toyos","tozed","tozes","tozie","trabs","trads","tragi","traik","trams","trank","tranq","trans","trant","trape","traps","trapt","trass","trats","tratt","trave","trayf","trays","treck","treed","treen","trees","trefa","treif","treks","trema","trems","tress","trest","trets","trews","treyf","treys","triac","tride","trier","tries","triff","trigo","trigs","trike","trild","trill","trims","trine","trins","triol","trior","trios","trips","tripy","trist","troad","troak","troat","trock","trode","trods","trogs","trois","troke","tromp","trona","tronc","trone","tronk","trons","trooz","troth","trots","trows","troys","trued","trues","trugo","trugs","trull","tryer","tryke","tryma","tryps","tsade","tsadi","tsars","tsked","tsuba","tsubo","tuans","tuart","tuath","tubae","tubar","tubas","tubby","tubed","tubes","tucks","tufas","tuffe","tuffs","tufts","tufty","tugra","tuile","tuina","tuism","tuktu","tules","tulpa","tulsi","tumid","tummy","tumps","tumpy","tunas","tunds","tuned","tuner","tunes","tungs","tunny","tupek","tupik","tuple","tuque","turds","turfs","turfy","turks","turme","turms","turns","turnt","turps","turrs","tushy","tusks","tusky","tutee","tutti","tutty","tutus","tuxes","tuyer","twaes","twain","twals","twank","twats","tways","tweel","tween","tweep","tweer","twerk","twerp","twier","twigs","twill","twilt","twink","twins","twiny","twire","twirp","twite","twits","twoer","twyer","tyees","tyers","tyiyn","tykes","tyler","tymps","tynde","tyned","tynes","typal","typed","types","typey","typic","typos","typps","typto","tyran","tyred","tyres","tyros","tythe","tzars","udals","udons","ugali","ugged","uhlan","uhuru","ukase","ulama","ulans","ulema","ulmin","ulnad","ulnae","ulnar","ulnas","ulpan","ulvas","ulyie","ulzie","umami","umbel","umber","umble","umbos","umbre","umiac","umiak","umiaq","ummah","ummas","ummed","umped","umphs","umpie","umpty","umrah","umras","unais","unapt","unarm","unary","unaus","unbag","unban","unbar","unbed","unbid","unbox","uncap","unces","uncia","uncos","uncoy","uncus","undam","undee","undos","undug","uneth","unfix","ungag","unget","ungod","ungot","ungum","unhat","unhip","unica","units","unjam","unked","unket","unkid","unlaw","unlay","unled","unlet","unlid","unman","unmew","unmix","unpay","unpeg","unpen","unpin","unred","unrid","unrig","unrip","unsaw","unsay","unsee","unsew","unsex","unsod","untax","untin","unwet","unwit","unwon","upbow","upbye","updos","updry","upend","upjet","uplay","upled","uplit","upped","upran","uprun","upsee","upsey","uptak","upter","uptie","uraei","urali","uraos","urare","urari","urase","urate","urbex","urbia","urdee","ureal","ureas","uredo","ureic","urena","urent","urged","urger","urges","urial","urite","urman","urnal","urned","urped","ursae","ursid","urson","urubu","urvas","users","usnea","usque","usure","usury","uteri","uveal","uveas","uvula","vacua","vaded","vades","vagal","vagus","vails","vaire","vairs","vairy","vakas","vakil","vales","valis","valse","vamps","vampy","vanda","vaned","vanes","vangs","vants","vaped","vaper","vapes","varan","varas","vardy","varec","vares","varia","varix","varna","varus","varve","vasal","vases","vasts","vasty","vatic","vatus","vauch","vaute","vauts","vawte","vaxes","veale","veals","vealy","veena","veeps","veers","veery","vegas","veges","vegie","vegos","vehme","veils","veily","veins","veiny","velar","velds","veldt","veles","vells","velum","venae","venal","vends","vendu","veney","venge","venin","vents","venus","verbs","verra","verry","verst","verts","vertu","vespa","vesta","vests","vetch","vexed","vexer","vexes","vexil","vezir","vials","viand","vibes","vibex","vibey","viced","vices","vichy","viers","views","viewy","vifda","viffs","vigas","vigia","vilde","viler","villi","vills","vimen","vinal","vinas","vinca","vined","viner","vines","vinew","vinic","vinos","vints","viold","viols","vired","vireo","vires","virga","virge","virid","virls","virtu","visas","vised","vises","visie","visne","vison","visto","vitae","vitas","vitex","vitro","vitta","vivas","vivat","vivda","viver","vives","vizir","vizor","vleis","vlies","vlogs","voars","vocab","voces","voddy","vodou","vodun","voema","vogie","voids","voile","voips","volae","volar","voled","voles","volet","volks","volta","volte","volti","volts","volva","volve","vomer","voted","votes","vouge","voulu","vowed","vower","voxel","vozhd","vraic","vrils","vroom","vrous","vrouw","vrows","vuggs","vuggy","vughs","vughy","vulgo","vulns","vulva","vutty","waacs","wacke","wacko","wacks","wadds","waddy","waded","wader","wades","wadge","wadis","wadts","waffs","wafts","waged","wages","wagga","wagyu","wahoo","waide","waifs","waift","wails","wains","wairs","waite","waits","wakas","waked","waken","waker","wakes","wakfs","waldo","walds","waled","waler","wales","walie","walis","walks","walla","walls","wally","walty","wamed","wames","wamus","wands","waned","wanes","waney","wangs","wanks","wanky","wanle","wanly","wanna","wants","wanty","wanze","waqfs","warbs","warby","wards","wared","wares","warez","warks","warms","warns","warps","warre","warst","warts","wases","washy","wasms","wasps","waspy","wasts","watap","watts","wauff","waugh","wauks","waulk","wauls","waurs","waved","waves","wavey","wawas","wawes","wawls","waxed","waxer","waxes","wayed","wazir","wazoo","weald","weals","weamb","weans","wears","webby","weber","wecht","wedel","wedgy","weeds","weeke","weeks","weels","weems","weens","weeny","weeps","weepy","weest","weete","weets","wefte","wefts","weids","weils","weirs","weise","weize","wekas","welds","welke","welks","welkt","wells","welly","welts","wembs","wends","wenge","wenny","wents","weros","wersh","wests","wetas","wetly","wexed","wexes","whamo","whams","whang","whaps","whare","whata","whats","whaup","whaur","wheal","whear","wheen","wheep","wheft","whelk","whelm","whens","whets","whews","wheys","whids","whift","whigs","whilk","whims","whins","whios","whips","whipt","whirr","whirs","whish","whiss","whist","whits","whity","whizz","whomp","whoof","whoot","whops","whore","whorl","whort","whoso","whows","whump","whups","whyda","wicca","wicks","wicky","widdy","wides","wiels","wifed","wifes","wifey","wifie","wifty","wigan","wigga","wiggy","wikis","wilco","wilds","wiled","wiles","wilga","wilis","wilja","wills","wilts","wimps","winds","wined","wines","winey","winge","wings","wingy","winks","winna","winns","winos","winze","wiped","wiper","wipes","wired","wirer","wires","wirra","wised","wises","wisha","wisht","wisps","wists","witan","wited","wites","withe","withs","withy","wived","wiver","wives","wizen","wizes","woads","woald","wocks","wodge","woful","wojus","woker","wokka","wolds","wolfs","wolly","wolve","wombs","womby","womyn","wonga","wongi","wonks","wonky","wonts","woods","wooed","woofs","woofy","woold","wools","woons","woops","woopy","woose","woosh","wootz","words","works","worms","wormy","worts","wowed","wowee","woxen","wrang","wraps","wrapt","wrast","wrate","wrawl","wrens","wrick","wried","wrier","wries","writs","wroke","wroot","wroth","wryer","wuddy","wudus","wulls","wurst","wuses","wushu","wussy","wuxia","wyled","wyles","wynds","wynns","wyted","wytes","xebec","xenia","xenic","xenon","xeric","xerox","xerus","xoana","xrays","xylan","xylem","xylic","xylol","xylyl","xysti","xysts","yaars","yabas","yabba","yabby","yacca","yacka","yacks","yaffs","yager","yages","yagis","yahoo","yaird","yakka","yakow","yales","yamen","yampy","yamun","yangs","yanks","yapok","yapon","yapps","yappy","yarak","yarco","yards","yarer","yarfa","yarks","yarns","yarrs","yarta","yarto","yates","yauds","yauld","yaups","yawed","yawey","yawls","yawns","yawny","yawps","ybore","yclad","ycled","ycond","ydrad","ydred","yeads","yeahs","yealm","yeans","yeard","years","yecch","yechs","yechy","yedes","yeeds","yeesh","yeggs","yelks","yells","yelms","yelps","yelts","yenta","yente","yerba","yerds","yerks","yeses","yesks","yests","yesty","yetis","yetts","yeuks","yeuky","yeven","yeves","yewen","yexed","yexes","yfere","yiked","yikes","yills","yince","yipes","yippy","yirds","yirks","yirrs","yirth","yites","yitie","ylems","ylike","ylkes","ymolt","ympes","yobbo","yobby","yocks","yodel","yodhs","yodle","yogas","yogee","yoghs","yogic","yogin","yogis","yoick","yojan","yoked","yokel","yoker","yokes","yokul","yolks","yolky","yomim","yomps","yonic","yonis","yonks","yoofs","yoops","yores","yorks","yorps","youks","yourn","yours","yourt","youse","yowed","yowes","yowie","yowls","yowza","yrapt","yrent","yrivd","yrneh","ysame","ytost","yuans","yucas","yucca","yucch","yucko","yucks","yucky","yufts","yugas","yuked","yukes","yukky","yukos","yulan","yules","yummo","yummy","yumps","yupon","yuppy","yurta","yurts","yuzus","zabra","zacks","zaida","zaidy","zaire","zakat","zaman","zambo","zamia","zanja","zante","zanza","zanze","zappy","zarfs","zaris","zatis","zaxes","zayin","zazen","zeals","zebec","zebub","zebus","zedas","zeins","zendo","zerda","zerks","zeros","zests","zetas","zexes","zezes","zhomo","zibet","ziffs","zigan","zilas","zilch","zilla","zills","zimbi","zimbs","zinco","zincs","zincy","zineb","zines","zings","zingy","zinke","zinky","zippo","zippy","ziram","zitis","zizel","zizit","zlote","zloty","zoaea","zobos","zobus","zocco","zoeae","zoeal","zoeas","zoism","zoist","zombi","zonae","zonda","zoned","zoner","zones","zonks","zooea","zooey","zooid","zooks","zooms","zoons","zooty","zoppa","zoppo","zoril","zoris","zorro","zouks","zowee","zowie","zulus","zupan","zupas","zuppa","zurfs","zuzim","zygal","zygon","zymes","zymic"],t.s)
 $.f_=!1
-$.A=!1
+$.B=!1
 $.aM=!1
 $.apw=""
 $.az0=A.z(t.N,A.ab("qq"))
