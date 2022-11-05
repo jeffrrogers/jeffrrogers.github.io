@@ -38874,9 +38874,9 @@ $2(a,b){var s,r,q,p,o,n,m,l,k,j,i,h=null,g=b.b,f=b.d,e=this.a,d=g-80,c=e.d
 if(g/f>1.1){s=c.a.length
 r=Math.min(d/s,(f*0.7-80)/s)}else r=d/c.a.length
 q=Math.max(110,Math.min(r*2.5,300))
-r=Math.max(1,Math.min(r,(f-q-0-60)/6))
+r=Math.max(1,Math.min(r,(f-q-0-42)/6))
 f=$.A?B.f:B.d
-d=A.J(h,h,B.h,h,h,h,h,10,h,h,h,h,h)
+d=A.J(h,h,B.h,h,h,h,h,1,h,h,h,h,h)
 c=c.a
 s=e.Q
 p=A.m(s).j("ad<1>")
@@ -38887,7 +38887,7 @@ l=A.m(m).j("ad<1>")
 k=e.ay
 j=e.CW
 i=e.ch
-return A.J(h,A.bl(A.bb(A.a([d,A.lC(0,c,!1,r,3,new A.ad(s,p),new A.ad(o,n),new A.ad(m,l),B.cF),A.lC(1,c,!1,r,3,new A.ad(s,p),new A.ad(o,n),new A.ad(m,l),B.cF),A.lC(2,c,!1,r,3,new A.ad(s,p),new A.ad(o,n),new A.ad(m,l),B.cF),A.lC(3,c,!1,r,3,new A.ad(s,p),new A.ad(o,n),new A.ad(m,l),B.cF),A.lC(4,c,!1,r,3,new A.ad(s,p),new A.ad(o,n),new A.ad(m,l),B.cF),A.lC(5,c,!1,r,3,new A.ad(s,p),new A.ad(o,n),new A.ad(m,l),B.cF),A.J(h,h,B.h,h,h,h,h,10,h,h,h,h,h),new A.I(B.DB,new A.wt(e.as,new A.ad(k,A.m(k).j("ad<1>")),new A.ad(j,A.m(j).j("ad<1>")),new A.ad(i,A.m(i).j("ad<1>")),new A.ad(m,l),Math.min(50,g*0.08),(q-15)/3,2.5,h),h),B.Lv],t.p),B.l,B.S,B.k),h,h),B.h,f,h,h,h,h,h,h,h,h,h)},
+return A.J(h,A.bl(A.bb(A.a([d,A.lC(0,c,!1,r,3,new A.ad(s,p),new A.ad(o,n),new A.ad(m,l),B.cF),A.lC(1,c,!1,r,3,new A.ad(s,p),new A.ad(o,n),new A.ad(m,l),B.cF),A.lC(2,c,!1,r,3,new A.ad(s,p),new A.ad(o,n),new A.ad(m,l),B.cF),A.lC(3,c,!1,r,3,new A.ad(s,p),new A.ad(o,n),new A.ad(m,l),B.cF),A.lC(4,c,!1,r,3,new A.ad(s,p),new A.ad(o,n),new A.ad(m,l),B.cF),A.lC(5,c,!1,r,3,new A.ad(s,p),new A.ad(o,n),new A.ad(m,l),B.cF),A.J(h,h,B.h,h,h,h,h,1,h,h,h,h,h),new A.I(B.DB,new A.wt(e.as,new A.ad(k,A.m(k).j("ad<1>")),new A.ad(j,A.m(j).j("ad<1>")),new A.ad(i,A.m(i).j("ad<1>")),new A.ad(m,l),Math.min(50,g*0.08),(q-15)/3,2.5,h),h),B.Lv],t.p),B.l,B.S,B.k),h,h),B.h,f,h,h,h,h,h,h,h,h,h)},
 $S:74}
 A.Ty.prototype={
 $1(a){return a===this.a.a},
@@ -39376,20 +39376,18 @@ s.Q=B.d}else{s.z=B.fL
 s.Q=B.u}},
 a8H(a){this.I(new A.a0l(this))},
 a8J(){this.I(new A.a0m(this))},
-T(a){var s,r,q,p,o,n=this,m=null,l=n.a,k=l.c,j=l.d,i=j!=null,h=i?"Backspace":k,g=l.r,f=l.e
-l=l.f
-s=n.z
-r=Math.min(l,f)
-q=r*0.1
-q=A.aou(new A.bN(q,q))
-p=A.cm(s,2)
-o=n.Q
-if(i)k=A.dN(j,o,r*0.8/1.5)
-else{j=Math.min(f,l)
-if(k==="ENTER")r=0.3
-else r=0.6
-r=A.a1(k,m,A.P(m,m,o,m,m,m,m,m,"ClearSans",m,m,j*r,m,m,B.ab,m,m,!0,m,m,m,m,m,m,m,m),m)
-k=r}return A.a5(!0,A.iL(m,new A.I(new A.aj(g,g,g,g),A.J(m,A.bl(k,m,m),B.h,m,m,new A.an(s,m,p,q,m,m,B.n),m,l,m,m,m,m,f),m),B.aa,!1,m,m,m,m,m,m,m,m,n.ga8I(),new A.a09(n),n.ga8G(),m),!1,m,!0,!1,m,m,m,m,h,m,m,m,m,m,m,m,m,m,m,m,m,m)}}
+T(a){var s,r,q,p,o=this,n=null,m=o.a,l=m.c,k=l==="ENTER",j=m.d,i=j!=null,h=m.f,g=m.e,f=Math.min(h,g),e=f*((k||i)&&g/h<1.2?0.11:0.2),d=i?"Backspace":l
+m=m.r
+s=o.z
+r=A.aou(new A.bN(e,e))
+q=A.cm(s,2)
+p=o.Q
+if(i)l=A.dN(j,p,f*0.8/1.5)
+else{j=Math.min(g,h)
+if(k)f=0.3
+else f=0.6
+f=A.a1(l,n,A.P(n,n,p,n,n,n,n,n,"ClearSans",n,n,j*f,n,n,B.ab,n,n,!0,n,n,n,n,n,n,n,n),n)
+l=f}return A.a5(!0,A.iL(n,new A.I(new A.aj(m,m,m,m),A.J(n,A.bl(l,n,n),B.h,n,n,new A.an(s,n,q,r,n,n,B.n),n,h,n,n,n,n,g),n),B.aa,!1,n,n,n,n,n,n,n,n,o.ga8I(),new A.a09(o),o.ga8G(),n),!1,n,!0,!1,n,n,n,n,d,n,n,n,n,n,n,n,n,n,n,n,n,n)}}
 A.a0e.prototype={
 $1(a){return this.a.a2F(a)},
 $S:4}
