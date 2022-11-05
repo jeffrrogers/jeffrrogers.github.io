@@ -39376,7 +39376,7 @@ s.Q=B.d}else{s.z=B.fL
 s.Q=B.u}},
 a8H(a){this.I(new A.a0l(this))},
 a8J(){this.I(new A.a0m(this))},
-T(a){var s,r,q,p,o=this,n=null,m=o.a,l=m.c,k=l==="ENTER",j=m.d,i=j!=null,h=m.f,g=m.e,f=Math.min(h,g),e=f*((k||i)&&g/h<1.2?0.11:0.2),d=i?"Backspace":l
+T(a){var s,r,q,p,o=this,n=null,m=o.a,l=m.c,k=l==="ENTER",j=m.d,i=j!=null,h=m.f,g=m.e,f=Math.min(h,g),e=f*((k||i)&&g/h<1.2?0.1:0.18),d=i?"Backspace":l
 m=m.r
 s=o.z
 r=A.aou(new A.bN(e,e))
