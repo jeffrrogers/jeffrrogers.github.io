@@ -39402,7 +39402,7 @@ r=A.aou(new A.bO(e,e))
 q=A.cm(s,2)
 p=o.Q
 if(i){l=f*0.8/1.5
-l=A.bC(j,p,l,l)}else{j=Math.min(g,h)
+l=A.bC(j,p,l/1.1764705882352942,l)}else{j=Math.min(g,h)
 if(k)f=0.3
 else f=0.6
 f=A.a1(l,n,A.P(n,n,p,n,n,n,n,n,"ClearSans",n,n,j*f,n,n,B.ab,n,n,!0,n,n,n,n,n,n,n,n),n)
@@ -39735,10 +39735,10 @@ return A.ex(o,new A.agg(l,n,b,m,p,q-r),null)},
 $S:354}
 A.agg.prototype={
 $2(a4,a5){var s,r,q,p,o,n,m,l=this,k=null,j="assets/menu.svg",i="CANUCKLE",h="ClearSans",g="Statistics",f="assets/stats.svg",e="www.ko-fi.com",d="canuckle",c=l.b,b=l.d?A.J(k,k,B.h,k,k,k,k,58,k,k,k,k,k):A.J(k,k,B.h,k,k,k,k,k,k,k,k,k,k),a=$.A,a0=a?B.f:B.d,a1=l.a,a2=a1.cx,a3=a1.cy
-if(a2!=null){a2=A.a6(!0,A.bW(new A.I(B.nc,A.bC(j,a?B.d:B.f,26,26),k),!1,a3,new A.ag1(),new A.ag2(a1),new A.ag3(a1),!1),!1,k,!1,!1,k,k,k,k,"Menu",k,k,k,k,k,k,k,k,k,k,k,k,k)
+if(a2!=null){a2=A.a6(!0,A.bW(new A.I(B.nc,A.bC(j,a?B.d:B.f,13,26),k),!1,a3,new A.ag1(),new A.ag2(a1),new A.ag3(a1),!1),!1,k,!1,!1,k,k,k,k,"Menu",k,k,k,k,k,k,k,k,k,k,k,k,k)
 if(a1.cx!=null){a=a1.db
 a=A.a6(!0,A.bW(new A.I(B.am,A.bC("assets/arrow_left.svg",$.A?B.d:B.f,26,26),k),!1,a,new A.ag8(),new A.ag9(a1),new A.aga(a1),!1),!1,k,!1,!1,k,k,k,k,"Go back to archive list",k,k,k,k,k,k,k,k,k,k,k,k,k)}else a=A.J(k,k,B.h,k,k,k,k,k,k,k,k,k,k)
-a=A.aF(A.a([a2,a],t.p),B.l,B.o,B.k)}else{a2=A.a6(!0,A.bW(new A.I(B.nc,A.bC(j,a?B.d:B.f,26,26),k),!1,a3,new A.agb(),new A.agc(a1),new A.agd(a1),!1),!1,k,!1,!1,k,k,k,k,"Menu",k,k,k,k,k,k,k,k,k,k,k,k,k)
+a=A.aF(A.a([a2,a],t.p),B.l,B.o,B.k)}else{a2=A.a6(!0,A.bW(new A.I(B.nc,A.bC(j,a?B.d:B.f,13,26),k),!1,a3,new A.agb(),new A.agc(a1),new A.agd(a1),!1),!1,k,!1,!1,k,k,k,k,"Menu",k,k,k,k,k,k,k,k,k,k,k,k,k)
 a=a2}a2=a1.CW
 if(a2===B.bS&&a1.cx==null)a2=A.a6(k,new A.eW(!0,A.a1(i,k,A.P(k,k,$.A?B.d:B.f,k,k,k,k,k,h,k,k,25,k,k,B.x,k,k,!0,k,k,k,k,k,k,k,k),k),k),!1,k,!1,!1,k,k,!0,k,"Canuckle",k,k,k,k,k,k,k,k,k,k,k,k,k)
 else{a2=a2===B.hd?"Canuckle Trivia":"Canuckle Archive"
@@ -39747,7 +39747,7 @@ s=a1.CW===B.hd?"TRIVIA":"ARCHIVE"+l.e
 a2=A.a6(k,new A.eW(!0,A.ba(A.a([a3,A.a1(s,k,A.P(k,k,$.A?B.d:B.f,k,k,k,k,k,h,k,k,14,k,k,B.x,k,k,!0,k,k,k,k,k,k,k,k),k)],t.p),B.l,B.o,B.k),k),!1,k,!1,!1,k,k,!0,k,a2,k,k,k,k,k,k,k,k,k,k,k,k,k)}a3=a1.cx
 s=a1.dx
 if(a3!=null){a3=A.J(k,k,B.h,k,k,k,k,k,k,k,k,k,55)
-a3=A.aF(A.a([a3,A.a6(!0,A.bW(new A.I(B.fU,A.bC(f,$.A?B.d:B.f,26,26),k),!1,s,new A.age(),new A.agf(a1),new A.ag4(a1),!1),!1,k,!1,!1,k,k,k,k,g,k,k,k,k,k,k,k,k,k,k,k,k,k)],t.p),B.l,B.o,B.k)}else a3=A.a6(!0,A.bW(new A.I(B.fU,A.bC(f,$.A?B.d:B.f,26,26),k),!1,s,new A.ag5(),new A.ag6(a1),new A.ag7(a1),!1),!1,k,!1,!1,k,k,k,k,g,k,k,k,k,k,k,k,k,k,k,k,k,k)
+a3=A.aF(A.a([a3,A.a6(!0,A.bW(new A.I(B.fU,A.bC(f,$.A?B.d:B.f,22,26),k),!1,s,new A.age(),new A.agf(a1),new A.ag4(a1),!1),!1,k,!1,!1,k,k,k,k,g,k,k,k,k,k,k,k,k,k,k,k,k,k)],t.p),B.l,B.o,B.k)}else a3=A.a6(!0,A.bW(new A.I(B.fU,A.bC(f,$.A?B.d:B.f,22,26),k),!1,s,new A.ag5(),new A.ag6(a1),new A.ag7(a1),!1),!1,k,!1,!1,k,k,k,k,g,k,k,k,k,k,k,k,k,k,k,k,k,k)
 s=t.p
 a0=A.J(k,A.aF(A.a([a,a2,a3],s),B.l,B.by,B.k),B.h,a0,k,k,k,50,k,k,k,k,k)
 a=a1.CW
@@ -39942,7 +39942,7 @@ j=A.a6(!0,new A.eW(!0,A.bW(a.mS(A.bC("assets/archive.svg",a0,30,30),"ARCHIVE","P
 i=A.J(a0,a0,B.h,a0,a0,a0,a0,20,a0,a0,a0,a0,a0)
 h=a.d
 g=a.e
-h=A.a6(!0,new A.eW(!0,A.bW(a.mS(A.bC("assets/stats.svg",$.A?B.d:B.f,30,30),"STATISTICS",a0,B.b7,B.bo),g===3,h===3,new A.a1N(a),new A.a1O(a),new A.a1x(a),!0),a0),!1,a0,!1,!1,a0,a0,a0,a0,"Statistics",a0,a0,a0,a0,a0,a0,a0,a0,a0,a0,a0,a0,a0)
+h=A.a6(!0,new A.eW(!0,A.bW(a.mS(A.bC("assets/stats.svg",$.A?B.d:B.f,25.5,30),"STATISTICS",a0,B.b7,B.bo),g===3,h===3,new A.a1N(a),new A.a1O(a),new A.a1x(a),!0),a0),!1,a0,!1,!1,a0,a0,a0,a0,"Statistics",a0,a0,a0,a0,a0,a0,a0,a0,a0,a0,a0,a0,a0)
 g=A.lc()
 g=A.J(a0,a0,B.h,A.ai(k,g.gm(g)>>>16&255,g.gm(g)>>>8&255,g.gm(g)&255),a0,a0,a0,0.5,a0,a0,a0,a0,a0)
 f=a.d
