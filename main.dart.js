@@ -39697,7 +39697,7 @@ $1(a){return!A.vc(a)},
 $S:100}
 A.U7.prototype={
 $0(){var s,r,q,p=this,o=null,n="ClearSans",m=A.J(o,o,B.h,A.ag(64,0,0,0),o,o,o,1,o,o,o,o,o),l=$.bO().qA(),k=A.DX(),j=$.bO().qA(),i=Math.max(1,A.DX()),h=p.b,g=h/2-2,f=$.C,e=f?B.bx:B.by,d=t.p
-e=A.J(o,new A.F(B.bC,A.aA(A.a([A.a_("ACHIEVEMENTS EARNED",o,A.Q(o,o,f?B.d:B.f,o,o,o,o,o,n,o,o,18,o,o,o,o,o,!0,o,o,o,o,o,o,o,o),o,o)],d),B.l,B.c9,B.k),o),B.h,e,o,o,o,40,o,o,o,o,g)
+e=A.J(o,new A.F(B.bC,A.aA(A.a([A.a_("EARNED",o,A.Q(o,o,f?B.d:B.f,o,o,o,o,o,n,o,o,18,o,o,o,o,o,!0,o,o,o,o,o,o,o,o),o,o)],d),B.l,B.c9,B.k),o),B.h,e,o,o,o,40,o,o,o,o,g)
 f=$.C?B.f:B.d
 s=$.bO().qA()
 r=A.DX()
