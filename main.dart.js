@@ -26035,7 +26035,7 @@ var $async$z9=A.Z(function(a,b){if(a===1)return A.V(b,r)
 while(true)switch(s){case 0:s=3
 return A.a8(A.oQ($.aO9()),$async$z9)
 case 3:p=b
-if(p.b===200){q=A.l9(J.aZ(A.l6(p.e).c.a,"charset")).bS(0,p.w)==="Version 1.5.0"
+if(p.b===200){q=A.l9(J.aZ(A.l6(p.e).c.a,"charset")).bS(0,p.w)==="Version 1.4.1"
 s=1
 break}q=!1
 s=1
@@ -45604,7 +45604,7 @@ r=i===6&&r?7:i
 i=$.f0?1:0
 e=$.aM?1:0
 d=$.y?1:0
-l.m9("level_end",A.av(["level_name",c.a,"num_guesses",r,"hard_mode",i,"high_contrast",e,"dark_theme",d,"success",s,"version","Version 1.5.0","ad_code",f],t.N,t.z))},
+l.m9("level_end",A.av(["level_name",c.a,"num_guesses",r,"hard_mode",i,"high_contrast",e,"dark_theme",d,"success",s,"version","Version 1.4.1","ad_code",f],t.N,t.z))},
 $S:5}
 A.a2h.prototype={
 $0(){var s=this.a
@@ -47943,7 +47943,7 @@ a=A.a1(a4,new A.A(B.oZ,A.a_("FEEDBACK",a4,a4,a4,A.Q(a4,a4,A.i4(),a4,a4,a4,a4,a4,
 a0=$.y?B.h:B.e
 a1=A.bu("assets/email.svg",$.aM?B.w:B.u,20,24)
 a0=A.a1(!0,new A.A(B.Fz,A.j3(a4,A.F(a4,new A.A(B.oW,A.aB(A.a([a1,new A.A(B.Fo,A.a_("Email",a4,a4,a4,A.Q(a4,a4,$.y?B.e:B.h,a4,a4,a4,a4,a4,a5,a4,a4,a4,a4,a4,a4,a4,a4,!0,a4,a4,a4,a4,a4,a4,a4,a4),a4,a4),a4)],q),B.k,B.o,B.j),a4),B.f,a4,a4,new A.ab(a0,a4,a4,B.az,a4,a4,B.n),a4,a4,a4,a4,a4,a4,a4),B.ah,!1,a4,a4,a4,a4,a4,a4,a4,a4,new A.ak1(a7),a4,a4,a4),a4),!1,a4,a4,!0,!1,a4,a4,a4,a4,"Email Canuckle",!0,a4,a4,a4,a4,a4,a4,a4,a4,a4,a4,a4,a4,a4,a4,a4,a4)
-a1="Version 1.5.0"+$.aHO+"\n\xa9 2023 Canuckle Games"
+a1="Version 1.4.1"+$.aHO+"\n\xa9 2023 Canuckle Games"
 a1=A.a1(a4,new A.A(B.iq,A.a_(a1,a4,a4,a4,A.Q(a4,a4,$.y?B.e:B.h,a4,a4,a4,a4,a4,a5,a4,a4,a4,a4,a4,a4,a4,a4,!0,a4,a4,a4,a4,a4,a4,a4,a4),a4,a4),a4),!1,a4,a4,!0,!1,a4,a4,!0,a4,a1,a4,a4,a4,a4,a4,a4,a4,a4,a4,a4,a4,a4,a4,a4,a4,a4,a4)
 a2=A.a_("POWERED BY",a4,a4,a4,A.Q(a4,a4,$.y?B.e:B.h,a4,a4,a4,a4,a4,a5,a4,a4,14,a4,a4,B.v,a4,a4,!0,a4,a4,a4,a4,a4,a4,a4,a4),a4,a4)
 s=A.a([A.bb(A.bC(A.aO(A.a([p,A.F(a4,A.aO(A.a([h,A.bC(A.o6(A.aO(A.a([o,f,n,e,l,d,c,b,a,a0,a1,B.O3,A.a1(!0,new A.e1(!0,A.bs(A.aO(A.a([new A.A(B.FP,a2,a4),new A.A(B.FC,A.bu($.y?"assets/cira-darkmode.svg":"assets/cira-logo.svg",a4,30,a4),a4)],q),B.k,B.o,B.j),!1,!1,new A.ak2(),new A.ak3(),new A.ak4(a3,a8,a9),!1),a4),!1,a4,a4,!1,!1,a4,a4,a4,a4,"Sponsor, CIRA",a4,a4,a4,a4,a4,a4,a4,a4,a4,a4,a4,a4,a4,a4,a4,a4,a4)],q),B.bd,B.o,B.j),a4,B.af),j-52,a4)],q),B.k,B.o,B.j),B.f,a4,a4,new A.ab(i,a4,g,B.aZ,a4,a4,B.n),a4,j,a4,a4,a4,a4,m)],q),B.k,B.o,B.j),j+r,s),a4,a4)],q)
@@ -48557,7 +48557,7 @@ eo(){if(this.c!=null)this.K(new A.aq4())},
 ab1(a){A.by().Y(0,new A.apy(this,a),t.P)},
 O9(a){A.by().Y(0,new A.apz(this,a),t.P)},
 Sm(){var s=this.a.w,r=this.CW,q=r.f,p=r.c,o=this.dy,n=$.aM?1:0,m=$.y?1:0
-s.m9("trivia_level_end",A.av(["level_index",r.a,"guess_time",q,"chosen_index",p,"correct_index",o,"high_contrast",n,"dark_theme",m,"success",r.b,"version","Version 1.5.0"],t.N,t.z))},
+s.m9("trivia_level_end",A.av(["level_index",r.a,"guess_time",q,"chosen_index",p,"correct_index",o,"high_contrast",n,"dark_theme",m,"success",r.b,"version","Version 1.4.1"],t.N,t.z))},
 TU(a){var s,r,q,p="triviaStats",o=A.b4(J.aZ(a.a,p))
 if(o==null)o=""
 s=new A.D4(0,0,0,0,0,0,0)
