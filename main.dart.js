@@ -46762,14 +46762,14 @@ o===$&&A.b()
 return A.eW(o,new A.awi(n,s,b,!0,p,q-108),null)},
 $S:302}
 A.awi.prototype={
-$2(a5,a6){var s,r,q,p,o,n,m,l,k=this,j=null,i="assets/menu.svg",h="CANUCKLE",g="ClearSans",f="Statistics",e="assets/stats.svg",d="www.ko-fi.com",c="canuckle",b=k.b,a=A.F(j,j,B.f,j,j,j,j,58,j,j,j,j,j),a0=$.y,a1=a0?B.h:B.e,a2=k.a,a3=a2.db,a4=a2.dx
-if(a3!=null){a3=A.bq(i,a0?B.e:B.h,13,26)
+$2(a5,a6){var s,r,q,p,o,n,m,l,k=this,j=null,i="assets/reload.svg",h="CANUCKLE",g="ClearSans",f="Statistics",e="assets/stats.svg",d="www.ko-fi.com",c="canuckle",b=k.b,a=A.F(j,j,B.f,j,j,j,j,58,j,j,j,j,j),a0=$.y,a1=a0?B.h:B.e,a2=k.a,a3=a2.db,a4=a2.dx
+if(a3!=null){a3=A.bq("assets/menu.svg",a0?B.e:B.h,13,26)
 $.cB().toString
 a0=t.p
 a4=A.a0(!0,A.bm(new A.z(B.p3,A.fO(B.aT,A.a([new A.z(B.bM,a3,j),B.yD],a0),B.T,B.aP),j),!1,a4,new A.aw0(),new A.aw1(a2),new A.aw2(a2),!1),!1,j,j,!1,!1,j,j,j,j,"Menu",j,j,j,j,j,j,j,j,j,j,j,j,j,j,j,j,j)
 if(a2.db!=null){a3=a2.dy
 a3=A.a0(!0,A.bm(new A.z(B.aM,A.bq("assets/arrow_left.svg",$.y?B.e:B.h,26,26),j),!1,a3,new A.awa(),new A.awb(a2),new A.awc(a2),!1),!1,j,j,!1,!1,j,j,j,j,"Go back to archive list",j,j,j,j,j,j,j,j,j,j,j,j,j,j,j,j,j)}else a3=A.F(j,j,B.f,j,j,j,j,j,j,j,j,j,j)
-a0=A.aA(A.a([a4,a3],a0),B.k,B.o,B.j)}else{a3=A.bq(i,a0?B.e:B.h,13,26)
+a0=A.aA(A.a([a4,a3],a0),B.k,B.o,B.j)}else{a3=A.bq(i,a0?B.e:B.h,26,26)
 $.cB().toString
 a0=A.a0(!0,A.bm(new A.z(B.p3,A.fO(B.aT,A.a([new A.z(B.bM,a3,j),B.yD],t.p),B.T,B.aP),j),!1,a4,new A.awd(),new A.awe(a2),new A.awf(a2),!1),!1,j,j,!1,!1,j,j,j,j,"Menu",j,j,j,j,j,j,j,j,j,j,j,j,j,j,j,j,j)}a3=a2.cy
 if(a3===B.cE&&a2.db==null)a3=A.a0(j,new A.e1(!0,A.a_(h,j,j,j,A.Q(j,j,$.y?B.e:B.h,j,j,j,j,j,g,j,j,25,j,j,B.v,j,j,!0,j,j,j,j,j,j,j,j),j,j),j),!1,j,j,!1,!1,j,j,!0,j,"Canuckle",j,j,j,j,j,j,j,j,j,j,j,j,j,j,j,j,j)
@@ -46780,7 +46780,7 @@ s=a2.cy
 if(s===B.iL)s="TRIVIA"
 else s=s===B.cd?"PRACTICE":"ARCHIVE"+k.e
 a3=A.a0(j,new A.e1(!0,A.aM(A.a([a4,A.a_(s,j,j,j,A.Q(j,j,$.y?B.e:B.h,j,j,j,j,j,g,j,j,14,j,j,B.v,j,j,!0,j,j,j,j,j,j,j,j),j,j)],t.p),B.k,B.o,B.j),j),!1,j,j,!1,!1,j,j,!0,j,a3,j,j,j,j,j,j,j,j,j,j,j,j,j,j,j,j,j)}if(a2.cy===B.cd){a4=a2.fx
-a4=A.a0(!0,A.bm(new A.z(B.cA,A.bq("assets/reload.svg",$.y?B.e:B.h,22,22),j),!1,a4,new A.awg(),new A.awh(a2),new A.aw3(a2),!1),!1,j,j,!1,!1,j,j,j,j,"Load a new practice game",j,j,j,j,j,j,j,j,j,j,j,j,j,j,j,j,j)}else{a4=a2.db
+a4=A.a0(!0,A.bm(new A.z(B.cA,A.bq(i,$.y?B.e:B.h,22,22),j),!1,a4,new A.awg(),new A.awh(a2),new A.aw3(a2),!1),!1,j,j,!1,!1,j,j,j,j,"Load a new practice game",j,j,j,j,j,j,j,j,j,j,j,j,j,j,j,j,j)}else{a4=a2.db
 s=a2.fr
 if(a4!=null){a4=A.F(j,j,B.f,j,j,j,j,j,j,j,j,j,55)
 a4=A.aA(A.a([a4,A.a0(!0,A.bm(new A.z(B.cA,A.bq(e,$.y?B.e:B.h,22,26),j),!1,s,new A.aw4(),new A.aw5(a2),new A.aw6(a2),!1),!1,j,j,!1,!1,j,j,j,j,f,j,j,j,j,j,j,j,j,j,j,j,j,j,j,j,j,j)],t.p),B.k,B.o,B.j)}else a4=A.a0(!0,A.bm(new A.z(B.cA,A.bq(e,$.y?B.e:B.h,22,26),j),!1,s,new A.aw7(),new A.aw8(a2),new A.aw9(a2),!1),!1,j,j,!1,!1,j,j,j,j,f,j,j,j,j,j,j,j,j,j,j,j,j,j,j,j,j,j)}s=t.p
