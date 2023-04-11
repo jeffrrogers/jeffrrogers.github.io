@@ -46773,7 +46773,7 @@ s=A.bC(A.U(h,j,j,j,A.P(j,j,$.y?B.e:B.f,j,j,j,j,j,g,j,j,25,j,j,B.r,j,j,!0,j,j,j,j
 r=a2.cy
 if(r===B.iM)r="TRIVIA"
 else r=r===B.bN?"PRACTICE":"ARCHIVE"+k.e
-a3=A.a0(j,new A.e1(!0,new A.z(new A.ae(a3,0,0,0),A.aM(A.a([s,A.U(r,j,j,j,A.P(j,j,$.y?B.e:B.f,j,j,j,j,j,g,j,j,14,j,j,B.r,j,j,!0,j,j,j,j,j,j,j,j),j,j)],t.p),B.k,B.o,B.j),j),j),!1,j,j,!1,!1,j,j,!0,j,a4,j,j,j,j,j,j,j,j,j,j,j,j,j,j,j,j,j)}if(a2.cy===B.bN)a4=A.a0(!0,A.hF(j,new A.z(B.Fi,A.bp("assets/reload.svg",$.y?B.e:B.f,26,26),j),B.a8,!1,j,j,j,j,j,j,j,j,j,j,j,new A.awc(a2)),!1,j,j,!1,!1,j,j,j,j,"Load a new practice game",j,j,j,j,j,j,j,j,j,j,j,j,j,j,j,j,j)
+a3=A.a0(j,new A.e1(!0,new A.z(new A.ae(a3,0,0,0),A.aM(A.a([s,A.U(r,j,j,j,A.P(j,j,$.y?B.e:B.f,j,j,j,j,j,g,j,j,14,j,j,B.r,j,j,!0,j,j,j,j,j,j,j,j),j,j)],t.p),B.k,B.o,B.j),j),j),!1,j,j,!1,!1,j,j,!0,j,a4,j,j,j,j,j,j,j,j,j,j,j,j,j,j,j,j,j)}if(a2.cy===B.bN)a4=A.a0(!0,A.hF(j,new A.z(B.Fi,A.bp("assets/reload.svg",$.y?B.e:B.f,22,26),j),B.a8,!1,j,j,j,j,j,j,j,j,j,j,j,new A.awc(a2)),!1,j,j,!1,!1,j,j,j,j,"Load a new practice game",j,j,j,j,j,j,j,j,j,j,j,j,j,j,j,j,j)
 else{a4=a2.db
 s=a2.fr
 if(a4!=null){a4=A.F(j,j,B.h,j,j,j,j,j,j,j,j,j,55)
@@ -48047,7 +48047,7 @@ m=$.y?B.f:B.e
 h=A.a([new A.cK(1,B.aJ,A.a9(B.d.aZ(178.5),158,158,158),B.dr,3)],t.R)
 g=A.F(a4,B.Me,B.h,a4,a4,new A.ac($.aO?B.x:B.v,a4,a4,B.aV,a4,a4,B.n),a4,a4,a4,a4,a4,a4,a4)
 f=a3.e
-f=A.U("Your stats and game data on this device will be lost and replaced by the data stored for the '"+f+"' User ID.",a4,a4,a4,A.P(a4,a4,$.y?B.e:B.f,a4,a4,a4,a4,a4,a5,a4,a4,15,a4,a4,a4,a4,a4,!0,a4,a4,a4,a4,a4,a4,a4,a4),B.a3,a4)
+f=A.U("Your stats and game data on this device will be lost and replaced by the data stored for User ID: "+f+".",a4,a4,a4,A.P(a4,a4,$.y?B.e:B.f,a4,a4,a4,a4,a4,a5,a4,a4,15,a4,a4,a4,a4,a4,!0,a4,a4,a4,a4,a4,a4,a4,a4),B.a3,a4)
 e=Math.min(500,b0.M(a7).f.a.a)
 d=$.y
 c=d?B.bu:B.bv
@@ -48060,7 +48060,7 @@ m=$.y?B.f:B.e
 h=A.a([new A.cK(1,B.aJ,A.a9(B.d.aZ(178.5),158,158,158),B.dr,3)],t.R)
 g=A.F(a4,B.Mf,B.h,a4,a4,new A.ac($.aO?B.x:B.v,a4,a4,B.aV,a4,a4,B.n),a4,a4,a4,a4,a4,a4,a4)
 f=a3.e
-f=A.U("Sorry eh? We couldn't find any record for User ID '"+f+"'. Please try another User ID.",a4,a4,a4,A.P(a4,a4,$.y?B.e:B.f,a4,a4,a4,a4,a4,a5,a4,a4,15,a4,a4,a4,a4,a4,!0,a4,a4,a4,a4,a4,a4,a4,a4),B.a3,a4)
+f=A.U("Sorry eh? We couldn't find any record for User ID: "+f+". Please try another User ID.",a4,a4,a4,A.P(a4,a4,$.y?B.e:B.f,a4,a4,a4,a4,a4,a5,a4,a4,15,a4,a4,a4,a4,a4,!0,a4,a4,a4,a4,a4,a4,a4,a4),B.a3,a4)
 e=Math.min(500,b0.M(a7).f.a.a)
 s.push(A.F(a4,A.bb(A.F(a4,A.aM(A.a([g,new A.z(B.df,f,a4),new A.z(B.il,A.aA(A.a([A.bt(A.F(a4,B.wd,B.h,a4,a4,new A.ac($.aO?B.x:B.v,a4,a4,B.aK,a4,a4,B.n),a4,a4,a4,a4,a4,a4,e*0.3),!1,!1,new A.akH(),new A.akJ(),new A.akK(a3),!1)],q),B.k,B.G,B.j),a4)],q),B.k,B.o,B.cl),B.h,a4,a4,new A.ac(m,a4,a4,B.b0,h,a4,B.n),a4,a4,a4,a4,a4,a4,p*0.95),a4,a4),B.h,r,a4,a4,a4,a4,a4,a4,a4,a4,a4))}if(a3.x){r=A.a9(153,0,0,0)
 p=Math.min(500,b0.M(a7).f.a.a)
@@ -48068,7 +48068,7 @@ m=$.y?B.f:B.e
 h=A.a([new A.cK(1,B.aJ,A.a9(B.d.aZ(178.5),158,158,158),B.dr,3)],t.R)
 g=A.F(a4,B.Mg,B.h,a4,a4,new A.ac($.aO?B.x:B.v,a4,a4,B.aV,a4,a4,B.n),a4,a4,a4,a4,a4,a4,a4)
 f=a3.a.d
-f=A.U("Your data is now synced with User ID '"+f+"'.",a4,a4,a4,A.P(a4,a4,$.y?B.e:B.f,a4,a4,a4,a4,a4,a5,a4,a4,15,a4,a4,a4,a4,a4,!0,a4,a4,a4,a4,a4,a4,a4,a4),B.a3,a4)
+f=A.U("Your data is now synced with User ID: "+f+".",a4,a4,a4,A.P(a4,a4,$.y?B.e:B.f,a4,a4,a4,a4,a4,a5,a4,a4,15,a4,a4,a4,a4,a4,!0,a4,a4,a4,a4,a4,a4,a4,a4),B.a3,a4)
 a7=Math.min(500,b0.M(a7).f.a.a)
 s.push(A.F(a4,A.bb(A.F(a4,A.aM(A.a([g,new A.z(B.df,f,a4),new A.z(B.il,A.aA(A.a([A.bt(A.F(a4,B.wd,B.h,a4,a4,new A.ac($.aO?B.x:B.v,a4,a4,B.aK,a4,a4,B.n),a4,a4,a4,a4,a4,a4,a7*0.3),!1,!1,new A.akL(),new A.akM(),new A.akN(a3),!1)],q),B.k,B.G,B.j),a4)],q),B.k,B.o,B.cl),B.h,a4,a4,new A.ac(m,a4,a4,B.b0,h,a4,B.n),a4,a4,a4,a4,a4,a4,p*0.95),a4,a4),B.h,r,a4,a4,a4,a4,a4,a4,a4,a4,a4))}return A.fN(B.aT,s,B.T,B.aP)}}
 A.akV.prototype={
