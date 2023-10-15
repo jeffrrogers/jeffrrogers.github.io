@@ -42897,7 +42897,7 @@ a=A.bA("Something isn't quite right.\n\nYou can turn on 'Show Mistakes' in Setti
 a1=b5.w
 i.push(new A.e3(B.cw,b2,b2,new A.a6(new A.as(0,b3+40+a0/9*2,0,0),A.ap(b2,A.f9(A.co(A.a([b,new A.a6(B.dk,a,b2),A.cn(A.ap(b2,B.KL,B.i,b2,b2,new A.aF($.ck?B.y:B.z,b2,b2,B.cy,b2,b2,B.q),b2,b2,b2,b2,b2,b2,b2),b2,!0,!1,a1===18,b2,new A.acT(b5),new A.acU(b5),!0,!1,b2)],a2),B.o,B.aD,B.im),b2,b2),B.i,b2,b2,new A.aF(g,b2,b2,B.cy,d,b2,B.q),b2,200,b2,b2,b2,b2,c),b2),b2))}if(!b5.y){b5=$.ah?B.c_:B.cF
 g=A.a([new A.dc(4,B.bm,A.aj(B.d.aX(178.5),158,158,158),B.k,18)],t.sq)
-i.push(new A.e3(B.cw,b2,b2,new A.a6(new A.as(0,b3+40+a0/9*2.4,0,0),A.ap(b2,A.f9(A.co(A.a([A.bA("Loading Puzzle...",A.aI(b2,b2,$.ck?B.y:B.z,b2,b2,b2,b2,b2,b2,b2,b2,20,b2,b2,B.A,b2,b2,!0,b2,b2,b2,b2,b2,b2,b2,b2),b2),new A.a6(B.Es,A.bZ("assets/canoku_by_canuckle.svg",b2,170,144),b2)],a2),B.o,B.aD,B.l),b2,b2),B.i,b2,b2,new A.aF(b5,b2,b2,B.cy,g,b2,B.q),b2,250,b2,b2,b2,b2,250),b2),b2))}return A.ct(A.fm(B.cw,i,B.ai),b2,b4)},
+i.push(new A.e3(B.cw,b2,b2,new A.a6(new A.as(0,b3+40+b7*2,0,0),A.ap(b2,A.f9(A.co(A.a([A.bA("Loading Puzzle...",A.aI(b2,b2,$.ck?B.y:B.z,b2,b2,b2,b2,b2,b2,b2,b2,20,b2,b2,B.A,b2,b2,!0,b2,b2,b2,b2,b2,b2,b2,b2),b2),new A.a6(B.Es,A.bZ("assets/canoku_by_canuckle.svg",b2,170,144),b2)],a2),B.o,B.aD,B.l),b2,b2),B.i,b2,b2,new A.aF(b5,b2,b2,B.cy,g,b2,B.q),b2,250,b2,b2,b2,b2,250),b2),b2))}return A.ct(A.fm(B.cw,i,B.ai),b2,b4)},
 $S:304}
 A.acC.prototype={
 $1(a){return a},
@@ -43685,7 +43685,7 @@ g=A.a_(s)
 f=A.a_(s)===4?2:3
 e=A.a([a2,A.a([n,o,p,A.wJ(a0,A.ajU(A.ap(a0,a0,B.i,a0,a0,new A.aF(j,a0,i,B.bB,a0,a0,B.q),a0,(a6*h/10+q)*(9/g),a0,a0,a0,a0,(a6*f/10+q)*(9/A.a_(s))),B.ao,k),a0,a0,a0,a0,a6*m/10*(9/l),a0)],r),a.p5(a6,3),a.p5(a6,4),a.p5(a6,5),a.p5(a6,6),a.p5(a6,7)],t.hT)
 a2=A.aI(a0,a0,$.ah?B.e:B.j,a0,a0,a0,a0,a0,a0,a0,a0,a0,a0,a0,a0,a0,a0,!0,a0,a0,a0,a0,a0,a0,a0,a0)
-s=A.cg(a0,A.aI(a0,a0,$.ah?B.e:B.j,a0,a0,a0,a0,a0,a0,a0,a0,a0,a0,a0,a0,a0,a0,!0,a0,a0,a0,a0,a0,a0,a0,a0),"Welcome to a brand new game from the creators of Canuckle:\nSudoku + Canadian images = ")
+s=A.cg(a0,A.aI(a0,a0,$.ah?B.e:B.j,a0,a0,a0,a0,a0,a0,a0,a0,a0,a0,a0,a0,a0,a0,!0,a0,a0,a0,a0,a0,a0,a0,a0),"Welcome to a brand new game from the creators of Canuckle:\nCanadian emojis + Sudoku = ")
 p=A.cg(a0,A.aI(a0,a0,$.ah?B.e:B.j,a0,a0,a0,a0,a0,a0,a0,a0,a0,a0,a0,B.A,a0,a0,!0,a0,a0,a0,a0,a0,a0,a0,a0),"CANOKU!")
 o=t.Ne
 a2=A.ku(a0,a0,B.aW,a0,a0,!0,a0,A.cg(A.a([s,p,A.cg(a0,A.aI(a0,a0,$.ah?B.e:B.j,a0,a0,a0,a0,a0,a0,a0,a0,a0,a0,a0,a0,a0,a0,!0,a0,a0,a0,a0,a0,a0,a0,a0),"\nThere are 3 types of Canoku puzzles (9x9, 6x6, and 4x4) and 5 difficulty levels for each. New puzzles are loaded each day! Click the arrow below to learn how to play. Have fun!")],o),a2,a0),B.a1,a0,a0,1,B.ad)
@@ -43693,11 +43693,11 @@ s=A.aI(a0,a0,$.ah?B.e:B.j,a0,a0,a0,a0,a0,a0,a0,a0,a0,a0,a0,a0,a0,a0,!0,a0,a0,a0,
 p=$.aK
 if(A.a_(p)===9)p="nine"
 else p=A.a_(p)===6?"six":"four"
-p=A.cg(a0,A.aI(a0,a0,$.ah?B.e:B.j,a0,a0,a0,a0,a0,a0,a0,a0,a0,a0,a0,a0,a0,a0,!0,a0,a0,a0,a0,a0,a0,a0,a0),"A Canoku puzzle begins with a grid where some Canadian images are already in place. A puzzle is completed when each Canadian image appears only once in each of the "+p+" ")
+p=A.cg(a0,A.aI(a0,a0,$.ah?B.e:B.j,a0,a0,a0,a0,a0,a0,a0,a0,a0,a0,a0,a0,a0,a0,!0,a0,a0,a0,a0,a0,a0,a0,a0),"A Canoku puzzle begins with a grid where some Canadian emojis are already in place. A puzzle is completed when each Canadian image appears only once in each of the "+p+" ")
 n=A.cg(a0,A.aI(a0,a0,$.ck?B.hq:B.hv,a0,a0,a0,a0,a0,a0,a0,a0,a0,a0,a0,B.A,a0,a0,!0,a0,a0,a0,a0,a0,a0,a0,a0),"rows")
 m=A.cg(a0,A.aI(a0,a0,$.ck?B.y:B.z,a0,a0,a0,a0,a0,a0,a0,a0,a0,a0,a0,B.A,a0,a0,!0,a0,a0,a0,a0,a0,a0,a0,a0),"columns")
 l=A.cg(a0,A.aI(a0,a0,B.aY,a0,a0,a0,a0,a0,a0,a0,a0,a0,a0,a0,B.A,a0,a0,!0,a0,a0,a0,a0,a0,a0,a0,a0),"sections")
-s=A.ku(a0,a0,B.aW,a0,a0,!0,a0,A.cg(A.a([p,n,B.OJ,m,B.OH,l,A.cg(a0,A.aI(a0,a0,$.ah?B.e:B.j,a0,a0,a0,a0,a0,a0,a0,a0,a0,a0,a0,a0,a0,a0,!0,a0,a0,a0,a0,a0,a0,a0,a0),". Study the grid to find the Canadian images that might fit into each cell.")],o),s,a0),B.a1,a0,a0,1,B.ad)
+s=A.ku(a0,a0,B.aW,a0,a0,!0,a0,A.cg(A.a([p,n,B.OJ,m,B.OH,l,A.cg(a0,A.aI(a0,a0,$.ah?B.e:B.j,a0,a0,a0,a0,a0,a0,a0,a0,a0,a0,a0,a0,a0,a0,!0,a0,a0,a0,a0,a0,a0,a0,a0),". Study the grid to find the Canadian emojis that might fit into each cell.")],o),s,a0),B.a1,a0,a0,1,B.ad)
 p=A.aI(a0,a0,$.ah?B.e:B.j,a0,a0,a0,a0,a0,a0,a0,a0,a0,a0,a0,a0,a0,a0,!0,a0,a0,a0,a0,a0,a0,a0,a0)
 p=A.ku(a0,a0,B.aW,a0,a0,!0,a0,A.cg(A.a([A.cg(a0,A.aI(a0,a0,$.ah?B.e:B.j,a0,a0,a0,a0,a0,a0,a0,a0,a0,a0,a0,a0,a0,a0,!0,a0,a0,a0,a0,a0,a0,a0,a0),"Select a cell, then tap a Canadian image to fill in the cell.")],o),p,a0),B.a1,a0,a0,1,B.ad)
 n=A.aI(a0,a0,$.ah?B.e:B.j,a0,a0,a0,a0,a0,a0,a0,a0,a0,a0,a0,a0,a0,a0,!0,a0,a0,a0,a0,a0,a0,a0,a0)
@@ -43705,7 +43705,7 @@ n=A.ku(a0,a0,B.aW,a0,a0,!0,a0,A.cg(A.a([A.cg(a0,A.aI(a0,a0,$.ah?B.e:B.j,a0,a0,a0
 m=A.aI(a0,a0,$.ah?B.e:B.j,a0,a0,a0,a0,a0,a0,a0,a0,a0,a0,a0,a0,a0,a0,!0,a0,a0,a0,a0,a0,a0,a0,a0)
 m=A.ku(a0,a0,B.aW,a0,a0,!0,a0,A.cg(A.a([A.cg(a0,A.aI(a0,a0,$.ah?B.e:B.j,a0,a0,a0,a0,a0,a0,a0,a0,a0,a0,a0,a0,a0,a0,!0,a0,a0,a0,a0,a0,a0,a0,a0),"Use the erase button to clear the highlighted cell.")],o),m,a0),B.a1,a0,a0,1,B.ad)
 l=A.aI(a0,a0,$.ah?B.e:B.j,a0,a0,a0,a0,a0,a0,a0,a0,a0,a0,a0,a0,a0,a0,!0,a0,a0,a0,a0,a0,a0,a0,a0)
-l=A.ku(a0,a0,B.aW,a0,a0,!0,a0,A.cg(A.a([A.cg(a0,A.aI(a0,a0,$.ah?B.e:B.j,a0,a0,a0,a0,a0,a0,a0,a0,a0,a0,a0,a0,a0,a0,!0,a0,a0,a0,a0,a0,a0,a0,a0),"Turn on Notes mode to add and remove multiple Canadian images in one cell to keep track of the possible answers.")],o),l,a0),B.a1,a0,a0,1,B.ad)
+l=A.ku(a0,a0,B.aW,a0,a0,!0,a0,A.cg(A.a([A.cg(a0,A.aI(a0,a0,$.ah?B.e:B.j,a0,a0,a0,a0,a0,a0,a0,a0,a0,a0,a0,a0,a0,a0,!0,a0,a0,a0,a0,a0,a0,a0,a0),"Turn on Notes mode to add and remove multiple Canadian emojis in one cell to keep track of the possible answers.")],o),l,a0),B.a1,a0,a0,1,B.ad)
 k=A.aI(a0,a0,$.ah?B.e:B.j,a0,a0,a0,a0,a0,a0,a0,a0,a0,a0,a0,a0,a0,a0,!0,a0,a0,a0,a0,a0,a0,a0,a0)
 d=[a2,s,p,n,m,l,A.ku(a0,a0,B.aW,a0,a0,!0,a0,A.cg(A.a([A.cg(a0,A.aI(a0,a0,$.ah?B.e:B.j,a0,a0,a0,a0,a0,a0,a0,a0,a0,a0,a0,a0,a0,a0,!0,a0,a0,a0,a0,a0,a0,a0,a0),"Use the pause button to pause your game and stop the timer. When the game is paused, the cells are cleared. Use the play button to resume the game and timer.")],o),k,a0),B.a1,a0,a0,1,B.ad)]
 a2=a5*0.92
