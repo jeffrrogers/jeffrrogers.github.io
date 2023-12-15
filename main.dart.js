@@ -8826,15 +8826,15 @@ s=3
 return A.K(A.mq($.aKZ()),$async$qT)
 case 3:p=b
 if(p.b>=400||A.cm(J.as(A.cl(p.e).c.a,"charset")).b_(0,p.w).length===0){A.bJ("Error response: "+A.cm(J.as(A.cl(p.e).c.a,"charset")).b_(0,p.w))
-q=!0
+q=!1
 s=1
 break}o=A.A1(A.cm(J.as(A.cl(p.e).c.a,"charset")).b_(0,p.w),null)
 if(o==null)o=-1
 A.bJ("Puzzle Count: "+o)
-if(o===-1){q=!0
+if(o===-1){q=!1
 s=1
 break}A.bJ("Answers: "+$.fd.length+", FF: "+$.o0.length+", FFU: "+$.o_.length)
-q=!($.fd.length===o&&$.o0.length===o&&$.o_.length===o)
+q=$.fd.length===o&&$.o0.length===o&&$.o_.length===o
 s=1
 break
 case 1:return A.N(q,r)}})
@@ -42700,7 +42700,7 @@ $S:356}
 A.oJ.prototype={
 D2(){var s=this
 return(s.c+2*s.d+3*s.e+4*s.f+5*s.r+6*s.w+7*s.x)/Math.max(1,s.a)},
-RR(a){return""+this.a+" / "+A.iC(a)+" ("+B.k.em(this.a*100,Math.max(1,A.iC(a)))+"%)"},
+RR(a){return""+this.a+" / "+A.i(Math.max(0,A.iC(a)))+" ("+B.k.em(this.a*100,Math.max(1,A.iC(a)))+"%)"},
 Hm(){var s=this.b,r=this.a
 return""+s+" / "+r+" ("+B.k.em(s*100,Math.max(1,r))+"%)"}}
 A.ZS.prototype={
