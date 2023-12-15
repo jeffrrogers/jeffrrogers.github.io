@@ -42011,21 +42011,22 @@ A.asC.prototype={
 $0(){this.a.go=!0},
 $S:0}
 A.asr.prototype={
-$2(a,b){var s,r,q,p,o,n,m=A.aQ(a,null,t.w).w.a.a>=728?98:58,l=this.a
-l.tM()
+$2(a,b){var s,r,q,p,o,n,m={},l=A.aQ(a,null,t.w).w.a.a>=728?98:58,k=this.a
+k.tM()
 s=b.b
 r=s*0.15
-q=50+m
+q=50+l
 p=b.d
 Math.min(r,(p-Math.min(r*2,300)-q)/8)
 s=s<600?s:600
-o=l.cy===B.cD&&l.db!=null?" #"+(A.eJ(l.db.a)+1):""
-n=l.at
+m.a=""
+if(k.cy===B.cD&&k.db!=null){o=A.eJ(k.db.a)
+if(o!==-1)m.a=" #"+(o+1)}n=k.at
 n===$&&A.b()
-return A.eP(n,new A.asq(l,s,b,m,o,p-q),null)},
+return A.eP(n,new A.asq(m,k,s,b,l,p-q),null)},
 $S:338}
 A.asq.prototype={
-$2(a5,a6){var s,r,q,p,o,n,m,l,k=this,j=null,i="assets/menu.svg",h="CANUCKLE",g="ClearSans",f="Statistics",e="assets/stats.svg",d="www.ko-fi.com",c="canuckle",b=k.b,a=A.B(j,j,B.f,j,j,j,j,k.d,j,j,j,j,j),a0=$.w,a1=a0?B.h:B.e,a2=k.a,a3=a2.db!=null||a2.cy===B.bB,a4=a2.dx
+$2(a5,a6){var s,r,q,p,o,n,m,l,k=this,j=null,i="assets/menu.svg",h="CANUCKLE",g="ClearSans",f="Statistics",e="assets/stats.svg",d="www.ko-fi.com",c="canuckle",b=k.c,a=A.B(j,j,B.f,j,j,j,j,k.e,j,j,j,j,j),a0=$.w,a1=a0?B.h:B.e,a2=k.b,a3=a2.db!=null||a2.cy===B.bB,a4=a2.dx
 if(a3){a3=A.b2(i,a0?B.e:B.h,13,26)
 $.cy()
 a0=t.p
@@ -42042,7 +42043,7 @@ else a3=a3===B.bB?"Canuckle Practice":"Canuckle Archive"
 a4=A.bu(A.Y(h,j,j,j,A.S(j,j,$.w?B.e:B.h,j,j,j,j,j,g,j,j,25,j,j,B.t,j,j,!0,j,j,j,j,j,j,j,j),j,j),27,j)
 s=a2.cy
 if(s===B.ir)s="TRIVIA"
-else s=s===B.bB?"PRACTICE":"ARCHIVE"+k.e
+else s=s===B.bB?"PRACTICE":"ARCHIVE"+k.a.a
 a3=A.W(j,new A.dw(!0,A.aK(A.a([a4,A.Y(s,j,j,j,A.S(j,j,$.w?B.e:B.h,j,j,j,j,j,g,j,j,14,j,j,B.t,j,j,!0,j,j,j,j,j,j,j,j),j,j)],t.p),B.j,B.o,B.i),j),!1,j,j,!1,!1,j,j,!0,j,a3,j,j,j,j,j,j,j,j,j,j,j,j,j,j,j,j,j,j,j)}if(a2.cy===B.bB)a4=A.B(j,j,B.f,j,j,j,j,j,j,j,j,j,95)
 else{a4=a2.db
 s=a2.fr
@@ -42083,7 +42084,7 @@ m=A.k(r)
 l=A.k(q)
 if(a0===B.bB){a0=a2.f
 a3=A.bu(new A.A_(o.d,new A.X(a4,n.i("X<1>")),new A.X(r,m.i("X<1>")),new A.X(a0,A.k(a0).i("X<1>")),new A.X(q,l.i("X<1>")),p,a2.as,j),a3,b)
-a0=a3}else a0=A.bu(new A.BY(new A.X(a4,n.i("X<1>")),new A.X(r,m.i("X<1>")),new A.X(q,l.i("X<1>")),p,j,o.d,j),a3,b)}}b=A.bu(A.aK(A.a([a,a1,a0],s),B.j,B.o,B.i),k.c.d,b)
+a0=a3}else a0=A.bu(new A.BY(new A.X(a4,n.i("X<1>")),new A.X(r,m.i("X<1>")),new A.X(q,l.i("X<1>")),p,j,o.d,j),a3,b)}}b=A.bu(A.aK(A.a([a,a1,a0],s),B.j,B.o,B.i),k.d.d,b)
 a0=a2.ax
 a0===$&&A.b()
 a1=a0.a
@@ -87918,7 +87919,7 @@ B.i4=new A.ab(15,5,0,5)
 B.EM=new A.ab(15,5,15,10)
 B.EN=new A.ab(15,5,15,15)
 B.bA=new A.ab(15,5,15,5)
-B.i5=new A.ab(15,5,60,5)
+B.i5=new A.ab(15,5,40,5)
 B.EO=new A.ab(16,0,16,0)
 B.EP=new A.ab(16,10,16,10)
 B.dS=new A.ab(16,16,16,16)
@@ -87936,11 +87937,11 @@ B.EY=new A.ab(20,5,20,5)
 B.EZ=new A.ab(20,6,20,6)
 B.F_=new A.ab(24,24,24,24)
 B.F0=new A.ab(3,0,3,0)
+B.i6=new A.ab(40,5,15,5)
 B.F1=new A.ab(4,0,4,0)
 B.V7=new A.ab(4,4,4,5)
 B.m2=new A.ab(5,0,5,0)
 B.b6=new A.ab(5,5,5,5)
-B.i6=new A.ab(60,5,15,5)
 B.F2=new A.ab(6,0,0,0)
 B.F3=new A.ab(6,6,6,6)
 B.m3=new A.ab(8,0,0,0)
@@ -90019,13 +90020,13 @@ B.RF=new A.u(!0,B.e,null,"Roboto",null,null,null,null,null,null,null,null,null,n
 B.Rz=new A.u(!0,B.e,null,"Roboto",null,null,null,null,null,null,null,null,null,null,null,null,null,B.l,null,null,null,"whiteMountainView labelMedium",null,null,null,null)
 B.Re=new A.u(!0,B.e,null,"Roboto",null,null,null,null,null,null,null,null,null,null,null,null,null,B.l,null,null,null,"whiteMountainView labelSmall",null,null,null,null)
 B.Sh=new A.dW(B.QZ,B.S0,B.RM,B.PF,B.RH,B.QT,B.S4,B.Q5,B.QA,B.RC,B.Py,B.RN,B.RF,B.Rz,B.Re)
-B.jQ=new A.u(!0,B.e,null,"ClearSans",null,null,16,B.t,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null)
-B.hd=new A.e8("BUY CANUCKLE A COFFEE",null,B.jQ,null,null,null,null,null,null)
-B.yi=new A.u(!0,B.e,null,"ClearSans",null,null,23,B.t,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null)
-B.yj=new A.e8("MERCH",null,B.yi,null,null,null,null,null,null)
-B.jS=new A.e8("SHARE",null,B.yi,null,null,null,null,null,null)
+B.yi=new A.u(!0,B.e,null,"ClearSans",null,null,16,B.t,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null)
+B.hd=new A.e8("BUY CANUCKLE A COFFEE",null,B.yi,null,null,null,null,null,null)
+B.jQ=new A.u(!0,B.e,null,"ClearSans",null,null,23,B.t,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null)
+B.yj=new A.e8("MERCH",null,B.jQ,null,null,null,null,null,null)
+B.jS=new A.e8("SHARE",null,B.jQ,null,null,null,null,null,null)
 B.jT=new A.e8("PLAY CANOKU",null,B.jQ,null,null,null,null,null,null)
-B.Sp=new A.e8("CANUCKLE MERCH",null,B.jQ,null,null,null,null,null,null)
+B.Sp=new A.e8("CANUCKLE MERCH",null,B.yi,null,null,null,null,null,null)
 B.Vg=new A.al3(0,"system")
 B.Lb=new A.l(0.056,0.024)
 B.L1=new A.l(0.108,0.3085)
