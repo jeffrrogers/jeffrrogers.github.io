@@ -187,6 +187,17 @@
       margin-top: 4px; 
       background-color: red;
     }
+    div.mobileadbox_2 {
+      z-index: 99999;
+      height: 100px;
+      width: 100vw;
+      display: block;
+      position: absolute;
+      max-width: 728px;
+      overflow: hidden;
+      margin-top: 4px; 
+      background-color: green;
+    }
     div.adbox_1:first-child {
       left: 0;
     }
@@ -219,6 +230,19 @@
     }
     @media screen and (min-width: 728px) {
       div.mobileadbox {
+        display: none;
+      }
+      div.mobileadbox_2 {
+        display: none;
+      }
+    }
+    @media screen and (min-height: 736px) {
+      div.mobileadbox {
+        display: none;
+      }
+    }
+    @media screen and (max-height: 736px) {
+      div.mobileadbox_2 {
         display: none;
       }
     }
