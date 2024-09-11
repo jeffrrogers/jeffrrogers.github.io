@@ -34733,7 +34733,7 @@ f=$.kD?1:0
 e=$.im?1:0
 d=$.mD?1:0
 c=$.je?1:0
-a0.my("canoku_level_start",A.ax(["mode",h.c,"date",h.a,"dark_theme",g,"highlights_sections",f,"coloured_bgs",e,"show_mistakes",d,"show_animations",c,"version","Version 1.0.3"],t.N,t.K))
+a0.my("canoku_level_start",A.ax(["mode",h.c,"date",h.a,"dark_theme",g,"highlights_sections",f,"coloured_bgs",e,"show_mistakes",d,"show_animations",c,"version","Version 1.1.0"],t.N,t.K))
 if(p.c!=null)p.C(new A.a9O(p))
 case 1:return A.J(q,r)}})
 return A.K($async$kR,r)},
@@ -34757,7 +34757,7 @@ n=$.kD?1:0
 k=$.im?1:0
 j=$.mD?1:0
 i=$.je?1:0
-f.my("canoku_level_start",A.ax(["mode",q.c,"date",q.a,"dark_theme",p,"highlights_sections",n,"coloured_bgs",k,"show_mistakes",j,"show_animations",i,"version","Version 1.0.3"],t.N,t.K))}h.d=$.AK().gHx()
+f.my("canoku_level_start",A.ax(["mode",q.c,"date",q.a,"dark_theme",p,"highlights_sections",n,"coloured_bgs",k,"show_mistakes",j,"show_animations",i,"version","Version 1.1.0"],t.N,t.K))}h.d=$.AK().gHx()
 g=A.bW(g.i(0,"viewedCanokuHowTo"))
 if(g!==!0)h.e.r=!0
 h.xP()
@@ -35401,7 +35401,7 @@ h=$.kD?1:0
 g=$.im?1:0
 f=$.mD?1:0
 e=$.je?1:0
-k.my("canoku_level_end",A.ax(["mode",s.c,"date",s.a,"time",j,"dark_theme",i,"highlights_sections",h,"coloured_bgs",g,"show_mistakes",f,"show_animations",e,"version","Version 1.0.3"],t.N,t.K))}else if(d.fQ(a)&&$.je)d.BD(a)
+k.my("canoku_level_end",A.ax(["mode",s.c,"date",s.a,"time",j,"dark_theme",i,"highlights_sections",h,"coloured_bgs",g,"show_mistakes",f,"show_animations",e,"version","Version 1.1.0"],t.N,t.K))}else if(d.fQ(a)&&$.je)d.BD(a)
 d.e.br().av(new A.a9A(d),t.P)},
 Bk(a){return this.Bl(a,!1)},
 fQ(a){var s,r,q=t.t,p=A.a([1,2,3,4,5,6,7,8,9],q),o=$.av
@@ -37615,7 +37615,7 @@ s=A.bZ(A.a([new A.a0(B.ES,f,q),new A.a0(B.l1,A.b1(A.axZ(a),s,q),q)],r),B.aC,B.t,
 l=($.bN?B.w:B.x).a
 l=A.a4(127,l>>>16&255,l>>>8&255,l&255)
 return A.bw(q,A.pi(q,new A.a0(new A.ae(15,n,15,m),A.ad(q,A.bq(A.a([new A.pa(1,B.l7,s,q),new A.a0(B.l2,new A.H7(A.ahr(a),new A.a2O(this,a),B.e,l,B.hf,q),q)],r),B.n,B.bv,B.l),B.j,q,q,new A.ap(k,q,q,new A.bD(new A.ar(j,j),new A.ar(i,i),new A.ar(h,h),new A.ar(g,g)),q,q,B.p),q,q,q,q,q,q,q),q),B.aQ,!1,q,q,q,q,q,q,q,q,q,q,q,q,new A.a2P(this,a),q,q,q),!1,q,!0,!1,q,q,q,q,p,q,q,q,new A.a2Q(this,a),q,q,q,q,q,o,q)},
-Y1(b0){var s,r,q,p,o,n,m,l,k,j,i,h,g,f,e,d,c,b,a,a0,a1,a2,a3,a4=this,a5=null,a6="Version 1.0.3\n\xa9 2023 Canuckle Games",a7=t.N,a8=A.iR(a5,a5,"info@canucklegame.ca",a4.a1E(A.ax(["subject","Canoku Feedback"],a7,a7)),a5,"mailto"),a9=A.Gt()
+Y1(b0){var s,r,q,p,o,n,m,l,k,j,i,h,g,f,e,d,c,b,a,a0,a1,a2,a3,a4=this,a5=null,a6="Version 1.1.0\n\xa9 2024 Canuckle Games",a7=t.N,a8=A.iR(a5,a5,"info@canucklegame.ca",a4.a1E(A.ax(["subject","Canoku Feedback"],a7,a7)),a5,"mailto"),a9=A.Gt()
 a7=t.w
 s=A.cg(b0,a5,a7).w.a.a>=728?98:58
 r=Math.min(750,A.cg(b0,a5,a7).w.a.b-s)
