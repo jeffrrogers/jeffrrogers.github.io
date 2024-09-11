@@ -68,11 +68,6 @@ if (/canucklegame.github.io/.test(window.location) === true) {
   
   </script>
 
-  <script>
-    // The value below is injected by flutter build, do not touch.
-    var serviceWorkerVersion = '2818048571';
-  </script>
-
   <!-- This script adds the flutter initialization JS code -->
   <script src="flutter.js?v=2818048571" defer></script>
 
@@ -343,20 +338,7 @@ if (/canucklegame.github.io/.test(window.location) === true) {
       </div>
     </div>
     <div class="game">
-      <script>
-        window.addEventListener('load', function(ev) {
-          // Download main.dart.js
-          _flutter.loader.loadEntrypoint({
-            serviceWorker: {
-              serviceWorkerVersion: serviceWorkerVersion,
-            }
-          }).then(function(engineInitializer) {
-            return engineInitializer.initializeEngine();
-          }).then(function(appRunner) {
-            return appRunner.runApp();
-          });
-        });
-      </script>
+      <script src="flutter_bootstrap.js" async></script>
     </div>
   </div>
   <!--<script type="text/javascript"> 
