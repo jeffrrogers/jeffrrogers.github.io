@@ -43302,18 +43302,41 @@ r.cq(A.jV(a,b,s,c,A.a([],t.v),null))},
 a2r(a){A.bw().a3(new A.a2p(this,a),t.P)},
 KF(a,b){A.bw().a3(new A.a2q(this,b),t.P)},
 KE(a){return this.KF(a,!1)},
-Je(a){var s,r,q,p,o,n,m=this.d,l=m.w,k=A.i(m.e0()?this.d.c.length:"X")
-m=$.eJ?"*":""
-s="Canuckle "+l+" "+k+"/6"+m+"\n"
-for(m=this.d.c,k=m.length,r=0;r<m.length;m.length===k||(0,A.S)(m),++r){s+="\n"
-q=J.xk(m[r])
+Je(a){var s,r,q,p,o,n,m,l=this.d,k=l.w,j=A.i(l.e0()?this.d.c.length:"X")
+l=$.eJ?"*":""
+s="Canuckle "+k+" "+j+"/6"+l+"\n"
+for(l=this.d.c,j=l.length,r=0;r<l.length;l.length===j||(0,A.S)(l),++r){s+="\n"
+q=J.xk(l[r])
 for(p=0;p<q.a;++p)if(q.ac(0,p)){o=q.h(0,p)
 if(o==null)o=B.dV
 if(o===B.eJ)s+=$.aP?"\ud83d\udfe7":"\ud83d\udfe5"
 else if(o===B.og)s+=$.aP?"\ud83d\udfe6":"\ud83d\udfe8"
 else s+=$.aP?"\u2b1b":"\u2b1c"}}if(a>0){s+="\n\n\ud83d\udd25 streak: "+a
-s+="\n\u267e\ufe0f #canuckleimmortal"}n=new A.br(Date.now(),!1)
-return(A.fT(n)===2023&&A.dG(n)===1&&A.fS(n)===25?s+"\n#BellLetsTalk":s)+"\n\nwww.canucklegame.ca"},
+if(a>=1000)n="\n\u267e\ufe0f #canuckleimmortal"
+else if(a>=900)n="\n\ud83d\udcaa #canuckletitan"
+else if(a>=800)n="\n\ud83e\udd2f #canucklephenom"
+else if(a>=750)n="\n\ud83d\ude4c #canucklevirtuoso"
+else if(a>=700)n="\n\ud83e\ude84 #canucklemaestro"
+else if(a>=600)n="\n\ud83d\udd2e #canuckleoracle"
+else if(a>=500)n="\n\ud83d\ude07 #canuckleGod"
+else if(a>=400)n="\n\ud83c\udde8\ud83c\udde6 #canuckleEHlite"
+else if(a>=350)n="\n\ud83e\uddb8 #canucklesupreme"
+else if(a>=300)n="\n\ud83d\udcbf #canuckleplatinum"
+else if(a>=250)n="\n\u265f\ufe0f #canucklegrandmaster"
+else if(a>=200)n="\n\ud83d\udc51 #canucklelegend"
+else if(a>=150)n="\n\ud83e\udde0 #canuckleguru"
+else if(a>=125)n="\n\ud83c\udfc6 #canucklemaster"
+else if(a>=100)n="\n\ud83d\udcaf #canucklecenturion"
+else if(a>=75)n="\n\ud83d\udc8e #canucklediamondteam"
+else if(a>=50)n="\n\ud83e\udd47 #canucklegoldteam"
+else if(a>=40)n="\n\ud83c\udf41 #canuckle40club"
+else if(a>=30)n="\n\u2728 #canuckle30club"
+else if(a>=25)n="\n\ud83e\udd48 #canucklesilverteam"
+else if(a>=20)n="\n\ud83c\udf1f #canuckle20club"
+else if(a>=10)n="\n\ud83e\udd49 #canucklebronzeteam"
+else n=a>=5?"\n\u2b50 #canucklestar":""
+if(n.length!==0)s+=n}m=new A.br(Date.now(),!1)
+return(A.fT(m)===2023&&A.dG(m)===1&&A.fS(m)===25?s+"\n#BellLetsTalk":s)+"\n\nwww.canucklegame.ca"},
 R(a){var s,r,q=this,p=null,o=t.w,n=A.aI(a,p,o).w
 o=A.aI(a,p,o).w
 s=q.Q
