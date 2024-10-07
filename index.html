@@ -33,8 +33,6 @@
   <title>canuckle</title>
   <link rel="manifest" href="manifest.json">
 
-  <!-- This script adds the flutter initialization JS code -->
-  <script src="flutter.js?v=3182571144" defer></script>
   <style>
     div.loadingscreen {
       width: 80%;
@@ -191,28 +189,28 @@
       margin-top: 4px; 
       background-color: green;
     }
-    div.adbox_1:first-child {
+    div.adbox_1:nth-child(3) {
       left: 0;
     }
-    div.adbox_1:nth-child(2) {
+    div.adbox_1:nth-child(4) {
       right: 0;
     }
-    div.adbox_2:nth-child(3) {
+    div.adbox_2:nth-child(5) {
       left: 0;
     }
-    div.adbox_2:nth-child(4) {
+    div.adbox_2:nth-child(6) {
       right: 0;
     }
-    div.adbox_3:nth-child(5) {
+    div.adbox_3:nth-child(7) {
       left: 0;
     }
-    div.adbox_3:nth-child(6) {
+    div.adbox_3:nth-child(8) {
       right: 0;
     }
-    div.adbox_4:nth-child(7) {
+    div.adbox_4:nth-child(9) {
       left: 0;
     }
-    div.adbox_4:nth-child(8) {
+    div.adbox_4:nth-child(10) {
       right: 0;
     }
 
@@ -234,7 +232,7 @@
         display: none;
       }
     }
-    @media screen and (max-height: 736px) {
+    @media screen and (max-height: 735px) {
       div.mobileadbox_2 {
         display: none;
       }
@@ -419,7 +417,7 @@
       <script src="flutter_bootstrap.js" async></script>
     </div>
   </div>
-  <script type="text/javascript"> 
+  <!--<script type="text/javascript"> 
     var adboxes = document.getElementsByClassName("adbox");
     console.log(adboxes);
     if (document.location.href.indexOf("code=123") > 0) {
@@ -430,6 +428,6 @@
         element.style.display = "none";
       }
     }
-  </script>
+  </script>-->
 </body>
 </html>
