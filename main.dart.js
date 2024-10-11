@@ -43150,11 +43150,12 @@ else m=0
 r.cm(A.aM4(q,d,p,o-1,i,h,k,j,n,m,new A.b9(Date.now(),0,!1),e.a.w))}},
 $S:9}
 A.a39.prototype={
-$1(a){var s,r=A.a(["a","b","c","d","e","f","g","h","i","j","k","l","m","n","o","p","q","r","s","t","u","v","w","x","y","z","A","B","C","D","E","F","G","H","I","J","K","L","M","N","O","P","Q","R","S","T","U","V","W","X","Y","Z"],t.s)
-if(a instanceof A.m1){s=a.b
-if(s.gmK()==="Backspace")this.a.hY("")
-else if(s.gmK()==="Enter")this.a.hY("ENTER")
-else if(B.b.p(r,s.gmK()))this.a.hY(s.gmK().toUpperCase())}},
+$1(a){var s,r,q=A.a(["a","b","c","d","e","f","g","h","i","j","k","l","m","n","o","p","q","r","s","t","u","v","w","x","y","z","A","B","C","D","E","F","G","H","I","J","K","L","M","N","O","P","Q","R","S","T","U","V","W","X","Y","Z"],t.s)
+if(a instanceof A.m1){s=this.a
+if(!s.ay){r=a.b
+if(r.gmK()==="Backspace")s.hY("")
+else if(r.gmK()==="Enter")s.hY("ENTER")
+else if(B.b.p(q,r.gmK()))s.hY(r.gmK().toUpperCase())}}},
 $S:127}
 A.a38.prototype={
 $2(a0,a1){var s,r,q,p,o,n,m,l,k,j,i,h,g=null,f="ClearSans",e=a1.b,d=a1.d,c=this.a,b=e-80,a=c.d
