@@ -46122,14 +46122,14 @@ b2=c7>0
 if(b2)d2.push(new A.q(B.I5,A.Z(c1,A.b3(A.Y(a8,c1,c1,c1,A.U(c1,c1,$.t?B.e:B.f,c1,c1,c1,c1,c1,c3,c1,c1,c1,c1,c1,B.u,c1,c1,!0,c1,c1,c1,c1,c1,c1,c1,c1),B.W,c1),c1,c1),!1,c1,c1,!1,!1,c1,c1,c1,c1,a8,c1,c1,c1,c1,c1,c1,c1,c1,c1,c1,c1,c1,c1,c1,c1,c1,c1,c1,c1,c1,c1),c1))
 if(b2)d2.push(new A.q(B.I8,A.Z(c1,A.b3(A.Y(a7,c1,c1,c1,A.U(c1,c1,$.t?B.e:B.f,c1,c1,c1,c1,c1,c3,c1,c1,c1,c1,c1,c1,c1,c1,!0,c1,c1,c1,c1,c1,c1,c1,c1),B.W,c1),c1,c1),!1,c1,c1,!1,!1,c1,c1,c1,c1,a7,c1,c1,c1,c1,c1,c1,c1,c1,c1,c1,c1,c1,c1,c1,c1,c1,c1,c1,c1,c1,c1),c1))
 if(b4)c8=A.C(c1,c1,B.h,A.Q(0,158,158,158),c1,c1,c1,0.5,c1,c1,c1,c1,c1)
-else{c8=c8>6e4
-b2=c8?"+":""
-b5=c8?a3:a1
-b5=A.j(new A.aon().$1(b5))
-b6=c8?"+":""
-b6=A.Y("NEXT CANUCKLE"+b6+":",c1,c1,c1,A.U(c1,c1,$.t?B.e:B.f,c1,c1,c1,c1,c1,c3,c1,c1,c1,c1,c1,B.u,c1,c1,!0,c1,c1,c1,c1,c1,c1,c1,c1),c1,c1)
-c8=c8?a3:a1
-c8=A.Z(c1,new A.q(B.aJ,A.bA(A.aN(A.a([b6,A.aIt(c8,A.U(c1,c1,$.aO?B.w:B.x,c1,c1,c1,c1,c1,c3,c1,c1,22,c1,c1,B.u,c1,c1,!0,c1,c1,c1,c1,c1,c1,c1,c1))],b1),B.j,B.z,B.k),c1,160),c1),!1,c1,c1,!0,!1,c1,c1,c1,c1,"Next Canuckle"+b2+" in "+b5,c1,c1,c1,c1,c1,c1,c1,c1,c1,c1,c1,c1,c1,c1,c1,c1,c1,c1,c1,c1,c1)
+else{b2=c8>59999
+b5=b2?"+":""
+b6=b2?a3:a1
+b6=A.j(new A.aon().$1(b6))
+b2=b2?"+":""
+b2=A.Y("NEXT CANUCKLE"+b2+":",c1,c1,c1,A.U(c1,c1,$.t?B.e:B.f,c1,c1,c1,c1,c1,c3,c1,c1,c1,c1,c1,B.u,c1,c1,!0,c1,c1,c1,c1,c1,c1,c1,c1),c1,c1)
+c8=c8>6e4?a3:a1
+c8=A.Z(c1,new A.q(B.aJ,A.bA(A.aN(A.a([b2,A.aIt(c8,A.U(c1,c1,$.aO?B.w:B.x,c1,c1,c1,c1,c1,c3,c1,c1,22,c1,c1,B.u,c1,c1,!0,c1,c1,c1,c1,c1,c1,c1,c1))],b1),B.j,B.z,B.k),c1,160),c1),!1,c1,c1,!0,!1,c1,c1,c1,c1,"Next Canuckle"+b5+" in "+b6,c1,c1,c1,c1,c1,c1,c1,c1,c1,c1,c1,c1,c1,c1,c1,c1,c1,c1,c1,c1,c1)
 b2=c0.cD
 b5=A.Y("POWERED BY",c1,c1,c1,A.U(c1,c1,$.t?B.e:B.f,c1,c1,c1,c1,c1,c3,c1,c1,14,c1,c1,B.u,c1,c1,!0,c1,c1,c1,c1,c1,c1,c1,c1),c1,c1)
 c8=new A.q(B.dQ,A.am(A.a([c8,A.Z(!0,new A.dx(!0,A.bb(new A.q(B.aK,A.bA(A.aN(A.a([b5,A.b5($.t?"assets/cira-darkmode.svg":"assets/cira-logo.svg",c1,c1,30,c1,c1,c1)],b1),B.j,B.z,B.k),c1,120),c1),c1,!1,b2===4,new A.aoh(),new A.aoi(c0),new A.aoj(c0,d6),!1,c1),c1),!1,c1,c1,!1,!1,c1,c1,c1,c1,"Sponsor, CIRA",c1,c1,c1,c1,c1,c1,c1,c1,c1,c1,c1,c1,c1,c1,c1,c1,c1,c1,c1,c1,c1)],b1),B.j,B.z,B.k),c1)}d2.push(c8)
