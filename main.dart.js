@@ -44467,7 +44467,7 @@ if(r>=6)return!0
 else if(r===0)return!1
 return B.b.ga3(s).a===this.d.a},
 ii(a){return this.aif(a)},
-aif(a){var s=0,r=A.G(t.H),q,p=this,o,n,m,l
+aif(a){var s=0,r=A.G(t.H),q,p=this,o,n,m,l,k,j
 var $async$ii=A.H(function(b,c){if(b===1)return A.D(c,r)
 while(true)switch(s){case 0:if(p.d.c.length>=6||p.hk()){s=1
 break}if(a.length===0){o=p.e
@@ -44489,7 +44489,11 @@ break}else{o=p.e
 if(o.length===5&&!B.b.q($.aty,o.toLowerCase())){p.hr("Invalid Word",1000,!1)
 s=1
 break}}if(!p.Jd()){s=1
-break}p.BY()}}case 1:return A.E(q,r)}})
+break}o=p.d
+m=p.e
+k=o.a.length-m.length
+for(o=m,j=0;j<k;++j){o+=" "
+p.e=o}p.BY()}}case 1:return A.E(q,r)}})
 return A.F($async$ii,r)},
 BY(){var s,r=this,q=r.FA(),p=A.n(q),o=p.i("aP<1>")
 p=p.i("bl<2>")
@@ -44748,70 +44752,74 @@ n=A.I(p,A.b7(A.am(A.a([A.bx(new A.q(B.b_,A.am(A.a([new A.q(B.dk,s,p),A.a_("LOADI
 o=n}else{o=q.p1
 o===$&&A.b()
 o=A.acw(!0,new A.l9(new A.a4a(q),p),o,new A.a4b(q))}return o},
-FA(){var s,r,q,p,o,n,m,l,k,j,i,h,g,f,e,d,c,b,a,a0,a1,a2=this,a3={},a4=A.a([],t.s),a5=A.t(t.S,t.N)
-a3.a=0
-s=a2.d.a.toUpperCase()
+FA(){var s,r,q,p,o,n,m,l,k,j,i,h,g,f,e,d,c,b,a,a0,a1,a2,a3=this,a4={},a5=A.a([],t.s),a6=A.t(t.S,t.N)
+a4.a=0
+s=a3.d.a.toUpperCase()
 s=(s.length===0?B.a5:new A.ca(s)).a
 r=new A.lq(s,0,0)
 for(;r.mn(1,r.c);){q=r.d
 if(q==null)q=r.d=B.c.R(s,r.b,r.c)
-p=a2.e
+p=a3.e
 o=p.length
-n=a3.a
+n=a4.a
 if(o>n)m=(o===0?B.a5:new A.ca(p)).aT(0,n)
 else m=""
-if(q===m){a4.push(q)
-a5.m(0,a3.a,"correct")
-p=a2.d.c
+if(q===m){a5.push(q)
+a6.m(0,a4.a,"correct")
+p=a3.d.c
 o=p.length
 k=0
 while(!0){if(!(k<p.length)){l=!1
 break}c$0:{j=p[k]
-i=B.b.na(j.b,new A.a4c(a3))
+i=B.b.na(j.b,new A.a4c(a4))
 if(i===-1||j.c.length<=i)break c$0
 if(j.c[i]==="correct"){l=!0
-break}}p.length===o||(0,A.J)(p);++k}if(!l)B.b.p(a2.d.d,q)}++a3.a}s=a2.d.c
+break}}p.length===o||(0,A.J)(p);++k}if(!l)B.b.p(a3.d.d,q)}++a4.a}s=a3.d.c
 r=A.a4(s).i("a3<1,h>")
 h=A.W(new A.a3(s,new A.a4d(),r),!0,r.i("af.E"))
-B.b.p(h,a2.e)
-s=a2.d.a.toUpperCase()
+B.b.p(h,a3.e)
+s=a3.d.a.toUpperCase()
 s=(s.length===0?B.a5:new A.ca(s)).a
 r=new A.lq(s,0,0)
 p=A.a4(h).i("a3<1,o>")
 for(;r.mn(1,r.c);){q=r.d
 if(q==null)q=r.d=B.c.R(s,r.b,r.c)
-o=a2.d.e
+o=a3.d.e
 g=new A.aH(o,new A.a4e(q),A.a4(o).i("aH<1>")).gA(0)
 f=Math.min(new A.a3(h,new A.a4f(q),p).kQ(0,B.eC),g)
-o=a2.d.d
+o=a3.d.d
 e=g-(f-new A.aH(o,new A.a4g(q),A.a4(o).i("aH<1>")).gA(0))
 if(e<=0)continue
-for(d=0;d<e;++d){c=B.b.eK(a2.d.e,q)
+for(d=0;d<e;++d){c=B.b.eK(a3.d.e,q)
 if(c===-1)break
-B.b.jd(a2.d.e,c)}}if(a5.a===a2.d.a.length)return a5
-s=a5.$ti.i("aP<1>")
+B.b.jd(a3.d.e,c)}}if(a6.a===a3.d.a.length)return a6
+s=a6.$ti.i("aP<1>")
 r=s.i("m.E")
-b=A.W(new A.aP(a5,s),!0,r)
+b=A.W(new A.aP(a6,s),!0,r)
 p=t.t
 a=A.a([],p)
-for(d=0;d<a2.d.a.length;++d)if(!B.b.q(b,d))a.push(d)
+for(d=0;d<a3.d.a.length;++d)if(!B.b.q(b,d))a.push(d)
 for(o=a.length,k=0;k<a.length;a.length===o||(0,A.J)(a),++k){d=a[k]
-n=a2.e
-m=(n.length===0?B.a5:new A.ca(n)).aT(0,d)
-n=a2.d.a.toUpperCase()
-if((n.length===0?B.a5:new A.ca(n)).q(0,m)&&B.c.f9(m,a2.d.a.toUpperCase()).gA(0)!==B.c.f9(m,B.b.fj(a4)).gA(0)){a5.m(0,d,"exists")
-a4.push(m)
-a0=B.c.f9(m,B.b.fj(a4)).gA(0)
-a1=B.c.f9(m,B.b.fj(a2.d.e)).gA(0)
-if(a0!==a1&&a0>a1)B.b.p(a2.d.e,m)}}if(a5.a===a2.d.a.length)return a5
-b=A.W(new A.aP(a5,s),!0,r)
+n=a3.e
+a0=n.length
+if(a0>d)m=(a0===0?B.a5:new A.ca(n)).aT(0,d)
+else m=""
+n=a3.d.a.toUpperCase()
+if((n.length===0?B.a5:new A.ca(n)).q(0,m)&&B.c.f9(m,a3.d.a.toUpperCase()).gA(0)!==B.c.f9(m,B.b.fj(a5)).gA(0)){a6.m(0,d,"exists")
+a5.push(m)
+a1=B.c.f9(m,B.b.fj(a5)).gA(0)
+a2=B.c.f9(m,B.b.fj(a3.d.e)).gA(0)
+if(a1!==a2&&a1>a2)B.b.p(a3.d.e,m)}}if(a6.a===a3.d.a.length)return a6
+b=A.W(new A.aP(a6,s),!0,r)
 a=A.a([],p)
-for(d=0;d<a2.d.a.length;++d)if(!B.b.q(b,d))a.push(d)
+for(d=0;d<a3.d.a.length;++d)if(!B.b.q(b,d))a.push(d)
 for(s=a.length,k=0;k<a.length;a.length===s||(0,A.J)(a),++k){d=a[k]
-a5.m(0,d,"nonexistent")
-r=a2.e
-m=(r.length===0?B.a5:new A.ca(r)).aT(0,d)
-B.b.p(a2.d.f,m)}return a5}}
+a6.m(0,d,"nonexistent")
+r=a3.e
+p=r.length
+if(p>d)m=(p===0?B.a5:new A.ca(r)).aT(0,d)
+else m=""
+B.b.p(a3.d.f,m)}return a6}}
 A.a4p.prototype={
 $0(){var s=this.a,r=B.b.fj(this.b)
 s.e=r
@@ -48168,164 +48176,162 @@ new A.Z(s,A.n(s).i("Z<1>")).bu(new A.aq7(r,a))
 A.cq(B.cl,new A.aq8(r,a),t.P)}r.jK=!0}return A.io(B.ac,q,A.oP(r.a3X(a)),B.h,q,0,q,q,q,q,B.bk)},
 rH(a,b,c,d){var s=A.bV(d),r=$.u?B.e:B.f
 s.cC(A.ks(a,b,r,!1,c,this.d6))},
-a3X(e0){var s,r,q,p,o,n,m,l,k,j,i,h,g,f,e,d,c,b,a,a0,a1,a2,a3,a4,a5,a6,a7,a8,a9,b0,b1,b2,b3,b4,b5,b6,b7,b8,b9,c0,c1=this,c2=null,c3="http",c4="ClearSans",c5="Statistics",c6="STATISTICS",c7="assets/canoku_logo.svg",c8=c1.b6,c9=c1.cN,d0=c8.vQ()+c9.vQ(),d1=Math.max(1,d0),d2=c8.r,d3=c9.r,d4=B.i.fq((d0-d2-d3)*100,d1),d5=(c8.a+2*c8.b+3*c8.c+4*c8.d+5*c8.e+6*c8.f+7*d2+c9.a+2*c9.b+3*c9.c+4*c9.d+5*c9.e+6*c9.f+7*d3)/d1,d6=A.d6(c2,"www.ko-fi.com","canuckle",c2,c2,c3),d7=A.d6(c2,"www.cira.ca",c2,c2,A.ar(["utm_source","Website","utm_medium","Banner","utm_campaign","Canuckle"],t.N,t.z),"https"),d8=A.d6(c2,"merch.canucklegame.ca",c2,c2,c2,c3),d9=A.d6(c2,"www.canoku.ca",c2,c2,c2,c3)
-d3=t.w
-d2=A.aG(e0,c2,d3).w
-s=A.aG(e0,c2,d3).w
-if(d2.a.a>=728)r=98
+a3X(d9){var s,r,q,p,o,n,m,l,k,j,i,h,g,f,e,d,c,b,a,a0,a1,a2,a3,a4,a5,a6,a7,a8,a9,b0,b1,b2,b3,b4,b5,b6,b7,b8,b9,c0=this,c1=null,c2="http",c3="ClearSans",c4="Statistics",c5="STATISTICS",c6="assets/canoku_logo.svg",c7=c0.b6,c8=c0.cN,c9=c7.vQ()+c8.vQ(),d0=Math.max(1,c9),d1=c7.r,d2=c8.r,d3=B.i.fq((c9-d1-d2)*100,d0),d4=(c7.a+2*c7.b+3*c7.c+4*c7.d+5*c7.e+6*c7.f+7*d1+c8.a+2*c8.b+3*c8.c+4*c8.d+5*c8.e+6*c8.f+7*d2)/d0,d5=A.d6(c1,"www.ko-fi.com","canuckle",c1,c1,c2),d6=A.d6(c1,"www.cira.ca",c1,c1,A.ar(["utm_source","Website","utm_medium","Banner","utm_campaign","Canuckle"],t.N,t.z),"https"),d7=A.d6(c1,"merch.canucklegame.ca",c1,c1,c1,c2),d8=A.d6(c1,"www.canoku.ca",c1,c1,c1,c2)
+d2=t.w
+d1=A.aG(d9,c1,d2).w
+s=A.aG(d9,c1,d2).w
+if(d1.a.a>=728)r=98
 else r=s.a.b>=736?108:58
-q=Math.min(500,A.aG(e0,c2,d3).w.a.a)
-p=Math.min(750,A.aG(e0,c2,d3).w.a.b-r)
-o=c8.a+c9.a
-n=c8.b+c9.b
-m=c8.c+c9.c
-l=c8.d+c9.d
-k=c8.e+c9.e
-j=c8.f+c9.f
-i=c8.r+c9.r
+q=Math.min(500,A.aG(d9,c1,d2).w.a.a)
+p=Math.min(750,A.aG(d9,c1,d2).w.a.b-r)
+o=c7.a+c8.a
+n=c7.b+c8.b
+m=c7.c+c8.c
+l=c7.d+c8.d
+k=c7.e+c8.e
+j=c7.f+c8.f
+i=c7.r+c8.r
 h=Math.max(1,A.jw(B.b.kQ(A.a([o,n,m,l,k,j,i],t.t),B.eC)))
-c8=q*0.75
-g=Math.max(5,c8*o/h)
-f=Math.max(5,c8*n/h)
-e=Math.max(5,c8*m/h)
-d=Math.max(5,c8*l/h)
-c=Math.max(5,c8*k/h)
-b=Math.max(5,c8*j/h)
-a=Math.max(5,c8*i/h)
+c7=q*0.75
+g=Math.max(5,c7*o/h)
+f=Math.max(5,c7*n/h)
+e=Math.max(5,c7*m/h)
+d=Math.max(5,c7*l/h)
+c=Math.max(5,c7*k/h)
+b=Math.max(5,c7*j/h)
+a=Math.max(5,c7*i/h)
 a0=new A.aV(Date.now(),0,!1)
 a1=A.f_(A.du(a0),A.cC(a0),A.dS(a0)+1,0,0,0,0).a
-a2=7-A.rI(a0)
-if(a2===0)a2=7
-a3=A.f_(A.du(a0),A.cC(a0),A.dS(a0)+a2,0,0,0,0).a
-a4=A.wo()
-a5=A.l1(!0,c2,!0,!0,c2,c2,!1)
-c8=c1.ar
-c9=c8+1
-a6=c9>59999?$.ly:$.ew
-a7=B.b.lH(a6,new A.apM(c1),new A.apN()).e
-d2=c1.d5
-a8=a7.VS(d2,c9)
-a9="Canuckle #"+c9+": "+a7.gSG()+" average guesses"
-c9=A.I(c2,c2,B.h,c2,c2,c2,c2,r,c2,c2,c2,c2,c2)
+a2=A.f_(A.du(a0),A.cC(a0),A.dS(a0)+(8-A.rI(a0)),0,0,0,0).a
+a3=A.wo()
+a4=A.l1(!0,c1,!0,!0,c1,c1,!1)
+c7=c0.ar
+c8=c7+1
+a5=c8>59999?$.ly:$.ew
+a6=B.b.lH(a5,new A.apM(c0),new A.apN()).e
+d1=c0.d5
+a7=a6.VS(d1,c8)
+a8="Canuckle #"+c8+": "+a6.gSG()+" average guesses"
+c8=A.I(c1,c1,B.h,c1,c1,c1,c1,r,c1,c1,c1,c1,c1)
 s=$.u
-b0=s?B.f:B.e
-b1=A.cK(s?B.e:B.f,1)
+a9=s?B.f:B.e
+b0=A.cK(s?B.e:B.f,1)
 s=s?B.f:B.e
-b2=t.p
-b3=A.a([B.lf],b2)
-b4=c1.b0
-if(b4){b5=c8>59999?B.G.cp(0,B.aA.c9(A.F4(c8).b)).toUpperCase().toUpperCase():B.G.cp(0,B.aA.c9(A.iI(c8).b)).toUpperCase().toUpperCase()
-b3.push(A.amz("FUN FACT: "+b5,A.U(c2,c2,$.u?B.e:B.f,c2,c2,c2,c2,c2,c4,c2,c2,20,c2,c2,B.v,c2,c2,!0,c2,c2,c2,c2,c2,c2,c2,c2),c2))}b5=!b4
-if(b5)b3.push(A.a0(c2,A.a_(c6,c2,c2,c2,A.U(c2,c2,$.u?B.e:B.f,c2,c2,c2,c2,c2,c4,c2,c2,20,c2,c2,B.v,c2,c2,!0,c2,c2,c2,c2,c2,c2,c2,c2),c2,c2),!1,c2,c2,!0,!1,c2,c2,!0,c2,c5,c2,c2,c2,c2,c2,c2,c2,c2,c2,c2,c2,c2,c2,c2,c2,c2,c2,c2,c2,c2,c2))
-b6=c1.dl
-b3.push(A.a0(!0,A.bc(new A.q(B.dj,A.b5($.u?"assets/close_dark.svg":"assets/close.svg",c2,c2,20,c2,c2,20),c2),c2,!1,b6,new A.apO(),new A.apZ(c1),new A.aq_(c1,e0),!1,c2),!1,c2,c2,!0,!1,c2,c2,c2,c2,"Close statistics",c2,c2,c2,c2,c2,c2,c2,c2,c2,c2,c2,c2,c2,c2,c2,c2,c2,c2,c2,c2,c2))
-s=A.I(c2,A.am(b3,B.j,B.ay,B.k),B.h,c2,c2,new A.a7(s,c2,c2,B.bd,c2,c2,B.p),c2,50,c2,c2,c2,c2,c2)
-if(b5)d3=A.I(c2,c2,B.h,A.a8(0,B.D.n()>>>16&255,B.D.n()>>>8&255,B.D.n()&255),c2,c2,c2,0.5,c2,c2,c2,c2,c2)
-else{d3=Math.min(500,A.aG(e0,c2,d3).w.a.a)
-b3=A.S_(c8)
-d3=A.bx(A.a0(c2,A.aO(A.a([A.I(c2,new A.q(B.b_,c1.cG,c2),B.h,c2,c2,new A.a7(A.nD(),c2,c2,B.aH,c2,c2,B.p),c2,c2,c2,c2,c2,c2,c2)],b2),B.j,B.q,B.k),!1,c2,c2,!0,!1,c2,c2,!0,c2,"Fun Fact, "+b3,c2,c2,c2,c2,c2,c2,c2,c2,c2,c2,c2,c2,c2,c2,c2,c2,c2,c2,c2,c2,c2),c2,d3-50)}d3=A.a([d3],b2)
-b3=d2>0
-if(b3)d3.push(new A.q(B.Ip,A.a0(c2,A.b7(A.a_(a9,c2,c2,c2,A.U(c2,c2,$.u?B.e:B.f,c2,c2,c2,c2,c2,c4,c2,c2,c2,c2,c2,B.v,c2,c2,!0,c2,c2,c2,c2,c2,c2,c2,c2),B.a3,c2),c2,c2),!1,c2,c2,!1,!1,c2,c2,c2,c2,a9,c2,c2,c2,c2,c2,c2,c2,c2,c2,c2,c2,c2,c2,c2,c2,c2,c2,c2,c2,c2,c2),c2))
-if(b3)d3.push(new A.q(B.Is,A.a0(c2,A.b7(A.a_(a8,c2,c2,c2,A.U(c2,c2,$.u?B.e:B.f,c2,c2,c2,c2,c2,c4,c2,c2,c2,c2,c2,c2,c2,c2,!0,c2,c2,c2,c2,c2,c2,c2,c2),B.a3,c2),c2,c2),!1,c2,c2,!1,!1,c2,c2,c2,c2,a8,c2,c2,c2,c2,c2,c2,c2,c2,c2,c2,c2,c2,c2,c2,c2,c2,c2,c2,c2,c2,c2),c2))
-if(b5)c8=A.I(c2,c2,B.h,A.a8(0,B.D.n()>>>16&255,B.D.n()>>>8&255,B.D.n()&255),c2,c2,c2,0.5,c2,c2,c2,c2,c2)
-else{c8=c8>59999
-b3=c8?"+":""
-b6=c8?a3:a1
-b6=A.k(new A.aq6().$1(b6))
-b7=c8?215:160
-b8=c8?"+":""
-b8=A.a_("NEXT CANUCKLE"+b8+":",c2,c2,c2,A.U(c2,c2,$.u?B.e:B.f,c2,c2,c2,c2,c2,c4,c2,c2,c2,c2,c2,B.v,c2,c2,!0,c2,c2,c2,c2,c2,c2,c2,c2),c2,c2)
-c8=c8?a3:a1
-c8=A.a0(c2,new A.q(B.aQ,A.bx(A.aO(A.a([b8,A.aFR(c8,c2,A.U(c2,c2,$.aM?B.x:B.y,c2,c2,c2,c2,c2,c4,c2,c2,22,c2,c2,B.v,c2,c2,!0,c2,c2,c2,c2,c2,c2,c2,c2))],b2),B.j,B.A,B.k),c2,b7),c2),!1,c2,c2,!0,!1,c2,c2,c2,c2,"Next Canuckle"+b3+" in "+b6,c2,c2,c2,c2,c2,c2,c2,c2,c2,c2,c2,c2,c2,c2,c2,c2,c2,c2,c2,c2,c2)
-b3=c1.cf
-b6=A.a_("POWERED BY",c2,c2,c2,A.U(c2,c2,$.u?B.e:B.f,c2,c2,c2,c2,c2,c4,c2,c2,14,c2,c2,B.v,c2,c2,!0,c2,c2,c2,c2,c2,c2,c2,c2),c2,c2)
-c8=new A.q(B.eY,A.am(A.a([c8,A.a0(!0,new A.dJ(!0,A.bc(new A.q(B.aR,A.bx(A.aO(A.a([b6,A.b5($.u?"assets/cira-darkmode.svg":"assets/cira-logo.svg",c2,c2,30,c2,c2,c2)],b2),B.j,B.A,B.k),c2,120),c2),c2,!1,b3===4,new A.aq0(),new A.aq1(c1),new A.aq2(c1,d7),!1,c2),c2),!1,c2,c2,!1,!1,c2,c2,c2,c2,"Sponsor, CIRA",c2,c2,c2,c2,c2,c2,c2,c2,c2,c2,c2,c2,c2,c2,c2,c2,c2,c2,c2,c2,c2)],b2),B.j,B.A,B.k),c2)}d3.push(c8)
-if(b5)c8=A.I(c2,c2,B.h,A.a8(0,B.D.n()>>>16&255,B.D.n()>>>8&255,B.D.n()&255),c2,c2,c2,0.5,c2,c2,c2,c2,c2)
-else{c8=c1.cf
-c8=A.a0(!0,A.bc(A.I(c2,new A.q(B.bu,A.am(A.a([new A.q(B.c0,A.b5("assets/kofi.svg",c2,c2,20,c2,c2,20),c2),B.iK,new A.q(B.c0,A.b5("assets/leaf.svg",c2,c2,25,c2,c2,25),c2)],b2),B.j,B.A,B.k),c2),B.h,c2,c2,new A.a7(B.dg,c2,c2,B.F,c2,c2,B.p),c2,c2,c2,c2,c2,c2,325),45,!1,c8===2,new A.aq3(),new A.aq4(c1),new A.aq5(c1,d6),!1,325),!1,c2,c2,!0,!1,c2,c2,c2,c2,"Buy Canuckle a coffee",c2,c2,c2,c2,c2,c2,c2,c2,c2,c2,c2,c2,c2,c2,c2,c2,c2,c2,c2,c2,c2)}d3.push(c8)
-if(b5)c8=A.I(c2,c2,B.h,A.a8(0,B.D.n()>>>16&255,B.D.n()>>>8&255,B.D.n()&255),c2,c2,c2,0.5,c2,c2,c2,c2,c2)
-else{c8=c1.cf
-c8=A.a0(!0,A.bc(new A.q(B.aQ,A.I(c2,new A.q(B.bu,A.am(A.a([new A.q(B.o0,A.b5($.u?"assets/merch-darkmode.svg":"assets/merch.svg",c2,c2,26,c2,c2,26),c2),B.AL],b2),B.j,B.A,B.k),c2),B.h,c2,c2,new A.a7(B.ck,c2,c2,B.F,c2,c2,B.p),c2,c2,c2,c2,c2,c2,160),c2),60,!1,c8===5,new A.apP(),new A.apQ(c1),new A.apR(c1,d8),!1,160),!1,c2,c2,!0,!1,c2,c2,c2,c2,"Buy Canuckle merch",c2,c2,c2,c2,c2,c2,c2,c2,c2,c2,c2,c2,c2,c2,c2,c2,c2,c2,c2,c2,c2)}if(b5)b3=A.I(c2,c2,B.h,A.a8(0,B.D.n()>>>16&255,B.D.n()>>>8&255,B.D.n()&255),c2,c2,c2,0.5,c2,c2,c2,c2,c2)
-else{b3=c1.cf
-b6=$.aM?B.x:B.y
-b3=A.a0(!0,A.bc(new A.q(B.aQ,A.I(c2,new A.q(B.od,A.am(A.a([B.lG,new A.q(B.jP,A.b5("assets/share.svg",B.e,c2,20,c2,c2,20),c2)],b2),B.j,B.A,B.k),c2),B.h,c2,c2,new A.a7(b6,c2,c2,B.F,c2,c2,B.p),c2,c2,c2,c2,c2,c2,160),c2),60,!1,b3===3,new A.apS(),new A.apT(c1),new A.apU(c1,e0),!1,160),!1,c2,c2,!0,!1,c2,c2,c2,c2,"Share result",c2,c2,c2,c2,c2,c2,c2,c2,c2,c2,c2,c2,c2,c2,c2,c2,c2,c2,c2,c2,c2)}d3.push(A.bx(A.am(A.a([c8,b3],b2),B.j,B.ay,B.k),c2,325))
-if(b5)c8=A.I(c2,c2,B.h,A.a8(0,B.D.n()>>>16&255,B.D.n()>>>8&255,B.D.n()&255),c2,c2,c2,0.5,c2,c2,c2,c2,c2)
-else{c8=c1.cf
-c8=A.a0(!0,A.bc(A.I(c2,new A.q(B.bu,A.am(A.a([new A.q(B.jQ,A.I(c2,A.b5(c7,c2,c2,20,c2,c2,20),B.h,c2,c2,B.d7,c2,25,c2,c2,c2,c2,25),c2),B.lH,new A.q(B.jR,A.I(c2,A.b5(c7,c2,c2,20,c2,c2,20),B.h,c2,c2,B.d7,c2,25,c2,c2,c2,c2,25),c2)],b2),B.j,B.A,B.k),c2),B.h,c2,c2,new A.a7(B.jw,c2,c2,B.F,c2,c2,B.p),c2,c2,c2,c2,c2,c2,325),45,!1,c8===9,new A.apV(),new A.apW(c1),new A.apX(c1,d9),!1,325),!1,c2,c2,!0,!1,c2,c2,c2,c2,"Play Canoku",c2,c2,c2,c2,c2,c2,c2,c2,c2,c2,c2,c2,c2,c2,c2,c2,c2,c2,c2,c2,c2)}d3.push(c8)
-if(b4)d3.push(A.a0(c2,new A.q(B.o1,A.a_(c6,c2,c2,c2,A.U(c2,c2,$.u?B.e:B.f,c2,c2,c2,c2,c2,c4,c2,c2,20,c2,c2,B.v,c2,c2,!0,c2,c2,c2,c2,c2,c2,c2,c2),c2,c2),c2),!1,c2,c2,!0,!1,c2,c2,!0,c2,c5,c2,c2,c2,c2,c2,c2,c2,c2,c2,c2,c2,c2,c2,c2,c2,c2,c2,c2,c2,c2,c2))
-c8=""+d0
-b3=A.a_(c8,c2,c2,c2,A.U(c2,c2,$.u?B.e:B.f,c2,c2,c2,c2,c2,c4,c2,c2,28,c2,c2,B.v,c2,c2,!0,c2,c2,c2,c2,c2,c2,c2,c2),c2,c2)
-c8=A.a0(c2,A.aO(A.a([b3,A.a_("Played",c2,c2,c2,A.U(c2,c2,$.u?B.e:B.f,c2,c2,c2,c2,c2,c4,c2,c2,c2,c2,c2,c2,c2,c2,!0,c2,c2,c2,c2,c2,c2,c2,c2),c2,c2)],b2),B.j,B.q,B.k),!1,c2,c2,!0,!1,c2,c2,!0,c2,"Games Played, "+c8,c2,c2,c2,c2,c2,c2,c2,c2,c2,c2,c2,c2,c2,c2,c2,c2,c2,c2,c2,c2,c2)
-b3=""+d4
-b4=A.a_(b3,c2,c2,c2,A.U(c2,c2,$.u?B.e:B.f,c2,c2,c2,c2,c2,c4,c2,c2,28,c2,c2,B.v,c2,c2,!0,c2,c2,c2,c2,c2,c2,c2,c2),c2,c2)
-b3=A.a0(c2,A.aO(A.a([b4,A.a_("Win %",c2,c2,c2,A.U(c2,c2,$.u?B.e:B.f,c2,c2,c2,c2,c2,c4,c2,c2,c2,c2,c2,c2,c2,c2,!0,c2,c2,c2,c2,c2,c2,c2,c2),c2,c2)],b2),B.j,B.q,B.k),!1,c2,c2,!0,!1,c2,c2,!0,c2,"Win percentage, "+b3,c2,c2,c2,c2,c2,c2,c2,c2,c2,c2,c2,c2,c2,c2,c2,c2,c2,c2,c2,c2,c2)
-b4=""+c1.au
-b5=A.a_(b4,c2,c2,c2,A.U(c2,c2,$.u?B.e:B.f,c2,c2,c2,c2,c2,c4,c2,c2,28,c2,c2,B.v,c2,c2,!0,c2,c2,c2,c2,c2,c2,c2,c2),c2,c2)
-b4=A.a0(c2,A.aO(A.a([b5,A.a_("Current\nStreak",c2,c2,c2,A.U(c2,c2,$.u?B.e:B.f,c2,c2,c2,c2,c2,c4,c2,c2,c2,c2,c2,c2,c2,c2,!0,c2,c2,c2,c2,c2,c2,c2,c2),B.a3,c2)],b2),B.j,B.q,B.k),!1,c2,c2,!0,!1,c2,c2,!0,c2,"Current streak, "+b4,c2,c2,c2,c2,c2,c2,c2,c2,c2,c2,c2,c2,c2,c2,c2,c2,c2,c2,c2,c2,c2)
-b5=""+c1.ec
-b6=A.a_(b5,c2,c2,c2,A.U(c2,c2,$.u?B.e:B.f,c2,c2,c2,c2,c2,c4,c2,c2,28,c2,c2,B.v,c2,c2,!0,c2,c2,c2,c2,c2,c2,c2,c2),c2,c2)
-b5=A.a0(c2,A.aO(A.a([b6,A.a_("Max\nStreak",c2,c2,c2,A.U(c2,c2,$.u?B.e:B.f,c2,c2,c2,c2,c2,c4,c2,c2,c2,c2,c2,c2,c2,c2,!0,c2,c2,c2,c2,c2,c2,c2,c2),B.a3,c2)],b2),B.j,B.q,B.k),!1,c2,c2,!0,!1,c2,c2,!0,c2,"Max streak, "+b5,c2,c2,c2,c2,c2,c2,c2,c2,c2,c2,c2,c2,c2,c2,c2,c2,c2,c2,c2,c2,c2)
-b6=B.d.ad(d5,2)
-b7=B.d.ad(d5,2)
-b7=A.a_(b7,c2,c2,c2,A.U(c2,c2,$.u?B.e:B.f,c2,c2,c2,c2,c2,c4,c2,c2,28,c2,c2,B.v,c2,c2,!0,c2,c2,c2,c2,c2,c2,c2,c2),c2,c2)
-d3.push(new A.q(B.b_,A.am(A.a([c8,b3,b4,b5,A.a0(c2,A.aO(A.a([b7,A.a_("Average\nGuesses",c2,c2,c2,A.U(c2,c2,$.u?B.e:B.f,c2,c2,c2,c2,c2,c4,c2,c2,c2,c2,c2,c2,c2,c2,!0,c2,c2,c2,c2,c2,c2,c2,c2),B.a3,c2)],b2),B.j,B.q,B.k),!1,c2,c2,!0,!1,c2,c2,!0,c2,"Average guesses, "+b6,c2,c2,c2,c2,c2,c2,c2,c2,c2,c2,c2,c2,c2,c2,c2,c2,c2,c2,c2,c2,c2)],b2),B.aZ,B.e8,B.k),c2))
-c8=""+o
+b1=t.p
+b2=A.a([B.lf],b1)
+b3=c0.b0
+if(b3){b4=c7>59999?B.G.cp(0,B.aA.c9(A.F4(c7).b)).toUpperCase().toUpperCase():B.G.cp(0,B.aA.c9(A.iI(c7).b)).toUpperCase().toUpperCase()
+b2.push(A.amz("FUN FACT: "+b4,A.U(c1,c1,$.u?B.e:B.f,c1,c1,c1,c1,c1,c3,c1,c1,20,c1,c1,B.v,c1,c1,!0,c1,c1,c1,c1,c1,c1,c1,c1),c1))}b4=!b3
+if(b4)b2.push(A.a0(c1,A.a_(c5,c1,c1,c1,A.U(c1,c1,$.u?B.e:B.f,c1,c1,c1,c1,c1,c3,c1,c1,20,c1,c1,B.v,c1,c1,!0,c1,c1,c1,c1,c1,c1,c1,c1),c1,c1),!1,c1,c1,!0,!1,c1,c1,!0,c1,c4,c1,c1,c1,c1,c1,c1,c1,c1,c1,c1,c1,c1,c1,c1,c1,c1,c1,c1,c1,c1,c1))
+b5=c0.dl
+b2.push(A.a0(!0,A.bc(new A.q(B.dj,A.b5($.u?"assets/close_dark.svg":"assets/close.svg",c1,c1,20,c1,c1,20),c1),c1,!1,b5,new A.apO(),new A.apZ(c0),new A.aq_(c0,d9),!1,c1),!1,c1,c1,!0,!1,c1,c1,c1,c1,"Close statistics",c1,c1,c1,c1,c1,c1,c1,c1,c1,c1,c1,c1,c1,c1,c1,c1,c1,c1,c1,c1,c1))
+s=A.I(c1,A.am(b2,B.j,B.ay,B.k),B.h,c1,c1,new A.a7(s,c1,c1,B.bd,c1,c1,B.p),c1,50,c1,c1,c1,c1,c1)
+if(b4)d2=A.I(c1,c1,B.h,A.a8(0,B.D.n()>>>16&255,B.D.n()>>>8&255,B.D.n()&255),c1,c1,c1,0.5,c1,c1,c1,c1,c1)
+else{d2=Math.min(500,A.aG(d9,c1,d2).w.a.a)
+b2=A.S_(c7)
+d2=A.bx(A.a0(c1,A.aO(A.a([A.I(c1,new A.q(B.b_,c0.cG,c1),B.h,c1,c1,new A.a7(A.nD(),c1,c1,B.aH,c1,c1,B.p),c1,c1,c1,c1,c1,c1,c1)],b1),B.j,B.q,B.k),!1,c1,c1,!0,!1,c1,c1,!0,c1,"Fun Fact, "+b2,c1,c1,c1,c1,c1,c1,c1,c1,c1,c1,c1,c1,c1,c1,c1,c1,c1,c1,c1,c1,c1),c1,d2-50)}d2=A.a([d2],b1)
+b2=d1>0
+if(b2)d2.push(new A.q(B.Ip,A.a0(c1,A.b7(A.a_(a8,c1,c1,c1,A.U(c1,c1,$.u?B.e:B.f,c1,c1,c1,c1,c1,c3,c1,c1,c1,c1,c1,B.v,c1,c1,!0,c1,c1,c1,c1,c1,c1,c1,c1),B.a3,c1),c1,c1),!1,c1,c1,!1,!1,c1,c1,c1,c1,a8,c1,c1,c1,c1,c1,c1,c1,c1,c1,c1,c1,c1,c1,c1,c1,c1,c1,c1,c1,c1,c1),c1))
+if(b2)d2.push(new A.q(B.Is,A.a0(c1,A.b7(A.a_(a7,c1,c1,c1,A.U(c1,c1,$.u?B.e:B.f,c1,c1,c1,c1,c1,c3,c1,c1,c1,c1,c1,c1,c1,c1,!0,c1,c1,c1,c1,c1,c1,c1,c1),B.a3,c1),c1,c1),!1,c1,c1,!1,!1,c1,c1,c1,c1,a7,c1,c1,c1,c1,c1,c1,c1,c1,c1,c1,c1,c1,c1,c1,c1,c1,c1,c1,c1,c1,c1),c1))
+if(b4)c7=A.I(c1,c1,B.h,A.a8(0,B.D.n()>>>16&255,B.D.n()>>>8&255,B.D.n()&255),c1,c1,c1,0.5,c1,c1,c1,c1,c1)
+else{c7=c7>59999
+b2=c7?"+":""
+b5=c7?a2:a1
+b5=A.k(new A.aq6().$1(b5))
+b6=c7?215:160
+b7=c7?"+":""
+b7=A.a_("NEXT CANUCKLE"+b7+":",c1,c1,c1,A.U(c1,c1,$.u?B.e:B.f,c1,c1,c1,c1,c1,c3,c1,c1,c1,c1,c1,B.v,c1,c1,!0,c1,c1,c1,c1,c1,c1,c1,c1),c1,c1)
+c7=c7?a2:a1
+c7=A.a0(c1,new A.q(B.aQ,A.bx(A.aO(A.a([b7,A.aFR(c7,c1,A.U(c1,c1,$.aM?B.x:B.y,c1,c1,c1,c1,c1,c3,c1,c1,22,c1,c1,B.v,c1,c1,!0,c1,c1,c1,c1,c1,c1,c1,c1))],b1),B.j,B.A,B.k),c1,b6),c1),!1,c1,c1,!0,!1,c1,c1,c1,c1,"Next Canuckle"+b2+" in "+b5,c1,c1,c1,c1,c1,c1,c1,c1,c1,c1,c1,c1,c1,c1,c1,c1,c1,c1,c1,c1,c1)
+b2=c0.cf
+b5=A.a_("POWERED BY",c1,c1,c1,A.U(c1,c1,$.u?B.e:B.f,c1,c1,c1,c1,c1,c3,c1,c1,14,c1,c1,B.v,c1,c1,!0,c1,c1,c1,c1,c1,c1,c1,c1),c1,c1)
+c7=new A.q(B.eY,A.am(A.a([c7,A.a0(!0,new A.dJ(!0,A.bc(new A.q(B.aR,A.bx(A.aO(A.a([b5,A.b5($.u?"assets/cira-darkmode.svg":"assets/cira-logo.svg",c1,c1,30,c1,c1,c1)],b1),B.j,B.A,B.k),c1,120),c1),c1,!1,b2===4,new A.aq0(),new A.aq1(c0),new A.aq2(c0,d6),!1,c1),c1),!1,c1,c1,!1,!1,c1,c1,c1,c1,"Sponsor, CIRA",c1,c1,c1,c1,c1,c1,c1,c1,c1,c1,c1,c1,c1,c1,c1,c1,c1,c1,c1,c1,c1)],b1),B.j,B.A,B.k),c1)}d2.push(c7)
+if(b4)c7=A.I(c1,c1,B.h,A.a8(0,B.D.n()>>>16&255,B.D.n()>>>8&255,B.D.n()&255),c1,c1,c1,0.5,c1,c1,c1,c1,c1)
+else{c7=c0.cf
+c7=A.a0(!0,A.bc(A.I(c1,new A.q(B.bu,A.am(A.a([new A.q(B.c0,A.b5("assets/kofi.svg",c1,c1,20,c1,c1,20),c1),B.iK,new A.q(B.c0,A.b5("assets/leaf.svg",c1,c1,25,c1,c1,25),c1)],b1),B.j,B.A,B.k),c1),B.h,c1,c1,new A.a7(B.dg,c1,c1,B.F,c1,c1,B.p),c1,c1,c1,c1,c1,c1,325),45,!1,c7===2,new A.aq3(),new A.aq4(c0),new A.aq5(c0,d5),!1,325),!1,c1,c1,!0,!1,c1,c1,c1,c1,"Buy Canuckle a coffee",c1,c1,c1,c1,c1,c1,c1,c1,c1,c1,c1,c1,c1,c1,c1,c1,c1,c1,c1,c1,c1)}d2.push(c7)
+if(b4)c7=A.I(c1,c1,B.h,A.a8(0,B.D.n()>>>16&255,B.D.n()>>>8&255,B.D.n()&255),c1,c1,c1,0.5,c1,c1,c1,c1,c1)
+else{c7=c0.cf
+c7=A.a0(!0,A.bc(new A.q(B.aQ,A.I(c1,new A.q(B.bu,A.am(A.a([new A.q(B.o0,A.b5($.u?"assets/merch-darkmode.svg":"assets/merch.svg",c1,c1,26,c1,c1,26),c1),B.AL],b1),B.j,B.A,B.k),c1),B.h,c1,c1,new A.a7(B.ck,c1,c1,B.F,c1,c1,B.p),c1,c1,c1,c1,c1,c1,160),c1),60,!1,c7===5,new A.apP(),new A.apQ(c0),new A.apR(c0,d7),!1,160),!1,c1,c1,!0,!1,c1,c1,c1,c1,"Buy Canuckle merch",c1,c1,c1,c1,c1,c1,c1,c1,c1,c1,c1,c1,c1,c1,c1,c1,c1,c1,c1,c1,c1)}if(b4)b2=A.I(c1,c1,B.h,A.a8(0,B.D.n()>>>16&255,B.D.n()>>>8&255,B.D.n()&255),c1,c1,c1,0.5,c1,c1,c1,c1,c1)
+else{b2=c0.cf
+b5=$.aM?B.x:B.y
+b2=A.a0(!0,A.bc(new A.q(B.aQ,A.I(c1,new A.q(B.od,A.am(A.a([B.lG,new A.q(B.jP,A.b5("assets/share.svg",B.e,c1,20,c1,c1,20),c1)],b1),B.j,B.A,B.k),c1),B.h,c1,c1,new A.a7(b5,c1,c1,B.F,c1,c1,B.p),c1,c1,c1,c1,c1,c1,160),c1),60,!1,b2===3,new A.apS(),new A.apT(c0),new A.apU(c0,d9),!1,160),!1,c1,c1,!0,!1,c1,c1,c1,c1,"Share result",c1,c1,c1,c1,c1,c1,c1,c1,c1,c1,c1,c1,c1,c1,c1,c1,c1,c1,c1,c1,c1)}d2.push(A.bx(A.am(A.a([c7,b2],b1),B.j,B.ay,B.k),c1,325))
+if(b4)c7=A.I(c1,c1,B.h,A.a8(0,B.D.n()>>>16&255,B.D.n()>>>8&255,B.D.n()&255),c1,c1,c1,0.5,c1,c1,c1,c1,c1)
+else{c7=c0.cf
+c7=A.a0(!0,A.bc(A.I(c1,new A.q(B.bu,A.am(A.a([new A.q(B.jQ,A.I(c1,A.b5(c6,c1,c1,20,c1,c1,20),B.h,c1,c1,B.d7,c1,25,c1,c1,c1,c1,25),c1),B.lH,new A.q(B.jR,A.I(c1,A.b5(c6,c1,c1,20,c1,c1,20),B.h,c1,c1,B.d7,c1,25,c1,c1,c1,c1,25),c1)],b1),B.j,B.A,B.k),c1),B.h,c1,c1,new A.a7(B.jw,c1,c1,B.F,c1,c1,B.p),c1,c1,c1,c1,c1,c1,325),45,!1,c7===9,new A.apV(),new A.apW(c0),new A.apX(c0,d8),!1,325),!1,c1,c1,!0,!1,c1,c1,c1,c1,"Play Canoku",c1,c1,c1,c1,c1,c1,c1,c1,c1,c1,c1,c1,c1,c1,c1,c1,c1,c1,c1,c1,c1)}d2.push(c7)
+if(b3)d2.push(A.a0(c1,new A.q(B.o1,A.a_(c5,c1,c1,c1,A.U(c1,c1,$.u?B.e:B.f,c1,c1,c1,c1,c1,c3,c1,c1,20,c1,c1,B.v,c1,c1,!0,c1,c1,c1,c1,c1,c1,c1,c1),c1,c1),c1),!1,c1,c1,!0,!1,c1,c1,!0,c1,c4,c1,c1,c1,c1,c1,c1,c1,c1,c1,c1,c1,c1,c1,c1,c1,c1,c1,c1,c1,c1,c1))
+c7=""+c9
+b2=A.a_(c7,c1,c1,c1,A.U(c1,c1,$.u?B.e:B.f,c1,c1,c1,c1,c1,c3,c1,c1,28,c1,c1,B.v,c1,c1,!0,c1,c1,c1,c1,c1,c1,c1,c1),c1,c1)
+c7=A.a0(c1,A.aO(A.a([b2,A.a_("Played",c1,c1,c1,A.U(c1,c1,$.u?B.e:B.f,c1,c1,c1,c1,c1,c3,c1,c1,c1,c1,c1,c1,c1,c1,!0,c1,c1,c1,c1,c1,c1,c1,c1),c1,c1)],b1),B.j,B.q,B.k),!1,c1,c1,!0,!1,c1,c1,!0,c1,"Games Played, "+c7,c1,c1,c1,c1,c1,c1,c1,c1,c1,c1,c1,c1,c1,c1,c1,c1,c1,c1,c1,c1,c1)
+b2=""+d3
+b3=A.a_(b2,c1,c1,c1,A.U(c1,c1,$.u?B.e:B.f,c1,c1,c1,c1,c1,c3,c1,c1,28,c1,c1,B.v,c1,c1,!0,c1,c1,c1,c1,c1,c1,c1,c1),c1,c1)
+b2=A.a0(c1,A.aO(A.a([b3,A.a_("Win %",c1,c1,c1,A.U(c1,c1,$.u?B.e:B.f,c1,c1,c1,c1,c1,c3,c1,c1,c1,c1,c1,c1,c1,c1,!0,c1,c1,c1,c1,c1,c1,c1,c1),c1,c1)],b1),B.j,B.q,B.k),!1,c1,c1,!0,!1,c1,c1,!0,c1,"Win percentage, "+b2,c1,c1,c1,c1,c1,c1,c1,c1,c1,c1,c1,c1,c1,c1,c1,c1,c1,c1,c1,c1,c1)
+b3=""+c0.au
+b4=A.a_(b3,c1,c1,c1,A.U(c1,c1,$.u?B.e:B.f,c1,c1,c1,c1,c1,c3,c1,c1,28,c1,c1,B.v,c1,c1,!0,c1,c1,c1,c1,c1,c1,c1,c1),c1,c1)
+b3=A.a0(c1,A.aO(A.a([b4,A.a_("Current\nStreak",c1,c1,c1,A.U(c1,c1,$.u?B.e:B.f,c1,c1,c1,c1,c1,c3,c1,c1,c1,c1,c1,c1,c1,c1,!0,c1,c1,c1,c1,c1,c1,c1,c1),B.a3,c1)],b1),B.j,B.q,B.k),!1,c1,c1,!0,!1,c1,c1,!0,c1,"Current streak, "+b3,c1,c1,c1,c1,c1,c1,c1,c1,c1,c1,c1,c1,c1,c1,c1,c1,c1,c1,c1,c1,c1)
+b4=""+c0.ec
+b5=A.a_(b4,c1,c1,c1,A.U(c1,c1,$.u?B.e:B.f,c1,c1,c1,c1,c1,c3,c1,c1,28,c1,c1,B.v,c1,c1,!0,c1,c1,c1,c1,c1,c1,c1,c1),c1,c1)
+b4=A.a0(c1,A.aO(A.a([b5,A.a_("Max\nStreak",c1,c1,c1,A.U(c1,c1,$.u?B.e:B.f,c1,c1,c1,c1,c1,c3,c1,c1,c1,c1,c1,c1,c1,c1,!0,c1,c1,c1,c1,c1,c1,c1,c1),B.a3,c1)],b1),B.j,B.q,B.k),!1,c1,c1,!0,!1,c1,c1,!0,c1,"Max streak, "+b4,c1,c1,c1,c1,c1,c1,c1,c1,c1,c1,c1,c1,c1,c1,c1,c1,c1,c1,c1,c1,c1)
+b5=B.d.ad(d4,2)
+b6=B.d.ad(d4,2)
+b6=A.a_(b6,c1,c1,c1,A.U(c1,c1,$.u?B.e:B.f,c1,c1,c1,c1,c1,c3,c1,c1,28,c1,c1,B.v,c1,c1,!0,c1,c1,c1,c1,c1,c1,c1,c1),c1,c1)
+d2.push(new A.q(B.b_,A.am(A.a([c7,b2,b3,b4,A.a0(c1,A.aO(A.a([b6,A.a_("Average\nGuesses",c1,c1,c1,A.U(c1,c1,$.u?B.e:B.f,c1,c1,c1,c1,c1,c3,c1,c1,c1,c1,c1,c1,c1,c1,!0,c1,c1,c1,c1,c1,c1,c1,c1),B.a3,c1)],b1),B.j,B.q,B.k),!1,c1,c1,!0,!1,c1,c1,!0,c1,"Average guesses, "+b5,c1,c1,c1,c1,c1,c1,c1,c1,c1,c1,c1,c1,c1,c1,c1,c1,c1,c1,c1,c1,c1)],b1),B.aZ,B.e8,B.k),c1))
+c7=""+o
+b2=$.u
+b3=A.cK(b2?B.e:B.f,1)
+b3=A.I(c1,A.b7(A.a_("1",c1,c1,c1,A.U(c1,c1,b2?B.e:B.f,c1,c1,c1,c1,c1,c3,c1,c1,12,c1,c1,c1,c1,c1,!0,c1,c1,c1,c1,c1,c1,c1,c1),c1,c1),c1,c1),B.h,c1,c1,new A.a7(c1,c1,b3,c1,c1,c1,B.p),c1,20,c1,c1,c1,c1,20)
+if(d1===1)b2=$.aM?B.x:B.y
+else b2=B.aj
+b2=A.I(c1,c1,B.h,c1,c1,new A.a7(b2,c1,c1,B.F,c1,c1,B.p),c1,20,c1,c1,c1,c1,g)
+c7=A.a0(c1,A.am(A.a([b3,new A.q(B.aw,b2,c1),A.a_(c7,c1,c1,c1,A.U(c1,c1,$.u?B.e:B.f,c1,c1,c1,c1,c1,c3,c1,c1,c1,c1,c1,c1,c1,c1,!0,c1,c1,c1,c1,c1,c1,c1,c1),c1,c1)],b1),B.j,B.q,B.k),!1,c1,c1,!0,!1,c1,c1,c1,c1,"Number of games solved in 1 guess, "+c7,c1,c1,c1,c1,c1,c1,c1,c1,c1,c1,c1,c1,c1,c1,c1,c1,c1,c1,c1,c1,c1)
+b2=""+n
 b3=$.u
 b4=A.cK(b3?B.e:B.f,1)
-b4=A.I(c2,A.b7(A.a_("1",c2,c2,c2,A.U(c2,c2,b3?B.e:B.f,c2,c2,c2,c2,c2,c4,c2,c2,12,c2,c2,c2,c2,c2,!0,c2,c2,c2,c2,c2,c2,c2,c2),c2,c2),c2,c2),B.h,c2,c2,new A.a7(c2,c2,b4,c2,c2,c2,B.p),c2,20,c2,c2,c2,c2,20)
-if(d2===1)b3=$.aM?B.x:B.y
+b4=A.I(c1,A.b7(A.a_("2",c1,c1,c1,A.U(c1,c1,b3?B.e:B.f,c1,c1,c1,c1,c1,c3,c1,c1,12,c1,c1,c1,c1,c1,!0,c1,c1,c1,c1,c1,c1,c1,c1),c1,c1),c1,c1),B.h,c1,c1,new A.a7(c1,c1,b4,c1,c1,c1,B.p),c1,20,c1,c1,c1,c1,20)
+if(d1===2)b3=$.aM?B.x:B.y
 else b3=B.aj
-b3=A.I(c2,c2,B.h,c2,c2,new A.a7(b3,c2,c2,B.F,c2,c2,B.p),c2,20,c2,c2,c2,c2,g)
-c8=A.a0(c2,A.am(A.a([b4,new A.q(B.aw,b3,c2),A.a_(c8,c2,c2,c2,A.U(c2,c2,$.u?B.e:B.f,c2,c2,c2,c2,c2,c4,c2,c2,c2,c2,c2,c2,c2,c2,!0,c2,c2,c2,c2,c2,c2,c2,c2),c2,c2)],b2),B.j,B.q,B.k),!1,c2,c2,!0,!1,c2,c2,c2,c2,"Number of games solved in 1 guess, "+c8,c2,c2,c2,c2,c2,c2,c2,c2,c2,c2,c2,c2,c2,c2,c2,c2,c2,c2,c2,c2,c2)
-b3=""+n
+b3=A.I(c1,c1,B.h,c1,c1,new A.a7(b3,c1,c1,B.F,c1,c1,B.p),c1,20,c1,c1,c1,c1,f)
+b2=A.a0(c1,A.am(A.a([b4,new A.q(B.aw,b3,c1),A.a_(b2,c1,c1,c1,A.U(c1,c1,$.u?B.e:B.f,c1,c1,c1,c1,c1,c3,c1,c1,c1,c1,c1,c1,c1,c1,!0,c1,c1,c1,c1,c1,c1,c1,c1),c1,c1)],b1),B.j,B.q,B.k),!1,c1,c1,!0,!1,c1,c1,c1,c1,"Number of games solved in 2 guesses, "+b2,c1,c1,c1,c1,c1,c1,c1,c1,c1,c1,c1,c1,c1,c1,c1,c1,c1,c1,c1,c1,c1)
+b3=""+m
 b4=$.u
 b5=A.cK(b4?B.e:B.f,1)
-b5=A.I(c2,A.b7(A.a_("2",c2,c2,c2,A.U(c2,c2,b4?B.e:B.f,c2,c2,c2,c2,c2,c4,c2,c2,12,c2,c2,c2,c2,c2,!0,c2,c2,c2,c2,c2,c2,c2,c2),c2,c2),c2,c2),B.h,c2,c2,new A.a7(c2,c2,b5,c2,c2,c2,B.p),c2,20,c2,c2,c2,c2,20)
-if(d2===2)b4=$.aM?B.x:B.y
+b5=A.I(c1,A.b7(A.a_("3",c1,c1,c1,A.U(c1,c1,b4?B.e:B.f,c1,c1,c1,c1,c1,c3,c1,c1,12,c1,c1,c1,c1,c1,!0,c1,c1,c1,c1,c1,c1,c1,c1),c1,c1),c1,c1),B.h,c1,c1,new A.a7(c1,c1,b5,c1,c1,c1,B.p),c1,20,c1,c1,c1,c1,20)
+if(d1===3)b4=$.aM?B.x:B.y
 else b4=B.aj
-b4=A.I(c2,c2,B.h,c2,c2,new A.a7(b4,c2,c2,B.F,c2,c2,B.p),c2,20,c2,c2,c2,c2,f)
-b3=A.a0(c2,A.am(A.a([b5,new A.q(B.aw,b4,c2),A.a_(b3,c2,c2,c2,A.U(c2,c2,$.u?B.e:B.f,c2,c2,c2,c2,c2,c4,c2,c2,c2,c2,c2,c2,c2,c2,!0,c2,c2,c2,c2,c2,c2,c2,c2),c2,c2)],b2),B.j,B.q,B.k),!1,c2,c2,!0,!1,c2,c2,c2,c2,"Number of games solved in 2 guesses, "+b3,c2,c2,c2,c2,c2,c2,c2,c2,c2,c2,c2,c2,c2,c2,c2,c2,c2,c2,c2,c2,c2)
-b4=""+m
+b4=A.I(c1,c1,B.h,c1,c1,new A.a7(b4,c1,c1,B.F,c1,c1,B.p),c1,20,c1,c1,c1,c1,e)
+b3=A.a0(c1,A.am(A.a([b5,new A.q(B.aw,b4,c1),A.a_(b3,c1,c1,c1,A.U(c1,c1,$.u?B.e:B.f,c1,c1,c1,c1,c1,c3,c1,c1,c1,c1,c1,c1,c1,c1,!0,c1,c1,c1,c1,c1,c1,c1,c1),c1,c1)],b1),B.j,B.q,B.k),!1,c1,c1,!0,!1,c1,c1,c1,c1,"Number of games solved in 3 guesses, "+b3,c1,c1,c1,c1,c1,c1,c1,c1,c1,c1,c1,c1,c1,c1,c1,c1,c1,c1,c1,c1,c1)
+b4=""+l
 b5=$.u
 b6=A.cK(b5?B.e:B.f,1)
-b6=A.I(c2,A.b7(A.a_("3",c2,c2,c2,A.U(c2,c2,b5?B.e:B.f,c2,c2,c2,c2,c2,c4,c2,c2,12,c2,c2,c2,c2,c2,!0,c2,c2,c2,c2,c2,c2,c2,c2),c2,c2),c2,c2),B.h,c2,c2,new A.a7(c2,c2,b6,c2,c2,c2,B.p),c2,20,c2,c2,c2,c2,20)
-if(d2===3)b5=$.aM?B.x:B.y
+b6=A.I(c1,A.b7(A.a_("4",c1,c1,c1,A.U(c1,c1,b5?B.e:B.f,c1,c1,c1,c1,c1,c3,c1,c1,12,c1,c1,c1,c1,c1,!0,c1,c1,c1,c1,c1,c1,c1,c1),c1,c1),c1,c1),B.h,c1,c1,new A.a7(c1,c1,b6,c1,c1,c1,B.p),c1,20,c1,c1,c1,c1,20)
+if(d1===4)b5=$.aM?B.x:B.y
 else b5=B.aj
-b5=A.I(c2,c2,B.h,c2,c2,new A.a7(b5,c2,c2,B.F,c2,c2,B.p),c2,20,c2,c2,c2,c2,e)
-b4=A.a0(c2,A.am(A.a([b6,new A.q(B.aw,b5,c2),A.a_(b4,c2,c2,c2,A.U(c2,c2,$.u?B.e:B.f,c2,c2,c2,c2,c2,c4,c2,c2,c2,c2,c2,c2,c2,c2,!0,c2,c2,c2,c2,c2,c2,c2,c2),c2,c2)],b2),B.j,B.q,B.k),!1,c2,c2,!0,!1,c2,c2,c2,c2,"Number of games solved in 3 guesses, "+b4,c2,c2,c2,c2,c2,c2,c2,c2,c2,c2,c2,c2,c2,c2,c2,c2,c2,c2,c2,c2,c2)
-b5=""+l
+b5=A.I(c1,c1,B.h,c1,c1,new A.a7(b5,c1,c1,B.F,c1,c1,B.p),c1,20,c1,c1,c1,c1,d)
+b4=A.a0(c1,A.am(A.a([b6,new A.q(B.aw,b5,c1),A.a_(b4,c1,c1,c1,A.U(c1,c1,$.u?B.e:B.f,c1,c1,c1,c1,c1,c3,c1,c1,c1,c1,c1,c1,c1,c1,!0,c1,c1,c1,c1,c1,c1,c1,c1),c1,c1)],b1),B.j,B.q,B.k),!1,c1,c1,!0,!1,c1,c1,c1,c1,"Number of games solved in 4 guesses, "+b4,c1,c1,c1,c1,c1,c1,c1,c1,c1,c1,c1,c1,c1,c1,c1,c1,c1,c1,c1,c1,c1)
+b5=""+k
 b6=$.u
 b7=A.cK(b6?B.e:B.f,1)
-b7=A.I(c2,A.b7(A.a_("4",c2,c2,c2,A.U(c2,c2,b6?B.e:B.f,c2,c2,c2,c2,c2,c4,c2,c2,12,c2,c2,c2,c2,c2,!0,c2,c2,c2,c2,c2,c2,c2,c2),c2,c2),c2,c2),B.h,c2,c2,new A.a7(c2,c2,b7,c2,c2,c2,B.p),c2,20,c2,c2,c2,c2,20)
-if(d2===4)b6=$.aM?B.x:B.y
+b7=A.I(c1,A.b7(A.a_("5",c1,c1,c1,A.U(c1,c1,b6?B.e:B.f,c1,c1,c1,c1,c1,c3,c1,c1,12,c1,c1,c1,c1,c1,!0,c1,c1,c1,c1,c1,c1,c1,c1),c1,c1),c1,c1),B.h,c1,c1,new A.a7(c1,c1,b7,c1,c1,c1,B.p),c1,20,c1,c1,c1,c1,20)
+if(d1===5)b6=$.aM?B.x:B.y
 else b6=B.aj
-b6=A.I(c2,c2,B.h,c2,c2,new A.a7(b6,c2,c2,B.F,c2,c2,B.p),c2,20,c2,c2,c2,c2,d)
-b5=A.a0(c2,A.am(A.a([b7,new A.q(B.aw,b6,c2),A.a_(b5,c2,c2,c2,A.U(c2,c2,$.u?B.e:B.f,c2,c2,c2,c2,c2,c4,c2,c2,c2,c2,c2,c2,c2,c2,!0,c2,c2,c2,c2,c2,c2,c2,c2),c2,c2)],b2),B.j,B.q,B.k),!1,c2,c2,!0,!1,c2,c2,c2,c2,"Number of games solved in 4 guesses, "+b5,c2,c2,c2,c2,c2,c2,c2,c2,c2,c2,c2,c2,c2,c2,c2,c2,c2,c2,c2,c2,c2)
-b6=""+k
+b6=A.I(c1,c1,B.h,c1,c1,new A.a7(b6,c1,c1,B.F,c1,c1,B.p),c1,20,c1,c1,c1,c1,c)
+b5=A.a0(c1,A.am(A.a([b7,new A.q(B.aw,b6,c1),A.a_(b5,c1,c1,c1,A.U(c1,c1,$.u?B.e:B.f,c1,c1,c1,c1,c1,c3,c1,c1,c1,c1,c1,c1,c1,c1,!0,c1,c1,c1,c1,c1,c1,c1,c1),c1,c1)],b1),B.j,B.q,B.k),!1,c1,c1,!0,!1,c1,c1,c1,c1,"Number of games solved in 5 guesses, "+b5,c1,c1,c1,c1,c1,c1,c1,c1,c1,c1,c1,c1,c1,c1,c1,c1,c1,c1,c1,c1,c1)
+b6=""+j
 b7=$.u
 b8=A.cK(b7?B.e:B.f,1)
-b8=A.I(c2,A.b7(A.a_("5",c2,c2,c2,A.U(c2,c2,b7?B.e:B.f,c2,c2,c2,c2,c2,c4,c2,c2,12,c2,c2,c2,c2,c2,!0,c2,c2,c2,c2,c2,c2,c2,c2),c2,c2),c2,c2),B.h,c2,c2,new A.a7(c2,c2,b8,c2,c2,c2,B.p),c2,20,c2,c2,c2,c2,20)
-if(d2===5)b7=$.aM?B.x:B.y
+b8=A.I(c1,A.b7(A.a_("6",c1,c1,c1,A.U(c1,c1,b7?B.e:B.f,c1,c1,c1,c1,c1,c3,c1,c1,12,c1,c1,c1,c1,c1,!0,c1,c1,c1,c1,c1,c1,c1,c1),c1,c1),c1,c1),B.h,c1,c1,new A.a7(c1,c1,b8,c1,c1,c1,B.p),c1,20,c1,c1,c1,c1,20)
+if(d1===6)b7=$.aM?B.x:B.y
 else b7=B.aj
-b7=A.I(c2,c2,B.h,c2,c2,new A.a7(b7,c2,c2,B.F,c2,c2,B.p),c2,20,c2,c2,c2,c2,c)
-b6=A.a0(c2,A.am(A.a([b8,new A.q(B.aw,b7,c2),A.a_(b6,c2,c2,c2,A.U(c2,c2,$.u?B.e:B.f,c2,c2,c2,c2,c2,c4,c2,c2,c2,c2,c2,c2,c2,c2,!0,c2,c2,c2,c2,c2,c2,c2,c2),c2,c2)],b2),B.j,B.q,B.k),!1,c2,c2,!0,!1,c2,c2,c2,c2,"Number of games solved in 5 guesses, "+b6,c2,c2,c2,c2,c2,c2,c2,c2,c2,c2,c2,c2,c2,c2,c2,c2,c2,c2,c2,c2,c2)
-b7=""+j
+b7=A.I(c1,c1,B.h,c1,c1,new A.a7(b7,c1,c1,B.F,c1,c1,B.p),c1,20,c1,c1,c1,c1,b)
+b6=A.a0(c1,A.am(A.a([b8,new A.q(B.aw,b7,c1),A.a_(b6,c1,c1,c1,A.U(c1,c1,$.u?B.e:B.f,c1,c1,c1,c1,c1,c3,c1,c1,c1,c1,c1,c1,c1,c1,!0,c1,c1,c1,c1,c1,c1,c1,c1),c1,c1)],b1),B.j,B.q,B.k),!1,c1,c1,!0,!1,c1,c1,c1,c1,"Number of games solved in 6 guesses, "+b6,c1,c1,c1,c1,c1,c1,c1,c1,c1,c1,c1,c1,c1,c1,c1,c1,c1,c1,c1,c1,c1)
+b7=""+i
 b8=$.u
 b9=A.cK(b8?B.e:B.f,1)
-b9=A.I(c2,A.b7(A.a_("6",c2,c2,c2,A.U(c2,c2,b8?B.e:B.f,c2,c2,c2,c2,c2,c4,c2,c2,12,c2,c2,c2,c2,c2,!0,c2,c2,c2,c2,c2,c2,c2,c2),c2,c2),c2,c2),B.h,c2,c2,new A.a7(c2,c2,b9,c2,c2,c2,B.p),c2,20,c2,c2,c2,c2,20)
-if(d2===6)b8=$.aM?B.x:B.y
-else b8=B.aj
-b8=A.I(c2,c2,B.h,c2,c2,new A.a7(b8,c2,c2,B.F,c2,c2,B.p),c2,20,c2,c2,c2,c2,b)
-b7=A.a0(c2,A.am(A.a([b9,new A.q(B.aw,b8,c2),A.a_(b7,c2,c2,c2,A.U(c2,c2,$.u?B.e:B.f,c2,c2,c2,c2,c2,c4,c2,c2,c2,c2,c2,c2,c2,c2,!0,c2,c2,c2,c2,c2,c2,c2,c2),c2,c2)],b2),B.j,B.q,B.k),!1,c2,c2,!0,!1,c2,c2,c2,c2,"Number of games solved in 6 guesses, "+b7,c2,c2,c2,c2,c2,c2,c2,c2,c2,c2,c2,c2,c2,c2,c2,c2,c2,c2,c2,c2,c2)
-b8=""+i
-b9=$.u
-c0=A.cK(b9?B.e:B.f,1)
-c0=A.I(c2,A.b7(A.a_("X",c2,c2,c2,A.U(c2,c2,b9?B.e:B.f,c2,c2,c2,c2,c2,c4,c2,c2,12,c2,c2,c2,c2,c2,!0,c2,c2,c2,c2,c2,c2,c2,c2),c2,c2),c2,c2),B.h,c2,c2,new A.a7(c2,c2,c0,c2,c2,c2,B.p),c2,20,c2,c2,c2,c2,20)
-if(d2===7)d2=$.aM?B.x:B.y
-else d2=B.aj
-d2=A.I(c2,c2,B.h,c2,c2,new A.a7(d2,c2,c2,B.F,c2,c2,B.p),c2,20,c2,c2,c2,c2,a)
-d3.push(new A.q(B.Ir,A.aO(A.a([c8,b3,b4,b5,b6,b7,A.a0(c2,A.am(A.a([c0,new A.q(B.aw,d2,c2),A.a_(b8,c2,c2,c2,A.U(c2,c2,$.u?B.e:B.f,c2,c2,c2,c2,c2,c4,c2,c2,c2,c2,c2,c2,c2,c2,!0,c2,c2,c2,c2,c2,c2,c2,c2),c2,c2)],b2),B.j,B.q,B.k),!1,c2,c2,!0,!1,c2,c2,c2,c2,"Number of games unable to be solved, "+b8,c2,c2,c2,c2,c2,c2,c2,c2,c2,c2,c2,c2,c2,c2,c2,c2,c2,c2,c2,c2,c2)],b2),B.j,B.q,B.k),c2))
-return A.acw(!0,A.b7(A.bx(A.aO(A.a([c9,A.I(c2,A.aO(A.a([s,A.bx(A.amw(A.mR(A.aO(d3,B.j,B.q,B.k),a4,B.av),a4),p-52,c2)],b2),B.j,B.q,B.k),B.h,c2,c2,new A.a7(b0,c2,b1,B.b7,c2,c2,B.p),c2,p,c2,c2,c2,c2,q)],b2),B.j,B.q,B.k),p+r,q),c2,c2),a5,new A.apY(e0))},
+b9=A.I(c1,A.b7(A.a_("X",c1,c1,c1,A.U(c1,c1,b8?B.e:B.f,c1,c1,c1,c1,c1,c3,c1,c1,12,c1,c1,c1,c1,c1,!0,c1,c1,c1,c1,c1,c1,c1,c1),c1,c1),c1,c1),B.h,c1,c1,new A.a7(c1,c1,b9,c1,c1,c1,B.p),c1,20,c1,c1,c1,c1,20)
+if(d1===7)d1=$.aM?B.x:B.y
+else d1=B.aj
+d1=A.I(c1,c1,B.h,c1,c1,new A.a7(d1,c1,c1,B.F,c1,c1,B.p),c1,20,c1,c1,c1,c1,a)
+d2.push(new A.q(B.Ir,A.aO(A.a([c7,b2,b3,b4,b5,b6,A.a0(c1,A.am(A.a([b9,new A.q(B.aw,d1,c1),A.a_(b7,c1,c1,c1,A.U(c1,c1,$.u?B.e:B.f,c1,c1,c1,c1,c1,c3,c1,c1,c1,c1,c1,c1,c1,c1,!0,c1,c1,c1,c1,c1,c1,c1,c1),c1,c1)],b1),B.j,B.q,B.k),!1,c1,c1,!0,!1,c1,c1,c1,c1,"Number of games unable to be solved, "+b7,c1,c1,c1,c1,c1,c1,c1,c1,c1,c1,c1,c1,c1,c1,c1,c1,c1,c1,c1,c1,c1)],b1),B.j,B.q,B.k),c1))
+return A.acw(!0,A.b7(A.bx(A.aO(A.a([c8,A.I(c1,A.aO(A.a([s,A.bx(A.amw(A.mR(A.aO(d2,B.j,B.q,B.k),a3,B.av),a3),p-52,c1)],b1),B.j,B.q,B.k),B.h,c1,c1,new A.a7(a9,c1,b0,B.b7,c1,c1,B.p),c1,p,c1,c1,c1,c1,q)],b1),B.j,B.q,B.k),p+r,q),c1,c1),a4,new A.apY(d9))},
 jy(a,b,c,d){return new A.dQ(b,!1,A.oQ(d,b),null)}}
 A.aq7.prototype={
 $1(a){A.bV(this.b).cC(A.JK(this.a.aX))
