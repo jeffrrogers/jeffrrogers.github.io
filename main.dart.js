@@ -44442,14 +44442,14 @@ else{b3=b9.aY
 b3=A.a_(!0,A.bb(new A.q(B.aB,A.L(c0,new A.q(B.bv,A.ar(A.a([new A.q(B.c3,A.b5("assets/kofi.svg",c0,c0,20,c0,c0,20),c0),B.iP,new A.q(B.c3,A.b5("assets/leaf.svg",c0,c0,25,c0,c0,25),c0)],q),B.j,B.B,B.k),c0),B.h,c0,c0,new A.a7(B.de,c0,c0,B.F,c0,c0,B.o),c0,c0,c0,c0,c0,c0,325),c0),45,!1,b3===3,new A.a2O(),new A.a2P(b9),new A.a2Q(b9,d2),!1,325),!1,c0,c0,!0,!1,c0,c0,c0,c0,"Buy Canuckle a coffee",c0,c0,c0,c0,c0,c0,c0,c0,c0,c0,c0,c0,c0,c0,c0,c0,c0,c0,c0,c0,c0,c0)}c9.push(b3)
 if(b5)b3=A.L(c0,c0,B.h,A.a8(0,B.C.n()>>>16&255,B.C.n()>>>8&255,B.C.n()&255),c0,c0,c0,0.5,c0,c0,c0,c0,c0)
 else{b3=b9.aY
-b3=A.a_(!0,A.bb(new A.q(B.ob,A.L(c0,new A.q(B.bv,A.ar(A.a([new A.q(B.oq,A.L(c0,A.b5("assets/canoku_logo.svg",c0,c0,25,c0,c0,25),B.h,c0,c0,B.eC,c0,25,c0,c0,c0,c0,25),c0),B.B4],q),B.j,B.B,B.k),c0),B.h,c0,c0,new A.a7(B.cs,c0,c0,B.F,c0,c0,B.o),c0,c0,c0,c0,c0,c0,160),c0),60,!1,b3===7,new A.a2R(),new A.a2S(b9),new A.a2U(b9,d4),!1,160),!1,c0,c0,!0,!1,c0,c0,c0,c0,"Play Canoku",c0,c0,c0,c0,c0,c0,c0,c0,c0,c0,c0,c0,c0,c0,c0,c0,c0,c0,c0,c0,c0,c0)
+b3=A.a_(!0,A.bb(new A.q(B.ob,A.L(c0,new A.q(B.bv,A.ar(A.a([new A.q(B.oq,A.L(c0,A.b5("assets/canoku_logo.svg",c0,c0,25,c0,c0,25),B.h,c0,c0,B.eC,c0,25,c0,c0,c0,c0,25),c0),B.B4],q),B.j,B.B,B.k),c0),B.h,c0,c0,new A.a7(B.jF,c0,c0,B.F,c0,c0,B.o),c0,c0,c0,c0,c0,c0,160),c0),60,!1,b3===7,new A.a2R(),new A.a2S(b9),new A.a2U(b9,d4),!1,160),!1,c0,c0,!0,!1,c0,c0,c0,c0,"Play Canoku",c0,c0,c0,c0,c0,c0,c0,c0,c0,c0,c0,c0,c0,c0,c0,c0,c0,c0,c0,c0,c0,c0)
 b5=b9.aY
 b6=$.aN?B.x:B.y
 b5=A.bu(A.ar(A.a([b3,A.a_(!0,A.bb(new A.q(B.aB,A.L(c0,new A.q(B.oo,A.ar(A.a([B.lQ,new A.q(B.jZ,A.b5("assets/share.svg",B.e,c0,20,c0,c0,20),c0)],q),B.j,B.B,B.k),c0),B.h,c0,c0,new A.a7(b6,c0,c0,B.F,c0,c0,B.o),c0,c0,c0,c0,c0,c0,160),c0),60,!1,b5===4,new A.a2V(),new A.a2W(b9),new A.a2X(b9,d5),!1,160),!1,c0,c0,!0,!1,c0,c0,c0,c0,"Share result",c0,c0,c0,c0,c0,c0,c0,c0,c0,c0,c0,c0,c0,c0,c0,c0,c0,c0,c0,c0,c0,c0)],q),B.j,B.aA,B.k),c0,325)
 b3=b5}c9.push(b3)
 if(!b4||a5>5e4)a5=A.L(c0,c0,B.h,A.a8(0,B.C.n()>>>16&255,B.C.n()>>>8&255,B.C.n()&255),c0,c0,c0,0.5,c0,c0,c0,c0,c0)
 else{a5=b9.aY
-a5=A.a_(!0,A.bb(A.L(c0,new A.q(B.bv,A.ar(A.a([new A.q(B.oh,A.b5(c5,c0,c0,25,c0,c0,25),c0),B.B3,new A.q(B.oj,A.b5(c5,c0,c0,25,c0,c0,25),c0)],q),B.j,B.B,B.k),c0),B.h,c0,c0,new A.a7(B.jF,c0,c0,B.F,c0,c0,B.o),c0,c0,c0,c0,c0,c0,325),45,!1,a5===9,new A.a2Y(),new A.a2Z(b9),new A.a3_(b9,s),!1,325),!1,c0,c0,!0,!1,c0,c0,c0,c0,"Play Canuckle Plus",c0,c0,c0,c0,c0,c0,c0,c0,c0,c0,c0,c0,c0,c0,c0,c0,c0,c0,c0,c0,c0,c0)}c9.push(a5)
+a5=A.a_(!0,A.bb(A.L(c0,new A.q(B.bv,A.ar(A.a([new A.q(B.oh,A.b5(c5,c0,c0,25,c0,c0,25),c0),B.B3,new A.q(B.oj,A.b5(c5,c0,c0,25,c0,c0,25),c0)],q),B.j,B.B,B.k),c0),B.h,c0,c0,new A.a7(B.cs,c0,c0,B.F,c0,c0,B.o),c0,c0,c0,c0,c0,c0,325),45,!1,a5===9,new A.a2Y(),new A.a2Z(b9),new A.a3_(b9,s),!1,325),!1,c0,c0,!0,!1,c0,c0,c0,c0,"Play Canuckle Plus",c0,c0,c0,c0,c0,c0,c0,c0,c0,c0,c0,c0,c0,c0,c0,c0,c0,c0,c0,c0,c0,c0)}c9.push(a5)
 c9.push(new A.q(B.J3,A.ar(a3,B.j,B.B,B.k),c0))
 if(b4)c9.push(A.a_(c0,new A.q(B.J5,A.a0(c4,c0,c0,c0,A.U(c0,c0,$.v?B.e:B.f,c0,c0,c0,c0,c0,c2,c0,c0,20,c0,c0,B.u,c0,c0,!0,c0,c0,c0,c0,c0,c0,c0,c0),c0,c0),c0),!1,c0,c0,!0,!1,c0,c0,!0,c0,c3,c0,c0,c0,c0,c0,c0,c0,c0,c0,c0,c0,c0,c0,c0,c0,c0,c0,c0,c0,c0,c0,c0))
 c9.push(new A.q(B.aB,A.L(c0,c0,B.h,B.C,c0,c0,c0,1,c0,c0,c0,c0,c0),c0))
@@ -48769,13 +48769,13 @@ else{b4=c2.cj
 b4=A.a_(!0,A.bb(A.L(c3,new A.q(B.bv,A.ar(A.a([new A.q(B.c3,A.b5("assets/kofi.svg",c3,c3,20,c3,c3,20),c3),B.iP,new A.q(B.c3,A.b5("assets/leaf.svg",c3,c3,25,c3,c3,25),c3)],b3),B.j,B.B,B.k),c3),B.h,c3,c3,new A.a7(B.de,c3,c3,B.F,c3,c3,B.o),c3,c3,c3,c3,c3,c3,325),45,!1,b4===2,new A.aqZ(),new A.ar_(c2),new A.ar0(c2,d5),!1,325),!1,c3,c3,!0,!1,c3,c3,c3,c3,"Buy Canuckle a coffee",c3,c3,c3,c3,c3,c3,c3,c3,c3,c3,c3,c3,c3,c3,c3,c3,c3,c3,c3,c3,c3,c3)}d2.push(b4)
 if(b6)b4=A.L(c3,c3,B.h,A.a8(0,B.C.n()>>>16&255,B.C.n()>>>8&255,B.C.n()&255),c3,c3,c3,0.5,c3,c3,c3,c3,c3)
 else{b4=c2.cj
-b4=A.a_(!0,A.bb(new A.q(B.aB,A.L(c3,new A.q(B.bv,A.ar(A.a([new A.q(B.oq,A.L(c3,A.b5("assets/canoku_logo.svg",c3,c3,26,c3,c3,26),B.h,c3,c3,B.eC,c3,25,c3,c3,c3,c3,25),c3),B.B4],b3),B.j,B.B,B.k),c3),B.h,c3,c3,new A.a7(B.cs,c3,c3,B.F,c3,c3,B.o),c3,c3,c3,c3,c3,c3,160),c3),60,!1,b4===5,new A.aqK(),new A.aqL(c2),new A.aqM(c2,s),!1,160),!1,c3,c3,!0,!1,c3,c3,c3,c3,"Play Canoku",c3,c3,c3,c3,c3,c3,c3,c3,c3,c3,c3,c3,c3,c3,c3,c3,c3,c3,c3,c3,c3,c3)}if(b6)b6=A.L(c3,c3,B.h,A.a8(0,B.C.n()>>>16&255,B.C.n()>>>8&255,B.C.n()&255),c3,c3,c3,0.5,c3,c3,c3,c3,c3)
+b4=A.a_(!0,A.bb(new A.q(B.aB,A.L(c3,new A.q(B.bv,A.ar(A.a([new A.q(B.oq,A.L(c3,A.b5("assets/canoku_logo.svg",c3,c3,26,c3,c3,26),B.h,c3,c3,B.eC,c3,25,c3,c3,c3,c3,25),c3),B.B4],b3),B.j,B.B,B.k),c3),B.h,c3,c3,new A.a7(B.jF,c3,c3,B.F,c3,c3,B.o),c3,c3,c3,c3,c3,c3,160),c3),60,!1,b4===5,new A.aqK(),new A.aqL(c2),new A.aqM(c2,s),!1,160),!1,c3,c3,!0,!1,c3,c3,c3,c3,"Play Canoku",c3,c3,c3,c3,c3,c3,c3,c3,c3,c3,c3,c3,c3,c3,c3,c3,c3,c3,c3,c3,c3,c3)}if(b6)b6=A.L(c3,c3,B.h,A.a8(0,B.C.n()>>>16&255,B.C.n()>>>8&255,B.C.n()&255),c3,c3,c3,0.5,c3,c3,c3,c3,c3)
 else{b6=c2.cj
 b7=$.aN?B.x:B.y
 b6=A.a_(!0,A.bb(new A.q(B.aB,A.L(c3,new A.q(B.oo,A.ar(A.a([B.lQ,new A.q(B.jZ,A.b5("assets/share.svg",B.e,c3,20,c3,c3,20),c3)],b3),B.j,B.B,B.k),c3),B.h,c3,c3,new A.a7(b7,c3,c3,B.F,c3,c3,B.o),c3,c3,c3,c3,c3,c3,160),c3),60,!1,b6===3,new A.aqN(),new A.aqO(c2),new A.aqP(c2,d7),!1,160),!1,c3,c3,!0,!1,c3,c3,c3,c3,"Share result",c3,c3,c3,c3,c3,c3,c3,c3,c3,c3,c3,c3,c3,c3,c3,c3,c3,c3,c3,c3,c3,c3)}d2.push(A.bu(A.ar(A.a([b4,b6],b3),B.j,B.aA,B.k),c3,325))
 if(!b5||c7>5e4)b4=A.L(c3,c3,B.h,A.a8(0,B.C.n()>>>16&255,B.C.n()>>>8&255,B.C.n()&255),c3,c3,c3,0.5,c3,c3,c3,c3,c3)
 else{b4=c2.cj
-b4=A.a_(!0,A.bb(A.L(c3,new A.q(B.bv,A.ar(A.a([new A.q(B.oh,A.b5(c6,c3,c3,25,c3,c3,25),c3),B.B3,new A.q(B.oj,A.b5(c6,c3,c3,25,c3,c3,25),c3)],b3),B.j,B.B,B.k),c3),B.h,c3,c3,new A.a7(B.jF,c3,c3,B.F,c3,c3,B.o),c3,c3,c3,c3,c3,c3,325),45,!1,b4===9,new A.aqQ(),new A.aqR(c2),new A.aqS(c2,r),!1,325),!1,c3,c3,!0,!1,c3,c3,c3,c3,"Play Canuckle Plus",c3,c3,c3,c3,c3,c3,c3,c3,c3,c3,c3,c3,c3,c3,c3,c3,c3,c3,c3,c3,c3,c3)}d2.push(b4)
+b4=A.a_(!0,A.bb(A.L(c3,new A.q(B.bv,A.ar(A.a([new A.q(B.oh,A.b5(c6,c3,c3,25,c3,c3,25),c3),B.B3,new A.q(B.oj,A.b5(c6,c3,c3,25,c3,c3,25),c3)],b3),B.j,B.B,B.k),c3),B.h,c3,c3,new A.a7(B.cs,c3,c3,B.F,c3,c3,B.o),c3,c3,c3,c3,c3,c3,325),45,!1,b4===9,new A.aqQ(),new A.aqR(c2),new A.aqS(c2,r),!1,325),!1,c3,c3,!0,!1,c3,c3,c3,c3,"Play Canuckle Plus",c3,c3,c3,c3,c3,c3,c3,c3,c3,c3,c3,c3,c3,c3,c3,c3,c3,c3,c3,c3,c3,c3)}d2.push(b4)
 if(b5){c7=c7>5e4
 b4=c7?"Canuckle Plus":""
 c7=c7?"CANUCKLE+ ":""
