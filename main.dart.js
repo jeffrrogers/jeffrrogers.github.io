@@ -9311,68 +9311,68 @@ b.aI(q,"maxPlusStreak",a.fr)
 b.aI(q,"plusStreak",a.fx)
 b.aI(q,"triviaMaxStreak",a.fy)
 b.aI(q,"triviaStreak",a.go)},
-b2e(b2){var s,r,q,p,o,n,m,l,k,j,i,h,g,f,e,d,c,b,a,a0,a1,a2,a3,a4,a5,a6,a7,a8,a9,b0,b1=b2.h(0,"hardModeStats")
-if(b1==null)b1=""
-s=b2.h(0,"normalStats")
+b2e(b3){var s,r,q,p,o,n,m,l,k,j,i,h,g,f,e,d,c,b,a,a0,a1,a2,a3,a4,a5,a6,a7,a8,a9,b0,b1="plusGames",b2=b3.h(0,"hardModeStats")
+if(b2==null)b2=""
+s=b3.h(0,"normalStats")
 if(s==null)s=""
-r=b2.h(0,"plusStats")
+r=b3.h(0,"plusStats")
 if(r==null)r=""
-q=b2.h(0,"triviaStats")
+q=b3.h(0,"triviaStats")
 if(q==null)q=""
-p=b2.h(0,"archiveGame")
+p=b3.h(0,"archiveGame")
 if(p==null)p=""
-o=b2.h(0,"email")
+o=b3.h(0,"email")
 if(o==null)o=""
-n=b2.h(0,"achOne")
+n=b3.h(0,"achOne")
 if(n==null)n=!1
-m=b2.h(0,"achShare")
+m=b3.h(0,"achShare")
 if(m==null)m=!1
-l=b2.h(0,"achSorry")
+l=b3.h(0,"achSorry")
 if(l==null)l=!1
-k=b2.h(0,"achArchive")
+k=b3.h(0,"achArchive")
 if(k==null)k=!1
-j=b2.h(0,"isHardMode")
+j=b3.h(0,"isHardMode")
 if(j==null)j=!1
-i=b2.h(0,"isDarkMode")
+i=b3.h(0,"isDarkMode")
 if(i==null)i=!1
-h=b2.h(0,"isHighContrast")
+h=b3.h(0,"isHighContrast")
 if(h==null)h=!1
-g=b2.h(0,"achGames")
+g=b3.h(0,"achGames")
 if(g==null)g=0
-f=b2.h(0,"achStreak")
+f=b3.h(0,"achStreak")
 if(f==null)f=0
-e=b2.h(0,"achThree")
+e=b3.h(0,"achThree")
 if(e==null)e=0
-d=b2.h(0,"achFour")
+d=b3.h(0,"achFour")
 if(d==null)d=0
-c=b2.h(0,"maxStreak")
+c=b3.h(0,"maxStreak")
 if(c==null)c=0
-b=b2.h(0,"streak")
+b=b3.h(0,"streak")
 if(b==null)b=0
-a=b2.h(0,"maxPlusStreak")
+a=b3.h(0,"maxPlusStreak")
 if(a==null)a=0
-a0=b2.h(0,"plusStreak")
+a0=b3.h(0,"plusStreak")
 if(a0==null)a0=0
-a1=b2.h(0,"triviaMaxStreak")
+a1=b3.h(0,"triviaMaxStreak")
 if(a1==null)a1=0
-a2=b2.h(0,"triviaStreak")
+a2=b3.h(0,"triviaStreak")
 if(a2==null)a2=0
-a3=b2.h(0,"plusGamesCount")
+a3=b3.h(0,"plusGamesCount")
 if(a3==null)a3=0
-a4=b2.h(0,"gamesCount")
+a4=b3.h(0,"gamesCount")
 if(a4==null)a4=0
-a5=b2.h(0,"lastUpdated")
+a5=b3.h(0,"lastUpdated")
 if(a5==null)a5=0
 a6=t.j
 a7=t.N
-a8=J.dM(a6.a(b2.h(0,"games")),new A.atJ(),a7)
+a8=J.dM(a6.a(b3.h(0,"games")),new A.atJ(),a7)
 a8=A.W(a8,!0,a8.$ti.i("af.E"))
-a9=J.dM(a6.a(b2.h(0,"plusGames")),new A.atK(),a7)
-a9=A.W(a9,!0,a9.$ti.i("af.E"))
-b0=J.dM(a6.a(b2.h(0,"unreadAchivements")),new A.atL(),a7)
+if(b3.h(0,b1)==null)a9=A.a([],t.s)
+else{a9=J.dM(a6.a(b3.h(0,b1)),new A.atK(),a7)
+a9=A.W(a9,!0,a9.$ti.i("af.E"))}b0=J.dM(a6.a(b3.h(0,"unreadAchivements")),new A.atL(),a7)
 b0=A.W(b0,!0,b0.$ti.i("af.E"))
-a7=J.dM(a6.a(b2.h(0,"triviaGames")),new A.atM(),a7)
-return new A.tH(a8,a9,b0,A.W(a7,!0,a7.$ti.i("af.E")),p,o,b1,s,r,q,n,m,l,k,j,i,h,g,f,e,d,c,b,a,a0,a1,a2,a3,a4,a5)},
+a7=J.dM(a6.a(b3.h(0,"triviaGames")),new A.atM(),a7)
+return new A.tH(a8,a9,b0,A.W(a7,!0,a7.$ti.i("af.E")),p,o,b2,s,r,q,n,m,l,k,j,i,h,g,f,e,d,c,b,a,a0,a1,a2,a3,a4,a5)},
 tH:function tH(a,b,c,d,e,f,g,h,i,j,k,l,m,n,o,p,q,r,s,a0,a1,a2,a3,a4,a5,a6,a7,a8,a9,b0){var _=this
 _.a=a
 _.b=b
