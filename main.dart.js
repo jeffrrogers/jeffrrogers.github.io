@@ -44571,22 +44571,22 @@ e=$.v?B.h:B.e
 e=A.b9(A.K(h,new A.q(B.aW,A.a_(g,h,h,h,A.W(h,h,A.fp(),h,h,h,h,h,"ClearSans",h,h,16,h,h,h,h,h,!0,h,h,h,h,h,h,h,h),B.aa,h),h),B.f,e,h,h,h,h,h,h,h,h,b.b),h,h)
 q=A.a1(h,h,h,h,h,h,h,h,h,h,h,h,h,h,!0,h,h,h,h,h,h,h,h,h,g,h,h,h,h,h,h,h,h,h,h,h,h,h,h,h,h,h,h,h,h,h,h,h,h,h,h,h,h,h,h,h,h,h,h,h,h,h,h,h)
 p=A.ee(A.K(h,h,B.f,B.C,h,h,h,1,h,h,h,h,h),0.2)
-o=t.p
-n=A.a([B.QO],o)
-if(d>0)n.push(A.dL(B.eJ,A.a([A.tW(20),A.a_(r,h,h,h,B.iY,h,h)],o),B.L,B.ai,h))
-n=A.am(n,B.i,B.B,B.k)
-m=t.Mt
-l=A.a([B.QJ],o)
-if(s>0)l.push(A.dL(B.eJ,A.a([A.tW(20),A.a_(""+s,h,h,h,B.iY,h,h)],o),B.L,B.ai,h))
-n=A.a([new A.m4(!1,n,m),new A.m4(!0,A.am(l,B.i,B.B,B.k),m)],t.st)
-m=this.a
-l=A.cq([m.at],t.y)
-k=$.v?B.h:B.e
+o=$.v?B.h:B.e
+n=t.p
+m=A.a([B.QO],n)
+if(d>0)m.push(A.dL(B.eJ,A.a([A.tW(20),A.a_(r,h,h,h,B.iY,h,h)],n),B.L,B.ai,h))
+m=A.am(m,B.i,B.B,B.k)
+l=t.Mt
+k=A.a([B.QJ],n)
+if(s>0)k.push(A.dL(B.eJ,A.a([A.tW(20),A.a_(""+s,h,h,h,B.iY,h,h)],n),B.L,B.ai,h))
+m=A.a([new A.m4(!1,m,l),new A.m4(!0,A.am(k,B.i,B.B,B.k),l)],t.st)
+l=this.a
+k=A.cq([l.at],t.y)
 j=$.aP
 i=j?B.w:B.x
-k=A.b26(k,i,j?B.w:B.x,B.e)
-j=$.v?B.h:B.e
-return A.bm(A.QQ(A.n3(A.aT(A.a([new A.Y(q,!1,!1,!0,!1,e,h),p,new A.wZ(n,l,new A.a3I(m),k,!1,h,t.Y0),A.K(h,new A.zM(m.a.w,m.at,h),B.f,j,h,h,h,h,h,h,h,h,h)],o),B.i,B.B,B.k),f,B.al),f,h),b.d,h)},
+o=A.K(h,new A.wZ(m,k,new A.a3I(l),A.b26(B.e,i,j?B.w:B.x,B.e),!1,h,t.Y0),B.f,o,h,h,h,h,h,h,h,h,h)
+m=$.v?B.h:B.e
+return A.bm(A.QQ(A.n3(A.aT(A.a([new A.Y(q,!1,!1,!0,!1,e,h),p,o,A.K(h,new A.zM(l.a.w,l.at,h),B.f,m,h,h,h,h,h,h,h,h,h)],n),B.i,B.B,B.k),f,B.al),f,h),b.d,h)},
 $S:251}
 A.a3I.prototype={
 $1(a){var s=this.a
@@ -46885,7 +46885,7 @@ P(a){var s=null,r=$.aP?B.nH:B.nG
 return A.aOB(new A.ajj(),"/",new A.ajk(),A.aTy(),A.tP(s,r,s,B.vF,new A.tr(new A.bV(!0,t.yg),new A.bV(5,t.YI),s,!0,B.ce,new A.bV(A.a7(102,B.C.m()>>>16&255,B.C.m()>>>8&255,B.C.m()&255),t.rc),s,s,s,s,75),s),"Canuckle - A daily Canadian word game")}}
 A.ajj.prototype={
 $2(a,b){var s=null,r=A.aN(a,s,t.w).w.zn(1)
-return A.Ok(A.fN(B.a4,s,A.aT(A.a([B.es,A.a_("Uhoh! You already have a Canuckle tab open. Please close this one and use the other tab.",s,s,s,A.W(s,s,$.v?B.e:B.h,s,s,s,s,s,"ClearSans",s,s,25,s,s,B.v,s,s,!0,s,s,s,s,s,s,s,s),s,s),A.b6("assets/leaf.svg",s,s,50,s,s,50),B.es],t.p),B.i,B.q,B.k),B.f,s,0,s,s,s,s,B.ii),r)},
+return A.Ok(A.fN(B.a4,s,A.aT(A.a([B.es,A.a_("Uhoh!\nYou already have a Canuckle tab open.\nPlease close this tab and use the other.",s,s,s,A.W(s,s,$.v?B.e:B.h,s,s,s,s,s,"ClearSans",s,s,25,s,s,B.v,s,s,!0,s,s,s,s,s,s,s,s),s,s),A.b6("assets/leaf.svg",s,s,50,s,s,50),B.es],t.p),B.i,B.q,B.k),B.f,s,0,s,s,s,s,B.ii),r)},
 $S:131}
 A.ajk.prototype={
 $1(a){return A.a([A.aJc(new A.iH(a,null))],t.mp)},
