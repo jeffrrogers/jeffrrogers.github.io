@@ -9296,7 +9296,8 @@ a6.aK("Int","gamesCount",b)
 j.k1=b}}if(e!==g.length){l=A.a0(g).h("V<1,f>")
 l=A.T(new A.V(g,new A.a6N(),l),l.h("aa.E"))
 j.b=l
-if(f-h.length>0)j.id=g.length}$.bM=j
+l=g.length
+if(e-l>0)j.id=l}$.bM=j
 l=!1
 i=j.a.length
 if(i!==0){a2=A.cK(a3.i(a2,"gamesCount"))
