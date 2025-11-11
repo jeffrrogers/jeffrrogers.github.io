@@ -51003,7 +51003,7 @@ return new A.hy(q.i(s,"index"),q.i(s,"didWin"),q.i(s,"chosenIndex"),q.i(s,"guess
 $S:302}
 A.avU.prototype={
 $1(a){var s=a.b
-return s>this.a.a&&s<this.b.a},
+return s>=this.a.a&&s<=this.b.a},
 $S:15}
 A.avV.prototype={
 $1(a){return a.b===this.a.a},
