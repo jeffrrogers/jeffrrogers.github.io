@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html>
+
 <head>
   <!--
     If you are serving your web app in a path other than the root, change the
@@ -16,6 +17,15 @@
   -->
   <base href="/">
 
+  <!-- Critical connection hints -->
+  <link rel="preconnect" href="https://www.gstatic.com" crossorigin>
+  <link rel="dns-prefetch" href="https://www.gstatic.com">
+  <link rel="preconnect" href="https://www.googletagmanager.com" crossorigin>
+  <link rel="preconnect" href="https://portal.cdn.yollamedia.com" crossorigin>
+  <link rel="dns-prefetch" href="https://portal.cdn.yollamedia.com">
+  <link rel="dns-prefetch" href="https://firestore.googleapis.com">
+  <link rel="dns-prefetch" href="https://firebase.googleapis.com">
+
   <meta charset="UTF-8">
   <meta content="IE=Edge" http-equiv="X-UA-Compatible">
   <meta name="description" content="A new Flutter project.">
@@ -24,19 +34,21 @@
   <meta name="apple-mobile-web-app-capable" content="yes">
   <meta name="apple-mobile-web-app-status-bar-style" content="black">
   <meta name="apple-mobile-web-app-title" content="canuckle">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">  <!--added from original-->
-  <link rel="apple-touch-icon" href="icons/Icon-192.png">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <!--added from original-->
+  <link href="images/canuckle_logo_192x192.png" rel="apple-touch-icon" />
 
   <script src="/assets/assets/js/video_ad.js" defer=""></script>
 
-  <!-- Yolla Media script -->
-  <script type="text/javascript" src="https://portal.cdn.yollamedia.com/storage/tag/ps6d46b18362b4075b4074ad02399f36e91e9d429e.js"></script>
-
   <!-- Favicon -->
-  <link rel="icon" type="image/png" href="favicon.png"/>
+  <link rel="icon" type="image/png" href="images/canuckle_logo_32x32.png" />
 
   <title>canuckle</title>
   <link rel="manifest" href="manifest.json">
+
+  <!-- Yolla Media script -->
+  <script defer
+    src="https://portal.cdn.yollamedia.com/storage/tag/ps6d46b18362b4075b4074ad02399f36e91e9d429e.js"></script>
 
   <style>
     div.loadingscreen {
@@ -45,12 +57,14 @@
       padding-top: 33vh;
       margin: 0 auto;
     }
+
     div.canuckle {
       width: 100%;
       height: 50%;
       margin: 0 auto;
       transform: translate(7%, 0%);
     }
+
     div.canuckleletterbg {
       width: 10%;
       aspect-ratio: 1/1;
@@ -60,6 +74,7 @@
       text-align: center;
       color: #fff;
     }
+
     div.canuckleletter {
       width: 80%;
       aspect-ratio: 1/1;
@@ -69,12 +84,14 @@
       font-family: sans-serif;
       color: #fff;
     }
+
     div.loading {
       width: 100%;
       height: 50%;
       margin: 0 auto;
       transform: translate(19.5%, 30%);
     }
+
     div.loadingletterbg {
       width: 8%;
       aspect-ratio: 1/1;
@@ -87,6 +104,7 @@
       animation-duration: 0.5s;
       animation-iteration-count: 30;
     }
+
     div.loadingletter {
       width: 80%;
       aspect-ratio: 1/1;
@@ -96,12 +114,14 @@
       font-family: sans-serif;
       color: #fff;
     }
+
     div.bg {
       z-index: 1;
       height: 100vh;
       width: 100vw;
       background: #ddd;
     }
+
     div.game {
       z-index: 3;
       height: 100vh;
@@ -110,6 +130,7 @@
       margin: 0 auto;
       display: block;
     }
+
     div.adbox_1 {
       z-index: 99999;
       align-items: center;
@@ -119,9 +140,10 @@
       justify-content: center;
       position: absolute;
       width: calc(50vw - 300px);
-      overflow: hidden; 
+      overflow: hidden;
       background-color: green;
     }
+
     div.adbox_2 {
       z-index: 99999;
       align-items: center;
@@ -131,9 +153,10 @@
       justify-content: center;
       position: absolute;
       width: calc(50vw - 300px);
-      overflow: hidden; 
+      overflow: hidden;
       background-color: blue;
     }
+
     div.adbox_3 {
       z-index: 99999;
       align-items: center;
@@ -143,9 +166,10 @@
       justify-content: center;
       position: absolute;
       width: calc(50vw - 300px);
-      overflow: hidden; 
+      overflow: hidden;
       background-color: yellow;
     }
+
     div.adbox_4 {
       z-index: 99999;
       align-items: center;
@@ -155,9 +179,10 @@
       justify-content: center;
       position: absolute;
       width: calc(50vw - 300px);
-      overflow: hidden; 
+      overflow: hidden;
       background-color: orange;
     }
+
     div.adbox_5 {
       z-index: 99999;
       height: 90px;
@@ -172,6 +197,7 @@
       margin: auto;
       background-color: purple;
     }
+
     div.adbox_6 {
       z-index: 99999;
       align-items: center;
@@ -181,9 +207,10 @@
       justify-content: center;
       position: absolute;
       width: calc(50vw - 300px);
-      overflow: hidden; 
+      overflow: hidden;
       background-color: red;
     }
+
     div.mobileadbox {
       z-index: 99999;
       height: 50px;
@@ -192,9 +219,10 @@
       position: absolute;
       max-width: 728px;
       overflow: hidden;
-      margin-top: 4px; 
+      margin-top: 4px;
       background-color: red;
     }
+
     div.mobileadbox_2 {
       z-index: 99999;
       height: 100px;
@@ -203,108 +231,144 @@
       position: absolute;
       max-width: 728px;
       overflow: hidden;
-      margin-top: 4px; 
+      margin-top: 4px;
       background-color: green;
     }
+
     div.adbox_1:nth-child(3) {
       left: 0;
     }
+
     div.adbox_1:nth-child(4) {
       right: 0;
     }
+
     div.adbox_2:nth-child(5) {
       left: 0;
     }
+
     div.adbox_2:nth-child(6) {
       right: 0;
     }
+
     div.adbox_3:nth-child(7) {
       left: 0;
     }
+
     div.adbox_3:nth-child(8) {
       right: 0;
     }
+
     div.adbox_4:nth-child(9) {
       left: 0;
     }
+
     div.adbox_4:nth-child(10) {
       right: 0;
     }
+
     div.adbox_6:nth-child(12) {
       left: 0;
     }
+
     div.adbox_6:nth-child(13) {
       right: 0;
     }
 
     @keyframes jump-animation {
-      0%   {transform: translate(0%, 10%)}
-      50%  {transform: translate(0%, 0%)}
-      100% {transform: translate(0%, 10%)}
+      0% {
+        transform: translate(0%, 10%)
+      }
+
+      50% {
+        transform: translate(0%, 0%)
+      }
+
+      100% {
+        transform: translate(0%, 10%)
+      }
     }
+
     @media screen and (min-width: 728px) {
       div.mobileadbox {
         display: none;
       }
+
       div.mobileadbox_2 {
         display: none;
       }
     }
+
     @media screen and (min-height: 736px) {
       div.mobileadbox {
         display: none;
       }
     }
+
     @media screen and (max-height: 735px) {
       div.mobileadbox_2 {
         display: none;
       }
     }
+
     @media screen and (max-width: 728px) {
       div.adbox_5 {
         display: none;
       }
     }
-    @media screen and (max-width: 920px), screen and (max-height: 690px), {
+
+    @media screen and (max-width: 920px),
+    screen and (max-height: 690px) {
       div.adbox_1 {
         display: none;
       }
     }
+
     @media screen and (min-width: 1200px) {
       div.adbox_1 {
         display: none;
       }
     }
-    @media screen and (max-width: 1200px), screen and (max-height: 250px), {
+
+    @media screen and (max-width: 1200px),
+    screen and (max-height: 250px) {
       div.adbox_2 {
         display: none;
       }
     }
+
     @media screen and (min-width: 1272px) and (min-height: 280px) {
       div.adbox_2 {
         display: none;
       }
     }
-    @media screen and (max-width: 1272px), screen and (max-height: 280px), {
+
+    @media screen and (max-width: 1272px),
+    screen and (max-height: 280px) {
       div.adbox_3 {
         display: none;
       }
     }
+
     @media screen and (min-width: 1272px) and (min-height: 690px) {
       div.adbox_3 {
         display: none;
       }
     }
-    @media screen and (max-width: 1272px), screen and (max-height: 690px), {
+
+    @media screen and (max-width: 1272px),
+    screen and (max-height: 690px) {
       div.adbox_4 {
         display: none;
       }
     }
+
     @media screen and (min-width: 1400px) {
       div.adbox_4 {
         display: none;
       }
     }
+
     @media screen and (max-width: 1400px) {
       div.adbox_6 {
         display: none;
@@ -312,6 +376,7 @@
     }
   </style>
 </head>
+
 <body>
   <div class="bg">
     <div class="mobileadbox">
@@ -471,4 +536,5 @@
     }
   </script>-->
 </body>
+
 </html>
