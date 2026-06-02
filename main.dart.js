@@ -49027,7 +49027,7 @@ il(){var s=0,r=A.A(t.H),q=this
 var $async$il=A.B(function(a,b){if(a===1)return A.x(b,r)
 for(;;)switch(s){case 0:s=2
 return A.t(A.wK(),$async$il)
-case 2:if(!b)window.location.reload()
+case 2:if(!b)v.G.window.location.reload()
 else q.fF()
 return A.y(null,r)}})
 return A.z($async$il,r)},
@@ -50224,7 +50224,7 @@ il(){var s=0,r=A.A(t.H),q=this
 var $async$il=A.B(function(a,b){if(a===1)return A.x(b,r)
 for(;;)switch(s){case 0:s=2
 return A.t(A.wK(),$async$il)
-case 2:if(!b)window.location.reload()
+case 2:if(!b)v.G.window.location.reload()
 else q.fF()
 return A.y(null,r)}})
 return A.z($async$il,r)},
@@ -51623,7 +51623,7 @@ i=A.h9(h,new A.aid(i),p)
 return A.X(p,A.dZ(B.aJ,A.b([l,new A.F(B.b6,A.X(p,new A.F(B.bt,A.aK(A.b([new A.F(B.d2,i,p),A.a9("Check out Archive while you wait!",p,p,p,A.a1(p,p,$.S?B.h:B.e,p,p,p,p,p,o,p,p,16,p,p,p,p,p,!0,p,p,p,p,p,p,p,p),p,p)],r),B.j,B.C,B.k,0),p),B.f,p,p,new A.aM(k,p,p,B.bA,j,p,B.r),p,p,p,p,p,p,300),p)],r),B.I,B.aj,p),B.f,m,p,p,p,p,p,p,p,p,p)},
 $S:92}
 A.aic.prototype={
-$0(){window.location.reload()},
+$0(){v.G.window.location.reload()},
 $S:0}
 A.aid.prototype={
 $2(a,b){var s,r=this.a.w
@@ -52320,7 +52320,7 @@ A.aG1.prototype={
 $0(){},
 $S:0}
 A.aGG.prototype={
-$0(){return window.location.reload()},
+$0(){return v.G.window.location.reload()},
 $S:0}
 A.aGH.prototype={
 $2(a,b){var s,r=this.a.ax
@@ -53065,7 +53065,7 @@ il(){var s=0,r=A.A(t.H),q=this
 var $async$il=A.B(function(a,b){if(a===1)return A.x(b,r)
 for(;;)switch(s){case 0:s=2
 return A.t(A.wK(),$async$il)
-case 2:if(!b)window.location.reload()
+case 2:if(!b)v.G.window.location.reload()
 else q.fF()
 return A.y(null,r)}})
 return A.z($async$il,r)},
@@ -53905,7 +53905,7 @@ s.y=!1
 s.ax.e0()},
 $S:0}
 A.auT.prototype={
-$0(){window.location.reload()},
+$0(){v.G.window.location.reload()},
 $S:0}
 A.o6.prototype={}
 A.vo.prototype={

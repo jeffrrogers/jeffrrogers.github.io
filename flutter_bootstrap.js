@@ -33,10 +33,25 @@ addEventListener("message", eventListener);
 if (!window._flutter) {
   window._flutter = {};
 }
-_flutter.buildConfig = {"engineRevision":"4c525dac5ebe5971c5708ef73558ed8edcf4a362","builds":[{"compileTarget":"dart2js","renderer":"canvaskit","mainJsPath":"main.dart.js"},{}]};
+_flutter.buildConfig = {"engineRevision":"4c525dac5ebe5971c5708ef73558ed8edcf4a362","builds":[{"compileTarget":"dart2wasm","renderer":"skwasm","mainWasmPath":"main.dart.wasm","jsSupportRuntimePath":"main.dart.mjs"},{"compileTarget":"dart2js","renderer":"canvaskit","mainJsPath":"main.dart.js"}]};
+
+
+// Register SW directly — not through Flutter's deprecated serviceWorkerSettings.
+// Browsers auto-detect updates by comparing new vs cached SW bytes on each visit.
+if ('serviceWorker' in navigator) {
+  navigator.serviceWorker.register('/flutter_service_worker.js');
+}
 
 _flutter.loader.load({
-  serviceWorkerSettings: {
-    serviceWorkerVersion: "366654233" /* Flutter's service worker is deprecated and will be removed in a future Flutter release. */
+  onEntrypointLoaded: async function(engineInitializer) {
+    const appRunner = await engineInitializer.initializeEngine();
+    await appRunner.runApp();
+    // Inject Yolla after the Flutter app is running so it doesn't compete
+    // with CanvasKit/Skwasm WASM during the critical startup window.
+    const s = document.createElement('script');
+    s.async = true;
+    s.type = 'text/javascript';
+    s.src = 'https://portal.cdn.yollamedia.com/storage/tag/ps6d46b18362b4075b4074ad02399f36e91e9d429e.js';
+    document.head.appendChild(s);
   }
 });
