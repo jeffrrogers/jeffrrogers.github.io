@@ -9881,7 +9881,7 @@ for(;;)switch(s){case 0:p=$.c9
 o=(p==null?$.c9=$.ee():p).e3("[DEFAULT]")
 A.cw(o,$.e3(),!0)
 p=A.jF(new A.cR(o))
-p.gFh().stU(p.gFh().gtU().aq1(null,null,!1,null,null,null,null))
+p.gFh().stU(p.gFh().gtU().aq1(null,null,!1,null,!1,null,null))
 s=2
 return A.t(A.bZ(),$async$Nr)
 case 2:q=b
@@ -56079,14 +56079,14 @@ r.m(0,"webExperimentalAutoDetectLongPolling",s.r)
 r.m(0,"webExperimentalLongPollingOptions",null)
 r.m(0,"ignoreUndefinedProperties",!1)
 return r},
-Xz(a,b,c,d,e,f,g,h){var s=this,r=d==null?s.a:d
-return new A.yb(r,s.b,s.c,s.d,c===!0,s.f,s.r,s.w)},
+Xz(a,b,c,d,e,f,g,h){var s=this,r=d==null?s.a:d,q=f==null?s.r:f
+return new A.yb(r,s.b,s.c,s.d,c===!0,s.f,q,s.w)},
 aq1(a,b,c,d,e,f,g){return this.Xz(a,b,null,c,d,e,f,g)},
 aq0(a,b,c,d,e){return this.Xz(a,b,c,d,e,null,null,null)},
 j(a,b){var s
 if(b==null)return!1
 s=!1
-if(b instanceof A.yb)if(A.w(b)===A.w(this))s=b.a==this.a
+if(b instanceof A.yb)if(A.w(b)===A.w(this))if(b.a==this.a)s=b.r==this.r
 return s},
 gq(a){var s=this
 return A.J(A.w(s),s.a,s.b,s.c,s.d,s.f,s.r,s.w,!1,B.a,B.a,B.a,B.a,B.a,B.a,B.a,B.a,B.a,B.a,B.a)},
@@ -56129,7 +56129,9 @@ q=q==null||!q
 s=v.G
 if(q)r=s.firebase_firestore.memoryLocalCache(null)
 else{q=s.firebase_firestore
-r=q.persistentLocalCache(t.e.a({cacheSizeBytes:null}))}this.d=t.e.a({ignoreUndefinedProperties:!1,experimentalForceLongPolling:null,experimentalAutoDetectLongPolling:null,localCache:r})}}
+r=q.persistentLocalCache(t.e.a({cacheSizeBytes:null}))}q=a.r
+if(q==null)q=null
+this.d=t.e.a({ignoreUndefinedProperties:!1,experimentalForceLongPolling:null,experimentalAutoDetectLongPolling:q,localCache:r})}}
 A.BC.prototype={
 gec(a){return this.y.a.path},
 eR(a){var s=v.G,r=this.y.a
