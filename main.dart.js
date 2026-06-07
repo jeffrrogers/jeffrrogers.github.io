@@ -52996,10 +52996,10 @@ A.anQ.prototype={
 $1(a){return a.bT()},
 $S:276}
 A.ms.prototype={
-a_Q(a){var s,r,q=this,p=q.a,o=q.y?A.f2(a)-6e4:A.hr(a)
+a_Q(a){var s,r,q=this,p=q.a,o=q.y?A.f2(a)-60001:A.hr(a)-1
 o=Math.max(0,o)
 s=q.a
-r=q.y?A.f2(a)-6e4:A.hr(a)
+r=q.y?A.f2(a)-60001:A.hr(a)-1
 return""+p+" / "+A.l(o)+" ("+B.i.fT(s*100,Math.max(1,r))+"%)"},
 NI(){var s=this.b,r=this.a
 return""+s+" / "+r+" ("+B.i.fT(s*100,Math.max(1,r))+"%)"}}
