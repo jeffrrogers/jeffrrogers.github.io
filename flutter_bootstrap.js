@@ -109,7 +109,7 @@ function startFallbackLoad() {
   console.warn('Canuckle: gstatic CanvasKit/Skwasm load timed out -- retrying with local /canvaskit/.');
   try {
     _flutter.loader.load({
-      config: { canvasKitBaseUrl: '/canvaskit/' },
+      config: { canvasKitBaseUrl: '/canvaskit/', renderer: 'canvaskit' },
       onEntrypointLoaded: runEntrypoint,
     });
   } catch (err) {
@@ -118,10 +118,15 @@ function startFallbackLoad() {
   }
 }
 
-// Primary attempt: default config (gstatic-hosted CanvasKit/Skwasm).
+// Primary attempt: default config (gstatic-hosted CanvasKit).
+// renderer: 'canvaskit' forces CanvasKit for every browser -- skwasm is
+// still experimental and can silently fail to get a WebGL context on some
+// Chrome/GPU/driver combos, leaving a blank canvas with no JS-visible error.
+// This also means main.dart.wasm/.mjs are never fetched -- only main.dart.js.
 // Zero extra bandwidth for the ~99%+ of users where gstatic is reachable.
 try {
   _flutter.loader.load({
+    config: { renderer: 'canvaskit' },
     onEntrypointLoaded: runEntrypoint,
   });
 } catch (err) {
