@@ -5,10 +5,10 @@
 //
 //  1. Every path here is RELATIVE. Canuckle runs at the site root, so its
 //     '/flutter_service_worker.js' and '/canvaskit/' are correct there and
-//     silently wrong under <base href="/solitaire/">. See the notes below.
+//     silently wrong under <base href="/canolitaire/">. See the notes below.
 //  2. No prefers-reduced-motion override. Canuckle patches matchMedia to force
 //     the tile-flip animation on, because there the flip IS the game result.
-//     Solitaire's animations are decorative, so the media query is honoured --
+//     Canolitaire's animations are decorative, so the media query is honoured --
 //     the app reads MediaQuery.disableAnimations and defaults its animation
 //     setting off.
 //  3. No service worker registration at all for v1. See below.
@@ -48,7 +48,7 @@ addEventListener("message", eventListener);
 if (!window._flutter) {
   window._flutter = {};
 }
-_flutter.buildConfig = {"engineRevision":"4c525dac5ebe5971c5708ef73558ed8edcf4a362","builds":[{"compileTarget":"dart2js","renderer":"canvaskit","mainJsPath":"main.dart.js?v=202608272125"},{}]};
+_flutter.buildConfig = {"engineRevision":"4c525dac5ebe5971c5708ef73558ed8edcf4a362","builds":[{"compileTarget":"dart2js","renderer":"canvaskit","mainJsPath":"main.dart.js?v=202610040045"},{}]};
 
 
 // -- Service worker ---------------------------------------------------------
@@ -61,7 +61,7 @@ _flutter.buildConfig = {"engineRevision":"4c525dac5ebe5971c5708ef73558ed8edcf4a3
 // Registering the way Canuckle does would be actively harmful here. Its call
 // is `navigator.serviceWorker.register('/flutter_service_worker.js')` -- the
 // leading slash makes that root-absolute regardless of the base href, so from
-// /solitaire/ it would register canucklegame.ca's ROOT worker. That file's
+// /canolitaire/ it would register canucklegame.ca's ROOT worker. That file's
 // activate handler calls registration.unregister() and then navigates every
 // window client, which from this page means a spurious reload at best and a
 // reload loop racing the engine bootstrap at worst.
@@ -125,7 +125,7 @@ async function runEntrypoint(engineInitializer) {
       }, AD_INJECT_DELAY_MS);
     }
   } catch (err) {
-    console.error('Solitaire: engine init / runApp failed:', err);
+    console.error('Canolitaire: engine init / runApp failed:', err);
     entrypointHandled = false; // let any other in-flight attempt try
     showFatalError();
   }
@@ -134,12 +134,12 @@ async function runEntrypoint(engineInitializer) {
 function startFallbackLoad() {
   if (fallbackStarted) return;
   fallbackStarted = true;
-  console.warn('Solitaire: gstatic CanvasKit timed out -- retrying locally.');
+  console.warn('Canolitaire: gstatic CanvasKit timed out -- retrying locally.');
   try {
     _flutter.loader.load({
       // RELATIVE, not '/canvaskit/'. flutter.js resolves every path with
       // `new URL(path, document.baseURI)`, so this becomes
-      // /solitaire/canvaskit/ and the fallback stays self-contained.
+      // /canolitaire/canvaskit/ and the fallback stays self-contained.
       //
       // A root-absolute path would quietly borrow Canuckle's copy, which
       // happens to work only while both games are on the same engine
@@ -149,7 +149,7 @@ function startFallbackLoad() {
       onEntrypointLoaded: runEntrypoint,
     });
   } catch (err) {
-    console.error('Solitaire: local-CanvasKit fallback load() threw:', err);
+    console.error('Canolitaire: local-CanvasKit fallback load() threw:', err);
     if (!entrypointHandled) showFatalError();
   }
 }
@@ -167,7 +167,7 @@ try {
     onEntrypointLoaded: runEntrypoint,
   });
 } catch (err) {
-  console.error('Solitaire: primary load() threw synchronously:', err);
+  console.error('Canolitaire: primary load() threw synchronously:', err);
   startFallbackLoad();
 }
 
@@ -201,7 +201,7 @@ setTimeout(async function () {
 if (!IS_LOCAL_DEV) {
   setTimeout(function () {
     if (!entrypointHandled) {
-      console.error('Solitaire: CanvasKit never started.');
+      console.error('Canolitaire: CanvasKit never started.');
       showFatalError();
     }
   }, ERROR_TIMEOUT_MS);

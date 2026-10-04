@@ -1,8 +1,8 @@
 {
-  "name": "Canuckle Solitaire",
-  "short_name": "Solitaire",
-  "start_url": "/solitaire/",
-  "scope": "/solitaire/",
+  "name": "Canolitaire",
+  "short_name": "Canolitaire",
+  "start_url": "/canolitaire/",
+  "scope": "/canolitaire/",
   "display": "standalone",
   "background_color": "#FFF4F4",
   "theme_color": "#CF2319",
