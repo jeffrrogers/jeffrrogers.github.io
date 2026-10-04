@@ -305,7 +305,52 @@ main { padding: 20px 0 64px; }
 
 /* ---- Game strips: a row of tinted cards per game -------------------------- */
 
-.strip-row { margin-bottom: 22px; }
+.strip-row { position: relative; margin-bottom: 22px; --fade: 64px; }
+@media (max-width: 600px) {
+  /* Phones show only a sliver of the next card; a long fade would hide it. */
+  .strip-row { --fade: 24px; }
+}
+
+/* Fade whichever edge has more cards beyond it, so the row reads as
+   continuing off-screen. The ramp is about a third of a card, shorter on phones. */
+.strip-row.can-right .strip {
+  -webkit-mask-image: linear-gradient(to right, #000 calc(100% - var(--fade)), transparent);
+  mask-image: linear-gradient(to right, #000 calc(100% - var(--fade)), transparent);
+}
+.strip-row.can-left .strip {
+  -webkit-mask-image: linear-gradient(to right, transparent, #000 var(--fade));
+  mask-image: linear-gradient(to right, transparent, #000 var(--fade));
+}
+.strip-row.can-left.can-right .strip {
+  -webkit-mask-image: linear-gradient(to right, transparent, #000 var(--fade), #000 calc(100% - var(--fade)), transparent);
+  mask-image: linear-gradient(to right, transparent, #000 var(--fade), #000 calc(100% - var(--fade)), transparent);
+}
+
+.strip-nav {
+  position: absolute;
+  top: calc(50% - 22px);
+  z-index: 2;
+  width: 44px;
+  height: 44px;
+  border-radius: 50%;
+  border: 1px solid var(--border);
+  background: var(--surface);
+  color: var(--text);
+  box-shadow: 0 4px 14px rgba(23, 23, 26, .16);
+  display: none;
+  place-items: center;
+  padding: 0;
+}
+.strip-nav:hover { color: var(--game); }
+.strip-nav .icon { width: 22px; height: 22px; }
+.strip-nav.prev { left: -6px; }
+.strip-nav.next { right: -6px; }
+.strip-nav.next .icon { transform: scaleX(-1); }
+/* Mouse and trackpad users get arrows; touch screens swipe. */
+@media (hover: hover) and (pointer: fine) {
+  .strip-row.can-left .strip-nav.prev,
+  .strip-row.can-right .strip-nav.next { display: grid; }
+}
 
 .strip {
   display: flex;

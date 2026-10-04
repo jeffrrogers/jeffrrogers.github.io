@@ -6,11 +6,11 @@
 // board was solved on merit. games/{day}.{d|m} holds {day, kind, req, bonus,
 // solved} (solved false = answers revealed). In-progress boards are local.
 
-import { daily, pct } from './common.js?v=202610040209';
-import { readPref } from '../local.js?v=202610040209';
+import { daily, pct } from './common.js?v=202610040215';
+import { readPref } from '../local.js?v=202610040215';
 import {
   SOLVED, FAILED, PROGRESS, emptyProgress, mark, storedStreak, intList, num,
-} from '../status.js?v=202610040209';
+} from '../status.js?v=202610040215';
 
 const KINDS = [
   { key: 'd', label: 'Daily' },

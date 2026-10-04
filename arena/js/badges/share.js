@@ -1,7 +1,7 @@
 // Sharing badges through the device share sheet, with a clipboard fallback.
 
-import { medalSvgStandalone } from './icons.js?v=202610040209';
-import { ARENA_URL } from '../config.js?v=202610040209';
+import { medalSvgStandalone } from './icons.js?v=202610040215';
+import { ARENA_URL } from '../config.js?v=202610040215';
 
 function shareText(badge, gameName) {
   const where = gameName ? ` in ${gameName}` : '';
@@ -28,7 +28,7 @@ async function badgeImage(badge, color, gameName) {
     ctx.fillText(badge.name, 540, 790);
     ctx.fillStyle = '#55534F';
     ctx.font = '400 40px Sora, "Clear Sans", sans-serif';
-    ctx.fillText(gameName || 'Canuckle Games', 540, 860);
+    ctx.fillText(gameName || 'Canuckle Games Arena', 540, 860);
     ctx.fillStyle = '#B3241A';
     ctx.font = '600 36px Sora, "Clear Sans", sans-serif';
     ctx.fillText('canucklegame.ca/arena', 540, 960);

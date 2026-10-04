@@ -3,12 +3,12 @@
 // previous seven, and a way into the archive at the end. Streaks and stats
 // live on the Stats tab, not here.
 
-import { h, ICONS } from '../ui.js?v=202610040209';
-import { longDate, weekdayName, shortDate, ymd } from '../dates.js?v=202610040209';
-import { recentIndices } from '../games/common.js?v=202610040209';
-import { SOLVED, FAILED, PLAYED, PROGRESS, isDone } from '../status.js?v=202610040209';
-import { LEAF_PATH } from '../badges/icons.js?v=202610040209';
-import { playProps } from './play.js?v=202610040209';
+import { h, ICONS } from '../ui.js?v=202610040215';
+import { longDate, weekdayName, shortDate, ymd } from '../dates.js?v=202610040215';
+import { recentIndices } from '../games/common.js?v=202610040215';
+import { SOLVED, FAILED, PLAYED, PROGRESS, isDone } from '../status.js?v=202610040215';
+import { LEAF_PATH } from '../badges/icons.js?v=202610040215';
+import { playProps } from './play.js?v=202610040215';
 
 const DEFAULT_CAPTION = {
   [SOLVED]: 'SOLVED',
@@ -140,14 +140,59 @@ function seeAllCard(game) {
   h('span', { class: 'pc-day', text: 'See all' }));
 }
 
+// ---- Making the sideways scroll obvious --------------------------------------
+//
+// Each strip fades out at whichever edge has more cards beyond it, and on
+// devices with a mouse gets round arrow buttons, since a trackpad-less desktop
+// has no natural way to scroll sideways. Touch devices swipe, so the arrows
+// stay hidden there (CSS) and the fade plus the half-visible next card do the
+// telling.
+
+function updateStripEdges(row, strip) {
+  const max = strip.scrollWidth - strip.clientWidth;
+  row.classList.toggle('can-left', strip.scrollLeft > 4);
+  row.classList.toggle('can-right', strip.scrollLeft < max - 4);
+}
+
+function scrollStrip(strip, direction) {
+  // Most of a screen at a time, leaving one card in view for continuity.
+  const step = Math.max(strip.clientWidth - 170, 160) * direction;
+  strip.scrollBy({ left: step, behavior: 'smooth' });
+}
+
+if (typeof window !== 'undefined') {
+  window.addEventListener('resize', () => {
+    for (const row of document.querySelectorAll('.strip-row')) {
+      updateStripEdges(row, row.querySelector('.strip'));
+    }
+  });
+}
+
 function gameStrip(game, progress, todayEd) {
   const todayIdx = game.todayIndex(todayEd);
   const [today, ...past] = recentIndices(game, todayEd);
-  return h('section', { class: 'strip-row', style: cardVars(game), 'aria-label': game.name },
-    h('div', { class: 'strip' },
-      todayCard(game, progress?.days.get(today), todayIdx),
-      past.map((i) => pastCard(game, i, progress?.days.get(i), todayIdx)),
-      seeAllCard(game)));
+  const strip = h('div', { class: 'strip' },
+    todayCard(game, progress?.days.get(today), todayIdx),
+    past.map((i) => pastCard(game, i, progress?.days.get(i), todayIdx)),
+    seeAllCard(game));
+  const row = h('section', { class: 'strip-row', style: cardVars(game), 'aria-label': game.name },
+    strip,
+    // Cards run from today on the left back in time to the right.
+    h('button', {
+      class: 'strip-nav prev',
+      'aria-label': `Back towards today's ${game.name}`,
+      html: ICONS.back,
+      onClick: () => scrollStrip(strip, -1),
+    }),
+    h('button', {
+      class: 'strip-nav next',
+      'aria-label': `Earlier ${game.name} puzzles`,
+      html: ICONS.back,
+      onClick: () => scrollStrip(strip, 1),
+    }));
+  strip.addEventListener('scroll', () => updateStripEdges(row, strip), { passive: true });
+  requestAnimationFrame(() => updateStripEdges(row, strip));
+  return row;
 }
 
 /** A small streak pill, used by the archive and Stats pages. */

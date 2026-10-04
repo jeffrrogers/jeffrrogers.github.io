@@ -1,12 +1,12 @@
 // Badge medals, the badge detail sheet, the full badge page, and the unlock
 // announcement.
 
-import { h, ICONS, openSheet, sheetHead, toast } from '../ui.js?v=202610040209';
-import { longDate, todayEpochDay } from '../dates.js?v=202610040209';
-import { medalSvg, LEAF_PATH } from '../badges/icons.js?v=202610040209';
-import { shareBadge, shareShelf } from '../badges/share.js?v=202610040209';
-import { gameById } from '../games/registry.js?v=202610040209';
-import { track } from '../analytics.js?v=202610040209';
+import { h, ICONS, openSheet, sheetHead, toast } from '../ui.js?v=202610040215';
+import { longDate, todayEpochDay } from '../dates.js?v=202610040215';
+import { medalSvg, LEAF_PATH } from '../badges/icons.js?v=202610040215';
+import { shareBadge, shareShelf } from '../badges/share.js?v=202610040215';
+import { gameById } from '../games/registry.js?v=202610040215';
+import { track } from '../analytics.js?v=202610040215';
 
 const FAMILY_COLOR = '#D52B1E';
 
@@ -32,7 +32,7 @@ async function doShare(app, badge) {
 }
 
 export function medalButton(app, badge) {
-  const sub = badge.earned ? (badge.game ? gameById(badge.game)?.name : 'Family') : `${badge.have}/${badge.need}`;
+  const sub = badge.earned ? (badge.game ? gameById(badge.game)?.name : 'Games Arena') : `${badge.have}/${badge.need}`;
   return h('button', {
     class: 'badge-btn',
     'aria-label': `${badge.name}${badge.earned ? ', earned' : `, locked, ${badge.have} of ${badge.need}`}`,
@@ -44,7 +44,7 @@ export function openBadgeSheet(app, badge) {
   let close;
   const game = badge.game ? gameById(badge.game) : null;
   const body = h('div', { class: 'badge-sheet' },
-    sheetHead(game ? game.name : 'Family badge', () => close()),
+    sheetHead(game ? game.name : 'Games Arena badge', () => close()),
     h('span', { html: medalSvg(badge, badgeColor(badge), 140) }),
     h('h2', { text: badge.name }),
     h('p', { class: 'muted', text: badge.desc }),
@@ -104,7 +104,7 @@ export function renderBadgesPage(app) {
   const all = app.badges.results;
   const earned = all.filter((b) => b.earned).length;
   const sections = [
-    { title: 'Family', list: all.filter((b) => !b.game) },
+    { title: 'Games Arena', logo: 'images/arena.svg', list: all.filter((b) => !b.game) },
     ...app.games.map((g) => ({ title: g.name, logo: g.logo, list: all.filter((b) => b.game === g.id) })),
   ];
   return h('div', { class: 'wrap' },
