@@ -677,7 +677,24 @@ main { padding: 20px 0 64px; }
 .day.is-today { box-shadow: 0 0 0 2px var(--bg), 0 0 0 4px var(--text); }
 .day .pips { justify-content: center; }
 .day .pip { width: 6px; height: 6px; border-radius: 2px; }
-.day.solved .pip, .day.failed .pip, .day.played .pip { border-color: rgba(255, 255, 255, .8); }
+/* On a coloured day the status colours would vanish into the cell, so a
+   finished puzzle's dot fills white and an unfinished one stays a faint
+   outline. */
+.day.solved .pip, .day.failed .pip, .day.played .pip {
+  background: transparent;
+  border-color: rgba(255, 255, 255, .6);
+  opacity: 1;
+}
+.day.solved .pip.solved, .day.solved .pip.failed, .day.solved .pip.played,
+.day.failed .pip.solved, .day.failed .pip.failed, .day.failed .pip.played,
+.day.played .pip.solved, .day.played .pip.failed, .day.played .pip.played {
+  background: #fff;
+  border-color: #fff;
+}
+.day.solved .pip.progress, .day.failed .pip.progress, .day.played .pip.progress {
+  border-color: #fff;
+  background: linear-gradient(to top, #fff 50%, transparent 50%);
+}
 
 /* Canuckle+: Monday-first rows, each week one band, since a week is one puzzle. */
 .cal-weeks { display: grid; gap: 6px; }

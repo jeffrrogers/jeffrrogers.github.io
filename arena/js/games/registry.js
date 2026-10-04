@@ -1,12 +1,12 @@
 // Every game the arena knows about, in display order.
 
-import { isLive } from '../config.js?v=202610040225';
-import { canuckle } from './canuckle.js?v=202610040225';
-import { canucklePlus } from './canucklePlus.js?v=202610040225';
-import { canoku } from './canoku.js?v=202610040225';
-import { canolitaire } from './canolitaire.js?v=202610040225';
-import { canominoes } from './canominoes.js?v=202610040225';
-import { canoggle } from './canoggle.js?v=202610040225';
+import { isLive } from '../config.js?v=202610040233';
+import { canuckle } from './canuckle.js?v=202610040233';
+import { canucklePlus } from './canucklePlus.js?v=202610040233';
+import { canoku } from './canoku.js?v=202610040233';
+import { canolitaire } from './canolitaire.js?v=202610040233';
+import { canominoes } from './canominoes.js?v=202610040233';
+import { canoggle } from './canoggle.js?v=202610040233';
 
 export const ALL_GAMES = [canuckle, canucklePlus, canoku, canolitaire, canominoes, canoggle];
 
