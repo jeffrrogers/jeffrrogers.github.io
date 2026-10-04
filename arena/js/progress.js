@@ -6,10 +6,10 @@
 // is cheap and also folds in this browser's in-progress saves, which change
 // between visits.
 
-import { createReader } from './firebase.js?v=202610040233';
-import { arenaGet, arenaSet } from './local.js?v=202610040233';
-import { recentIndices } from './games/common.js?v=202610040233';
-import { emptyProgress } from './status.js?v=202610040233';
+import { createReader } from './firebase.js?v=202610041808';
+import { arenaGet, arenaSet } from './local.js?v=202610041808';
+import { recentIndices } from './games/common.js?v=202610041808';
+import { emptyProgress } from './status.js?v=202610041808';
 
 const CACHE_VERSION = 1;
 
@@ -73,4 +73,24 @@ export async function loadProgress(games, { uid, todayEd, onUpdate, demo = null 
 
   arenaSet(cacheKey, { v: CACHE_VERSION, at: Date.now(), games: fresh });
   return state;
+}
+
+/**
+ * Re-reads the games whose per-puzzle documents are normally fetched only for
+ * the recent window, this time from day 1, so badges already earned can be
+ * dated from when they really happened. Used once, on a player's first badge
+ * sync; not cached. A game that fails to load keeps its windowed progress.
+ */
+export async function loadFullHistory(games, state, { uid, todayEd }) {
+  const reader = createReader();
+  const next = { ...state };
+  await Promise.all(games.filter((g) => g.windowed).map(async (g) => {
+    try {
+      const raw = await g.fetch({ uid, reader, recent: recentIndices(g, todayEd), full: true });
+      next[g.id] = { ...state[g.id], progress: derive(g, raw, todayEd) };
+    } catch (e) {
+      console.warn(`arena: could not load ${g.id} history`, e);
+    }
+  }));
+  return next;
 }

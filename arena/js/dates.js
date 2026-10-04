@@ -17,6 +17,17 @@ export function todayEpochDay(now = new Date()) {
   return epochDay(now.getFullYear(), now.getMonth() + 1, now.getDate());
 }
 
+/** The local calendar date of a millisecond timestamp, or null for none. */
+export function edOfMillis(ms) {
+  return ms ? todayEpochDay(new Date(ms)) : null;
+}
+
+/** Midday local time on an epoch day, as millis (safe from DST edges). */
+export function millisOfEd(ed) {
+  const { y, m, d } = ymd(ed);
+  return new Date(y, m - 1, d, 12).getTime();
+}
+
 /** {y, m, d, weekday} for an epoch day. weekday: 0 = Sunday .. 6 = Saturday. */
 export function ymd(ed) {
   const dt = new Date(ed * MS_PER_DAY);

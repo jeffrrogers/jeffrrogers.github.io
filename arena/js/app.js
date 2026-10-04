@@ -1,19 +1,21 @@
 // Boot, routing and the shared app state.
 
-import { IS_SANDBOX, IS_DEMO } from './config.js?v=202610040233';
-import { demoRaw } from './demo.js?v=202610040233';
-import { initAnalytics, track } from './analytics.js?v=202610040233';
-import { todayEpochDay } from './dates.js?v=202610040233';
-import { playerId, readPref, arenaGet, arenaSet } from './local.js?v=202610040233';
-import { liveGames, gameById } from './games/registry.js?v=202610040233';
-import { loadProgress } from './progress.js?v=202610040233';
-import { evaluateBadges } from './badges/rules.js?v=202610040233';
-import { loadStoredBadges, planSync, applySync, markAnnounced, markShared } from './badges/store.js?v=202610040233';
-import { h, ICONS, closeSheet } from './ui.js?v=202610040233';
-import { renderGames } from './views/gamesTab.js?v=202610040233';
-import { renderArchive } from './views/archive.js?v=202610040233';
-import { renderStats, renderStatsDetail } from './views/statsTab.js?v=202610040233';
-import { renderBadgesPage, announce } from './views/badgesView.js?v=202610040233';
+import { IS_SANDBOX, IS_DEMO } from './config.js?v=202610041808';
+import { demoRaw } from './demo.js?v=202610041808';
+import { initAnalytics, track } from './analytics.js?v=202610041808';
+import { todayEpochDay } from './dates.js?v=202610041808';
+import { playerId, readPref, arenaGet, arenaSet } from './local.js?v=202610041808';
+import { liveGames, gameById } from './games/registry.js?v=202610041808';
+import { loadProgress, loadFullHistory } from './progress.js?v=202610041808';
+import { evaluateBadges } from './badges/rules.js?v=202610041808';
+import {
+  loadStoredBadges, needsDating, planSync, applySync, markAnnounced, markShared,
+} from './badges/store.js?v=202610041808';
+import { h, ICONS, closeSheet } from './ui.js?v=202610041808';
+import { renderGames } from './views/gamesTab.js?v=202610041808';
+import { renderArchive } from './views/archive.js?v=202610041808';
+import { renderStats, renderStatsDetail } from './views/statsTab.js?v=202610041808';
+import { renderBadgesPage, announce } from './views/badgesView.js?v=202610041808';
 
 const app = {
   uid: IS_DEMO ? 'DEMO' : playerId(),
@@ -164,8 +166,13 @@ async function syncBadges() {
   try {
     const stored = await loadStoredBadges(app.uid);
     app.badges.stored = stored.badges;
+    // Badges about to be backfilled are dated from the games' whole history,
+    // not just the recent window the arena normally reads.
+    if (needsDating(stored)) {
+      app.progress = await loadFullHistory(app.games, app.progress, { uid: app.uid, todayEd: app.todayEd });
+    }
     evaluate();
-    const plan = planSync(app.badges.results, stored);
+    const plan = planSync(app.badges.results, stored, app.todayEd);
     app.badges.stored = await applySync(app.uid, plan, stored);
     app.badges.synced = true;
     evaluate();

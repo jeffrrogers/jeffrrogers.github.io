@@ -1,12 +1,12 @@
 // Badge medals, the badge detail sheet, the full badge page, and the unlock
 // announcement.
 
-import { h, ICONS, openSheet, sheetHead, toast } from '../ui.js?v=202610040233';
-import { longDate, todayEpochDay } from '../dates.js?v=202610040233';
-import { medalSvg, LEAF_PATH } from '../badges/icons.js?v=202610040233';
-import { shareBadge, shareShelf } from '../badges/share.js?v=202610040233';
-import { gameById } from '../games/registry.js?v=202610040233';
-import { track } from '../analytics.js?v=202610040233';
+import { h, ICONS, openSheet, sheetHead, toast } from '../ui.js?v=202610041808';
+import { longDate, todayEpochDay } from '../dates.js?v=202610041808';
+import { medalSvg, LEAF_PATH } from '../badges/icons.js?v=202610041808';
+import { shareBadge, shareShelf } from '../badges/share.js?v=202610041808';
+import { gameById } from '../games/registry.js?v=202610041808';
+import { track } from '../analytics.js?v=202610041808';
 
 const FAMILY_COLOR = '#D52B1E';
 
@@ -18,7 +18,7 @@ function earnedText(app, badge) {
   const rec = app.badges.stored[badge.id];
   if (!rec) return 'Earned';
   const ed = todayEpochDay(new Date(rec.earnedAt));
-  return rec.backfill ? `Earned by ${longDate(ed)}` : `Earned ${longDate(ed)}`;
+  return rec.dated ? `Earned ${longDate(ed)}` : `Earned by ${longDate(ed)}`;
 }
 
 async function doShare(app, badge) {

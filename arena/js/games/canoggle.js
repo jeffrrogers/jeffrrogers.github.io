@@ -4,13 +4,16 @@
 // fixed at launch) and data/{stats,user,prefs_keys}.dart. chainUserData/{id}
 // is {ms, mn, mr, wf, bf, cw, bc, st, mx, ld, sd}; sd lists days whose MAIN
 // board was solved on merit. games/{day}.{d|m} holds {day, kind, req, bonus,
-// solved} (solved false = answers revealed). In-progress boards are local.
+// solved, updatedAt} (solved false = answers revealed), written when a board
+// finishes. In-progress boards are local.
 
-import { daily, pct } from './common.js?v=202610040233';
-import { readPref } from '../local.js?v=202610040233';
+import { daily, pct, historyStart } from './common.js?v=202610041808';
+import { edOfMillis } from '../dates.js?v=202610041808';
+import { toMillis } from '../firebase.js?v=202610041808';
+import { readPref } from '../local.js?v=202610041808';
 import {
-  SOLVED, FAILED, PROGRESS, emptyProgress, mark, storedStreak, intList, num,
-} from '../status.js?v=202610040233';
+  SOLVED, FAILED, PROGRESS, emptyProgress, mark, storedStreak, intList, num, minEd, maxEd, noteFinish,
+} from '../status.js?v=202610041808';
 
 const KINDS = [
   { key: 'd', label: 'Daily' },
@@ -47,14 +50,18 @@ export const canoggle = {
     return `/canoggle/${q ? '?' + q : ''}`;
   },
 
-  async fetch({ uid, reader, recent }) {
+  windowed: true,
+
+  async fetch({ uid, reader, recent, full = false }) {
     const doc = await reader.getDoc(['chainUserData', uid]);
     if (!doc) return null;
     let games = [];
     if (recent.length) {
       try {
-        const docs = await reader.queryAtLeast(['chainUserData', uid, 'games'], 'day', Math.min(...recent));
-        games = docs.map(({ data }) => ({ day: num(data.day), kind: data.kind, solved: data.solved === true }));
+        const docs = await reader.queryAtLeast(['chainUserData', uid, 'games'], 'day', historyStart(recent, full));
+        games = docs.map(({ data }) => ({
+          day: num(data.day), kind: data.kind, solved: data.solved === true, at: toMillis(data.updatedAt),
+        }));
       } catch {
         // Fall back to day-level status.
       }
@@ -87,8 +94,15 @@ export const canoggle = {
       mark(p, g.day, status, g.kind);
       if (g.kind === 'd') mark(p, g.day, status);
       if (g.solved) {
-        if (!fullDays.has(g.day)) fullDays.set(g.day, new Set());
-        fullDays.get(g.day).add(g.kind);
+        // sd counts the main board, so that solve is when the day was done.
+        if (g.kind === 'd') noteFinish(p, g.day, g.at);
+        if (!fullDays.has(g.day)) fullDays.set(g.day, new Map());
+        fullDays.get(g.day).set(g.kind, edOfMillis(g.at) ?? this.edForIndex(g.day));
+      }
+    }
+    for (const kinds of fullDays.values()) {
+      if (kinds.has('d') && kinds.has('m')) {
+        p.flagOn.sweep = minEd(p.flagOn.sweep, maxEd(kinds.get('d'), kinds.get('m')));
       }
     }
     p.played = num(raw.ms) + num(raw.mr);

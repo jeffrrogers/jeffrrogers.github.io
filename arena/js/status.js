@@ -1,5 +1,7 @@
 // Shared vocabulary for puzzle status, and streak arithmetic.
 
+import { edOfMillis } from './dates.js?v=202610041808';
+
 export const SOLVED = 'solved';     // won / completed
 export const FAILED = 'failed';     // finished without a win (Canuckle loss, Canoggle reveal)
 export const PLAYED = 'played';     // attempted, outcome unknown (Canolitaire's streak counts these)
@@ -74,7 +76,28 @@ export function emptyProgress() {
     played: 0,
     solved: 0,
     flags: {},           // game-specific facts badges read
+    finishedOn: new Map(), // index -> epoch day it was actually finished, when the game recorded it
+    flagOn: {},          // flag -> epoch day it first became true (or sorted days, for counts)
+    streakIdx: null,     // indices streaks run over, when not doneIdx
   };
+}
+
+/** The earlier of two epoch days, either of which may be null. */
+export function minEd(a, b) {
+  if (a == null) return b;
+  if (b == null) return a;
+  return Math.min(a, b);
+}
+
+/** The later of two epoch days, or null if either is unknown. */
+export function maxEd(a, b) {
+  return a == null || b == null ? null : Math.max(a, b);
+}
+
+/** Records that puzzle [index] was finished at [millis], keeping the earliest. */
+export function noteFinish(progress, index, millis) {
+  const ed = edOfMillis(millis);
+  if (ed != null) progress.finishedOn.set(index, minEd(progress.finishedOn.get(index), ed));
 }
 
 /**

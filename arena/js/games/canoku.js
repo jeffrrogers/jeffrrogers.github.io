@@ -2,15 +2,16 @@
 //
 // Source: Canoku/lib/game_board.dart (startDate 2023-10-16, 15 GameModes)
 // and user.dart. canokuUserData/{id} holds completedIndices (days with any
-// mode solved), streaks and per-mode {totalTime,totalGames,totalHints}.
+// mode solved), completedAt {day: millis first solved} (newer solves only),
+// streaks and per-mode {totalTime,totalGames,totalHints}.
 // Each day's boards live in the subcollection canokuUserData/{id}/{dayIndex},
 // one document per mode, {gameData: <Game JSON string>}.
 
-import { daily } from './common.js?v=202610040233';
-import { duration } from '../dates.js?v=202610040233';
+import { daily } from './common.js?v=202610041808';
+import { duration } from '../dates.js?v=202610041808';
 import {
-  SOLVED, PROGRESS, emptyProgress, mark, currentStreak, longestStreak, intList, num,
-} from '../status.js?v=202610040233';
+  SOLVED, PROGRESS, emptyProgress, mark, currentStreak, longestStreak, intList, num, minEd, noteFinish,
+} from '../status.js?v=202610041808';
 
 const SIZES = [
   { suffix: '', label: '9×9', stat: '' },
@@ -90,6 +91,7 @@ export const canoku = {
     for (const t of TIERS) stats[t.key] = doc[t.statKey] || null;
     return {
       completed: intList(doc.completedIndices),
+      completedAt: doc.completedAt && typeof doc.completedAt === 'object' ? doc.completedAt : {},
       streak: doc.streak,
       maxStreak: doc.maxStreak,
       stats,
@@ -104,6 +106,7 @@ export const canoku = {
     for (const i of done) {
       mark(p, i, SOLVED);
       p.doneIdx.add(i);
+      noteFinish(p, i, num(raw.completedAt?.[i]));
     }
     let sweep = false;
     for (const [i, modes] of Object.entries(raw.days || {})) {
@@ -111,7 +114,11 @@ export const canoku = {
       for (const m of modes) mark(p, idx, m.complete ? SOLVED : PROGRESS, m.mode);
       const sizesDone = new Set(modes.filter((m) => m.complete)
         .map((m) => TIERS.find((t) => t.key === m.mode)?.group));
-      if (SIZES.every((s) => sizesDone.has(s.label))) sweep = true;
+      if (SIZES.every((s) => sizesDone.has(s.label))) {
+        sweep = true;
+        // Boards carry no finish time; the day's first solve is the best date.
+        p.flagOn.sweep = minEd(p.flagOn.sweep, p.finishedOn.get(idx) ?? this.edForIndex(idx));
+      }
     }
     let solvedGames = 0;
     for (const t of TIERS) solvedGames += num(raw.stats?.[t.key]?.totalGames);

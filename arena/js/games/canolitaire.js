@@ -4,14 +4,16 @@
 // data/{stats,user}.dart. solitaireUserData/{id} holds {d1, d3, st, ms, ld,
 // cd}; cd lists days ATTEMPTED (the streak counts playing, not winning).
 // Game documents in games/ carry {day, dm (draw index), df (tier index),
-// st (0 playing, 1 won, 2 abandoned), sec}.
+// st (0 playing, 1 won, 2 abandoned), sec, updatedAt}; updatedAt is the last
+// write, which for a finished deal is when it finished.
 
-import { daily, pct } from './common.js?v=202610040233';
-import { duration } from '../dates.js?v=202610040233';
-import { readPref } from '../local.js?v=202610040233';
+import { daily, pct, historyStart } from './common.js?v=202610041808';
+import { duration, edOfMillis } from '../dates.js?v=202610041808';
+import { toMillis } from '../firebase.js?v=202610041808';
+import { readPref } from '../local.js?v=202610041808';
 import {
-  SOLVED, PLAYED, PROGRESS, emptyProgress, mark, storedStreak, intList, num,
-} from '../status.js?v=202610040233';
+  SOLVED, PLAYED, PROGRESS, emptyProgress, mark, storedStreak, intList, num, minEd, maxEd, noteFinish,
+} from '../status.js?v=202610041808';
 
 const DRAWS = ['1', '3'];
 const LEVELS = ['e', 'm', 'h'];
@@ -49,16 +51,19 @@ export const canolitaire = {
     return `/canolitaire/${q ? '?' + q : ''}`;
   },
 
-  async fetch({ uid, reader, recent }) {
+  windowed: true,
+
+  async fetch({ uid, reader, recent, full = false }) {
     const doc = await reader.getDoc(['solitaireUserData', uid]);
     if (!doc) return null;
     let games = [];
     if (recent.length) {
       try {
         const docs = await reader.queryAtLeast(['solitaireUserData', uid, 'games'], 'day',
-          Math.min(...recent));
+          historyStart(recent, full));
         games = docs.map(({ data }) => ({
           day: num(data.day), dm: num(data.dm), df: num(data.df), st: num(data.st), sec: num(data.sec),
+          at: toMillis(data.updatedAt),
         }));
       } catch {
         // Fall back to day-level status.
@@ -74,16 +79,20 @@ export const canolitaire = {
       mark(p, i, PLAYED);
       p.doneIdx.add(i);
     }
-    const won = new Map(); // day -> Set of tier keys won
+    const won = new Map(); // day -> Map of tier key won -> epoch day won
     for (const g of raw.games || []) {
       if (!g.day) continue;
       const key = tierKey(g.dm, g.df);
       const status = g.st === 1 ? SOLVED : g.st === 2 ? PLAYED : PROGRESS;
       mark(p, g.day, status, key);
+      // The streak counts attempts, so a day counts from its first deal.
+      noteFinish(p, g.day, g.at);
       if (status === SOLVED) {
         mark(p, g.day, SOLVED);
-        if (!won.has(g.day)) won.set(g.day, new Set());
-        won.get(g.day).add(key);
+        if (!won.has(g.day)) won.set(g.day, new Map());
+        const on = edOfMillis(g.at) ?? this.edForIndex(g.day);
+        won.get(g.day).set(key, on);
+        if (g.dm === 1) p.flagOn.draw3Win = minEd(p.flagOn.draw3Win, on);
       }
     }
     // Puzzles started on this device ("d.<day>.<drawIndex>.<levelIndex>").
@@ -91,8 +100,14 @@ export const canolitaire = {
       const [kind, day, dm, df] = String(id).split('.');
       if (kind === 'd' && Number(day) >= todayIdx - 7) mark(p, Number(day), PROGRESS, tierKey(Number(dm), Number(df)));
     }
-    const sweep = [...won.values()].some((set) =>
-      DRAWS.some((d) => LEVELS.every((l) => set.has(d + l))));
+    let sweep = false;
+    for (const tiers of won.values()) {
+      for (const d of DRAWS) {
+        if (!LEVELS.every((l) => tiers.has(d + l))) continue;
+        sweep = true;
+        p.flagOn.sweep = minEd(p.flagOn.sweep, LEVELS.reduce((on, l) => maxEd(on, tiers.get(d + l)), -Infinity));
+      }
+    }
 
     const daily1 = raw.d1.dl || {};
     const daily3 = raw.d3.dl || {};

@@ -4,12 +4,12 @@
 // 2025-03-31, index = weeks + 60001, shown to players as index - 60000.
 // Progress is `plusGames` in the same newUserData/{id} document as Canuckle.
 
-import { epochDay } from '../dates.js?v=202610040233';
-import { parseJsonList, pct } from './common.js?v=202610040233';
-import { readGame, distribution, guessLabel } from './canuckle.js?v=202610040233';
+import { epochDay } from '../dates.js?v=202610041808';
+import { parseJsonList, pct } from './common.js?v=202610041808';
+import { readGame, distribution, guessLabel } from './canuckle.js?v=202610041808';
 import {
-  SOLVED, PROGRESS, emptyProgress, mark, currentStreak, longestStreak, num,
-} from '../status.js?v=202610040233';
+  SOLVED, PROGRESS, emptyProgress, mark, currentStreak, longestStreak, num, noteFinish,
+} from '../status.js?v=202610041808';
 
 const START = epochDay(2025, 3, 31);
 const BASE = 60001;
@@ -64,6 +64,7 @@ export const canucklePlus = {
       if (g.status !== PROGRESS) {
         p.played++;
         p.doneIdx.add(g.index);
+        noteFinish(p, g.index, g.startedAt);
       }
       if (g.status === SOLVED) {
         p.solved++;
@@ -73,6 +74,7 @@ export const canucklePlus = {
     const { dist, losses } = distribution(raw.plusStats);
     p.streak = currentStreak(winWeeks, todayIdx);
     p.maxStreak = Math.max(num(raw.maxStreak), longestStreak(winWeeks), p.streak);
+    p.streakIdx = winWeeks;
     p.dist = dist;
     p.losses = losses;
     return p;

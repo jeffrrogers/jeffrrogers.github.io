@@ -7,7 +7,7 @@
 //   todayIndex(ed)     today's puzzle index
 //   step               days per puzzle (1 daily, 7 weekly)
 
-import { epochDay } from '../dates.js?v=202610040233';
+import { epochDay } from '../dates.js?v=202610041808';
 
 /** A game whose puzzle #1 is on [start] (y, m, d) and changes each day. */
 export function daily(y, m, d) {
@@ -35,6 +35,14 @@ export function recentIndices(game, todayEd, count = 8) {
     if (idx != null && !out.includes(idx)) out.push(idx);
   }
   return out;
+}
+
+/**
+ * First day index a windowed adapter queries its per-puzzle documents from:
+ * the recent window normally, or all of history ([full]) when dating badges.
+ */
+export function historyStart(recent, full) {
+  return full ? 1 : Math.min(...recent);
 }
 
 /** Parses JSON strings defensively; bad entries are skipped. */

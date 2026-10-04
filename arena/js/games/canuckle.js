@@ -2,14 +2,15 @@
 //
 // Source: canuckleSourceCode/lib/words.dart (todayIndex) and user.dart.
 // Progress lives in newUserData/{id}: `games` is a list of JSON strings
-// {answer, index, userGuesses, results, isFromArchive}; older entries use
-// {guesses: [{guess}]} instead of userGuesses.
+// {answer, index, userGuesses, results, isFromArchive, startTimestamp}; older
+// entries use {guesses: [{guess}]} instead of userGuesses. startTimestamp is
+// local midnight of the day the game was started, archive games included.
 
-import { epochDay } from '../dates.js?v=202610040233';
-import { parseJsonList, pct } from './common.js?v=202610040233';
+import { epochDay, edOfMillis } from '../dates.js?v=202610041808';
+import { parseJsonList, pct } from './common.js?v=202610041808';
 import {
-  SOLVED, FAILED, PROGRESS, emptyProgress, mark, currentStreak, longestStreak, num,
-} from '../status.js?v=202610040233';
+  SOLVED, FAILED, PROGRESS, emptyProgress, mark, currentStreak, longestStreak, num, minEd, noteFinish,
+} from '../status.js?v=202610041808';
 
 const ORIGINAL_START = epochDay(2022, 2, 10); // games #1-#142
 const ORIGINAL_END = epochDay(2022, 7, 1);
@@ -29,7 +30,21 @@ export function readGame(g) {
   if (won) status = SOLVED;
   else if (guesses.length >= MAX_GUESSES) status = FAILED;
   else if (guesses.length > 0) status = PROGRESS;
-  return { index: num(g.index), status, guesses: guesses.length, archive: g.isFromArchive === true };
+  return {
+    index: num(g.index),
+    status,
+    guesses: guesses.length,
+    archive: g.isFromArchive === true,
+    startedAt: num(g.startTimestamp) || null,
+  };
+}
+
+/**
+ * The day a stored game was played: its start date, else (older entries) the
+ * puzzle's own day for a daily game. Unknown for an undated archive game.
+ */
+export function playedOn(game, g) {
+  return edOfMillis(g.startedAt) ?? (g.archive ? null : game.edForIndex(g.index));
 }
 
 function parseStats(s) {
@@ -115,25 +130,36 @@ export const canuckle = {
     const winDays = new Set();
     let archive = 0;
     let quickWin = false;
+    const archiveOn = [];
     for (const g of parseJsonList(raw.games).map(readGame)) {
       if (!g.index || g.index > 50000 || !g.status) continue;
       mark(p, g.index, g.status);
       if (g.status !== PROGRESS) p.days.get(g.index).guesses = g.guesses;
+      const on = playedOn(this, g);
       if (g.status !== PROGRESS) {
         p.played++;
         p.doneIdx.add(g.index);
+        noteFinish(p, g.index, g.startedAt);
       }
       if (g.status === SOLVED) {
         p.solved++;
         if (!g.archive) winDays.add(g.index);
-        if (g.guesses <= 2) quickWin = true;
+        if (g.guesses <= 2) {
+          quickWin = true;
+          p.flagOn.quickWin = minEd(p.flagOn.quickWin, on);
+        }
       }
-      if (g.archive && g.status !== PROGRESS) archive++;
+      if (g.archive && g.status !== PROGRESS) {
+        archive++;
+        if (on != null) archiveOn.push(on);
+      }
     }
     const { dist, losses } = distribution(raw.normalStats, raw.hardModeStats);
     p.streak = currentStreak(winDays, todayIdx);
     p.maxStreak = Math.max(num(raw.maxStreak), longestStreak(winDays), p.streak);
+    p.streakIdx = winDays;
     p.flags = { quickWin: quickWin || dist[0] + dist[1] > 0, archive };
+    p.flagOn.archive = archiveOn.sort((a, b) => a - b);
     p.dist = dist;
     p.losses = losses;
     return p;
