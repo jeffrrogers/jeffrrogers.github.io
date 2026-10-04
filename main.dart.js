@@ -9105,9 +9105,9 @@ aPa(){var s=0,r=A.B(t.H),q,p
 var $async$aPa=A.x(function(a,b){if(a===1)return A.y(b,r)
 for(;;)switch(s){case 0:q=new A.agF("ClearSans",A.b([],t.ty))
 p=$.AU()
-q.IK(p.jo(0,"assets/fonts/ClearSans-Regular.ttf"))
-q.IK(p.jo(0,"assets/fonts/ClearSans-Medium.ttf"))
-q.IK(p.jo(0,"assets/fonts/ClearSans-Bold.ttf"))
+q.IK(p.jo(0,"fonts/ClearSans-Regular.ttf"))
+q.IK(p.jo(0,"fonts/ClearSans-Medium.ttf"))
+q.IK(p.jo(0,"fonts/ClearSans-Bold.ttf"))
 p=A.b([q.wZ(0)],t.mo)
 B.b.G(p,new A.T(B.OJ,new A.aPb(),t.Qc))
 s=2
