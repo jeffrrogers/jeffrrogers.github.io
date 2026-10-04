@@ -585,20 +585,59 @@ main { padding: 20px 0 64px; }
 .legend span { display: inline-flex; align-items: center; gap: 6px; }
 .legend .status-icon { width: 18px; height: 18px; }
 
-.months {
-  display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(min(100%, 380px), 1fr));
-  gap: 12px;
-  align-items: start;
-}
-
+/* One month at a time, centred, with buttons to step between months. */
 .month {
+  max-width: 520px;
+  margin: 0 auto 14px;
   background: var(--surface);
   border: 1px solid var(--border);
   border-radius: var(--radius);
   padding: 14px;
 }
-.month h2 { font-size: 16px; margin-bottom: 10px; }
+
+.month-nav {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-bottom: 12px;
+}
+.month-title { flex: 1; display: flex; justify-content: center; min-width: 0; }
+
+/* Reads as the month heading, opens the browser's own month list. */
+.month-select {
+  appearance: none;
+  -webkit-appearance: none;
+  max-width: 100%;
+  min-height: 44px;
+  padding: 8px 34px 8px 14px;
+  border: 1px solid transparent;
+  border-radius: 12px;
+  background: transparent url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Cpath d='M7 10l5 5 5-5' fill='none' stroke='%235E5B57' stroke-width='2.4' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E") no-repeat right 8px center / 18px;
+  color: var(--text);
+  font: 800 18px/1.2 var(--display);
+  letter-spacing: -0.02em;
+  text-align: center;
+  text-align-last: center;
+  cursor: pointer;
+}
+.month-select:hover { border-color: var(--border); background-color: var(--surface-2); }
+.month-select option, .month-select optgroup {
+  font: 400 15px/1.4 var(--body);
+  color: var(--text);
+  background: var(--surface);
+}
+.month-nav .icon-btn:disabled { opacity: .35; cursor: default; }
+.month-next .icon { transform: scaleX(-1); }
+.month-today {
+  order: 2;
+  border: 1px solid var(--border);
+  background: var(--surface-2);
+  border-radius: 999px;
+  padding: 7px 12px;
+  font: 700 13px/1 var(--display);
+}
+.month-today[hidden] { display: none; }
+.month-nav .month-next { order: 3; }
 
 .cal {
   display: grid;
@@ -640,23 +679,35 @@ main { padding: 20px 0 64px; }
 .day .pip { width: 6px; height: 6px; border-radius: 2px; }
 .day.solved .pip, .day.failed .pip, .day.played .pip { border-color: rgba(255, 255, 255, .8); }
 
-.week-list { display: grid; gap: 8px; }
-.week-row {
-  display: flex;
+/* Canuckle+: Monday-first rows, each week one band, since a week is one puzzle. */
+.cal-weeks { display: grid; gap: 6px; }
+.week-head, .week-band {
+  display: grid;
+  grid-template-columns: 44px repeat(7, minmax(0, 1fr));
   align-items: center;
-  gap: 12px;
-  padding: 12px 14px;
-  border-radius: 14px;
+  gap: 4px;
+}
+.week-head .dow { font-size: 12px; text-align: center; color: var(--muted); }
+.week-band {
+  min-height: 46px;
+  padding: 0 4px;
+  border-radius: 12px;
   border: 1px solid var(--border);
-  background: var(--surface);
+  background: var(--surface-2);
   color: var(--text);
   text-decoration: none;
 }
-.week-row:hover { border-color: var(--muted); color: var(--text); }
-.week-row .grow { flex: 1; }
-.week-row .status-icon { width: 26px; height: 26px; }
-
-.load-more { display: flex; justify-content: center; padding: 8px 0 24px; }
+a.week-band:hover { border-color: var(--muted); color: var(--text); }
+.week-band.none { background: transparent; border-style: dashed; color: var(--muted); }
+.week-band.future { background: transparent; border-color: transparent; color: var(--muted); opacity: .45; }
+.week-band.solved { background: var(--solved); border-color: var(--solved); color: #fff; }
+.week-band.failed { background: var(--failed); border-color: var(--failed); color: #fff; }
+.week-band.progress { border: 2px solid var(--progress); }
+.week-band.is-current { box-shadow: 0 0 0 2px var(--bg), 0 0 0 4px var(--text); }
+.wk-num { font: 800 12px/1 var(--display); text-align: center; opacity: .85; }
+.wk-day { font: 700 14px/1 var(--display); text-align: center; }
+.wk-day.outside { opacity: .4; }
+.wk-day.is-today { text-decoration: underline; text-underline-offset: 3px; }
 
 /* ---- Stats ------------------------------------------------------------- */
 

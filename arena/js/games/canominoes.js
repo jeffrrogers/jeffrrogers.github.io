@@ -6,12 +6,12 @@
 // holds {day, tier, sec, mc, solved} and is only written on a solve, so
 // in-progress boards come from this browser's domGame_{day}_{tier} saves.
 
-import { daily, pct } from './common.js?v=202610040215';
-import { duration } from '../dates.js?v=202610040215';
-import { readPref } from '../local.js?v=202610040215';
+import { daily, pct } from './common.js?v=202610040225';
+import { duration } from '../dates.js?v=202610040225';
+import { readPref } from '../local.js?v=202610040225';
 import {
   SOLVED, PROGRESS, emptyProgress, mark, storedStreak, intList, num,
-} from '../status.js?v=202610040215';
+} from '../status.js?v=202610040225';
 
 const LEVELS = [
   { key: 'e', label: 'Easy' },

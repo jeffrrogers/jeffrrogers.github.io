@@ -6,11 +6,11 @@
 // Each day's boards live in the subcollection canokuUserData/{id}/{dayIndex},
 // one document per mode, {gameData: <Game JSON string>}.
 
-import { daily } from './common.js?v=202610040215';
-import { duration } from '../dates.js?v=202610040215';
+import { daily } from './common.js?v=202610040225';
+import { duration } from '../dates.js?v=202610040225';
 import {
   SOLVED, PROGRESS, emptyProgress, mark, currentStreak, longestStreak, intList, num,
-} from '../status.js?v=202610040215';
+} from '../status.js?v=202610040225';
 
 const SIZES = [
   { suffix: '', label: '9×9', stat: '' },

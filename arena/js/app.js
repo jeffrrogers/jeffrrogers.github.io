@@ -1,19 +1,19 @@
 // Boot, routing and the shared app state.
 
-import { IS_SANDBOX, IS_DEMO } from './config.js?v=202610040215';
-import { demoRaw } from './demo.js?v=202610040215';
-import { initAnalytics, track } from './analytics.js?v=202610040215';
-import { todayEpochDay } from './dates.js?v=202610040215';
-import { playerId, readPref, arenaGet, arenaSet } from './local.js?v=202610040215';
-import { liveGames, gameById } from './games/registry.js?v=202610040215';
-import { loadProgress } from './progress.js?v=202610040215';
-import { evaluateBadges } from './badges/rules.js?v=202610040215';
-import { loadStoredBadges, planSync, applySync, markAnnounced, markShared } from './badges/store.js?v=202610040215';
-import { h, ICONS, closeSheet } from './ui.js?v=202610040215';
-import { renderGames } from './views/gamesTab.js?v=202610040215';
-import { renderArchive } from './views/archive.js?v=202610040215';
-import { renderStats, renderStatsDetail } from './views/statsTab.js?v=202610040215';
-import { renderBadgesPage, announce } from './views/badgesView.js?v=202610040215';
+import { IS_SANDBOX, IS_DEMO } from './config.js?v=202610040225';
+import { demoRaw } from './demo.js?v=202610040225';
+import { initAnalytics, track } from './analytics.js?v=202610040225';
+import { todayEpochDay } from './dates.js?v=202610040225';
+import { playerId, readPref, arenaGet, arenaSet } from './local.js?v=202610040225';
+import { liveGames, gameById } from './games/registry.js?v=202610040225';
+import { loadProgress } from './progress.js?v=202610040225';
+import { evaluateBadges } from './badges/rules.js?v=202610040225';
+import { loadStoredBadges, planSync, applySync, markAnnounced, markShared } from './badges/store.js?v=202610040225';
+import { h, ICONS, closeSheet } from './ui.js?v=202610040225';
+import { renderGames } from './views/gamesTab.js?v=202610040225';
+import { renderArchive } from './views/archive.js?v=202610040225';
+import { renderStats, renderStatsDetail } from './views/statsTab.js?v=202610040225';
+import { renderBadgesPage, announce } from './views/badgesView.js?v=202610040225';
 
 const app = {
   uid: IS_DEMO ? 'DEMO' : playerId(),
@@ -138,13 +138,9 @@ function render() {
   lastRouteKey = key;
 }
 
-// Archive pages grow as you scroll; a data refresh there would collapse them,
-// so they only re-render on navigation.
+// Re-render in place when data arrives. The archive remembers which month it
+// was showing, so a refresh doesn't move it.
 function refresh() {
-  if (route().name === 'archive') {
-    renderTabs(route());
-    return;
-  }
   render();
 }
 
