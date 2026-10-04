@@ -5,11 +5,11 @@
 // {answer, index, userGuesses, results, isFromArchive}; older entries use
 // {guesses: [{guess}]} instead of userGuesses.
 
-import { epochDay } from '../dates.js?v=202610040105';
-import { parseJsonList, pct } from './common.js?v=202610040105';
+import { epochDay } from '../dates.js?v=202610040159';
+import { parseJsonList, pct } from './common.js?v=202610040159';
 import {
   SOLVED, FAILED, PROGRESS, emptyProgress, mark, currentStreak, longestStreak, num,
-} from '../status.js?v=202610040105';
+} from '../status.js?v=202610040159';
 
 const ORIGINAL_START = epochDay(2022, 2, 10); // games #1-#142
 const ORIGINAL_END = epochDay(2022, 7, 1);

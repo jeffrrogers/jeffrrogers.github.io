@@ -1,11 +1,11 @@
 // The Games tab: one row per game with today's puzzle, the previous seven,
 // and a way into the archive.
 
-import { h, ICONS, statusIcon, tierMarks } from '../ui.js?v=202610040105';
-import { longDate, weekdayName } from '../dates.js?v=202610040105';
-import { recentIndices } from '../games/common.js?v=202610040105';
-import { isDone, PROGRESS } from '../status.js?v=202610040105';
-import { playProps, whenLabel, dateLabel } from './play.js?v=202610040105';
+import { h, ICONS, statusIcon, tierMarks } from '../ui.js?v=202610040159';
+import { longDate, weekdayName } from '../dates.js?v=202610040159';
+import { recentIndices } from '../games/common.js?v=202610040159';
+import { isDone, PROGRESS } from '../status.js?v=202610040159';
+import { playProps, whenLabel, dateLabel } from './play.js?v=202610040159';
 
 function puzzleTile(game, index, entry, todayIdx) {
   const isToday = index === todayIdx;

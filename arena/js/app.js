@@ -1,19 +1,19 @@
 // Boot, routing and the shared app state.
 
-import { IS_SANDBOX, IS_DEMO } from './config.js?v=202610040105';
-import { demoRaw } from './demo.js?v=202610040105';
-import { initAnalytics, track } from './analytics.js?v=202610040105';
-import { todayEpochDay } from './dates.js?v=202610040105';
-import { playerId, readPref, arenaGet, arenaSet } from './local.js?v=202610040105';
-import { liveGames, gameById } from './games/registry.js?v=202610040105';
-import { loadProgress } from './progress.js?v=202610040105';
-import { evaluateBadges } from './badges/rules.js?v=202610040105';
-import { loadStoredBadges, planSync, applySync, markAnnounced, markShared } from './badges/store.js?v=202610040105';
-import { h, ICONS, closeSheet } from './ui.js?v=202610040105';
-import { renderGames } from './views/gamesTab.js?v=202610040105';
-import { renderArchive } from './views/archive.js?v=202610040105';
-import { renderStats, renderStatsDetail } from './views/statsTab.js?v=202610040105';
-import { renderBadgesPage, announce } from './views/badgesView.js?v=202610040105';
+import { IS_SANDBOX, IS_DEMO } from './config.js?v=202610040159';
+import { demoRaw } from './demo.js?v=202610040159';
+import { initAnalytics, track } from './analytics.js?v=202610040159';
+import { todayEpochDay } from './dates.js?v=202610040159';
+import { playerId, readPref, arenaGet, arenaSet } from './local.js?v=202610040159';
+import { liveGames, gameById } from './games/registry.js?v=202610040159';
+import { loadProgress } from './progress.js?v=202610040159';
+import { evaluateBadges } from './badges/rules.js?v=202610040159';
+import { loadStoredBadges, planSync, applySync, markAnnounced, markShared } from './badges/store.js?v=202610040159';
+import { h, ICONS, closeSheet } from './ui.js?v=202610040159';
+import { renderGames } from './views/gamesTab.js?v=202610040159';
+import { renderArchive } from './views/archive.js?v=202610040159';
+import { renderStats, renderStatsDetail } from './views/statsTab.js?v=202610040159';
+import { renderBadgesPage, announce } from './views/badgesView.js?v=202610040159';
 
 const app = {
   uid: IS_DEMO ? 'DEMO' : playerId(),
