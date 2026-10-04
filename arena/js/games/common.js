@@ -1,0 +1,55 @@
+// Calendar helpers shared by the game adapters.
+//
+// Every adapter exposes the same calendar surface:
+//   firstEd            first epoch day with a puzzle
+//   indexForEd(ed)     puzzle index for a calendar day, or null for none
+//   edForIndex(i)      first calendar day of puzzle i
+//   todayIndex(ed)     today's puzzle index
+//   step               days per puzzle (1 daily, 7 weekly)
+
+import { epochDay } from '../dates.js?v=202610040105';
+
+/** A game whose puzzle #1 is on [start] (y, m, d) and changes each day. */
+export function daily(y, m, d) {
+  const startEd = epochDay(y, m, d);
+  return {
+    cadence: 'daily',
+    step: 1,
+    firstEd: startEd,
+    indexForEd: (ed) => (ed < startEd ? null : ed - startEd + 1),
+    edForIndex: (i) => startEd + i - 1,
+    todayIndex(todayEd) {
+      return this.indexForEd(todayEd);
+    },
+  };
+}
+
+/** Today's index and the previous [count - 1] puzzles, newest first. */
+export function recentIndices(game, todayEd, count = 8) {
+  const out = [];
+  const today = game.todayIndex(todayEd);
+  if (today == null) return out;
+  for (let k = 0; k < count; k++) {
+    const ed = todayEd - k * game.step;
+    const idx = game.indexForEd(ed);
+    if (idx != null && !out.includes(idx)) out.push(idx);
+  }
+  return out;
+}
+
+/** Parses JSON strings defensively; bad entries are skipped. */
+export function parseJsonList(list) {
+  const out = [];
+  for (const s of Array.isArray(list) ? list : []) {
+    try {
+      out.push(typeof s === 'string' ? JSON.parse(s) : s);
+    } catch {
+      // Ignore a corrupt entry rather than losing the whole history.
+    }
+  }
+  return out;
+}
+
+export function pct(n, d) {
+  return d > 0 ? Math.round((n * 100) / d) : 0;
+}

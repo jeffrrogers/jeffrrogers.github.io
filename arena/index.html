@@ -1,0 +1,48 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <base href="/arena/">
+  <title>Canuckle Games Arena</title>
+  <meta name="description" content="All of the Canuckle games in one place: today's puzzles, the archive, your stats and badges.">
+  <meta name="theme-color" content="#D52B1E">
+
+  <meta property="og:title" content="Canuckle Games Arena">
+  <meta property="og:description" content="Canuckle, Canuckle+, Canoku, Canolitaire, Canominoes and Canoggle: today's puzzles, the archive, your stats and badges.">
+  <meta property="og:type" content="website">
+  <meta property="og:url" content="https://www.canucklegame.ca/arena/">
+  <meta property="og:image" content="https://www.canucklegame.ca/images/canuckle_og_1200x630.png">
+
+  <link rel="icon" type="image/svg+xml" href="images/arena.svg">
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link rel="preconnect" href="https://www.gstatic.com" crossorigin>
+  <link rel="preconnect" href="https://firestore.googleapis.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Sora:wght@400;700;800&display=swap" rel="stylesheet">
+  <link rel="preload" href="fonts/ClearSans-Regular.woff2" as="font" type="font/woff2" crossorigin>
+  <link rel="stylesheet" href="css/arena.css?v=202610040105">
+
+  <script>
+    // Apply the theme before first paint to avoid a flash.
+    (function () {
+      var t = null;
+      try { t = JSON.parse(localStorage.getItem('arena.theme')); } catch (e) {}
+      if (t !== 'light' && t !== 'dark') {
+        try { var d = JSON.parse(localStorage.getItem('flutter.isDarkMode')); if (typeof d === 'boolean') t = d ? 'dark' : 'light'; } catch (e) {}
+      }
+      if (t !== 'light' && t !== 'dark') t = window.matchMedia && matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light';
+      document.documentElement.dataset.theme = t;
+    })();
+  </script>
+  <script type="module" src="js/app.js?v=202610040105"></script>
+</head>
+<body>
+  <div id="header"></div>
+  <div id="tabs"></div>
+  <main id="view">
+    <noscript><div class="wrap"><p>The Canuckle Games Arena needs JavaScript. You can still play <a href="/">Canuckle</a> or <a href="/canoku/">Canoku</a>.</p></div></noscript>
+  </main>
+</body>
+</html>

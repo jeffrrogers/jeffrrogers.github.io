@@ -1,0 +1,125 @@
+// Canuckle Canolitaire: six daily deals (Draw 1 / Draw 3 x Easy / Medium / Hard).
+//
+// Source: solitaireSourceCode/lib/model/daily.dart (day 1 = 2026-08-25) and
+// data/{stats,user}.dart. solitaireUserData/{id} holds {d1, d3, st, ms, ld,
+// cd}; cd lists days ATTEMPTED (the streak counts playing, not winning).
+// Game documents in games/ carry {day, dm (draw index), df (tier index),
+// st (0 playing, 1 won, 2 abandoned), sec}.
+
+import { daily, pct } from './common.js?v=202610040105';
+import { duration } from '../dates.js?v=202610040105';
+import { readPref } from '../local.js?v=202610040105';
+import {
+  SOLVED, PLAYED, PROGRESS, emptyProgress, mark, storedStreak, intList, num,
+} from '../status.js?v=202610040105';
+
+const DRAWS = ['1', '3'];
+const LEVELS = ['e', 'm', 'h'];
+const LEVEL_LABEL = { e: 'Easy', m: 'Medium', h: 'Hard' };
+
+const TIERS = DRAWS.flatMap((d) => LEVELS.map((l) => ({
+  key: d + l, label: LEVEL_LABEL[l], group: `Draw ${d}`,
+})));
+
+const tierKey = (drawIndex, levelIndex) => `${DRAWS[drawIndex] ?? '1'}${LEVELS[levelIndex] ?? 'e'}`;
+
+export const canolitaire = {
+  id: 'canolitaire',
+  name: 'Canolitaire',
+  logo: 'images/canolitaire.svg',
+  color: '#1E5A3C',
+  blurb: 'Six daily deals',
+  ...daily(2026, 8, 25),
+  tiers: TIERS,
+  label: (i) => `#${i}`,
+
+  link(index, tier, isToday) {
+    const params = new URLSearchParams();
+    if (!isToday) params.set('day', String(index));
+    if (tier) params.set('tier', tier);
+    const q = params.toString();
+    return `/canolitaire/${q ? '?' + q : ''}`;
+  },
+
+  async fetch({ uid, reader, recent }) {
+    const doc = await reader.getDoc(['solitaireUserData', uid]);
+    if (!doc) return null;
+    let games = [];
+    if (recent.length) {
+      try {
+        const docs = await reader.queryAtLeast(['solitaireUserData', uid, 'games'], 'day',
+          Math.min(...recent));
+        games = docs.map(({ data }) => ({
+          day: num(data.day), dm: num(data.dm), df: num(data.df), st: num(data.st), sec: num(data.sec),
+        }));
+      } catch {
+        // Fall back to day-level status.
+      }
+    }
+    return { d1: doc.d1 || {}, d3: doc.d3 || {}, st: doc.st, ms: doc.ms, ld: doc.ld, cd: intList(doc.cd), games };
+  },
+
+  derive(raw, { todayIdx }) {
+    const p = emptyProgress();
+    if (!raw) return p;
+    for (const i of raw.cd) {
+      mark(p, i, PLAYED);
+      p.doneIdx.add(i);
+    }
+    const won = new Map(); // day -> Set of tier keys won
+    for (const g of raw.games || []) {
+      if (!g.day) continue;
+      const key = tierKey(g.dm, g.df);
+      const status = g.st === 1 ? SOLVED : g.st === 2 ? PLAYED : PROGRESS;
+      mark(p, g.day, status, key);
+      if (status === SOLVED) {
+        mark(p, g.day, SOLVED);
+        if (!won.has(g.day)) won.set(g.day, new Set());
+        won.get(g.day).add(key);
+      }
+    }
+    // Puzzles started on this device ("d.<day>.<drawIndex>.<levelIndex>").
+    for (const id of readPref('solCountedGames') || []) {
+      const [kind, day, dm, df] = String(id).split('.');
+      if (kind === 'd' && Number(day) >= todayIdx - 7) mark(p, Number(day), PROGRESS, tierKey(Number(dm), Number(df)));
+    }
+    const sweep = [...won.values()].some((set) =>
+      DRAWS.some((d) => LEVELS.every((l) => set.has(d + l))));
+
+    const daily1 = raw.d1.dl || {};
+    const daily3 = raw.d3.dl || {};
+    p.played = raw.cd.length;
+    p.solved = num(daily1.w) + num(daily3.w);
+    p.streak = storedStreak(num(raw.st), num(raw.ld), todayIdx);
+    p.maxStreak = Math.max(num(raw.ms), p.streak);
+    p.flags = {
+      sweep,
+      draw3Win: num(raw.d3.dl?.w) + num(raw.d3.rd?.w) > 0,
+      dailyPlayed: num(daily1.p) + num(daily3.p),
+    };
+    p.draws = { d1: raw.d1, d3: raw.d3 };
+    return p;
+  },
+
+  summary(p) {
+    return {
+      headline: { label: 'Daily win rate', value: `${pct(p.solved, p.flags.dailyPlayed || 0)}%` },
+      winRate: pct(p.solved, p.flags.dailyPlayed || 0),
+    };
+  },
+
+  detail(p) {
+    const section = (label, d = {}) => ({
+      title: label,
+      rows: [
+        ['Daily deals', `${num(d.dl?.w)} won of ${num(d.dl?.p)}`],
+        ['Random deals', `${num(d.rd?.w)} won of ${num(d.rd?.p)}`],
+        ['Best time', d.bs ? duration(d.bs) : '–'],
+        ['Fewest moves', d.fm || '–'],
+        ['Best score', d.sc || '–'],
+      ],
+    });
+    return [section('Draw 1', p.draws?.d1), section('Draw 3', p.draws?.d3),
+      { title: 'Record', rows: [['Days played', p.played]] }];
+  },
+};
