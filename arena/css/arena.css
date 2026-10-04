@@ -277,15 +277,7 @@ main { padding: 20px 0 64px; }
   font-size: 15px;
 }
 
-.game-row {
-  background: var(--surface);
-  border: 1px solid var(--border);
-  border-radius: 22px;
-  padding: 16px 0 14px;
-  margin-bottom: 14px;
-  box-shadow: var(--shadow);
-}
-
+/* Row header: the Stats cards and detail pages still use it. */
 .row-head {
   display: flex;
   align-items: center;
@@ -311,78 +303,101 @@ main { padding: 20px 0 64px; }
 .streak-chip.zero { color: var(--muted); }
 .streak-chip.zero svg { color: var(--muted); }
 
+/* ---- Game strips: a row of tinted cards per game -------------------------- */
+
+.strip-row { margin-bottom: 22px; }
+
 .strip {
   display: flex;
-  gap: 10px;
+  gap: 12px;
   overflow-x: auto;
   scroll-snap-type: x proximity;
-  padding: 2px 16px 6px;
-  scrollbar-width: thin;
+  /* Bleed to the window edge so cards scroll out of view rather than being
+     clipped at the content column, with the first card still aligned to it. */
+  margin: 0 -16px;
+  padding: 4px 16px 8px;
+  scroll-padding: 0 16px;
+  scrollbar-width: none;
 }
+.strip::-webkit-scrollbar { display: none; }
 .strip > * { scroll-snap-align: start; flex: none; }
 
-.ptile {
-  position: relative;
-  width: 92px;
-  height: 116px;
-  border-radius: 16px;
-  border: 1px solid var(--border);
-  background: var(--surface-2);
-  padding: 10px;
+.gcard {
+  box-sizing: border-box;
+  height: 200px;
+  border-radius: 24px;
+  background: var(--tint);
+  color: var(--text);
+  text-decoration: none;
+  transition: transform .12s ease, box-shadow .12s ease;
+}
+:root[data-theme="dark"] .gcard { background: var(--tint-dark); }
+.gcard:hover {
+  color: var(--text);
+  transform: translateY(-2px);
+  box-shadow: 0 6px 18px rgba(23, 23, 26, .10);
+}
+
+.today-card {
+  width: min(310px, calc(100vw - 76px));
+  padding: 18px;
   display: flex;
   flex-direction: column;
-  align-items: flex-start;
   justify-content: space-between;
-  text-align: left;
-  text-decoration: none;
-  color: var(--text);
-  transition: transform .12s ease, border-color .12s ease;
 }
-.ptile:hover { transform: translateY(-2px); border-color: var(--muted); color: var(--text); }
-
-.ptile .when { font: 700 13px/1.2 var(--display); }
-.ptile .num { font-size: 12px; line-height: 1.3; color: var(--muted); }
-.ptile .when + .num { margin-top: 2px; }
-.ptile .foot {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  gap: 6px;
-  width: 100%;
+.tc-top { display: flex; gap: 12px; align-items: flex-start; }
+.tc-text { flex: 1; min-width: 0; display: flex; flex-direction: column; }
+.tc-name { font: 800 25px/1.05 var(--display); letter-spacing: -0.03em; }
+.tc-blurb { font-size: 14px; line-height: 1.35; margin-top: 6px; color: var(--muted); }
+.tc-logo { width: 66px; height: 66px; flex: none; }
+.tc-bottom { display: flex; align-items: flex-end; justify-content: space-between; gap: 8px; }
+.tc-kicker {
+  display: block;
+  font: 700 12px/1.2 var(--display);
+  letter-spacing: .08em;
+  color: var(--muted);
 }
-
-.ptile.today {
-  width: 148px;
-  background: var(--game);
-  border-color: transparent;
-  color: #fff;
-}
-.ptile.today .num { color: rgba(255, 255, 255, .85); }
-:root[data-theme="dark"] .ptile.today { border-color: rgba(255, 255, 255, .14); }
-.ptile.today .when { font-size: 15px; }
-.ptile.today:hover { color: #fff; }
+.tc-when { display: block; font: 800 17px/1.2 var(--display); margin-top: 3px; }
 
 .cta {
-  font: 700 13px/1 var(--display);
-  padding: 7px 12px;
+  flex: none;
+  font: 800 15px/1 var(--display);
+  padding: 11px 18px;
   border-radius: 999px;
-  background: #fff;
-  color: var(--game);
+  background: var(--game);
+  color: #fff;
 }
+.cta.done { background: var(--frame); color: var(--text); }
+:root[data-theme="dark"] .cta.done { background: var(--frame-dark); }
 
-.ptile.archive {
+.past-card {
+  width: 150px;
+  padding: 14px 10px;
+  display: flex;
+  flex-direction: column;
   align-items: center;
   justify-content: center;
-  gap: 8px;
-  background: transparent;
-  border-style: dashed;
-  color: var(--muted);
-  font: 700 13px/1.1 var(--display);
+  text-align: center;
 }
-.ptile.archive svg { width: 26px; height: 26px; }
+.result-tile, .result-tile svg { display: block; width: 60px; height: 60px; }
+.rt-frame { fill: var(--frame); }
+:root[data-theme="dark"] .rt-frame { fill: var(--frame-dark); }
+.rt-logo { width: 60px; height: 60px; opacity: .4; filter: grayscale(.6); }
+.pc-label {
+  font: 700 11px/1.3 var(--display);
+  letter-spacing: .08em;
+  margin-top: 12px;
+}
+.pc-day { font: 800 19px/1.2 var(--display); letter-spacing: -0.02em; margin-top: 2px; }
+.pc-date { font-size: 12px; color: var(--muted); }
+
+.see-all-icon { color: var(--game); }
+.see-all-icon .icon { width: 44px; height: 44px; }
+:root[data-theme="dark"] .see-all-icon { color: var(--text); }
+
+/* ---- Status marks (archive calendar, tier picker) ------------------------- */
 
 .status-icon { width: 28px; height: 28px; }
-.today .status-icon { width: 30px; height: 30px; }
 
 .pips { display: flex; gap: 3px; }
 .pip {
@@ -396,16 +411,6 @@ main { padding: 20px 0 64px; }
 .pip.failed { background: var(--failed); border-color: var(--failed); opacity: 1; }
 .pip.played { background: var(--played); border-color: var(--played); opacity: 1; }
 .pip.progress { border-color: var(--progress); opacity: 1; }
-.today .pip { border-color: rgba(255, 255, 255, .75); }
-.today .pip.solved, .today .pip.failed, .today .pip.played { background: #fff; border-color: #fff; }
-.today .pip.progress { border-color: #fff; }
-
-.row-bottom {
-  display: flex;
-  justify-content: flex-end;
-  padding: 6px 16px 0;
-  font-size: 13px;
-}
 
 /* ---- Sheets ------------------------------------------------------------ */
 

@@ -6,11 +6,11 @@
 // Each day's boards live in the subcollection canokuUserData/{id}/{dayIndex},
 // one document per mode, {gameData: <Game JSON string>}.
 
-import { daily } from './common.js?v=202610040159';
-import { duration } from '../dates.js?v=202610040159';
+import { daily } from './common.js?v=202610040209';
+import { duration } from '../dates.js?v=202610040209';
 import {
   SOLVED, PROGRESS, emptyProgress, mark, currentStreak, longestStreak, intList, num,
-} from '../status.js?v=202610040159';
+} from '../status.js?v=202610040209';
 
 const SIZES = [
   { suffix: '', label: '9×9', stat: '' },
@@ -45,9 +45,19 @@ export const canoku = {
   name: 'Canoku',
   logo: 'images/canoku.svg',
   color: '#1F5E96',
-  blurb: 'Daily sudoku, three sizes',
+  blurb: 'Daily sudoku with Canadian symbols, in three sizes.',
+  card: { tint: ['#E1ECF7', '#17283A'], frame: ['#A9C6E3', '#2A4C6E'] },
   ...daily(2023, 10, 16),
   tiers: TIERS,
+  resultLabel(entry) {
+    const sizes = SIZES.filter((s) => TIERS.some((t) =>
+      t.group === s.label && entry?.tiers?.[t.key] === SOLVED)).length;
+    if (sizes === SIZES.length) return 'ALL 3 SIZES';
+    if (sizes > 0) return `${sizes} OF 3 SIZES`;
+    if (entry?.status === SOLVED) return 'SOLVED';
+    if (entry?.status === PROGRESS) return 'IN PROGRESS';
+    return null;
+  },
   label: (i) => `#${i}`,
 
   // Always pass the day: Canoku remembers the last archive date it showed, so

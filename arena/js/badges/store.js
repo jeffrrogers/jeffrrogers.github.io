@@ -10,7 +10,7 @@
 // newly earned badge is written once and queued for an unlock announcement;
 // announcedAt is set when the player dismisses it. Badges are never removed.
 
-import { getDocData, setMerge, SERVER_TIME, toMillis } from '../firebase.js?v=202610040159';
+import { getDocData, setMerge, SERVER_TIME, toMillis } from '../firebase.js?v=202610040209';
 
 function normalize(doc) {
   const out = {};

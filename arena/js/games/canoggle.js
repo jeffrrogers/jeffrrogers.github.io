@@ -6,11 +6,11 @@
 // board was solved on merit. games/{day}.{d|m} holds {day, kind, req, bonus,
 // solved} (solved false = answers revealed). In-progress boards are local.
 
-import { daily, pct } from './common.js?v=202610040159';
-import { readPref } from '../local.js?v=202610040159';
+import { daily, pct } from './common.js?v=202610040209';
+import { readPref } from '../local.js?v=202610040209';
 import {
   SOLVED, FAILED, PROGRESS, emptyProgress, mark, storedStreak, intList, num,
-} from '../status.js?v=202610040159';
+} from '../status.js?v=202610040209';
 
 const KINDS = [
   { key: 'd', label: 'Daily' },
@@ -22,9 +22,21 @@ export const canoggle = {
   name: 'Canoggle',
   logo: 'images/canoggle.svg',
   color: '#D35F1B',
-  blurb: 'Daily word hunt + Mini',
+  blurb: 'Find words in the daily grid, plus a Mini.',
+  card: { tint: ['#FCE9DC', '#3A2416'], frame: ['#F1BC97', '#5C351D'] },
   ...daily(2026, 9, 3),
   tiers: KINDS,
+  resultLabel(entry) {
+    const daily = entry?.tiers?.d === SOLVED;
+    const mini = entry?.tiers?.m === SOLVED;
+    if (daily && mini) return 'DAILY + MINI';
+    if (daily) return 'DAILY SOLVED';
+    if (mini) return 'MINI SOLVED';
+    if (entry?.status === FAILED) return 'ANSWERS REVEALED';
+    if (entry?.status === SOLVED) return 'SOLVED';
+    if (entry?.status === PROGRESS) return 'IN PROGRESS';
+    return null;
+  },
   label: (i) => `#${i}`,
 
   link(index, tier, isToday) {

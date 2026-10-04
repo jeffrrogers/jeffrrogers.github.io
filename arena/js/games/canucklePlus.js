@@ -4,12 +4,12 @@
 // 2025-03-31, index = weeks + 60001, shown to players as index - 60000.
 // Progress is `plusGames` in the same newUserData/{id} document as Canuckle.
 
-import { epochDay } from '../dates.js?v=202610040159';
-import { parseJsonList, pct } from './common.js?v=202610040159';
-import { readGame, distribution } from './canuckle.js?v=202610040159';
+import { epochDay } from '../dates.js?v=202610040209';
+import { parseJsonList, pct } from './common.js?v=202610040209';
+import { readGame, distribution, guessLabel } from './canuckle.js?v=202610040209';
 import {
   SOLVED, PROGRESS, emptyProgress, mark, currentStreak, longestStreak, num,
-} from '../status.js?v=202610040159';
+} from '../status.js?v=202610040209';
 
 const START = epochDay(2025, 3, 31);
 const BASE = 60001;
@@ -19,7 +19,8 @@ export const canucklePlus = {
   name: 'Canuckle+',
   logo: 'images/canuckle-plus.svg',
   color: '#C08A12',
-  blurb: 'Weekly 6–7 letter word',
+  blurb: 'A new six or seven-letter word every Monday.',
+  card: { tint: ['#FAF0D6', '#33290F'], frame: ['#EBD18F', '#5E4A16'] },
   cadence: 'weekly',
   step: 7,
   firstEd: START,
@@ -35,6 +36,7 @@ export const canucklePlus = {
     return this.indexForEd(todayEd);
   },
   label: (i) => `#${i - 60000}`,
+  resultLabel: guessLabel,
 
   link(index, _tier, isToday) {
     return isToday ? '/?plus=true' : `/?game=${index}`;
@@ -58,6 +60,7 @@ export const canucklePlus = {
     for (const g of parseJsonList(raw.games).map(readGame)) {
       if (g.index <= 50000 || !g.status) continue;
       mark(p, g.index, g.status);
+      if (g.status !== PROGRESS) p.days.get(g.index).guesses = g.guesses;
       if (g.status !== PROGRESS) {
         p.played++;
         p.doneIdx.add(g.index);

@@ -6,12 +6,12 @@
 // holds {day, tier, sec, mc, solved} and is only written on a solve, so
 // in-progress boards come from this browser's domGame_{day}_{tier} saves.
 
-import { daily, pct } from './common.js?v=202610040159';
-import { duration } from '../dates.js?v=202610040159';
-import { readPref } from '../local.js?v=202610040159';
+import { daily, pct } from './common.js?v=202610040209';
+import { duration } from '../dates.js?v=202610040209';
+import { readPref } from '../local.js?v=202610040209';
 import {
   SOLVED, PROGRESS, emptyProgress, mark, storedStreak, intList, num,
-} from '../status.js?v=202610040159';
+} from '../status.js?v=202610040209';
 
 const LEVELS = [
   { key: 'e', label: 'Easy' },
@@ -24,9 +24,17 @@ export const canominoes = {
   name: 'Canominoes',
   logo: 'images/canominoes.svg',
   color: '#2A2A33',
-  blurb: 'Three daily domino puzzles',
+  blurb: 'Fill the board with dominoes, three puzzles a day.',
+  card: { tint: ['#E9E9EE', '#24242B'], frame: ['#C4C4CF', '#3A3A45'] },
   ...daily(2026, 9, 2),
   tiers: LEVELS,
+  resultLabel(entry) {
+    const solved = Object.values(entry?.tiers || {}).filter((s) => s === SOLVED).length;
+    if (solved > 0) return `${solved} OF 3 SOLVED`;
+    if (entry?.status === SOLVED) return 'SOLVED';
+    if (entry?.status === PROGRESS) return 'IN PROGRESS';
+    return null;
+  },
   label: (i) => `#${i}`,
 
   link(index, tier, isToday) {

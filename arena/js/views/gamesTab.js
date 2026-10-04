@@ -1,36 +1,156 @@
-// The Games tab: one row per game with today's puzzle, the previous seven,
-// and a way into the archive.
+// The Games tab: each game is a swipeable strip of cards on a tint of its
+// colour. A wide card for today (or this week), a square card for each of the
+// previous seven, and a way into the archive at the end. Streaks and stats
+// live on the Stats tab, not here.
 
-import { h, ICONS, statusIcon, tierMarks } from '../ui.js?v=202610040159';
-import { longDate, weekdayName } from '../dates.js?v=202610040159';
-import { recentIndices } from '../games/common.js?v=202610040159';
-import { isDone, PROGRESS } from '../status.js?v=202610040159';
-import { playProps, whenLabel, dateLabel } from './play.js?v=202610040159';
+import { h, ICONS } from '../ui.js?v=202610040209';
+import { longDate, weekdayName, shortDate, ymd } from '../dates.js?v=202610040209';
+import { recentIndices } from '../games/common.js?v=202610040209';
+import { SOLVED, FAILED, PLAYED, PROGRESS, isDone } from '../status.js?v=202610040209';
+import { LEAF_PATH } from '../badges/icons.js?v=202610040209';
+import { playProps } from './play.js?v=202610040209';
 
-function puzzleTile(game, index, entry, todayIdx) {
-  const isToday = index === todayIdx;
-  const status = entry?.status || null;
-  const when = whenLabel(game, index, todayIdx);
-  const weekly = game.cadence === 'weekly';
-  const label = `${game.name} ${game.label(index)}, ${when}`;
-  // Weekly labels already carry the date; past daily tiles get a date line.
-  const top = h('span', { class: 'top' },
-    h('div', { class: 'when', text: when }),
-    weekly || isToday ? null : h('div', { class: 'num', text: dateLabel(game, index) }),
-    h('div', { class: 'num', text: game.label(index) }));
-  if (isToday) {
-    const cta = isDone(status) ? null : status === PROGRESS ? 'Continue' : 'Play';
-    return h('a', { class: 'ptile today', 'aria-label': `${label}${cta ? ', ' + cta : ''}`, ...playProps(game, index, entry, todayIdx) },
-      top,
-      h('span', { class: 'foot' },
-        cta ? h('span', { class: 'cta', text: cta }) : statusIcon(status, true),
-        tierMarks(game, entry, { always: true })));
-  }
-  return h('a', { class: 'ptile', 'aria-label': label, ...playProps(game, index, entry, todayIdx) },
-    top,
-    h('span', { class: 'foot' }, statusIcon(status), tierMarks(game, entry, { always: true })));
+const DEFAULT_CAPTION = {
+  [SOLVED]: 'SOLVED',
+  [FAILED]: 'FINISHED',
+  [PLAYED]: 'PLAYED',
+  [PROGRESS]: 'IN PROGRESS',
+};
+
+/** Short caps line under a result: "SOLVED IN 3", "2 OF 6 WON", "NOT PLAYED". */
+function caption(game, entry, isToday) {
+  const status = entry?.status;
+  if (!status) return isToday ? 'NOT STARTED' : 'NOT PLAYED';
+  return game.resultLabel?.(entry) || DEFAULT_CAPTION[status];
 }
 
+/** CSS custom properties that colour a game's cards in both themes. */
+function cardVars(game) {
+  return {
+    '--game': game.color,
+    '--tint': game.card.tint[0],
+    '--tint-dark': game.card.tint[1],
+    '--frame': game.card.frame[0],
+    '--frame-dark': game.card.frame[1],
+  };
+}
+
+/** "Sep 21–27", or "Sep 28–Oct 4" across a month end. */
+function weekRange(ed) {
+  const a = ymd(ed);
+  const b = ymd(ed + 6);
+  return a.m === b.m ? `${shortDate(ed)}–${b.d}` : `${shortDate(ed)}–${shortDate(ed + 6)}`;
+}
+
+const TILE_FRAME = '<rect class="rt-frame" width="64" height="64" rx="14"/>';
+
+/** The result tile on a past card: a maple leaf for a solve, and so on. */
+export function resultTile(game, status) {
+  let inner;
+  switch (status) {
+    case SOLVED:
+      inner = `<rect x="10" y="10" width="44" height="44" rx="8" style="fill:var(--game)"/>`
+        + `<path transform="translate(17 16.5) scale(.3)" d="${LEAF_PATH}" fill="#fff"/>`;
+      break;
+    case FAILED:
+      inner = '<rect x="10" y="10" width="44" height="44" rx="8" fill="#6B6862"/>'
+        + '<path d="M24 24l16 16M40 24L24 40" stroke="#fff" stroke-width="5" stroke-linecap="round"/>';
+      break;
+    case PLAYED:
+      inner = `<rect x="10" y="10" width="44" height="44" rx="8" style="fill:var(--game)"/>`
+        + '<circle cx="32" cy="32" r="9" fill="none" stroke="#fff" stroke-width="4"/>';
+      break;
+    case PROGRESS:
+      inner = '<rect x="10" y="10" width="44" height="44" rx="8" fill="#fff"/>'
+        + `<path d="M10 34h44v12a8 8 0 0 1-8 8H18a8 8 0 0 1-8-8z" style="fill:var(--game)"/>`
+        + `<g style="fill:var(--game)"><circle cx="23" cy="24" r="3"/><circle cx="32" cy="24" r="3"/><circle cx="41" cy="24" r="3"/></g>`;
+      break;
+    default:
+      return h('img', { class: 'rt-logo', src: game.logo, alt: '' });
+  }
+  return h('span', {
+    class: 'result-tile',
+    html: `<svg viewBox="0 0 64 64" aria-hidden="true">${TILE_FRAME}${inner}</svg>`,
+  });
+}
+
+function todayCard(game, entry, todayIdx) {
+  const status = entry?.status || null;
+  const weekly = game.cadence === 'weekly';
+  let cta = 'Play';
+  let done = false;
+  if (status === PROGRESS) cta = 'Continue';
+  else if (isDone(status)) {
+    // A multi-puzzle day still has more to play after the first finish.
+    if (game.tiers.length) cta = 'Play more';
+    else {
+      cta = status === SOLVED ? 'Solved' : 'Finished';
+      done = true;
+    }
+  }
+  const when = weekly ? 'This week' : 'Today';
+  return h('a', {
+    class: 'gcard today-card',
+    'aria-label': `${game.name}, ${when} ${game.label(todayIdx)}, ${caption(game, entry, true).toLowerCase()}, ${cta}`,
+    ...playProps(game, todayIdx, entry, todayIdx),
+  },
+  h('span', { class: 'tc-top' },
+    h('span', { class: 'tc-text' },
+      h('span', { class: 'tc-name', text: game.name }),
+      h('span', { class: 'tc-blurb', text: game.blurb })),
+    h('img', { class: 'tc-logo', src: game.logo, alt: '' })),
+  h('span', { class: 'tc-bottom' },
+    h('span', {},
+      h('span', { class: 'tc-kicker', text: caption(game, entry, true) }),
+      h('span', { class: 'tc-when', text: `${when} ${game.label(todayIdx)}` })),
+    h('span', { class: `cta${done ? ' done' : ''}`, text: cta })));
+}
+
+function pastCard(game, index, entry, todayIdx) {
+  const ed = game.edForIndex(index);
+  let day;
+  let date;
+  if (game.cadence === 'weekly') {
+    day = index === todayIdx - 1 ? 'Last week' : 'Week of';
+    date = weekRange(ed);
+  } else {
+    day = index === todayIdx - 1 ? 'Yesterday' : weekdayName(ed);
+    date = shortDate(ed);
+  }
+  const text = caption(game, entry, false);
+  return h('a', {
+    class: 'gcard past-card',
+    'aria-label': `${game.name} ${game.label(index)}, ${day} ${date}, ${text.toLowerCase()}`,
+    ...playProps(game, index, entry, todayIdx),
+  },
+  resultTile(game, entry?.status || null),
+  h('span', { class: 'pc-label', text: text }),
+  h('span', { class: 'pc-day', text: day }),
+  h('span', { class: 'pc-date', text: date }));
+}
+
+function seeAllCard(game) {
+  return h('a', {
+    class: 'gcard past-card see-all',
+    href: `#archive/${game.id}`,
+    'aria-label': `${game.name} archive, see every puzzle`,
+  },
+  h('span', { class: 'see-all-icon', html: ICONS.calendar }),
+  h('span', { class: 'pc-label', text: 'ARCHIVE' }),
+  h('span', { class: 'pc-day', text: 'See all' }));
+}
+
+function gameStrip(game, progress, todayEd) {
+  const todayIdx = game.todayIndex(todayEd);
+  const [today, ...past] = recentIndices(game, todayEd);
+  return h('section', { class: 'strip-row', style: cardVars(game), 'aria-label': game.name },
+    h('div', { class: 'strip' },
+      todayCard(game, progress?.days.get(today), todayIdx),
+      past.map((i) => pastCard(game, i, progress?.days.get(i), todayIdx)),
+      seeAllCard(game)));
+}
+
+/** A small streak pill, used by the archive and Stats pages. */
 export function streakChip(game, progress) {
   const n = progress?.streak || 0;
   const unit = game.cadence === 'weekly' ? 'week' : 'day';
@@ -39,20 +159,6 @@ export function streakChip(game, progress) {
     title: `Current streak: ${n} ${unit}${n === 1 ? '' : 's'}`,
     'aria-label': `Current streak ${n} ${unit}${n === 1 ? '' : 's'}`,
   }, h('span', { html: ICONS.flame }), String(n));
-}
-
-function gameRow(game, progress, todayEd) {
-  const todayIdx = game.todayIndex(todayEd);
-  const indices = recentIndices(game, todayEd);
-  return h('section', { class: 'game-row', style: { '--game': game.color }, 'aria-label': game.name },
-    h('div', { class: 'row-head' },
-      h('img', { src: game.logo, alt: '' }),
-      h('div', { class: 'grow' }, h('h2', { text: game.name }), h('p', { class: 'muted', text: game.blurb })),
-      streakChip(game, progress)),
-    h('div', { class: 'strip' },
-      indices.map((i) => puzzleTile(game, i, progress?.days.get(i), todayIdx)),
-      h('a', { class: 'ptile archive', href: `#archive/${game.id}` },
-        h('span', { html: ICONS.calendar }), 'Archive')));
 }
 
 export function renderGames(app) {
@@ -69,5 +175,5 @@ export function renderGames(app) {
       h('span', { class: 'muted', text: uid ? `${doneToday} of ${daily.length} daily games finished today` : '' })),
     uid ? null : h('div', { class: 'notice' },
       'Welcome! Pick any game to start. Your streaks, archive and badges show up here once you have played.'),
-    games.map((g) => gameRow(g, progress[g.id]?.progress, todayEd)));
+    games.map((g) => gameStrip(g, progress[g.id]?.progress, todayEd)));
 }

@@ -5,11 +5,11 @@
 // {answer, index, userGuesses, results, isFromArchive}; older entries use
 // {guesses: [{guess}]} instead of userGuesses.
 
-import { epochDay } from '../dates.js?v=202610040159';
-import { parseJsonList, pct } from './common.js?v=202610040159';
+import { epochDay } from '../dates.js?v=202610040209';
+import { parseJsonList, pct } from './common.js?v=202610040209';
 import {
   SOLVED, FAILED, PROGRESS, emptyProgress, mark, currentStreak, longestStreak, num,
-} from '../status.js?v=202610040159';
+} from '../status.js?v=202610040209';
 
 const ORIGINAL_START = epochDay(2022, 2, 10); // games #1-#142
 const ORIGINAL_END = epochDay(2022, 7, 1);
@@ -56,12 +56,23 @@ export function distribution(...statsStrings) {
   return { dist, losses };
 }
 
+/** Card caption for a Canuckle or Canuckle+ result: "SOLVED IN 3". */
+export function guessLabel(entry) {
+  switch (entry?.status) {
+    case SOLVED: return entry.guesses ? `SOLVED IN ${entry.guesses}` : 'SOLVED';
+    case FAILED: return 'NOT THIS TIME';
+    case PROGRESS: return 'IN PROGRESS';
+    default: return null;
+  }
+}
+
 export const canuckle = {
   id: 'canuckle',
   name: 'Canuckle',
   logo: 'images/canuckle.svg',
   color: '#D52B1E',
-  blurb: 'Daily five-letter word',
+  blurb: 'Guess the daily five-letter Canadian word.',
+  card: { tint: ['#FBE4E1', '#3A1D1B'], frame: ['#F2B8B2', '#6A2A24'] },
   cadence: 'daily',
   step: 1,
   firstEd: ORIGINAL_START,
@@ -80,6 +91,7 @@ export const canuckle = {
     return this.indexForEd(todayEd);
   },
   label: (i) => `#${i}`,
+  resultLabel: guessLabel,
 
   link(index, _tier, isToday) {
     return isToday ? '/' : `/?game=${index}`;
@@ -106,6 +118,7 @@ export const canuckle = {
     for (const g of parseJsonList(raw.games).map(readGame)) {
       if (!g.index || g.index > 50000 || !g.status) continue;
       mark(p, g.index, g.status);
+      if (g.status !== PROGRESS) p.days.get(g.index).guesses = g.guesses;
       if (g.status !== PROGRESS) {
         p.played++;
         p.doneIdx.add(g.index);

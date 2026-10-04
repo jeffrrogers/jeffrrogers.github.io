@@ -6,12 +6,12 @@
 // Game documents in games/ carry {day, dm (draw index), df (tier index),
 // st (0 playing, 1 won, 2 abandoned), sec}.
 
-import { daily, pct } from './common.js?v=202610040159';
-import { duration } from '../dates.js?v=202610040159';
-import { readPref } from '../local.js?v=202610040159';
+import { daily, pct } from './common.js?v=202610040209';
+import { duration } from '../dates.js?v=202610040209';
+import { readPref } from '../local.js?v=202610040209';
 import {
   SOLVED, PLAYED, PROGRESS, emptyProgress, mark, storedStreak, intList, num,
-} from '../status.js?v=202610040159';
+} from '../status.js?v=202610040209';
 
 const DRAWS = ['1', '3'];
 const LEVELS = ['e', 'm', 'h'];
@@ -28,9 +28,17 @@ export const canolitaire = {
   name: 'Canolitaire',
   logo: 'images/canolitaire.svg',
   color: '#1E5A3C',
-  blurb: 'Six daily deals',
+  blurb: 'Six daily deals of Canadian solitaire.',
+  card: { tint: ['#DFEFE6', '#15291F'], frame: ['#9CCBB0', '#24503A'] },
   ...daily(2026, 8, 25),
   tiers: TIERS,
+  resultLabel(entry) {
+    const won = Object.values(entry?.tiers || {}).filter((s) => s === SOLVED).length;
+    if (won > 0) return `${won} OF 6 WON`;
+    if (entry?.status === PLAYED) return 'PLAYED';
+    if (entry?.status === PROGRESS) return 'IN PROGRESS';
+    return null;
+  },
   label: (i) => `#${i}`,
 
   link(index, tier, isToday) {

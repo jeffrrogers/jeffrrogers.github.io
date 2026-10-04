@@ -1,11 +1,11 @@
 // A game's archive: a month calendar for daily games, a week list for
 // Canuckle+. Months render in batches as the player scrolls back.
 
-import { h, ICONS, statusIcon, tierMarks } from '../ui.js?v=202610040159';
-import { ymd, epochDay, monthTitle, daysInMonth, shortDate } from '../dates.js?v=202610040159';
-import { SOLVED, FAILED, PLAYED, PROGRESS, STATUS_LABEL, isDone } from '../status.js?v=202610040159';
-import { playProps } from './play.js?v=202610040159';
-import { streakChip } from './gamesTab.js?v=202610040159';
+import { h, ICONS, statusIcon, tierMarks } from '../ui.js?v=202610040209';
+import { ymd, epochDay, monthTitle, daysInMonth, shortDate } from '../dates.js?v=202610040209';
+import { SOLVED, FAILED, PLAYED, PROGRESS, STATUS_LABEL, isDone } from '../status.js?v=202610040209';
+import { playProps } from './play.js?v=202610040209';
+import { streakChip } from './gamesTab.js?v=202610040209';
 
 const BATCH = 4;
 const DOW = ['S', 'M', 'T', 'W', 'T', 'F', 'S'];
