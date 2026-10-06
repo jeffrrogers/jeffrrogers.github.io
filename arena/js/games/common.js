@@ -7,7 +7,7 @@
 //   todayIndex(ed)     today's puzzle index
 //   step               days per puzzle (1 daily, 7 weekly)
 
-import { epochDay } from '../dates.js?v=202610041808';
+import { epochDay } from '../dates.js?v=202610061319';
 
 /** A game whose puzzle #1 is on [start] (y, m, d) and changes each day. */
 export function daily(y, m, d) {

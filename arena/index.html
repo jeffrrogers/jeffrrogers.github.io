@@ -22,21 +22,27 @@
   <link rel="preconnect" href="https://firestore.googleapis.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Sora:wght@400;700;800&display=swap" rel="stylesheet">
   <link rel="preload" href="fonts/ClearSans-Regular.woff2" as="font" type="font/woff2" crossorigin>
-  <link rel="stylesheet" href="css/arena.css?v=202610041808">
+  <link rel="stylesheet" href="css/arena.css?v=202610061319">
 
   <script>
-    // Apply the theme before first paint to avoid a flash.
+    // Apply the theme and contrast before first paint to avoid a flash. The
+    // same rules as js/theme.js: the arena's choice, else Canuckle's, else the
+    // device's.
     (function () {
-      var t = null;
-      try { t = JSON.parse(localStorage.getItem('arena.theme')); } catch (e) {}
+      var get = function (k) { try { return JSON.parse(localStorage.getItem(k)); } catch (e) { return null; } };
+      var t = get('arena.theme');
       if (t !== 'light' && t !== 'dark') {
-        try { var d = JSON.parse(localStorage.getItem('flutter.isDarkMode')); if (typeof d === 'boolean') t = d ? 'dark' : 'light'; } catch (e) {}
+        var d = get('flutter.isDarkMode');
+        if (typeof d === 'boolean') t = d ? 'dark' : 'light';
       }
       if (t !== 'light' && t !== 'dark') t = window.matchMedia && matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light';
       document.documentElement.dataset.theme = t;
+      var c = get('arena.highContrast');
+      if (typeof c !== 'boolean') c = get('flutter.isHighContrast') === true;
+      if (c) document.documentElement.dataset.contrast = 'high';
     })();
   </script>
-  <script type="module" src="js/app.js?v=202610041808"></script>
+  <script type="module" src="js/app.js?v=202610061319"></script>
 </head>
 <body>
   <div id="header"></div>

@@ -6,7 +6,7 @@
 // badge (and announcing it) is store.js's job, which is also why a badge that
 // depends on a recent window (Clean Sweep) only needs to be seen once.
 
-import { minEd } from '../status.js?v=202610041808';
+import { minEd } from '../status.js?v=202610061319';
 
 /** Day puzzle [i] was finished: as the game recorded it, else the puzzle's own day. */
 function finishOn(game, p, i) {

@@ -44,3 +44,5 @@ export function isLive(gameId) {
 }
 
 export const ARENA_URL = 'https://www.canucklegame.ca/arena/';
+
+export const ARENA_VERSION = '1.0.0';

@@ -1,21 +1,23 @@
 // Boot, routing and the shared app state.
 
-import { IS_SANDBOX, IS_DEMO } from './config.js?v=202610041808';
-import { demoRaw } from './demo.js?v=202610041808';
-import { initAnalytics, track } from './analytics.js?v=202610041808';
-import { todayEpochDay } from './dates.js?v=202610041808';
-import { playerId, readPref, arenaGet, arenaSet } from './local.js?v=202610041808';
-import { liveGames, gameById } from './games/registry.js?v=202610041808';
-import { loadProgress, loadFullHistory } from './progress.js?v=202610041808';
-import { evaluateBadges } from './badges/rules.js?v=202610041808';
+import { IS_SANDBOX, IS_DEMO } from './config.js?v=202610061319';
+import { demoRaw } from './demo.js?v=202610061319';
+import { initAnalytics, track } from './analytics.js?v=202610061319';
+import { todayEpochDay } from './dates.js?v=202610061319';
+import { playerId } from './local.js?v=202610061319';
+import { initialTheme, initialContrast, applyTheme, applyContrast } from './theme.js?v=202610061319';
+import { liveGames, gameById } from './games/registry.js?v=202610061319';
+import { loadProgress, loadFullHistory } from './progress.js?v=202610061319';
+import { evaluateBadges } from './badges/rules.js?v=202610061319';
 import {
   loadStoredBadges, needsDating, planSync, applySync, markAnnounced, markShared,
-} from './badges/store.js?v=202610041808';
-import { h, ICONS, closeSheet } from './ui.js?v=202610041808';
-import { renderGames } from './views/gamesTab.js?v=202610041808';
-import { renderArchive } from './views/archive.js?v=202610041808';
-import { renderStats, renderStatsDetail } from './views/statsTab.js?v=202610041808';
-import { renderBadgesPage, announce } from './views/badgesView.js?v=202610041808';
+} from './badges/store.js?v=202610061319';
+import { h, ICONS, closeSheet } from './ui.js?v=202610061319';
+import { renderGames } from './views/gamesTab.js?v=202610061319';
+import { renderArchive } from './views/archive.js?v=202610061319';
+import { renderStats, renderStatsDetail } from './views/statsTab.js?v=202610061319';
+import { renderBadgesPage, announce } from './views/badgesView.js?v=202610061319';
+import { openSettings, openSync, safeReturnPath } from './views/settings.js?v=202610061319';
 
 const app = {
   uid: IS_DEMO ? 'DEMO' : playerId(),
@@ -32,25 +34,10 @@ const app = {
 };
 
 // ---- Theme ----------------------------------------------------------------
+// Light/dark and high contrast are set from Settings; see theme.js.
 
-function initialTheme() {
-  const saved = arenaGet('theme');
-  if (saved === 'light' || saved === 'dark') return saved;
-  const canuckleDark = readPref('isDarkMode');
-  if (typeof canuckleDark === 'boolean') return canuckleDark ? 'dark' : 'light';
-  return window.matchMedia && matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light';
-}
-
-function applyTheme(theme) {
-  document.documentElement.dataset.theme = theme;
-  const btn = document.querySelector('.theme-toggle');
-  if (btn) {
-    btn.innerHTML = theme === 'dark' ? ICONS.sun : ICONS.moon;
-    btn.setAttribute('aria-label', theme === 'dark' ? 'Switch to light mode' : 'Switch to dark mode');
-  }
-}
-
-if (readPref('isHighContrast') === true) document.documentElement.dataset.contrast = 'high';
+applyTheme(initialTheme());
+applyContrast(initialContrast());
 
 // ---- Header ---------------------------------------------------------------
 
@@ -69,14 +56,11 @@ const SCATTER = [
 ];
 
 function renderHeader() {
-  let theme = initialTheme();
-  const toggle = h('button', {
-    class: 'theme-toggle',
-    onClick: () => {
-      theme = theme === 'dark' ? 'light' : 'dark';
-      arenaSet('theme', theme);
-      applyTheme(theme);
-    },
+  const settings = h('button', {
+    class: 'header-btn',
+    'aria-label': 'Settings',
+    html: ICONS.gear,
+    onClick: () => openSettings(app),
   });
   const banner = h('header', { class: 'banner' },
     SCATTER.map(([logo, left, top, size, rot, wideOnly]) => h('img', {
@@ -92,9 +76,8 @@ function renderHeader() {
         ' ',
         h('span', { class: 'wm-sub', text: 'Games Arena' }))),
     IS_SANDBOX ? h('span', { class: 'sandbox-ribbon', text: 'SANDBOX' }) : null,
-    toggle);
+    settings);
   document.getElementById('header').replaceChildren(banner);
-  applyTheme(theme);
 }
 
 // ---- Routing --------------------------------------------------------------
@@ -193,6 +176,19 @@ async function syncBadges() {
 
 // ---- Boot -----------------------------------------------------------------
 
+/**
+ * A game's Settings opens /arena/?return=<its path>#sync to switch User ID.
+ * Opens the sync sheet and strips the link from the address, so a reload
+ * shows the arena rather than the sync sheet again.
+ */
+function openSyncLink() {
+  if (location.hash !== '#sync') return false;
+  const returnTo = safeReturnPath(new URLSearchParams(location.search).get('return'));
+  history.replaceState(null, '', location.pathname);
+  openSync(app, { returnTo });
+  return true;
+}
+
 async function boot() {
   initAnalytics();
   renderHeader();
@@ -200,6 +196,7 @@ async function boot() {
     closeSheet();
     render();
   });
+  const syncing = openSyncLink();
 
   let firstPaint = true;
   const state = await loadProgress(app.games, {
@@ -223,8 +220,10 @@ async function boot() {
   track('arena_open', { returning: app.uid ? 1 : 0 });
 
   // Only sync badges once every game has loaded fresh: evaluating against a
-  // half-loaded state could record a badge late or announce one twice.
-  if (!app.syncError) await syncBadges();
+  // half-loaded state could record a badge late or announce one twice. Not
+  // while switching User ID: an unlock announcement would replace the sync
+  // sheet, and these badges belong to the id about to be left.
+  if (!app.syncError && !syncing) await syncBadges();
 
   // A tab left open past midnight rolls over to the new day.
   setInterval(() => {
