@@ -157,7 +157,7 @@ if (/canucklegame.github.io/.test(window.location) === true) {
       margin: 0 auto; 
     }
     div.adbox_1 {
-      z-index: 99999;
+      z-index: 1000000;
       align-items: center;
       margin-top: 98px;
       display: flex;
@@ -168,7 +168,7 @@ if (/canucklegame.github.io/.test(window.location) === true) {
       overflow: hidden; 
     }
     div.adbox_2 {
-      z-index: 99999;
+      z-index: 1000000;
       align-items: center;
       margin-top: 98px;
       display: flex;
@@ -179,7 +179,7 @@ if (/canucklegame.github.io/.test(window.location) === true) {
       overflow: hidden; 
     }
     div.adbox_3 {
-      z-index: 99999;
+      z-index: 1000000;
       align-items: center;
       margin-top: 98px;
       display: flex;
@@ -190,7 +190,7 @@ if (/canucklegame.github.io/.test(window.location) === true) {
       overflow: hidden; 
     }
     div.adbox_4 {
-      z-index: 99999;
+      z-index: 1000000;
       align-items: center;
       margin-top: 98px;
       display: flex;
@@ -201,7 +201,7 @@ if (/canucklegame.github.io/.test(window.location) === true) {
       overflow: hidden; 
     }
     div.adbox_5 {
-      z-index: 99999;
+      z-index: 1000000;
       height: 90px;
       align-items: center;
       width: 100vw;
@@ -212,53 +212,78 @@ if (/canucklegame.github.io/.test(window.location) === true) {
       padding-top: 4px;
       padding-bottom: 4px;
       margin: auto;
-      position: relative; 
-      background: #ddd
+      position: relative;
+    }
+    div.adbox_6 {
+      z-index: 99999;
+      align-items: center;
+      margin-top: 0px;
+      display: flex;
+      height: calc(100vh - 98px);
+      justify-content: center;
+      position: absolute;
+      width: calc(50vw - 300px);
+      overflow: hidden; 
+    }
+    div.adbox_7 {
+      z-index: 99999;
+      align-items: center;
+      margin-top: 0px;
+      display: flex;
+      height: calc(100vh - 98px);
+      justify-content: center;
+      position: absolute;
+      width: calc(50vw - 300px);
+      overflow: hidden; 
     }
     div.mobileadbox {
-      z-index: 99999;
+      z-index: 1000000;
       height: 50px;
       width: 100vw;
       display: block;
       position: absolute;
       max-width: 728px;
       overflow: hidden;
-      margin-top: 4px; 
-      background: #ddd
+      margin-top: 4px;
     }
     div.mobileadbox_2 {
-      z-index: 99999;
+      z-index: 1000000;
       height: 100px;
       width: 100vw;
       display: block;
       position: absolute;
       max-width: 728px;
       overflow: hidden;
-      margin-top: 4px; 
-      background-color: #ddd;
+      margin-top: 4px;
     }
-    div.adbox_1:first-child {
+    div.adbox_1:nth-child(3) {
       left: 0;
     }
-    div.adbox_1:nth-child(2) {
+    div.adbox_1:nth-child(4) {
       right: 0;
     }
-    div.adbox_2:nth-child(3) {
+    div.adbox_2:nth-child(5) {
       left: 0;
     }
-    div.adbox_2:nth-child(4) {
+    div.adbox_2:nth-child(6) {
       right: 0;
     }
-    div.adbox_3:nth-child(5) {
+    div.adbox_3:nth-child(7) {
       left: 0;
     }
-    div.adbox_3:nth-child(6) {
+    div.adbox_3:nth-child(8) {
       right: 0;
     }
-    div.adbox_4:nth-child(7) {
+    div.adbox_4:nth-child(9) {
       left: 0;
     }
-    div.adbox_4:nth-child(8) {
+    div.adbox_4:nth-child(10) {
+      right: 0;
+    }
+    div.adbox_6:nth-child(12) {
+      left: 0;
+    }
+    div.adbox_7:nth-child(13) {
       right: 0;
     }
 
@@ -290,7 +315,7 @@ if (/canucklegame.github.io/.test(window.location) === true) {
         display: none;
       }
     }
-    @media screen and (max-width: 920px), screen and (max-height: 690px), {
+    @media screen and (max-width: 920px), screen and (max-height: 690px) {
       div.adbox_1 {
         display: none;
       }
@@ -300,7 +325,7 @@ if (/canucklegame.github.io/.test(window.location) === true) {
         display: none;
       }
     }
-    @media screen and (max-width: 1200px), screen and (max-height: 250px), {
+    @media screen and (max-width: 1200px), screen and (max-height: 250px) {
       div.adbox_2 {
         display: none;
       }
@@ -310,7 +335,7 @@ if (/canucklegame.github.io/.test(window.location) === true) {
         display: none;
       }
     }
-    @media screen and (max-width: 1272px), screen and (max-height: 280px), {
+    @media screen and (max-width: 1272px), screen and (max-height: 280px) {
       div.adbox_3 {
         display: none;
       }
@@ -320,8 +345,21 @@ if (/canucklegame.github.io/.test(window.location) === true) {
         display: none;
       }
     }
-    @media screen and (max-width: 1272px), screen and (max-height: 690px), {
+    @media screen and (max-width: 1272px), screen and (max-height: 690px) {
       div.adbox_4 {
+        display: none;
+      }
+    }
+    @media screen and (min-width: 1400px) {
+      div.adbox_4 {
+        display: none;
+      }
+    }
+    @media screen and (max-width: 1400px), screen and (max-height: 690px) {
+      div.adbox_6 {
+        display: none;
+      }
+      div.adbox_7 {
         display: none;
       }
     }
@@ -375,6 +413,14 @@ if (/canucklegame.github.io/.test(window.location) === true) {
     </div>
     <div class="adbox_5">
       <div class="ympb_target" data-type="desktop-leaderboard-template" data-subtype="728x90, 970x90">
+      </div>
+    </div>
+    <div class="adbox_6">
+      <div class="ympb_target_companion" data-type="desktop-medrec-template" data-subtype="400x600">
+      </div>
+    </div>
+    <div class="adbox_7">
+      <div class="ympb_target" data-type="desktop-medrec-template" data-subtype="160x600, 300x250, 336x280, 300x600">
       </div>
     </div>
     <div class="game">

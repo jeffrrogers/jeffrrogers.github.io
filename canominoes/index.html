@@ -151,7 +151,8 @@
     }
 
     /* -- Ad rails ---------------------------------------------------------
-       Mirrors canuckleSite/canoku/index.html and canuckleSite/solitaire/.
+       Mirrors canuckleSite/index.html (Canuckle), except the phone banner's
+       650px height step and the 1600px wide tier below.
        The 300 in calc(50vw - 300px) is half of div.game's max-width, so the
        rails fill exactly the space either side of the canvas. Change one and
        you must change the other -- and kMaxBoardWidth in
@@ -166,7 +167,7 @@
       margin: 0 auto;
     }
     div.adbox_1, div.adbox_2, div.adbox_3, div.adbox_4 {
-      z-index: 99999;
+      z-index: 1000000;
       align-items: center;
       margin-top: 98px;
       display: flex;
@@ -177,7 +178,7 @@
       overflow: hidden;
     }
     div.adbox_5 {
-      z-index: 99999;
+      z-index: 1000000;
       height: 90px;
       align-items: center;
       width: 100vw;
@@ -200,11 +201,11 @@
       overflow: hidden;
     }
     div.mobileadbox {
-      z-index: 99999; height: 50px; width: 100vw; display: block;
+      z-index: 1000000; height: 50px; width: 100vw; display: block;
       position: absolute; max-width: 728px; overflow: hidden; margin-top: 4px;
     }
     div.mobileadbox_2 {
-      z-index: 99999; height: 100px; width: 100vw; display: block;
+      z-index: 1000000; height: 100px; width: 100vw; display: block;
       position: absolute; max-width: 728px; overflow: hidden; margin-top: 4px;
     }
     div.adbox_1:nth-child(3), div.adbox_2:nth-child(5),
@@ -229,6 +230,21 @@
     }
     @media screen and (min-width: 1272px) and (min-height: 280px) {
       div.adbox_2 { display: none; }
+    }
+    @media screen and (max-width: 1272px), screen and (max-height: 280px) {
+      div.adbox_3 { display: none; }
+    }
+    @media screen and (min-width: 1272px) and (min-height: 690px) {
+      div.adbox_3 { display: none; }
+    }
+    @media screen and (max-width: 1272px), screen and (max-height: 690px) {
+      div.adbox_4 { display: none; }
+    }
+    @media screen and (min-width: 1400px) { div.adbox_4 { display: none; } }
+    /* Short windows keep adbox_3 at any width, so the tall rails give way
+       there rather than stack on top of it. */
+    @media screen and (max-width: 1400px), screen and (max-height: 690px) {
+      div.adbox_6, div.adbox_7 { display: none; }
     }
 
     /* The wide tier. Above 1600px there is rail room to spare, so the board can
