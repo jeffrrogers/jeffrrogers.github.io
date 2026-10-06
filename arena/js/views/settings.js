@@ -5,14 +5,14 @@
 // something inside Canuckle, plus the Ko-fi and social links Canuckle keeps in
 // its menu.
 
-import { h, ICONS, openSheet, sheetHead, toast } from '../ui.js?v=202610061503';
-import { ARENA_VERSION } from '../config.js?v=202610061503';
-import { readPref, prefKeys, arenaSet } from '../local.js?v=202610061503';
-import { getDocData, setMerge } from '../firebase.js?v=202610061503';
-import { currentTheme, currentContrast, setTheme, setContrast } from '../theme.js?v=202610061503';
-import { ID_DOCS, isValidUserId, planIdSwitch, applyIdSwitch } from '../idSwitch.js?v=202610061503';
-import { track } from '../analytics.js?v=202610061503';
-import { openPrivacy } from '../privacy.js?v=202610061503';
+import { h, ICONS, openSheet, sheetHead, toast } from '../ui.js?v=202610061550';
+import { ARENA_VERSION } from '../config.js?v=202610061550';
+import { readPref, prefKeys, arenaSet } from '../local.js?v=202610061550';
+import { getDocData, setMerge } from '../firebase.js?v=202610061550';
+import { currentTheme, currentContrast, setTheme, setContrast } from '../theme.js?v=202610061550';
+import { ID_DOCS, isValidUserId, planIdSwitch, applyIdSwitch } from '../idSwitch.js?v=202610061550';
+import { track } from '../analytics.js?v=202610061550';
+import { openPrivacy } from '../privacy.js?v=202610061550';
 
 const SUPPORT_EMAIL = 'info@canucklegame.ca';
 const KOFI_URL = 'https://ko-fi.com/canuckle';
@@ -85,10 +85,23 @@ function userIdRow(app) {
       h('div', { class: 'set-label', text: 'User ID' }),
       idText),
     h('button', {
-      class: 'icon-btn',
+      class: 'copy-btn',
+      type: 'button',
       'aria-label': 'Copy User ID',
       html: ICONS.copy,
-      onClick: () => {
+      onClick: (e) => {
+        const btn = e.currentTarget;
+        const copied = () => {
+          btn.innerHTML = ICONS.check;
+          btn.classList.add('copied');
+          btn.setAttribute('aria-label', 'User ID copied');
+          clearTimeout(btn.resetTimer);
+          btn.resetTimer = setTimeout(() => {
+            btn.innerHTML = ICONS.copy;
+            btn.classList.remove('copied');
+            btn.setAttribute('aria-label', 'Copy User ID');
+          }, 2000);
+        };
         const select = () => {
           const range = document.createRange();
           range.selectNodeContents(idText);
@@ -98,7 +111,7 @@ function userIdRow(app) {
           toast('Select and copy your User ID');
         };
         try {
-          navigator.clipboard.writeText(app.uid).then(() => toast('User ID copied'), select);
+          navigator.clipboard.writeText(app.uid).then(copied, select);
         } catch {
           select();
         }
@@ -369,7 +382,9 @@ function build(app, onTheme) {
       userIdRow(app),
       emailRow(app),
       h('button', { class: 'set-row link-row', type: 'button', onClick: () => openSync(app) },
-        h('span', { class: 'set-label', text: 'Want to sync to another User ID?' }),
+        h('span', { class: 'set-text' },
+          h('span', { class: 'set-label', text: 'Sync to another User ID' }),
+          h('span', { class: 'set-detail', text: 'Use your progress from another device' })),
         h('span', { html: ICONS.chevron }))));
 
   const support = section('Support',
@@ -404,6 +419,6 @@ export function openSettings(app) {
     foot = next;
   };
   const body = h('div', { class: 'settings' }, ...build(app, onTheme), foot);
-  close = openSheet(h('div', {}, sheetHead('Settings', () => close()), body), { label: 'Settings' });
+  close = openSheet(h('div', {}, sheetHead('Settings', () => close()), body), { label: 'Settings', scrollHint: true });
   track('settings_open');
 }

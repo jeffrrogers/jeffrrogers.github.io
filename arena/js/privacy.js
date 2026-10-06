@@ -4,7 +4,7 @@
 // (privacy_policy.dart in each), so a change to the policy goes to the site
 // page, here and every game together, with LAST_UPDATED moved on.
 
-import { h, openSheet, sheetHead } from './ui.js?v=202610061503';
+import { h, openSheet, sheetHead } from './ui.js?v=202610061550';
 
 export const LAST_UPDATED = 'October 2, 2026';
 
@@ -122,5 +122,5 @@ export function openPrivacy(onBack) {
     sheetHead('Privacy Policy', back),
     h('article', { class: 'policy' },
       h('p', { class: 'muted policy-date', text: `Last updated: ${LAST_UPDATED}` }),
-      ...policyBody())), { label: 'Privacy Policy', className: 'tall' });
+      ...policyBody())), { label: 'Privacy Policy', className: 'tall', scrollHint: true });
 }

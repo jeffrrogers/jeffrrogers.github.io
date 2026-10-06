@@ -1,6 +1,6 @@
 // Small DOM helpers, icons, sheets and toasts.
 
-import { SOLVED, FAILED, PLAYED, PROGRESS, STATUS_LABEL } from './status.js?v=202610061503';
+import { SOLVED, FAILED, PLAYED, PROGRESS, STATUS_LABEL } from './status.js?v=202610061550';
 
 /**
  * Creates an element. props: class, text, html (trusted constant markup
@@ -41,7 +41,10 @@ export const ICONS = {
   copy: SVG('<rect x="8" y="8" width="12" height="12" rx="2.5" fill="none" stroke="currentColor" stroke-width="2"/><path d="M16 8V6a2 2 0 0 0-2-2H6a2 2 0 0 0-2 2v8a2 2 0 0 0 2 2h2" fill="none" stroke="currentColor" stroke-width="2"/>'),
   mail: SVG('<rect x="3" y="5" width="18" height="14" rx="2.5" fill="none" stroke="currentColor" stroke-width="2"/><path d="M4 7l8 6 8-6" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round"/>'),
   chevron: SVG('<path d="M9 5l7 7-7 7" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"/>'),
-  shield: SVG('<path d="M12 3l7.5 3v5.5c0 4.6-3.2 8.3-7.5 9.5-4.3-1.2-7.5-4.9-7.5-9.5V6z" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round"/><path d="M8.8 12.2l2.2 2.2 4.2-4.4" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>'),
+  // Material's verified_user (outlined), as the games use on their Privacy Policy button.
+  shield: SVG('<path fill="currentColor" d="M12 1L3 5v6c0 5.55 3.84 10.74 9 12 5.16-1.26 9-6.45 9-12V5l-9-4zm7 10c0 4.52-2.98 8.69-7 9.93-4.02-1.24-7-5.41-7-9.93V6.3l7-3.11 7 3.11V11zm-11.59.59L6 13l4 4 8-8-1.41-1.42L10 14.17z"/>'),
+  check: SVG('<path d="M5 12.5l4.5 4.5L19 7.5" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"/>'),
+  chevronDown: SVG('<path d="M2 1.5l8 8 8-8" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"/>', 'icon', '0 0 20 11'),
   share: SVG('<path d="M12 3v12M7 8l5-5 5 5" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/><path d="M5 13v6a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2v-6" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"/>'),
 };
 
@@ -101,12 +104,21 @@ export function tierMarks(game, entry, { always = false } = {}) {
 let openSheetEl = null;
 
 /** Opens a modal bottom sheet. Returns a close() function. */
-export function openSheet(content, { label = 'Dialog', onClose, className = '' } = {}) {
+export function openSheet(content, {
+  label = 'Dialog', onClose, className = '', scrollHint = false,
+} = {}) {
   closeSheet();
   const previous = document.activeElement;
-  const sheet = h('div', { class: `sheet ${className}`, role: 'dialog', 'aria-modal': 'true', 'aria-label': label });
-  const backdrop = h('div', { class: 'sheet-backdrop' }, sheet);
+  const sheet = h('div', {
+    class: `sheet ${className}${scrollHint ? ' no-scrollbar' : ''}`,
+    role: 'dialog',
+    'aria-modal': 'true',
+    'aria-label': label,
+  });
+  const frame = h('div', { class: `sheet-frame ${className}` }, sheet);
+  const backdrop = h('div', { class: 'sheet-backdrop' }, frame);
   sheet.append(content);
+  if (scrollHint) watchScrollHint(frame, sheet);
 
   const close = () => {
     if (!backdrop.isConnected) return;
@@ -130,6 +142,27 @@ export function openSheet(content, { label = 'Dialog', onClose, className = '' }
   return close;
 }
 
+/**
+ * The "more below" fade and chevron at the foot of a scrolling sheet, shown
+ * only while there is more to scroll to. Rechecked on scroll and whenever the
+ * sheet or its content changes size.
+ */
+function watchScrollHint(frame, sheet) {
+  const hint = h('div', { class: 'scroll-hint', 'aria-hidden': 'true', html: ICONS.chevronDown });
+  frame.append(hint);
+  const check = () => {
+    const more = sheet.scrollHeight - sheet.clientHeight - sheet.scrollTop > 2;
+    hint.classList.toggle('visible', more);
+  };
+  sheet.addEventListener('scroll', check, { passive: true });
+  if (typeof ResizeObserver !== 'undefined') {
+    const ro = new ResizeObserver(check);
+    ro.observe(sheet);
+    for (const child of sheet.children) ro.observe(child);
+  }
+  requestAnimationFrame(check);
+}
+
 export function closeSheet() {
   if (openSheetEl) openSheetEl.close();
 }
@@ -138,7 +171,7 @@ export function sheetHead(title, close, logo) {
   return h('div', { class: 'sheet-head' },
     logo ? h('img', { src: logo, alt: '' }) : null,
     h('h2', { text: title }),
-    h('button', { class: 'icon-btn', 'aria-label': 'Close', html: ICONS.close, onClick: () => close() }));
+    h('button', { class: 'close-btn', type: 'button', 'aria-label': 'Close', html: ICONS.close, onClick: () => close() }));
 }
 
 export function toast(message) {
