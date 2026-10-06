@@ -3,7 +3,7 @@ const MANIFEST = 'flutter-app-manifest';
 const TEMP = 'flutter-temp-cache';
 const CACHE_NAME = 'flutter-app-cache';
 
-const RESOURCES = {"flutter_bootstrap.js": "f8d06f727e5c1698693f475e2823cd6f",
+const RESOURCES = {"flutter_bootstrap.js": "63c05cd2ae83fd8f3253c07a862d33d0",
 "version.json": "7be50edb2810bcf5920489f9656c4125",
 "index.html": "48d5d0e9e20c8439fff4bd667d4e87d5",
 "main.dart.js": "74d1f1bc550bbcf259051d0d964dbcd4",
@@ -13,9 +13,9 @@ const RESOURCES = {"flutter_bootstrap.js": "f8d06f727e5c1698693f475e2823cd6f",
 "assets/AssetManifest.bin": "c89611a01498140dc2ee04f25a36089f",
 "assets/AssetManifest.bin.json": "e68e08fb02c3f085b3ce29afac0cd2a3",
 "assets/assets/arena/arena.svg": "c1c3a505b82ea84ddaf488aaf44565aa",
-"assets/assets/arena/canoggle.svg": "1acfcbcf2658d1dc952d8c9f0b0ef03a",
+"assets/assets/arena/canoggle.svg": "61a61bd575107d75a5c8879bcae60c8a",
 "assets/assets/arena/canoku.svg": "2a0d1945f6053db0c43d999bdfefb24f",
-"assets/assets/arena/canolitaire.svg": "2482130e7505369f7fc53041dbad7d23",
+"assets/assets/arena/canolitaire.svg": "8c995ff0aee49cf4887d8733bedc54fb",
 "assets/assets/arena/canominoes.svg": "32ede01ed2ba3f23f0d5acd072f84beb",
 "assets/assets/arena/canuckle.svg": "b33a4793c7cf51310f5eae982caf898b",
 "assets/assets/arena/canuckle-plus.svg": "f2e7f02f78446354efd42c122b1402c2",
