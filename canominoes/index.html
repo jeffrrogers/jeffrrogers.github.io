@@ -102,32 +102,23 @@
     }
     #dom-loading.dom-hidden { opacity: 0; pointer-events: none; }
 
-    .dom-word { display: flex; gap: 7px; }
+    /* Ten tiles: they shrink a little on narrow phones so the word fits. */
+    .dom-word { display: flex; gap: min(7px, 1.4vw); }
     .dom-tile {
-      width: 30px;
-      height: 40px;
+      width: min(30px, 7.6vw);
+      height: min(40px, 10.1vw);
       border-radius: 5px;
       background: #FFFFFF;
       color: #CF2319;
       display: flex;
       align-items: center;
       justify-content: center;
-      font-size: 17px;
+      font-size: min(17px, 4.3vw);
       font-weight: 700;
       box-shadow: 0 2px 5px rgba(0, 0, 0, 0.25);
       position: relative;
       animation: dom-jump 0.5s ease-in-out infinite;
     }
-    .dom-tile::after {
-      content: '';
-      position: absolute;
-      left: 20%;
-      right: 20%;
-      top: 50%;
-      height: 1px;
-      background: #CFC6C6;
-    }
-    .dom-sub { letter-spacing: 4px; font-size: 15px; color: var(--dom-ink); }
     @keyframes dom-jump {
       0%   { transform: translateY(6%); }
       50%  { transform: translateY(-8%); }
@@ -135,8 +126,7 @@
     }
 
     .dom-error { display: none; text-align: center; padding: 0 24px; color: var(--dom-ink); }
-    #dom-loading.dom-error-state .dom-word,
-    #dom-loading.dom-error-state .dom-sub { display: none; }
+    #dom-loading.dom-error-state .dom-word { display: none; }
     #dom-loading.dom-error-state .dom-error { display: block; }
     .dom-reload {
       margin-top: 14px;
@@ -327,21 +317,20 @@
     <div class="adbox_7"><div class="ympb_target" data-type="desktop-medrec-template" data-subtype="160x600, 300x250, 336x280, 300x600"></div></div>
 
     <div class="game">
-  <!-- CANUCKLE + DOMINOES, not the game's name. kGameName is provisional and
-       this markup is hand-maintained in two files, so spelling "Canominoes"
-       here would be another copy to remember on a rename. -->
+  <!-- The game's name, one tile per letter. -->
   <div id="dom-loading" title="Loading">
     <div class="dom-word">
       <div class="dom-tile" style="animation-delay:0s">C</div>
       <div class="dom-tile" style="animation-delay:.06s">A</div>
       <div class="dom-tile" style="animation-delay:.12s">N</div>
-      <div class="dom-tile" style="animation-delay:.18s">U</div>
-      <div class="dom-tile" style="animation-delay:.24s">C</div>
-      <div class="dom-tile" style="animation-delay:.30s">K</div>
-      <div class="dom-tile" style="animation-delay:.36s">L</div>
-      <div class="dom-tile" style="animation-delay:.42s">E</div>
+      <div class="dom-tile" style="animation-delay:.18s">O</div>
+      <div class="dom-tile" style="animation-delay:.24s">M</div>
+      <div class="dom-tile" style="animation-delay:.30s">I</div>
+      <div class="dom-tile" style="animation-delay:.36s">N</div>
+      <div class="dom-tile" style="animation-delay:.42s">O</div>
+      <div class="dom-tile" style="animation-delay:.48s">E</div>
+      <div class="dom-tile" style="animation-delay:.54s">S</div>
     </div>
-    <div class="dom-sub">DOMINOES</div>
     <div class="dom-error">
       <div>Couldn't load the game.</div>
       <button class="dom-reload" onclick="window.location.reload()">Reload</button>
