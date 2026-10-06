@@ -3,12 +3,12 @@
 // previous seven, and a way into the archive at the end. Streaks and stats
 // live on the Stats tab, not here.
 
-import { h, ICONS } from '../ui.js?v=202610061319';
-import { longDate, weekdayName, shortDate, ymd } from '../dates.js?v=202610061319';
-import { recentIndices } from '../games/common.js?v=202610061319';
-import { SOLVED, FAILED, PLAYED, PROGRESS, isDone } from '../status.js?v=202610061319';
-import { LEAF_PATH } from '../badges/icons.js?v=202610061319';
-import { playProps } from './play.js?v=202610061319';
+import { h, ICONS } from '../ui.js?v=202610061503';
+import { longDate, weekdayName, shortDate, ymd } from '../dates.js?v=202610061503';
+import { recentIndices } from '../games/common.js?v=202610061503';
+import { SOLVED, FAILED, PLAYED, PROGRESS, isDone } from '../status.js?v=202610061503';
+import { LEAF_PATH } from '../badges/icons.js?v=202610061503';
+import { playProps } from './play.js?v=202610061503';
 
 const DEFAULT_CAPTION = {
   [SOLVED]: 'SOLVED',
@@ -49,7 +49,7 @@ export function resultTile(game, status) {
   let inner;
   switch (status) {
     case SOLVED:
-      inner = `<rect x="10" y="10" width="44" height="44" rx="8" style="fill:var(--game)"/>`
+      inner = `<rect x="10" y="10" width="44" height="44" rx="8" style="fill:var(--tile-solved, var(--game))"/>`
         + `<path transform="translate(17 16.5) scale(.3)" d="${LEAF_PATH}" fill="#fff"/>`;
       break;
     case FAILED:
@@ -57,13 +57,13 @@ export function resultTile(game, status) {
         + '<path d="M24 24l16 16M40 24L24 40" stroke="#fff" stroke-width="5" stroke-linecap="round"/>';
       break;
     case PLAYED:
-      inner = `<rect x="10" y="10" width="44" height="44" rx="8" style="fill:var(--game)"/>`
+      inner = `<rect x="10" y="10" width="44" height="44" rx="8" style="fill:var(--tile-progress, var(--game))"/>`
         + '<circle cx="32" cy="32" r="9" fill="none" stroke="#fff" stroke-width="4"/>';
       break;
     case PROGRESS:
       inner = '<rect x="10" y="10" width="44" height="44" rx="8" fill="#fff"/>'
-        + `<path d="M10 34h44v12a8 8 0 0 1-8 8H18a8 8 0 0 1-8-8z" style="fill:var(--game)"/>`
-        + `<g style="fill:var(--game)"><circle cx="23" cy="24" r="3"/><circle cx="32" cy="24" r="3"/><circle cx="41" cy="24" r="3"/></g>`;
+        + `<path d="M10 34h44v12a8 8 0 0 1-8 8H18a8 8 0 0 1-8-8z" style="fill:var(--tile-progress, var(--game))"/>`
+        + `<g style="fill:var(--tile-progress, var(--game))"><circle cx="23" cy="24" r="3"/><circle cx="32" cy="24" r="3"/><circle cx="41" cy="24" r="3"/></g>`;
       break;
     default:
       return h('img', { class: 'rt-logo', src: game.logo, alt: '' });

@@ -20,9 +20,11 @@
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link rel="preconnect" href="https://www.gstatic.com" crossorigin>
   <link rel="preconnect" href="https://firestore.googleapis.com" crossorigin>
+  <link rel="preconnect" href="https://portal.cdn.yollamedia.com" crossorigin>
+  <link rel="dns-prefetch" href="https://portal.cdn.yollamedia.com">
   <link href="https://fonts.googleapis.com/css2?family=Sora:wght@400;700;800&display=swap" rel="stylesheet">
   <link rel="preload" href="fonts/ClearSans-Regular.woff2" as="font" type="font/woff2" crossorigin>
-  <link rel="stylesheet" href="css/arena.css?v=202610061319">
+  <link rel="stylesheet" href="css/arena.css?v=202610061503">
 
   <script>
     // Apply the theme and contrast before first paint to avoid a flash. The
@@ -42,9 +44,35 @@
       if (c) document.documentElement.dataset.contrast = 'high';
     })();
   </script>
-  <script type="module" src="js/app.js?v=202610061319"></script>
+  <script type="module" src="js/app.js?v=202610061503"></script>
 </head>
 <body>
+  <!-- Ad slots: the same classes, sizes and order as the games' pages (see
+       canuckleSite/index.html); js/ads.js loads the tag that fills them. The
+       top boxes sit in the page flow; the rails are fixed either side of the
+       980px content column. css/arena.css decides which one shows. -->
+  <div class="ads-top">
+    <div class="mobileadbox">
+      <div class="ympb_target" data-type="mobile-medrec-template" data-subtype="320x50"></div>
+      <div class="ympb_target" data-type="desktop-medrec-template" data-subtype="320x50"></div>
+    </div>
+    <div class="mobileadbox_2">
+      <div class="ympb_target" data-type="mobile-medrec-template" data-subtype="320x100"></div>
+      <div class="ympb_target" data-type="desktop-medrec-template" data-subtype="320x100"></div>
+    </div>
+    <div class="adbox_5"><div class="ympb_target" data-type="desktop-leaderboard-template" data-subtype="728x90, 970x90"></div></div>
+  </div>
+  <div class="adbox_1 left"><div class="ympb_target" data-type="desktop-medrec-template" data-subtype="160x600"></div></div>
+  <div class="adbox_1 right"><div class="ympb_target" data-type="desktop-medrec-template" data-subtype="160x600"></div></div>
+  <div class="adbox_2 left"><div class="ympb_target" data-type="desktop-medrec-template" data-subtype="300x250"></div></div>
+  <div class="adbox_2 right"><div class="ympb_target" data-type="desktop-medrec-template" data-subtype="300x250"></div></div>
+  <div class="adbox_3 left"><div class="ympb_target" data-type="desktop-medrec-template" data-subtype="300x250, 336x280"></div></div>
+  <div class="adbox_3 right"><div class="ympb_target" data-type="desktop-medrec-template" data-subtype="300x250, 336x280"></div></div>
+  <div class="adbox_4 left"><div class="ympb_target" data-type="desktop-medrec-template" data-subtype="160x600, 300x250, 336x280, 300x600"></div></div>
+  <div class="adbox_4 right"><div class="ympb_target" data-type="desktop-medrec-template" data-subtype="160x600, 300x250, 336x280, 300x600"></div></div>
+  <div class="adbox_6 left"><div class="ympb_target_companion" data-type="desktop-medrec-template" data-subtype="400x600"></div></div>
+  <div class="adbox_7 right"><div class="ympb_target" data-type="desktop-medrec-template" data-subtype="160x600, 300x250, 336x280, 300x600"></div></div>
+
   <div id="header"></div>
   <div id="tabs"></div>
   <main id="view">

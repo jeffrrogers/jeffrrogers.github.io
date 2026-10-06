@@ -1,9 +1,9 @@
 // Opening a puzzle: straight into the game, or via a difficulty picker for
 // games with several puzzles per day.
 
-import { h, openSheet, sheetHead, statusIcon } from '../ui.js?v=202610061319';
-import { shortDate, weekdayName } from '../dates.js?v=202610061319';
-import { track } from '../analytics.js?v=202610061319';
+import { h, openSheet, sheetHead, statusIcon } from '../ui.js?v=202610061503';
+import { shortDate, weekdayName } from '../dates.js?v=202610061503';
+import { track } from '../analytics.js?v=202610061503';
 
 /** Short label for a puzzle relative to today: "Today", "Yesterday", "Wed". */
 export function whenLabel(game, index, todayIdx) {
@@ -59,7 +59,11 @@ export function openTierSheet(game, index, entry, todayIdx) {
         game.tiers.filter((t) => (t.group || '') === g).map((t) => h('a', {
           class: 'tier-btn',
           href: game.link(index, t.key, isToday),
-          onClick: () => trackPlay(game, index, t.key, isToday),
+          // Close as the game opens, so the picker isn't still up on Back.
+          onClick: () => {
+            trackPlay(game, index, t.key, isToday);
+            close();
+          },
         }, statusIcon(tiers[t.key]), t.label))))));
   close = openSheet(body, { label: `${game.name} puzzles` });
 }

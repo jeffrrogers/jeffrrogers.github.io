@@ -1,16 +1,18 @@
-// The Settings sheet: display, account, support, feedback and socials.
+// The Settings sheet: display, account, support, feedback and socials, with
+// the privacy policy a button at the foot.
 //
 // Everything Canuckle's own Settings offers except Hard Mode, which only means
 // something inside Canuckle, plus the Ko-fi and social links Canuckle keeps in
 // its menu.
 
-import { h, ICONS, openSheet, sheetHead, toast } from '../ui.js?v=202610061319';
-import { ARENA_VERSION } from '../config.js?v=202610061319';
-import { readPref, prefKeys, arenaSet } from '../local.js?v=202610061319';
-import { getDocData, setMerge } from '../firebase.js?v=202610061319';
-import { currentTheme, currentContrast, setTheme, setContrast } from '../theme.js?v=202610061319';
-import { ID_DOCS, isValidUserId, planIdSwitch, applyIdSwitch } from '../idSwitch.js?v=202610061319';
-import { track } from '../analytics.js?v=202610061319';
+import { h, ICONS, openSheet, sheetHead, toast } from '../ui.js?v=202610061503';
+import { ARENA_VERSION } from '../config.js?v=202610061503';
+import { readPref, prefKeys, arenaSet } from '../local.js?v=202610061503';
+import { getDocData, setMerge } from '../firebase.js?v=202610061503';
+import { currentTheme, currentContrast, setTheme, setContrast } from '../theme.js?v=202610061503';
+import { ID_DOCS, isValidUserId, planIdSwitch, applyIdSwitch } from '../idSwitch.js?v=202610061503';
+import { track } from '../analytics.js?v=202610061503';
+import { openPrivacy } from '../privacy.js?v=202610061503';
 
 const SUPPORT_EMAIL = 'info@canucklegame.ca';
 const KOFI_URL = 'https://ko-fi.com/canuckle';
@@ -332,10 +334,18 @@ function socialsRow() {
       { class: 'social', 'aria-label': `Canuckle on ${s.name}` })));
 }
 
-/** Socials, sponsor and version. Rebuilt when the theme flips, for its icons. */
-function footer() {
+/**
+ * Privacy policy, socials, sponsor and version. Rebuilt when the theme flips,
+ * for its icons.
+ */
+function footer(app) {
   const dark = currentTheme() === 'dark';
   return h('footer', { class: 'set-footer' },
+    h('button', {
+      class: 'btn privacy-btn',
+      type: 'button',
+      onClick: () => openPrivacy(() => openSettings(app)),
+    }, h('span', { html: ICONS.shield }), 'Privacy Policy'),
     socialsRow(),
     external(CIRA_URL, [
       h('span', { class: 'powered', text: 'Powered by' }),
@@ -387,9 +397,9 @@ function build(app, onTheme) {
 
 export function openSettings(app) {
   let close;
-  let foot = footer();
+  let foot = footer(app);
   const onTheme = () => {
-    const next = footer();
+    const next = footer(app);
     foot.replaceWith(next);
     foot = next;
   };

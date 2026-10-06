@@ -1,23 +1,24 @@
 // Boot, routing and the shared app state.
 
-import { IS_SANDBOX, IS_DEMO } from './config.js?v=202610061319';
-import { demoRaw } from './demo.js?v=202610061319';
-import { initAnalytics, track } from './analytics.js?v=202610061319';
-import { todayEpochDay } from './dates.js?v=202610061319';
-import { playerId } from './local.js?v=202610061319';
-import { initialTheme, initialContrast, applyTheme, applyContrast } from './theme.js?v=202610061319';
-import { liveGames, gameById } from './games/registry.js?v=202610061319';
-import { loadProgress, loadFullHistory } from './progress.js?v=202610061319';
-import { evaluateBadges } from './badges/rules.js?v=202610061319';
+import { IS_SANDBOX, IS_DEMO } from './config.js?v=202610061503';
+import { demoRaw } from './demo.js?v=202610061503';
+import { initAnalytics, track } from './analytics.js?v=202610061503';
+import { loadAds } from './ads.js?v=202610061503';
+import { todayEpochDay } from './dates.js?v=202610061503';
+import { playerId } from './local.js?v=202610061503';
+import { initialTheme, initialContrast, applyTheme, applyContrast } from './theme.js?v=202610061503';
+import { liveGames, gameById } from './games/registry.js?v=202610061503';
+import { loadProgress, loadFullHistory } from './progress.js?v=202610061503';
+import { evaluateBadges } from './badges/rules.js?v=202610061503';
 import {
   loadStoredBadges, needsDating, planSync, applySync, markAnnounced, markShared,
-} from './badges/store.js?v=202610061319';
-import { h, ICONS, closeSheet } from './ui.js?v=202610061319';
-import { renderGames } from './views/gamesTab.js?v=202610061319';
-import { renderArchive } from './views/archive.js?v=202610061319';
-import { renderStats, renderStatsDetail } from './views/statsTab.js?v=202610061319';
-import { renderBadgesPage, announce } from './views/badgesView.js?v=202610061319';
-import { openSettings, openSync, safeReturnPath } from './views/settings.js?v=202610061319';
+} from './badges/store.js?v=202610061503';
+import { h, ICONS, closeSheet } from './ui.js?v=202610061503';
+import { renderGames } from './views/gamesTab.js?v=202610061503';
+import { renderArchive } from './views/archive.js?v=202610061503';
+import { renderStats, renderStatsDetail } from './views/statsTab.js?v=202610061503';
+import { renderBadgesPage, announce } from './views/badgesView.js?v=202610061503';
+import { openSettings, openSync, safeReturnPath } from './views/settings.js?v=202610061503';
 
 const app = {
   uid: IS_DEMO ? 'DEMO' : playerId(),
@@ -189,6 +190,60 @@ function openSyncLink() {
   return true;
 }
 
+// ---- Progress -------------------------------------------------------------
+
+let loading = null;
+
+/** Reads every game's progress, repainting as each one lands. */
+function loadAll() {
+  if (loading) return loading;
+  app.syncing = true;
+  loading = loadProgress(app.games, {
+    uid: app.uid,
+    todayEd: app.todayEd,
+    demo: IS_DEMO ? demoRaw : null,
+    onUpdate(next) {
+      app.progress = next;
+      evaluate();
+      refresh();
+    },
+  }).then((state) => {
+    app.syncing = false;
+    app.syncError = Object.values(state).some((s) => s.status === 'error');
+    refresh();
+  }).finally(() => {
+    loading = null;
+  });
+  return loading;
+}
+
+/**
+ * Coming back from a game: Back usually restores this page from the
+ * browser's back/forward cache, so boot() doesn't run again and the page
+ * would show what it had before the player left. Re-read progress then, and
+ * also when the tab is shown again after a while (a game in another tab, or
+ * switching apps on a phone).
+ */
+function watchForReturn() {
+  const comeBack = () => {
+    if (todayEpochDay() !== app.todayEd) {
+      location.reload();
+      return;
+    }
+    loadAll();
+  };
+  window.addEventListener('pageshow', (e) => {
+    if (!e.persisted) return;
+    closeSheet();
+    comeBack();
+  });
+  let hiddenAt = 0;
+  document.addEventListener('visibilitychange', () => {
+    if (document.visibilityState === 'hidden') hiddenAt = Date.now();
+    else if (hiddenAt && Date.now() - hiddenAt >= 60000) comeBack();
+  });
+}
+
 async function boot() {
   initAnalytics();
   renderHeader();
@@ -198,26 +253,10 @@ async function boot() {
   });
   const syncing = openSyncLink();
 
-  let firstPaint = true;
-  const state = await loadProgress(app.games, {
-    uid: app.uid,
-    todayEd: app.todayEd,
-    demo: IS_DEMO ? demoRaw : null,
-    onUpdate(next) {
-      app.progress = next;
-      evaluate();
-      if (firstPaint) {
-        firstPaint = false;
-        render();
-      } else {
-        refresh();
-      }
-    },
-  });
-  app.syncing = false;
-  app.syncError = Object.values(state).some((s) => s.status === 'error');
-  refresh();
+  loadAds();
+  await loadAll();
   track('arena_open', { returning: app.uid ? 1 : 0 });
+  watchForReturn();
 
   // Only sync badges once every game has loaded fresh: evaluating against a
   // half-loaded state could record a badge late or announce one twice. Not
