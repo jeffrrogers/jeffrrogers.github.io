@@ -1,24 +1,24 @@
 // Boot, routing and the shared app state.
 
-import { IS_SANDBOX, IS_DEMO } from './config.js?v=202610061550';
-import { demoRaw } from './demo.js?v=202610061550';
-import { initAnalytics, track } from './analytics.js?v=202610061550';
-import { loadAds } from './ads.js?v=202610061550';
-import { todayEpochDay } from './dates.js?v=202610061550';
-import { playerId } from './local.js?v=202610061550';
-import { initialTheme, initialContrast, applyTheme, applyContrast } from './theme.js?v=202610061550';
-import { liveGames, gameById } from './games/registry.js?v=202610061550';
-import { loadProgress, loadFullHistory } from './progress.js?v=202610061550';
-import { evaluateBadges } from './badges/rules.js?v=202610061550';
+import { IS_SANDBOX, IS_DEMO } from './config.js?v=202610070117';
+import { demoRaw } from './demo.js?v=202610070117';
+import { initAnalytics, track } from './analytics.js?v=202610070117';
+import { loadAds } from './ads.js?v=202610070117';
+import { todayEpochDay } from './dates.js?v=202610070117';
+import { playerId } from './local.js?v=202610070117';
+import { initialTheme, initialContrast, applyTheme, applyContrast } from './theme.js?v=202610070117';
+import { liveGames, gameById } from './games/registry.js?v=202610070117';
+import { loadProgress, loadFullHistory } from './progress.js?v=202610070117';
+import { evaluateBadges } from './badges/rules.js?v=202610070117';
 import {
   loadStoredBadges, needsDating, planSync, applySync, markAnnounced, markShared,
-} from './badges/store.js?v=202610061550';
-import { h, ICONS, closeSheet } from './ui.js?v=202610061550';
-import { renderGames } from './views/gamesTab.js?v=202610061550';
-import { renderArchive } from './views/archive.js?v=202610061550';
-import { renderStats, renderStatsDetail } from './views/statsTab.js?v=202610061550';
-import { renderBadgesPage, announce } from './views/badgesView.js?v=202610061550';
-import { openSettings, openSync, safeReturnPath } from './views/settings.js?v=202610061550';
+} from './badges/store.js?v=202610070117';
+import { h, ICONS, closeSheet } from './ui.js?v=202610070117';
+import { renderGames } from './views/gamesTab.js?v=202610070117';
+import { renderArchive } from './views/archive.js?v=202610070117';
+import { renderStats, renderStatsDetail } from './views/statsTab.js?v=202610070117';
+import { renderBadgesPage, announce } from './views/badgesView.js?v=202610070117';
+import { openSettings, openSync, safeReturnPath } from './views/settings.js?v=202610070117';
 
 const app = {
   uid: IS_DEMO ? 'DEMO' : playerId(),

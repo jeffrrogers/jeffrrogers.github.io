@@ -3,15 +3,18 @@
 // Source: Canoku/lib/game_board.dart (startDate 2023-10-16, 15 GameModes)
 // and user.dart. canokuUserData/{id} holds completedIndices (days with any
 // mode solved), completedAt {day: millis first solved} (newer solves only),
-// streaks and per-mode {totalTime,totalGames,totalHints}.
-// Each day's boards live in the subcollection canokuUserData/{id}/{dayIndex},
-// one document per mode, {gameData: <Game JSON string>}.
+// streaks, per-mode {totalTime,totalGames,totalHints} and completedModes
+// {day: {MODE: [seconds, hints]}} for every solved board. Unfinished boards
+// live only in the browser (canokuGame_{day}_{MODE}). Players not yet
+// migrated (savesVersion < 2) still have per-day subcollections
+// canokuUserData/{id}/{dayIndex}, one document per mode, {gameData: <JSON>}.
 
-import { daily } from './common.js?v=202610061550';
-import { duration } from '../dates.js?v=202610061550';
+import { daily } from './common.js?v=202610070117';
+import { readPref, prefKeys } from '../local.js?v=202610070117';
+import { duration } from '../dates.js?v=202610070117';
 import {
   SOLVED, PROGRESS, emptyProgress, mark, currentStreak, longestStreak, intList, num, minEd, noteFinish,
-} from '../status.js?v=202610061550';
+} from '../status.js?v=202610070117';
 
 const SIZES = [
   { suffix: '', label: '9×9', stat: '' },
@@ -32,6 +35,24 @@ const TIERS = SIZES.flatMap((s) => LEVELS.map((l) => ({
   group: s.label,
   statKey: `${l.stat}${s.stat}Stats`,
 })));
+
+/**
+ * Unfinished puzzles saved in this browser, by day: Canoku keeps them in
+ * shared_preferences as canokuGame_{day}_{MODE} = {savedAt, game}.
+ */
+export function localCanokuGames() {
+  const out = {};
+  for (const key of prefKeys()) {
+    const m = /^canokuGame_(\d+)_([A-Z0-9]+)$/.exec(key);
+    if (!m) continue;
+    let saved = readPref(key);
+    try { if (typeof saved === 'string') saved = JSON.parse(saved); } catch { continue; }
+    const game = saved && typeof saved === 'object' ? saved.game : null;
+    if (!game || typeof game !== 'object') continue;
+    (out[Number(m[1])] ||= []).push({ mode: m[2], complete: boardComplete(game), time: num(game.time) });
+  }
+  return out;
+}
 
 /** True when every cell holds exactly one placed (non-note) value. */
 export function boardComplete(game) {
@@ -74,18 +95,38 @@ export const canoku = {
   async fetch({ uid, reader, recent }) {
     const doc = await reader.getDoc(['canokuUserData', uid]);
     if (!doc) return null;
+    const solvedModes = doc.completedModes && typeof doc.completedModes === 'object'
+      ? doc.completedModes : {};
+    // Players not yet moved to completedModes still have per-puzzle documents
+    const legacy = num(doc.savesVersion) < 2;
+    const local = localCanokuGames();
     const days = {};
     await Promise.all(recent.map(async (i) => {
-      try {
-        const modes = await reader.listDocs(['canokuUserData', uid, String(i)]);
-        days[i] = modes.map(({ id, data }) => {
-          let game = {};
-          try { game = JSON.parse(data.gameData || '{}'); } catch { /* skip */ }
-          return { mode: game.mode || id, complete: boardComplete(game), time: num(game.time) };
-        });
-      } catch {
-        // A day we can't read just shows its day-level status.
+      const modes = [];
+      const solved = solvedModes[i];
+      if (solved && typeof solved === 'object') {
+        for (const [mode, rec] of Object.entries(solved)) {
+          modes.push({ mode, complete: true, time: num(Array.isArray(rec) ? rec[0] : 0) });
+        }
       }
+      if (legacy) {
+        try {
+          const docs = await reader.listDocs(['canokuUserData', uid, String(i)]);
+          for (const { id, data } of docs) {
+            let game = {};
+            try { game = JSON.parse(data.gameData || '{}'); } catch { /* skip */ }
+            const mode = game.mode || id;
+            if (modes.some((m) => m.mode === mode)) continue;
+            modes.push({ mode, complete: boardComplete(game), time: num(game.time) });
+          }
+        } catch {
+          // A day we can't read just shows its day-level status.
+        }
+      }
+      for (const g of local[i] || []) {
+        if (!modes.some((m) => m.mode === g.mode)) modes.push(g);
+      }
+      if (modes.length) days[i] = modes;
     }));
     const stats = {};
     for (const t of TIERS) stats[t.key] = doc[t.statKey] || null;

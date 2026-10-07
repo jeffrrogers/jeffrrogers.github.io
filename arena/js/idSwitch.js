@@ -20,7 +20,7 @@
 // planIdSwitch is pure (data in, operations out) so the order and the encoding
 // are unit-tested; applyIdSwitch performs the operations.
 
-import { writePref, removePref } from './local.js?v=202610061550';
+import { writePref, removePref } from './local.js?v=202610070117';
 
 /** Collections read for the new id, by game. */
 export const ID_DOCS = {
@@ -107,6 +107,8 @@ export function planIdSwitch({ oldId, newId, docs, keys = [], oldIds = [] }) {
   remove('chnPendingUpload');
   remove('chnPlayedGames');
   removePrefixed('chnGame_');
+  // Canoku's unfinished boards belong to the old account
+  removePrefixed('canokuGame_');
 
   // Keep the old id on record, as the feedback email reports them.
   if (oldId && oldId !== newId && !oldIds.includes(oldId)) {

@@ -6,7 +6,7 @@
 // games' flutter_bootstrap.js, it goes in a little after the page is up so it
 // doesn't compete with the first paint, and never on localhost or in ?demo.
 
-import { IS_DEMO } from './config.js?v=202610061550';
+import { IS_DEMO } from './config.js?v=202610070117';
 
 const AD_TAG_URL =
   'https://portal.cdn.yollamedia.com/storage/tag/ps6d46b18362b4075b4074ad02399f36e91e9d429e.js';
