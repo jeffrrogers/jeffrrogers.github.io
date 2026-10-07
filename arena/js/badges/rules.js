@@ -6,7 +6,7 @@
 // badge (and announcing it) is store.js's job, which is also why a badge that
 // depends on a recent window (Clean Sweep) only needs to be seen once.
 
-import { minEd } from '../status.js?v=202610071327';
+import { minEd } from '../status.js?v=202610071408';
 
 /** Day puzzle [i] was finished: as the game recorded it, else the puzzle's own day. */
 function finishOn(game, p, i) {
@@ -65,7 +65,7 @@ const WEEKLY_TOTALS = [
 ];
 
 const SWEEP_DESC = {
-  canoku: 'Solve a 9Ã—9, a 6Ã—6 and a 4Ã—4 board on the same day.',
+  canoku: 'Solve a 9×9, a 6×6 and a 4×4 board on the same day.',
   canolitaire: 'Win all three Draw 1 deals, or all three Draw 3 deals, on the same day.',
   canominoes: 'Solve the Easy, Medium and Hard puzzles on the same day.',
   canoggle: 'Solve both the Daily board and the Mini on the same day.',
@@ -84,7 +84,7 @@ const SPECIALS = {
   ],
   canoku: [
     { key: 'expert', name: 'Expert, Eh?', glyph: 'star', tier: 'gold',
-      desc: 'Solve a 9Ã—9 Expert board.',
+      desc: 'Solve a 9×9 Expert board.',
       check: (p) => [p.flags.expert9 ? 1 : 0, 1] },
   ],
   canolitaire: [
