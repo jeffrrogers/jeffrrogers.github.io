@@ -1,9 +1,9 @@
 // Opening a puzzle: straight into the game, or via a difficulty picker for
 // games with several puzzles per day.
 
-import { h, openSheet, sheetHead, statusIcon } from '../ui.js?v=202610070117';
-import { shortDate, weekdayName } from '../dates.js?v=202610070117';
-import { track } from '../analytics.js?v=202610070117';
+import { h, openSheet, sheetHead, statusIcon } from '../ui.js?v=202610071327';
+import { shortDate, weekdayName } from '../dates.js?v=202610071327';
+import { track } from '../analytics.js?v=202610071327';
 
 /** Short label for a puzzle relative to today: "Today", "Yesterday", "Wed". */
 export function whenLabel(game, index, todayIdx) {
@@ -23,8 +23,31 @@ export function dateLabel(game, index) {
   return shortDate(game.edForIndex(index));
 }
 
+const LEFT_FOR_GAME = 'arena.leftForGame';
+
 function trackPlay(game, index, tier, isToday) {
   track('arena_play', { game: game.id, index, tier: tier || '', today: isToday ? 1 : 0 });
+  // Remembered for this tab only, so the arena knows to look again for a
+  // result that is still on its way to Firestore when the player comes back.
+  try {
+    sessionStorage.setItem(LEFT_FOR_GAME, String(Date.now()));
+  } catch {
+    // Storage blocked: the one re-read on return still happens.
+  }
+}
+
+/**
+ * True once after the player went from here into a game in this tab (within
+ * the last two hours), then false until they go again.
+ */
+export function takeLeftForGame() {
+  try {
+    const at = Number(sessionStorage.getItem(LEFT_FOR_GAME));
+    sessionStorage.removeItem(LEFT_FOR_GAME);
+    return at > 0 && Date.now() - at < 2 * 60 * 60 * 1000;
+  } catch {
+    return false;
+  }
 }
 
 /** Props for an <a> that opens [index]: a direct link, or the tier sheet. */

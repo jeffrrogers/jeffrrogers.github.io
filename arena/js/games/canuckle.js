@@ -6,11 +6,11 @@
 // entries use {guesses: [{guess}]} instead of userGuesses. startTimestamp is
 // local midnight of the day the game was started, archive games included.
 
-import { epochDay, edOfMillis } from '../dates.js?v=202610070117';
-import { parseJsonList, pct } from './common.js?v=202610070117';
+import { epochDay, edOfMillis } from '../dates.js?v=202610071327';
+import { parseJsonList, readJsonPref, pct } from './common.js?v=202610071327';
 import {
   SOLVED, FAILED, PROGRESS, emptyProgress, mark, currentStreak, longestStreak, num, minEd, noteFinish,
-} from '../status.js?v=202610070117';
+} from '../status.js?v=202610071327';
 
 const ORIGINAL_START = epochDay(2022, 2, 10); // games #1-#142
 const ORIGINAL_END = epochDay(2022, 7, 1);
@@ -37,6 +37,24 @@ export function readGame(g) {
     archive: g.isFromArchive === true,
     startedAt: num(g.startTimestamp) || null,
   };
+}
+
+/**
+ * The account's games, plus the one this browser has just played and not yet
+ * seen saved. Canuckle writes that game to pendingGameJson before it uploads
+ * (and removes it once the upload lands), so a player who finishes and comes
+ * straight back sees the result before Firestore does. It replaces the
+ * server's copy of the same puzzle when it has more guesses.
+ */
+export function gamesWithPending(list) {
+  const games = parseJsonList(list);
+  const pending = readJsonPref('pendingGameJson');
+  const index = num(pending?.index);
+  if (!index) return games;
+  const at = games.findIndex((g) => num(g?.index) === index);
+  if (at < 0) games.push(pending);
+  else if (readGame(pending).guesses > readGame(games[at]).guesses) games[at] = pending;
+  return games;
 }
 
 /**
@@ -126,12 +144,13 @@ export const canuckle = {
 
   derive(raw, { todayIdx }) {
     const p = emptyProgress();
-    if (!raw) return p;
+    // No account record yet still shows a game finished in this browser.
+    raw = raw || {};
     const winDays = new Set();
     let archive = 0;
     let quickWin = false;
     const archiveOn = [];
-    for (const g of parseJsonList(raw.games).map(readGame)) {
+    for (const g of gamesWithPending(raw.games).map(readGame)) {
       if (!g.index || g.index > 50000 || !g.status) continue;
       mark(p, g.index, g.status);
       if (g.status !== PROGRESS) p.days.get(g.index).guesses = g.guesses;

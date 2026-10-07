@@ -7,19 +7,50 @@
 // (so updatedAt is when it was solved); in-progress boards come from this
 // browser's domGame_{day}_{tier} saves.
 
-import { daily, pct, historyStart } from './common.js?v=202610070117';
-import { duration, edOfMillis } from '../dates.js?v=202610070117';
-import { toMillis } from '../firebase.js?v=202610070117';
-import { readPref } from '../local.js?v=202610070117';
+import { daily, pct, historyStart, readJsonPref } from './common.js?v=202610071327';
+import { duration, edOfMillis } from '../dates.js?v=202610071327';
+import { toMillis } from '../firebase.js?v=202610071327';
+import { readPref } from '../local.js?v=202610071327';
 import {
   SOLVED, PROGRESS, emptyProgress, mark, storedStreak, intList, num, minEd, maxEd, noteFinish,
-} from '../status.js?v=202610070117';
+} from '../status.js?v=202610071327';
 
 const LEVELS = [
   { key: 'e', label: 'Easy' },
   { key: 'm', label: 'Medium' },
   { key: 'h', label: 'Hard' },
 ];
+
+/**
+ * [raw] with this browser's own records folded in. Canominoes keeps its whole
+ * stats record locally (domStats, the same shape as dominoUserData) and saves
+ * a solve to domPendingUpload before it uploads, so a puzzle solved a moment
+ * ago shows before Firestore has it. Solved days are unioned; the streak and
+ * per-level counts come from whichever copy is further along.
+ */
+function withLocal(raw) {
+  const r = { tiers: {}, sd: [], games: [], ...(raw || {}) };
+  const local = readJsonPref('domStats');
+  if (local) {
+    r.sd = [...new Set([...r.sd, ...intList(local.sd)])];
+    const tiers = { ...r.tiers };
+    for (const l of LEVELS) {
+      const mine = local[l.key];
+      if (mine && num(mine.p) > num(tiers[l.key]?.p)) tiers[l.key] = mine;
+    }
+    r.tiers = tiers;
+    if (num(local.ld) >= num(r.ld)) {
+      r.st = local.st;
+      r.ld = local.ld;
+    }
+    r.ms = Math.max(num(r.ms), num(local.ms));
+  }
+  const pending = readJsonPref('domPendingUpload');
+  if (pending && pending.solved === true && Number.isInteger(pending.day)) {
+    r.games = [...r.games, { day: pending.day, tier: pending.tier, solved: true, at: null }];
+  }
+  return r;
+}
 
 export const canominoes = {
   id: 'canominoes',
@@ -70,7 +101,7 @@ export const canominoes = {
 
   derive(raw, { todayIdx, recent = [] }) {
     const p = emptyProgress();
-    if (!raw) return p;
+    raw = withLocal(raw);
     for (const i of raw.sd) {
       mark(p, i, SOLVED);
       p.doneIdx.add(i);

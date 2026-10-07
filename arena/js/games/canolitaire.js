@@ -7,13 +7,13 @@
 // st (0 playing, 1 won, 2 abandoned), sec, updatedAt}; updatedAt is the last
 // write, which for a finished deal is when it finished.
 
-import { daily, pct, historyStart } from './common.js?v=202610070117';
-import { duration, edOfMillis } from '../dates.js?v=202610070117';
-import { toMillis } from '../firebase.js?v=202610070117';
-import { readPref } from '../local.js?v=202610070117';
+import { daily, pct, historyStart, readJsonPref } from './common.js?v=202610071327';
+import { duration, edOfMillis } from '../dates.js?v=202610071327';
+import { toMillis } from '../firebase.js?v=202610071327';
+import { readPref } from '../local.js?v=202610071327';
 import {
   SOLVED, PLAYED, PROGRESS, emptyProgress, mark, storedStreak, intList, num, minEd, maxEd, noteFinish,
-} from '../status.js?v=202610070117';
+} from '../status.js?v=202610071327';
 
 const DRAWS = ['1', '3'];
 const LEVELS = ['e', 'm', 'h'];
@@ -24,6 +24,26 @@ const TIERS = DRAWS.flatMap((d) => LEVELS.map((l) => ({
 })));
 
 const tierKey = (drawIndex, levelIndex) => `${DRAWS[drawIndex] ?? '1'}${LEVELS[levelIndex] ?? 'e'}`;
+
+/**
+ * Daily deals as this browser last saved them: one slot per draw and level
+ * (solDailyGame_<draw>_<level>, a JSON string with the deal's day and st: 0
+ * playing, 1 won, 2 abandoned), plus a finished deal still waiting to upload.
+ * The game writes both before its Firestore write, so a deal won a moment ago
+ * shows as won before the server has it.
+ */
+function localDeals() {
+  const deals = [];
+  const add = (o) => {
+    if (!o || !Number.isInteger(o.day) || o.day <= 0) return;
+    deals.push({ day: o.day, dm: num(o.dm), df: num(o.df), st: num(o.st), sec: num(o.sec), at: null });
+  };
+  for (let dm = 0; dm < DRAWS.length; dm++) {
+    for (let df = 0; df < LEVELS.length; df++) add(readJsonPref(`solDailyGame_${dm}_${df}`));
+  }
+  add(readJsonPref('solPendingUpload'));
+  return deals;
+}
 
 export const canolitaire = {
   id: 'canolitaire',
@@ -74,13 +94,13 @@ export const canolitaire = {
 
   derive(raw, { todayIdx }) {
     const p = emptyProgress();
-    if (!raw) return p;
+    raw = { d1: {}, d3: {}, cd: [], games: [], ...(raw || {}) };
     for (const i of raw.cd) {
       mark(p, i, PLAYED);
       p.doneIdx.add(i);
     }
     const won = new Map(); // day -> Map of tier key won -> epoch day won
-    for (const g of raw.games || []) {
+    for (const g of [...raw.games, ...localDeals()]) {
       if (!g.day) continue;
       const key = tierKey(g.dm, g.df);
       const status = g.st === 1 ? SOLVED : g.st === 2 ? PLAYED : PROGRESS;

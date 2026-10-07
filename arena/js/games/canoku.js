@@ -9,12 +9,12 @@
 // migrated (savesVersion < 2) still have per-day subcollections
 // canokuUserData/{id}/{dayIndex}, one document per mode, {gameData: <JSON>}.
 
-import { daily } from './common.js?v=202610070117';
-import { readPref, prefKeys } from '../local.js?v=202610070117';
-import { duration } from '../dates.js?v=202610070117';
+import { daily } from './common.js?v=202610071327';
+import { readPref, prefKeys } from '../local.js?v=202610071327';
+import { duration } from '../dates.js?v=202610071327';
 import {
   SOLVED, PROGRESS, emptyProgress, mark, currentStreak, longestStreak, intList, num, minEd, noteFinish,
-} from '../status.js?v=202610070117';
+} from '../status.js?v=202610071327';
 
 const SIZES = [
   { suffix: '', label: '9×9', stat: '' },
@@ -142,12 +142,29 @@ export const canoku = {
 
   derive(raw, { todayIdx }) {
     const p = emptyProgress();
-    if (!raw) return p;
-    const done = new Set(raw.completed);
+    raw = raw || {};
+    const done = new Set(raw.completed || []);
     for (const i of done) {
       mark(p, i, SOLVED);
       p.doneIdx.add(i);
       noteFinish(p, i, num(raw.completedAt?.[i]));
+    }
+    // This browser's own records, read here rather than at fetch time so the
+    // instant paint from cache is current too. Canoku deletes a board when it
+    // is solved and writes "<day>:<MODE>" to canokuLastSolves (the last solve
+    // of each day) before it uploads, so a puzzle finished a moment ago shows
+    // as solved before Firestore has it.
+    for (const entry of readPref('canokuLastSolves') || []) {
+      const [d, mode] = String(entry).split(':');
+      const idx = Number(d);
+      if (!Number.isInteger(idx) || idx <= 0 || !mode) continue;
+      mark(p, idx, SOLVED, mode);
+      mark(p, idx, SOLVED);
+      done.add(idx);
+      p.doneIdx.add(idx);
+    }
+    for (const [i, boards] of Object.entries(localCanokuGames())) {
+      for (const b of boards) mark(p, Number(i), b.complete ? SOLVED : PROGRESS, b.mode);
     }
     let sweep = false;
     for (const [i, modes] of Object.entries(raw.days || {})) {

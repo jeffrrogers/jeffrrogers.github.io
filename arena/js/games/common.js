@@ -7,7 +7,8 @@
 //   todayIndex(ed)     today's puzzle index
 //   step               days per puzzle (1 daily, 7 weekly)
 
-import { epochDay } from '../dates.js?v=202610070117';
+import { readPref } from '../local.js?v=202610071327';
+import { epochDay } from '../dates.js?v=202610071327';
 
 /** A game whose puzzle #1 is on [start] (y, m, d) and changes each day. */
 export function daily(y, m, d) {
@@ -46,6 +47,20 @@ export function historyStart(recent, full) {
 }
 
 /** Parses JSON strings defensively; bad entries are skipped. */
+/**
+ * A pref the game stores as jsonEncode(...) in a string: decoded twice (once
+ * by readPref, once here). Null when missing or unreadable.
+ */
+export function readJsonPref(key) {
+  let v = readPref(key);
+  try {
+    if (typeof v === 'string') v = JSON.parse(v);
+  } catch {
+    return null;
+  }
+  return v && typeof v === 'object' ? v : null;
+}
+
 export function parseJsonList(list) {
   const out = [];
   for (const s of Array.isArray(list) ? list : []) {

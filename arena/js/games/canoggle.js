@@ -7,18 +7,57 @@
 // solved, updatedAt} (solved false = answers revealed), written when a board
 // finishes. In-progress boards are local.
 
-import { daily, pct, historyStart } from './common.js?v=202610070117';
-import { edOfMillis } from '../dates.js?v=202610070117';
-import { toMillis } from '../firebase.js?v=202610070117';
-import { readPref } from '../local.js?v=202610070117';
+import { daily, pct, historyStart, readJsonPref } from './common.js?v=202610071327';
+import { edOfMillis } from '../dates.js?v=202610071327';
+import { toMillis } from '../firebase.js?v=202610071327';
+import { readPref } from '../local.js?v=202610071327';
 import {
   SOLVED, FAILED, PROGRESS, emptyProgress, mark, storedStreak, intList, num, minEd, maxEd, noteFinish,
-} from '../status.js?v=202610070117';
+} from '../status.js?v=202610071327';
 
 const KINDS = [
   { key: 'd', label: 'Daily' },
   { key: 'm', label: 'Mini' },
 ];
+
+const COUNTS = ['ms', 'mn', 'mr', 'wf', 'bf', 'cw', 'bc', 'mx'];
+
+/**
+ * [raw] with this browser's own records folded in, so a board finished a
+ * moment ago shows before Firestore has it. Canoggle keeps its stats locally
+ * (chnStats, the same shape as chainUserData) and saves a finished board to
+ * chnPendingUpload before it uploads; a saved board whose answers were
+ * revealed ("v|checksum|1|...") is finished too.
+ */
+function withLocal(raw, recent) {
+  const r = { sd: [], games: [], ...(raw || {}) };
+  const local = readJsonPref('chnStats');
+  if (local) {
+    r.sd = [...new Set([...r.sd, ...intList(local.sd)])];
+    for (const k of COUNTS) r[k] = Math.max(num(r[k]), num(local[k]));
+    if (num(local.ld) >= num(r.ld)) {
+      r.st = local.st;
+      r.ld = local.ld;
+    }
+  }
+  const extra = [];
+  const pending = readJsonPref('chnPendingUpload');
+  if (pending && Number.isInteger(pending.day) && pending.kind) {
+    extra.push({ day: pending.day, kind: pending.kind, solved: pending.solved === true, at: null });
+  }
+  for (const i of recent) {
+    for (const k of KINDS) {
+      const board = readPref(`chnGame_${i}_${k.key}`);
+      if (typeof board === 'string' && board.split('|')[2] === '1') {
+        extra.push({ day: i, kind: k.key, solved: false, at: null });
+      }
+    }
+  }
+  // A local "revealed" never hides a solve the server already has.
+  r.games = [...r.games, ...extra.filter((e) => e.solved
+    || !r.games.some((g) => g.day === e.day && g.kind === e.kind && g.solved))];
+  return r;
+}
 
 export const canoggle = {
   id: 'canoggle',
@@ -72,7 +111,7 @@ export const canoggle = {
 
   derive(raw, { todayIdx, recent = [] }) {
     const p = emptyProgress();
-    if (!raw) return p;
+    raw = withLocal(raw, recent);
     for (const i of raw.sd) {
       mark(p, i, SOLVED, 'd');
       mark(p, i, SOLVED);
