@@ -1,15 +1,15 @@
 // Canuckle and Canuckle+ tabs: the puzzle table, the editor (edit or add) and
 // swapping two puzzles.
 
-import { h, clear, modal, toast, issues, availabilityGate } from '../ui.js?v=202610081710';
-import { GAMES, longDate, todayIndex, isAvailable, runwayDays, nextIndex } from '../dates.js?v=202610081710';
-import { encodeAnswer } from '../codec.js?v=202610081710';
-import { segmentsToText, textToSegments, plainFact } from '../facts.js?v=202610081710';
-import { validatePuzzle, puzzleFlags } from '../validate.js?v=202610081710';
-import { swapPayload } from '../swap.js?v=202610081710';
-import { savePuzzle, swapPuzzles } from '../store.js?v=202610081710';
-import { ctx, loadGame, answerUses, duoUses, wordsFor, maxIndex, availabilityMessages } from '../context.js?v=202610081710';
-import { factCard, previewFrame } from '../preview.js?v=202610081710';
+import { h, clear, modal, toast, issues, availabilityGate } from '../ui.js?v=202610081713';
+import { GAMES, longDate, todayIndex, isAvailable, puzzlesAfterToday, nextIndex } from '../dates.js?v=202610081713';
+import { encodeAnswer } from '../codec.js?v=202610081713';
+import { segmentsToText, textToSegments, plainFact } from '../facts.js?v=202610081713';
+import { validatePuzzle, puzzleFlags } from '../validate.js?v=202610081713';
+import { swapPayload } from '../swap.js?v=202610081713';
+import { savePuzzle, swapPuzzles } from '../store.js?v=202610081713';
+import { ctx, loadGame, answerUses, duoUses, wordsFor, maxIndex, availabilityMessages } from '../context.js?v=202610081713';
+import { factCard, previewFrame } from '../preview.js?v=202610081713';
 
 const PAGE = 150;
 const RUNWAY_WARN_DAYS = 30;
@@ -39,9 +39,9 @@ export function renderPuzzles(root, gameId, rerender) {
       || plainFact(p.fact).toLowerCase().includes(q);
   });
 
-  const runway = max == null ? null : runwayDays(gameId, max);
-  const unit = gameId === 'plus' ? 'weeks' : 'days';
-  const runwayCount = runway == null ? 0 : gameId === 'plus' ? Math.floor(runway / 7) : runway;
+  // Puzzles after today's: days for Canuckle, weeks for Canuckle+.
+  const ahead = max == null ? null : puzzlesAfterToday(gameId, max);
+  const unit = `${gameId === 'plus' ? 'week' : 'day'}${ahead === 1 ? '' : 's'}`;
 
   const search = h('input', {
     type: 'search', placeholder: 'Search answer, #, date or fact', value: st.q,
@@ -52,10 +52,10 @@ export function renderPuzzles(root, gameId, rerender) {
       .map(([v, l]) => h('option', { value: v, selected: st.filter === v }, l)));
 
   clear(root,
-    h('div', { class: `banner${runway != null && runway < RUNWAY_WARN_DAYS ? ' warn' : ''}` },
-      runway == null ? 'No puzzles yet.'
-        : runway < 0 ? `Out of puzzles: the last one was ${longDate(GAMES[gameId].edForIndex(max))}. Players can't get a new ${g.name}.`
-          : `${runwayCount} ${unit} of puzzles after today (last: ${g.label(max)}, ${longDate(g.edForIndex(max))}).`,
+    h('div', { class: `banner${ahead != null && ahead * g.step < RUNWAY_WARN_DAYS ? ' warn' : ''}` },
+      ahead == null ? 'No puzzles yet.'
+        : ahead < 0 ? `Out of puzzles: the last one was ${longDate(g.edForIndex(max))}. Players can't get a new ${g.name}.`
+          : `${ahead} ${unit} of puzzles after today (last: ${g.label(max)}, ${longDate(g.edForIndex(max))}).`,
       ' Today is ', h('b', {}, g.label(today)), '.'),
     h('div', { class: 'toolbar' },
       search, filter,

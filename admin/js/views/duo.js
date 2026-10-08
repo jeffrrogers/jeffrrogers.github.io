@@ -2,12 +2,12 @@
 // an optional "Linked by" / "Theme" badge) and importing a schedule JSON
 // (canuckleSourceCode/tool/duo_schedule_year1.json).
 
-import { h, clear, modal, toast, issues, availabilityGate } from '../ui.js?v=202610081710';
-import { GAMES, longDate, todayIndex, isAvailable, runwayDays, nextIndex } from '../dates.js?v=202610081710';
-import { validateDuo } from '../validate.js?v=202610081710';
-import { savePuzzle, importDuo } from '../store.js?v=202610081710';
-import { ctx, loadGame, duoUses, maxIndex, availabilityMessages } from '../context.js?v=202610081710';
-import { factCard, badgeChip, miniSwitch, previewFrame } from '../preview.js?v=202610081710';
+import { h, clear, modal, toast, issues, availabilityGate } from '../ui.js?v=202610081713';
+import { GAMES, longDate, todayIndex, isAvailable, puzzlesAfterToday, nextIndex } from '../dates.js?v=202610081713';
+import { validateDuo } from '../validate.js?v=202610081713';
+import { savePuzzle, importDuo } from '../store.js?v=202610081713';
+import { ctx, loadGame, duoUses, maxIndex, availabilityMessages } from '../context.js?v=202610081713';
+import { factCard, badgeChip, miniSwitch, previewFrame } from '../preview.js?v=202610081713';
 
 const PAGE = 150;
 const st = { q: '', filter: 'all', shown: PAGE, refocus: false };
@@ -43,17 +43,17 @@ export function renderDuo(root, rerender) {
       || longDate(d.ed).toLowerCase().includes(q)
       || String(d.badge?.label || '').toLowerCase().includes(q);
   });
-  const runway = max == null ? null : runwayDays('duo', max);
+  const ahead = max == null ? null : puzzlesAfterToday('duo', max);
 
   const search = h('input', {
     type: 'search', placeholder: 'Search answer, #, date or badge', value: st.q,
     oninput: (e) => { st.q = e.target.value; st.shown = PAGE; st.refocus = true; rerender(); },
   });
   clear(root,
-    h('div', { class: `banner${runway != null && runway < 30 ? ' warn' : ''}` },
-      runway == null ? 'No Duo days yet. Import the schedule to start.'
-        : runway < 0 ? `Out of Duo days: the last one was ${longDate(g.edForIndex(max))}.`
-          : `${runway} days of Duo after today (last: ${g.label(max)}, ${longDate(g.edForIndex(max))}).`,
+    h('div', { class: `banner${ahead != null && ahead < 30 ? ' warn' : ''}` },
+      ahead == null ? 'No Duo days yet. Import the schedule to start.'
+        : ahead < 0 ? `Out of Duo days: the last one was ${longDate(g.edForIndex(max))}.`
+          : `${ahead} day${ahead === 1 ? '' : 's'} of Duo after today (last: ${g.label(max)}, ${longDate(g.edForIndex(max))}).`,
       ' Today is ', h('b', {}, g.label(today)), '.'),
     h('div', { class: 'toolbar' },
       search,

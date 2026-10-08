@@ -102,9 +102,13 @@ export function isAvailable(gameId, index, todayEd = todayEpochDay()) {
   return GAMES[gameId].edForIndex(index) <= todayEd + 1;
 }
 
-/** Days of puzzles left after today, given the highest index that exists. */
-export function runwayDays(gameId, maxIndex, todayEd = todayEpochDay()) {
-  return GAMES[gameId].edForIndex(maxIndex) - todayEd;
+/**
+ * How many puzzles exist after today's, given the highest index (days for
+ * Canuckle and Duo, weeks for Canuckle+). Negative when even today's is
+ * missing.
+ */
+export function puzzlesAfterToday(gameId, maxIndex, todayEd = todayEpochDay()) {
+  return maxIndex - todayIndex(gameId, todayEd);
 }
 
 /** The next index to add after the highest existing one. */

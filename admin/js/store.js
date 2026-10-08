@@ -2,14 +2,14 @@
 // transaction that also writes an adminLog entry with the docs before and
 // after, so any edit, swap or import can be restored from the Log tab.
 
-import { sdk, currentEmail } from './firebase.js?v=202610081710';
-import { GAMES } from './dates.js?v=202610081710';
-import { decodeAnswer } from './codec.js?v=202610081710';
+import { sdk, currentEmail } from './firebase.js?v=202610081713';
+import { GAMES } from './dates.js?v=202610081713';
+import { decodeAnswer } from './codec.js?v=202610081713';
 import {
   PLAYER_COLLECTIONS, GAMES_SUBCOLLECTION_PARENTS, MAX_GAMES, queryCutoff, accountVerdict, quickVerdict,
-} from './cleanup.js?v=202610081710';
-import { pool } from './pool.js?v=202610081710';
-import { repairAccount } from './repair.js?v=202610081710';
+} from './cleanup.js?v=202610081713';
+import { pool } from './pool.js?v=202610081713';
+import { repairAccount } from './repair.js?v=202610081713';
 
 // ---- Puzzles --------------------------------------------------------------
 
