@@ -27,7 +27,7 @@ export const FIREBASE_SDK = 'https://www.gstatic.com/firebasejs/11.0.2';
 
 // Must match isAdmin() in firebase/firestore.rules. The rules are what
 // actually protect the data; this only gives other accounts a clear message.
-export const ADMIN_EMAILS = ['jrog86@gmail.com'];
+export const ADMIN_EMAILS = ['jrog86@gmail.com', 'rogerscentral@gmail.com'];
 
 // Word lists, same origin on canucklegame.ca and the sandbox. Local dev falls
 // back to the sandbox copy (GitHub Pages allows cross-origin reads).
