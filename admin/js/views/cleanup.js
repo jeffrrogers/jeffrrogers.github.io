@@ -1,10 +1,10 @@
 // Cleanup tab: find stale accounts (dry run), download a backup, then delete.
 // The rule itself is in ../cleanup.js.
 
-import { h, clear, toast, downloadJson } from '../ui.js?v=202610081739';
-import { summarize, thresholdDays, clockProblem, PLAYER_COLLECTIONS, MAX_GAMES } from '../cleanup.js?v=202610081739';
-import { findStaleAccounts, deleteAccounts, serverNow } from '../store.js?v=202610081739';
-import { USE_EMULATOR } from '../config.js?v=202610081739';
+import { h, clear, toast, downloadJson } from '../ui.js?v=202610081750';
+import { summarize, thresholdDays, clockProblem, PLAYER_COLLECTIONS, MAX_GAMES } from '../cleanup.js?v=202610081750';
+import { findStaleAccounts, deleteAllAccounts, serverNow } from '../store.js?v=202610081750';
+import { USE_EMULATOR } from '../config.js?v=202610081750';
 
 const state = {
   phase: 'idle', // idle | scanning | scanned | deleting | done
@@ -150,13 +150,14 @@ async function remove(rerender) {
   state.stop = false;
   rerender();
   try {
-    for (let i = 0; i < state.candidates.length; i += 50) {
-      if (state.stop) break;
-      const r = await deleteAccounts(state.candidates.slice(i, i + 50), Date.now());
-      state.deleted += r.deleted.length;
-      state.skipped += r.skipped.length;
-      rerender();
-    }
+    await deleteAllAccounts(state.candidates, {
+      shouldStop: () => state.stop,
+      onBatch: (r) => {
+        state.deleted += r.deleted.length;
+        state.skipped += r.skipped.length;
+        rerender();
+      },
+    });
     toast(`Deleted ${state.deleted} accounts.`);
   } catch (e) {
     toast(`Delete stopped: ${e.message}`, { error: true });

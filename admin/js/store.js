@@ -2,14 +2,14 @@
 // transaction that also writes an adminLog entry with the docs before and
 // after, so any edit, swap or import can be restored from the Log tab.
 
-import { sdk, currentEmail } from './firebase.js?v=202610081739';
-import { GAMES } from './dates.js?v=202610081739';
-import { decodeAnswer } from './codec.js?v=202610081739';
+import { sdk, currentEmail } from './firebase.js?v=202610081750';
+import { GAMES } from './dates.js?v=202610081750';
+import { decodeAnswer } from './codec.js?v=202610081750';
 import {
   PLAYER_COLLECTIONS, GAMES_SUBCOLLECTION_PARENTS, MAX_GAMES, queryCutoff, accountVerdict, quickVerdict,
-} from './cleanup.js?v=202610081739';
-import { pool } from './pool.js?v=202610081739';
-import { repairAccount } from './repair.js?v=202610081739';
+} from './cleanup.js?v=202610081750';
+import { pool } from './pool.js?v=202610081750';
+import { repairAccount } from './repair.js?v=202610081750';
 
 // ---- Puzzles --------------------------------------------------------------
 
@@ -234,11 +234,11 @@ export async function findStaleAccounts(nowMs, { onPage, shouldStop } = {}) {
 /** Whether any of the ID's `games` subcollections has a doc. */
 export async function hasSubcollectionGames(id) {
   const { fs, db } = await sdk();
-  for (const coll of GAMES_SUBCOLLECTION_PARENTS) {
+  const found = await Promise.all(GAMES_SUBCOLLECTION_PARENTS.map(async (coll) => {
     const q = fs.query(fs.collection(db, coll, id, 'games'), fs.limit(1));
-    if (!(await fs.getDocs(q)).empty) return true;
-  }
-  return false;
+    return !(await fs.getDocs(q)).empty;
+  }));
+  return found.some(Boolean);
 }
 
 /** Every player doc for [id], keyed by collection (null when missing). */
@@ -260,14 +260,19 @@ export async function readAccount(id) {
  *    "stale", and newUserData.lastUpdated must be exactly what the scan saw.
  * The transaction fails and retries if any doc it read changes before it
  * commits, so a player who comes back mid-delete is never removed.
- * At most 50 accounts per call (6 deletes each, under the 500-write limit).
+ * At most DELETE_BATCH accounts per call: up to 6 deletes each plus the log
+ * entry must stay under Firestore's 500 writes per transaction.
  */
+export const DELETE_BATCH = 80;
+
 export async function deleteAccounts(accounts, nowMs) {
-  if (accounts.length > 50) throw new Error('At most 50 accounts per transaction.');
+  if (accounts.length > DELETE_BATCH) throw new Error(`At most ${DELETE_BATCH} accounts per transaction.`);
   const { fs, db } = await sdk();
   const email = await currentEmail();
   const subGames = new Map();
-  for (const a of accounts) subGames.set(a.id, await hasSubcollectionGames(a.id));
+  await pool(accounts, 16, async (a) => {
+    subGames.set(a.id, await hasSubcollectionGames(a.id));
+  });
 
   return fs.runTransaction(db, async (tx) => {
     const fresh = await Promise.all(accounts.map(async (a) => {
@@ -303,6 +308,25 @@ export async function deleteAccounts(accounts, nowMs) {
     });
     return { deleted, skipped };
   });
+}
+
+/**
+ * Deletes [accounts] in DELETE_BATCH-sized transactions, [parallel] at a
+ * time (separate accounts, so they never contend). onBatch(result) after
+ * each; shouldStop() is checked before each batch starts.
+ */
+export async function deleteAllAccounts(accounts, { parallel = 4, onBatch, shouldStop } = {}) {
+  const batches = [];
+  for (let i = 0; i < accounts.length; i += DELETE_BATCH) batches.push(accounts.slice(i, i + DELETE_BATCH));
+  const total = { deleted: [], skipped: [] };
+  await pool(batches, parallel, async (batch) => {
+    if (shouldStop?.()) return;
+    const r = await deleteAccounts(batch, Date.now());
+    total.deleted.push(...r.deleted);
+    total.skipped.push(...r.skipped);
+    onBatch?.(r);
+  });
+  return total;
 }
 
 // ---- Repair: accounts Canuckle can't save ------------------------------------
