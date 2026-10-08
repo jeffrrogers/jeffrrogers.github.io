@@ -2,12 +2,12 @@
 // an optional "Linked by" / "Theme" badge) and importing a schedule JSON
 // (canuckleSourceCode/tool/duo_schedule_year1.json).
 
-import { h, clear, modal, toast, issues, availabilityGate } from '../ui.js?v=202610081707';
-import { GAMES, longDate, todayIndex, isAvailable, runwayDays, nextIndex } from '../dates.js?v=202610081707';
-import { validateDuo } from '../validate.js?v=202610081707';
-import { savePuzzle, importDuo } from '../store.js?v=202610081707';
-import { ctx, loadGame, duoUses, maxIndex, availabilityMessages } from '../context.js?v=202610081707';
-import { factCard, badgeChip, miniSwitch, previewFrame } from '../preview.js?v=202610081707';
+import { h, clear, modal, toast, issues, availabilityGate } from '../ui.js?v=202610081710';
+import { GAMES, longDate, todayIndex, isAvailable, runwayDays, nextIndex } from '../dates.js?v=202610081710';
+import { validateDuo } from '../validate.js?v=202610081710';
+import { savePuzzle, importDuo } from '../store.js?v=202610081710';
+import { ctx, loadGame, duoUses, maxIndex, availabilityMessages } from '../context.js?v=202610081710';
+import { factCard, badgeChip, miniSwitch, previewFrame } from '../preview.js?v=202610081710';
 
 const PAGE = 150;
 const st = { q: '', filter: 'all', shown: PAGE, refocus: false };

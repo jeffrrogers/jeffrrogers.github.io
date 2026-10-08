@@ -11,6 +11,22 @@
 
 export const MAX_DROP = 4;
 
+// Canuckle's own blank-game stripping was certainly live by this date (it
+// entered canuckleSourceCode in 884d89f, 2026-05-26), so every account saved
+// since has already been cleaned by the game. The Repair scan never looks at
+// accounts updated after it.
+export const REPAIR_LATEST = '2026-06-01';
+
+/**
+ * The "last updated before" date the scan uses: the date picked, but never
+ * later than REPAIR_LATEST (an empty or later pick means REPAIR_LATEST).
+ * Dates are YYYY-MM-DD; the cutoff is local midnight at the start of it.
+ */
+export function repairCutoff(picked) {
+  const day = /^\d{4}-\d{2}-\d{2}$/.test(picked || '') && picked < REPAIR_LATEST ? picked : REPAIR_LATEST;
+  return { day, ms: new Date(`${day}T00:00:00`).getTime() };
+}
+
 function parse(s) {
   try {
     const v = JSON.parse(s);

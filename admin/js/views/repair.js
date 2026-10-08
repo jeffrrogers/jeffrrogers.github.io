@@ -2,9 +2,9 @@
 // unreadable; see ../repair.js) and remove them. Accounts with more than 4 in
 // one list are marked stuck: Canuckle can't save those at all until fixed.
 
-import { h, clear, toast, downloadJson } from '../ui.js?v=202610081707';
-import { analyzeAccount, MAX_DROP } from '../repair.js?v=202610081707';
-import { scanAccounts, repairOneAccount } from '../store.js?v=202610081707';
+import { h, clear, toast, downloadJson } from '../ui.js?v=202610081710';
+import { analyzeAccount, repairCutoff, MAX_DROP, REPAIR_LATEST } from '../repair.js?v=202610081710';
+import { scanAccounts, repairOneAccount } from '../store.js?v=202610081710';
 
 const state = {
   phase: 'idle', // idle | scanning | scanned | repairing | done
@@ -16,25 +16,29 @@ const state = {
   unchanged: 0,
   stop: false,
   error: '',
-  before: '',
+  before: REPAIR_LATEST,
+  scannedBefore: '', // the cutoff the last scan used
 };
 
 export function renderRepair(root, rerender) {
   const busy = state.phase === 'scanning' || state.phase === 'repairing';
-  const before = h('input', { type: 'date', value: state.before, disabled: busy });
-  before.addEventListener('change', () => { state.before = before.value; });
+  const before = h('input', { type: 'date', value: state.before, max: REPAIR_LATEST, disabled: busy });
+  before.addEventListener('change', () => {
+    state.before = repairCutoff(before.value).day;
+    before.value = state.before;
+  });
 
   const intro = h('div', { class: 'card' },
     h('h3', {}, 'Blank and unreadable games'),
     h('p', {}, `When Canuckle saves an account it drops games with a blank answer and Duo games it can't read. This finds every account holding any, and removes exactly what Canuckle would have removed; nothing else in the account changes. Accounts with more than ${MAX_DROP} in one list are marked stuck: the rules allow at most ${MAX_DROP} to be dropped in one save, so Canuckle can't save those at all until they're repaired.`),
-    h('p', { class: 'small muted' }, 'The scan reads every account once (one Firestore read each). To read fewer, limit it to accounts last updated before a date: blank games only survive in accounts that haven\'t saved since the stripping shipped.'),
+    h('p', { class: 'small muted' }, `Only accounts last updated before ${REPAIR_LATEST} are scanned (one Firestore read each): Canuckle has stripped these games itself on every save since then. Pick an earlier date to read fewer.`),
     h('div', { class: 'actions left' },
-      h('label', { class: 'row small' }, 'Only accounts last updated before ', before, ' (optional)'),
+      h('label', { class: 'row small' }, 'Last updated before ', before),
       h('button', { class: 'btn primary', disabled: busy, onclick: () => scan(rerender) }, state.phase === 'idle' ? 'Scan' : 'Scan again'),
       busy ? h('button', { class: 'btn', onclick: () => { state.stop = true; } }, 'Stop') : null),
     state.error ? h('p', { class: 'err' }, state.error) : null,
     state.phase !== 'idle' ? h('p', {},
-      `Checked ${state.scanned} accounts. `,
+      `Checked ${state.scanned} accounts last updated before ${state.scannedBefore}. `,
       h('b', {}, `${state.found.length} have games to remove`),
       `, ${state.stuck} of them stuck.`,
       state.phase === 'scanning' ? ' Still scanning…' : '') : null);
@@ -79,7 +83,10 @@ async function scan(rerender) {
     repaired: 0, unchanged: 0, stop: false, error: '',
   });
   rerender();
-  const beforeMs = state.before ? new Date(`${state.before}T00:00:00`).getTime() : null;
+  // Always a cutoff, never a full scan: at most REPAIR_LATEST.
+  const cutoff = repairCutoff(state.before);
+  state.scannedBefore = cutoff.day;
+  const beforeMs = cutoff.ms;
   try {
     await scanAccounts({
       beforeMs,
