@@ -33,6 +33,7 @@ export const FIREBASE_SDK = 'https://www.gstatic.com/firebasejs/11.0.2';
 const LIVE_IN_PRODUCTION = {
   canuckle: true,
   plus: true,
+  duo: false,
   canoku: true,
   canolitaire: false,
   canominoes: false,

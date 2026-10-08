@@ -11,6 +11,7 @@ const PALETTE = {
   family: ['#D52B1E', '#A61F15'],
   canuckle: ['#D52B1E', '#A61F15'],
   plus: ['#C08A12', '#8F6608'],
+  duo: ['#6B3FA0', '#4E2C78'],
   canoku: ['#1F5E96', '#154369'],
   canolitaire: ['#1E5A3C', '#123824'],
   canominoes: ['#2A2A33', '#15151B'],
@@ -168,6 +169,33 @@ const ART = {
       `<rect x="${x}" y="${y}" width="14" height="14" rx="4" fill="#fff"/><text x="${x + 7}" y="${y + 11}" text-anchor="middle" font-family="Sora, 'Clear Sans', sans-serif" font-weight="800" font-size="9" fill="#D35F1B">${t}</text>`).join('')
     + '<circle cx="78" cy="44" r="10" fill="#fff"/>' + leaf(71.5, 37, 0.13, '#D52B1E'),
 
+  // Two Duo boards, both solved, with a gold star: a Perfect Duo.
+  duoBoards: (badge = '') => [33, 61].map((x) =>
+    `<rect x="${x}" y="38" width="26" height="30" rx="5" fill="#fff"/>`
+    + [0, 1, 2].map((r) => `<rect x="${x + 4}" y="${42 + r * 8}" width="18" height="5" rx="1.5" fill="${r === 2 ? '#2FA866' : '#CDB6EA'}"/>`).join('')).join('')
+    + '<path d="M80 62l4.6 9.4 10.4 1.5-7.5 7.3 1.8 10.3L80 85.6l-9.3 4.9 1.8-10.3-7.5-7.3 10.4-1.5z" fill="#F5C443" stroke="#fff" stroke-width="2" stroke-linejoin="round"/>'
+    + (badge ? `<text x="80" y="81" text-anchor="middle" font-family="Sora, 'Clear Sans', sans-serif" font-weight="800" font-size="8" fill="#7A2A12">${badge}</text>` : ''),
+
+  // Lucky Hoser: a horseshoe, open end up, with a 7.
+  horseshoe: () => '<path d="M44 40v18a16 16 0 0 0 32 0V40" fill="none" stroke="#E9C46A" stroke-width="9" stroke-linecap="round"/>'
+    + '<path d="M44 40v18a16 16 0 0 0 32 0V40" fill="none" stroke="#fff" stroke-width="2" stroke-dasharray="1 7" opacity=".9"/>'
+    + '<circle cx="60" cy="84" r="11" fill="#fff"/>'
+    + `<text x="60" y="88.5" text-anchor="middle" font-family="Sora, 'Clear Sans', sans-serif" font-weight="800" font-size="13" fill="#4E2C78">7</text>`,
+
+  // Double Double: a coffee cup, two sugars.
+  cup: () => '<path d="M44 46h32l-4 38a5 5 0 0 1-5 4H53a5 5 0 0 1-5-4z" fill="#fff"/>'
+    + '<rect x="41" y="40" width="38" height="8" rx="3" fill="#EDE8DE"/><rect x="47" y="35" width="26" height="6" rx="3" fill="#EDE8DE"/>'
+    + '<path d="M46 58h28l-1.6 16H47.6z" fill="#D52B1E"/>' + leaf(55.5, 61, 0.09, '#fff')
+    + '<path d="M54 28c-3-3 3-5 0-8M62 28c-3-3 3-5 0-8" fill="none" stroke="#fff" stroke-width="2" stroke-linecap="round" opacity=".7"/>'
+    + '<rect x="80" y="74" width="9" height="9" rx="2" fill="#fff" stroke="#E9E2D6"/><rect x="83" y="64" width="9" height="9" rx="2" fill="#fff" stroke="#E9E2D6"/>',
+
+  // Daily Double: Canuckle's tile and Duo's tile side by side.
+  pair: () => '<g transform="rotate(-8 46 60)"><rect x="30" y="42" width="32" height="32" rx="8" fill="#D52B1E" stroke="#fff" stroke-width="2"/>'
+    + '<path d="M49.5 52a8 8 0 1 0 0 12" fill="none" stroke="#fff" stroke-width="5"/></g>'
+    + '<g transform="rotate(8 74 60)"><rect x="58" y="44" width="32" height="32" rx="8" fill="#6B3FA0" stroke="#fff" stroke-width="2"/>'
+    + '<path d="M75.5 54a8 8 0 1 0 0 12" fill="none" stroke="#fff" stroke-width="5"/>'
+    + '<path d="M80 57a2.3 2.3 0 1 1 4 2l-5 3.5h6" fill="none" stroke="#fff" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/></g>',
+
   padlock: () => '<rect x="49" y="54" width="22" height="18" rx="4" fill="#8A847B"/><path d="M53 54v-5a7 7 0 0 1 14 0v5" fill="none" stroke="#8A847B" stroke-width="3.5"/><circle cx="60" cy="62" r="2.5" fill="#D9D4CC"/>',
 };
 
@@ -216,6 +244,12 @@ function design(badge) {
     case 'draw3': return { palette: game, art: ART.cards(), ribbon: ['DRAW 3', '#FFFFFF', PALETTE.canolitaire[1], 86] };
     case 'hard': return { palette: game, art: ART.domino() };
     case 'canuckle': return { palette: game, art: ART.chain() };
+    case 'perfect': return { palette: game, art: ART.duoBoards() };
+    case 'perfect10': return { palette: game, art: ART.duoBoards('10') };
+    case 'doubledouble': return { palette: game, art: ART.cup() };
+    case 'twice': return { palette: game, art: ART.twoGuess() };
+    case 'lucky': return { palette: game, art: ART.horseshoe() };
+    case 'dailydouble': return { palette: game, art: ART.pair() };
     default: return { palette: game, art: ART.flag() };
   }
 }

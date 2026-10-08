@@ -6,7 +6,7 @@
 // badge (and announcing it) is store.js's job, which is also why a badge that
 // depends on a recent window (Clean Sweep) only needs to be seen once.
 
-import { minEd } from '../status.js?v=202610071408';
+import { SOLVED, minEd } from '../status.js?v=202610081653';
 
 /** Day puzzle [i] was finished: as the game recorded it, else the puzzle's own day. */
 function finishOn(game, p, i) {
@@ -81,6 +81,31 @@ const SPECIALS = {
       desc: 'Finish 10 Canuckle games from the archive.',
       check: (p) => [p.flags.archive || 0, 10],
       since: (p) => nthEarliest(p.flagOn?.archive || [], 10) },
+  ],
+  duo: [
+    { key: 'perfect', name: 'Perfect Duo', glyph: 'star', tier: 'silver',
+      desc: 'Solve both Canuckle Duo words by your fourth guess.',
+      check: (p) => [p.flags.perfect ? 1 : 0, 1],
+      since: (p) => p.flagOn?.perfect },
+    { key: 'perfect10', name: 'Perfect Ten', glyph: 'star', tier: 'gold',
+      desc: 'Get 10 Perfect Duos.',
+      check: (p) => [Math.min(p.flags.perfects || 0, 10), 10],
+      since: (p) => nthEarliest(p.flagOn?.perfectDays || [], 10) },
+    { key: 'doubledouble', name: 'Double Double', glyph: 'cup', tier: 'gold',
+      desc: 'Get a Perfect Duo two days in a row.',
+      check: (p) => [p.flags.doubleDouble ? 1 : 0, 1],
+      since: (p) => p.flagOn?.doubleDouble },
+    { key: 'twice', name: 'Twice as Nice', glyph: 'star', tier: 'gold',
+      desc: 'Solve both Canuckle Duo words in just two guesses.',
+      check: (p) => [p.flags.twice ? 1 : 0, 1],
+      since: (p) => p.flagOn?.twice },
+    { key: 'lucky', name: 'Lucky Hoser', glyph: 'star', tier: 'bronze',
+      desc: 'Win a Canuckle Duo on your seventh and final guess.',
+      check: (p) => [p.flags.lucky ? 1 : 0, 1],
+      since: (p) => p.flagOn?.lucky },
+    { key: 'archive', name: 'Time Traveller', glyph: 'clock', tier: 'silver',
+      desc: 'Finish 10 Canuckle Duo puzzles from the archive.',
+      check: (p) => [Math.min(p.flags.archive || 0, 10), 10] },
   ],
   canoku: [
     { key: 'expert', name: 'Expert, Eh?', glyph: 'star', tier: 'gold',
@@ -244,9 +269,42 @@ const COLLECTOR = {
   desc: 'Earn 10 other badges.',
 };
 
+/**
+ * Daily Double: win Canuckle and Canuckle Duo on the same day. A Duo badge
+ * that needs Canuckle's progress too, so it is evaluated against everyone's
+ * state ([cross]) rather than Duo's alone.
+ */
+function dailyDouble(canuckle, duo) {
+  const pairs = (state) => {
+    const pc = state[canuckle.id]?.progress;
+    const pd = state[duo.id]?.progress;
+    if (!pc || !pd) return [];
+    const wonOn = new Map(); // calendar day of a won Canuckle -> day it was finished
+    for (const [i, d] of pc.days) {
+      if (d.status === SOLVED) wonOn.set(canuckle.edForIndex(i), finishOn(canuckle, pc, i));
+    }
+    const out = [];
+    for (const [i, d] of pd.days) {
+      const ed = duo.edForIndex(i);
+      if (d.status === SOLVED && wonOn.has(ed)) out.push(Math.max(wonOn.get(ed), finishOn(duo, pd, i)));
+    }
+    return out;
+  };
+  return {
+    id: `${duo.id}.dailydouble`, game: duo.id, cross: true, name: 'Daily Double', glyph: 'pair', tier: 'silver',
+    desc: 'Win Canuckle and Canuckle Duo on the same day.',
+    check: ({ state }) => [Math.min(pairs(state).length, 1), 1],
+    since: ({ state }) => nthEarliest(pairs(state), 1),
+  };
+}
+
 /** Every badge definition for the given (live) games. */
 export function badgeDefinitions(games) {
-  return [...familyBadges(games), COLLECTOR, ...games.flatMap(gameBadges)];
+  const list = [...familyBadges(games), COLLECTOR, ...games.flatMap(gameBadges)];
+  const canuckle = games.find((g) => g.id === 'canuckle');
+  const duo = games.find((g) => g.id === 'duo');
+  if (canuckle && duo) list.push(dailyDouble(canuckle, duo));
+  return list;
 }
 
 /**
@@ -274,7 +332,7 @@ export function evaluateBadges(games, state, alreadyEarned = new Set()) {
     if (def === COLLECTOR) continue;
     const p = def.game ? state[def.game]?.progress : null;
     if (def.game && !p) continue;
-    const arg = def.game ? p : ctx;
+    const arg = def.game && !def.cross ? p : ctx;
     const [have, need] = def.check(arg);
     const reached = have >= need;
     const on = reached && def.since ? def.since(arg) : null;

@@ -20,7 +20,7 @@
 // planIdSwitch is pure (data in, operations out) so the order and the encoding
 // are unit-tested; applyIdSwitch performs the operations.
 
-import { writePref, removePref } from './local.js?v=202610071408';
+import { writePref, removePref } from './local.js?v=202610081653';
 
 /** Collections read for the new id, by game. */
 export const ID_DOCS = {
@@ -59,15 +59,18 @@ export function planIdSwitch({ oldId, newId, docs, keys = [], oldIds = [] }) {
   // Canuckle: its games live on the server; locally it keeps counts and stats
   // strings, which it would upload. Seed them as its own sync does.
   remove('pendingGameJson');
+  remove('pendingDuoGameJson');
+  remove('duoArchiveIndex');
   const cu = docs.canuckle;
   if (cu) {
     set('gamesCount', n(cu.gamesCount));
     set('hardModeStats', s(cu.hardModeStats));
     set('normalStats', s(cu.normalStats));
     set('plusStats', s(cu.plusStats));
+    set('duoStats', s(cu.duoStats));
     set('archiveGame', s(cu.archiveGame));
   } else {
-    for (const k of ['gamesCount', 'hardModeStats', 'normalStats', 'plusStats', 'archiveGame']) remove(k);
+    for (const k of ['gamesCount', 'hardModeStats', 'normalStats', 'plusStats', 'duoStats', 'archiveGame']) remove(k);
   }
 
   // Canoku: everything else is on the server; only the streak is local.

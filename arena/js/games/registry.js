@@ -1,14 +1,15 @@
 // Every game the arena knows about, in display order.
 
-import { isLive } from '../config.js?v=202610071408';
-import { canuckle } from './canuckle.js?v=202610071408';
-import { canucklePlus } from './canucklePlus.js?v=202610071408';
-import { canoku } from './canoku.js?v=202610071408';
-import { canolitaire } from './canolitaire.js?v=202610071408';
-import { canominoes } from './canominoes.js?v=202610071408';
-import { canoggle } from './canoggle.js?v=202610071408';
+import { isLive } from '../config.js?v=202610081653';
+import { canuckle } from './canuckle.js?v=202610081653';
+import { canucklePlus } from './canucklePlus.js?v=202610081653';
+import { canuckleDuo } from './canuckleDuo.js?v=202610081653';
+import { canoku } from './canoku.js?v=202610081653';
+import { canolitaire } from './canolitaire.js?v=202610081653';
+import { canominoes } from './canominoes.js?v=202610081653';
+import { canoggle } from './canoggle.js?v=202610081653';
 
-export const ALL_GAMES = [canuckle, canucklePlus, canoku, canolitaire, canominoes, canoggle];
+export const ALL_GAMES = [canuckle, canucklePlus, canuckleDuo, canoku, canolitaire, canominoes, canoggle];
 
 export function liveGames() {
   return ALL_GAMES.filter((g) => isLive(g.id));

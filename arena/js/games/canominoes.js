@@ -7,13 +7,13 @@
 // (so updatedAt is when it was solved); in-progress boards come from this
 // browser's domGame_{day}_{tier} saves.
 
-import { daily, pct, historyStart, readJsonPref } from './common.js?v=202610071408';
-import { duration, edOfMillis } from '../dates.js?v=202610071408';
-import { toMillis } from '../firebase.js?v=202610071408';
-import { readPref } from '../local.js?v=202610071408';
+import { daily, pct, historyStart, readJsonPref } from './common.js?v=202610081653';
+import { duration, edOfMillis } from '../dates.js?v=202610081653';
+import { toMillis } from '../firebase.js?v=202610081653';
+import { readPref } from '../local.js?v=202610081653';
 import {
   SOLVED, PROGRESS, emptyProgress, mark, storedStreak, intList, num, minEd, maxEd, noteFinish,
-} from '../status.js?v=202610071408';
+} from '../status.js?v=202610081653';
 
 const LEVELS = [
   { key: 'e', label: 'Easy' },

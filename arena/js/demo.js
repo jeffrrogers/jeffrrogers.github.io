@@ -33,6 +33,15 @@ export function demoRaw(game, todayEd) {
         maxStreak: 10,
         plusStats: JSON.stringify({ oneGuessWins: 0, twoGuessWins: 3, threeGuessWins: 4, fourGuessWins: 2, fiveGuessWins: 1, sixGuessWins: 0, losses: 0 }),
       };
+    case 'duo':
+      return {
+        games: range(k - 6, k - 1).map((i) => JSON.stringify({
+          answers: ['MAPLE', 'TOQUE'], index: i, isFromArchive: false,
+          userGuesses: i === k - 3 ? ['A', 'B', 'C', 'D', 'E', 'F', 'G'] : ['MOOSE', 'MAPLE', 'TOQUE'].slice(i % 2),
+        })),
+        maxStreak: 4,
+        duoStats: JSON.stringify({ twos: 1, threes: 2, fours: 1, fives: 0, sixes: 0, sevens: 0, losses: 1 }),
+      };
     case 'canoku':
       return {
         completed: range(k - 20, k - 1),
