@@ -1,14 +1,13 @@
 // Cleanup tab: find stale accounts (dry run), download a backup, then delete.
 // The rule itself is in ../cleanup.js.
 
-import { h, clear, toast, downloadJson } from '../ui.js?v=202610081713';
-import { pool } from '../pool.js?v=202610081713';
-import { summarize, thresholdDays, clockProblem, PLAYER_COLLECTIONS, MAX_GAMES } from '../cleanup.js?v=202610081713';
-import { findStaleAccounts, readAccount, deleteAccounts, serverNow } from '../store.js?v=202610081713';
-import { USE_EMULATOR } from '../config.js?v=202610081713';
+import { h, clear, toast, downloadJson } from '../ui.js?v=202610081739';
+import { summarize, thresholdDays, clockProblem, PLAYER_COLLECTIONS, MAX_GAMES } from '../cleanup.js?v=202610081739';
+import { findStaleAccounts, deleteAccounts, serverNow } from '../store.js?v=202610081739';
+import { USE_EMULATOR } from '../config.js?v=202610081739';
 
 const state = {
-  phase: 'idle', // idle | scanning | scanned | backingUp | deleting | done
+  phase: 'idle', // idle | scanning | scanned | deleting | done
   scanned: 0,
   verdicts: [],
   candidates: [], // {id, total, idleDays, lastUpdated}
@@ -30,7 +29,7 @@ export function renderCleanup(root, rerender) {
     h('p', {}, "Always kept: a linked email in any of the ID's docs; any sign of play in Canoku, Canolitaire, Canominoes or Canoggle (stats, streaks or saved puzzles); Canoku accounts with unmigrated old saves; and anything with a missing lastUpdated."),
     h('p', {}, `Deleting removes the ID's doc in every player collection: ${PLAYER_COLLECTIONS.join(', ')}. Every account is checked again against fresh data at the moment of deletion, and skipped if anything changed.`));
 
-  const busy = state.phase === 'scanning' || state.phase === 'backingUp' || state.phase === 'deleting';
+  const busy = state.phase === 'scanning' || state.phase === 'deleting';
   const s = summarize(state.verdicts);
 
   const scanBtn = h('button', { class: 'btn primary', disabled: busy, onclick: () => scan(rerender) },
@@ -127,23 +126,17 @@ async function scan(rerender) {
   rerender();
 }
 
-async function backup(rerender) {
-  state.phase = 'backingUp';
-  rerender();
-  const out = {};
-  try {
-    await pool(state.candidates, 8, async (c) => {
-      if (state.stop) return;
-      out[c.id] = await readAccount(c.id);
-    });
-    const stamp = new Date(state.startedAt).toISOString().slice(0, 16).replace(/[:T]/g, '-');
-    downloadJson(`canuckle-cleanup-backup-${stamp}.json`, { takenAt: new Date().toISOString(), accounts: out });
-    state.backupTaken = true;
-  } catch (e) {
-    toast(`Backup failed: ${e.message}`, { error: true });
+// The docs the scan already read for each account, so the file is ready at
+// once with no extra reads, and always covers every account the delete
+// would touch.
+function backup(rerender) {
+  const accounts = {};
+  for (const c of state.candidates) {
+    accounts[c.id] = Object.fromEntries(Object.entries(c.docs || {}).filter(([, d]) => d));
   }
-  state.stop = false;
-  state.phase = 'scanned';
+  const stamp = new Date(state.startedAt).toISOString().slice(0, 16).replace(/[:T]/g, '-');
+  downloadJson(`canuckle-cleanup-backup-${stamp}.json`, { scannedAt: new Date(state.startedAt).toISOString(), accounts });
+  state.backupTaken = true;
   rerender();
 }
 

@@ -2,14 +2,14 @@
 // transaction that also writes an adminLog entry with the docs before and
 // after, so any edit, swap or import can be restored from the Log tab.
 
-import { sdk, currentEmail } from './firebase.js?v=202610081713';
-import { GAMES } from './dates.js?v=202610081713';
-import { decodeAnswer } from './codec.js?v=202610081713';
+import { sdk, currentEmail } from './firebase.js?v=202610081739';
+import { GAMES } from './dates.js?v=202610081739';
+import { decodeAnswer } from './codec.js?v=202610081739';
 import {
   PLAYER_COLLECTIONS, GAMES_SUBCOLLECTION_PARENTS, MAX_GAMES, queryCutoff, accountVerdict, quickVerdict,
-} from './cleanup.js?v=202610081713';
-import { pool } from './pool.js?v=202610081713';
-import { repairAccount } from './repair.js?v=202610081713';
+} from './cleanup.js?v=202610081739';
+import { pool } from './pool.js?v=202610081739';
+import { repairAccount } from './repair.js?v=202610081739';
 
 // ---- Puzzles --------------------------------------------------------------
 
@@ -208,7 +208,7 @@ export async function scanStale(nowMs, onPage, shouldStop) {
  * newUserData alone, and reads the other five docs plus the games
  * subcollections for the rest. onPage(verdicts, candidates, scanned) is
  * called after each page. Candidates carry the lastUpdated the delete must
- * still find.
+ * still find, and every doc the scan read for them (the backup file).
  */
 export async function findStaleAccounts(nowMs, { onPage, shouldStop } = {}) {
   const all = { verdicts: [], candidates: [], scanned: 0 };
@@ -218,10 +218,11 @@ export async function findStaleAccounts(nowMs, { onPage, shouldStop } = {}) {
       const [docs, subGames] = await Promise.all([readAccount(r.id), hasSubcollectionGames(r.id)]);
       r.v = accountVerdict(docs, nowMs, subGames);
       r.user = docs.newUserData || r.user;
+      r.docs = docs;
     });
     const verdicts = rows.map((r) => r.v);
     const candidates = rows.filter((r) => r.v.eligible)
-      .map((r) => ({ id: r.id, total: r.v.total, idleDays: r.v.idleDays, lastUpdated: r.user.lastUpdated }));
+      .map((r) => ({ id: r.id, total: r.v.total, idleDays: r.v.idleDays, lastUpdated: r.user.lastUpdated, docs: r.docs }));
     all.verdicts.push(...verdicts);
     all.candidates.push(...candidates);
     all.scanned += page.length;
