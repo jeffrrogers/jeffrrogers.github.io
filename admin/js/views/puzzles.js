@@ -1,15 +1,15 @@
 // Canuckle and Canuckle+ tabs: the puzzle table, the editor (edit or add) and
 // swapping two puzzles.
 
-import { h, clear, modal, toast, issues, availabilityGate } from '../ui.js?v=202610081750';
-import { GAMES, longDate, todayIndex, isAvailable, puzzlesAfterToday, nextIndex } from '../dates.js?v=202610081750';
-import { encodeAnswer } from '../codec.js?v=202610081750';
-import { segmentsToText, textToSegments, plainFact } from '../facts.js?v=202610081750';
-import { validatePuzzle, puzzleFlags } from '../validate.js?v=202610081750';
-import { swapPayload } from '../swap.js?v=202610081750';
-import { savePuzzle, swapPuzzles } from '../store.js?v=202610081750';
-import { ctx, loadGame, answerUses, duoUses, wordsFor, maxIndex, availabilityMessages } from '../context.js?v=202610081750';
-import { factCard, previewFrame } from '../preview.js?v=202610081750';
+import { h, clear, modal, toast, issues, availabilityGate } from '../ui.js?v=202610081755';
+import { GAMES, longDate, todayIndex, isAvailable, puzzlesAfterToday, nextIndex } from '../dates.js?v=202610081755';
+import { encodeAnswer } from '../codec.js?v=202610081755';
+import { segmentsToText, textToSegments, plainFact } from '../facts.js?v=202610081755';
+import { validatePuzzle, puzzleFlags } from '../validate.js?v=202610081755';
+import { swapPayload } from '../swap.js?v=202610081755';
+import { savePuzzle, swapPuzzles } from '../store.js?v=202610081755';
+import { ctx, loadGame, answerUses, duoUses, wordsFor, maxIndex, availabilityMessages } from '../context.js?v=202610081755';
+import { factCard, previewFrame } from '../preview.js?v=202610081755';
 
 const PAGE = 150;
 const RUNWAY_WARN_DAYS = 30;

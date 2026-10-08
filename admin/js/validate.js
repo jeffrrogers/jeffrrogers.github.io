@@ -1,7 +1,7 @@
 // Checks before a puzzle is saved, and the flags shown in the tables.
 // Errors block saving; warnings are shown and can be saved past.
 
-import { GAMES } from './dates.js?v=202610081750';
+import { GAMES } from './dates.js?v=202610081755';
 
 // How recent a Canuckle puzzle may be and still be reused in Duo
 // (canuckleSourceCode/tool/generate_duo_schedule.dart excludeRecent).

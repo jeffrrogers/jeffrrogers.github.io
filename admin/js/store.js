@@ -2,14 +2,14 @@
 // transaction that also writes an adminLog entry with the docs before and
 // after, so any edit, swap or import can be restored from the Log tab.
 
-import { sdk, currentEmail } from './firebase.js?v=202610081750';
-import { GAMES } from './dates.js?v=202610081750';
-import { decodeAnswer } from './codec.js?v=202610081750';
+import { sdk, currentEmail } from './firebase.js?v=202610081755';
+import { GAMES } from './dates.js?v=202610081755';
+import { decodeAnswer } from './codec.js?v=202610081755';
 import {
   PLAYER_COLLECTIONS, GAMES_SUBCOLLECTION_PARENTS, MAX_GAMES, queryCutoff, accountVerdict, quickVerdict,
-} from './cleanup.js?v=202610081750';
-import { pool } from './pool.js?v=202610081750';
-import { repairAccount } from './repair.js?v=202610081750';
+} from './cleanup.js?v=202610081755';
+import { pool } from './pool.js?v=202610081755';
+import { repairAccount } from './repair.js?v=202610081755';
 
 // ---- Puzzles --------------------------------------------------------------
 
@@ -253,80 +253,57 @@ export async function readAccount(id) {
 }
 
 /**
- * Deletes accounts that still qualify, re-checking each one against fresh
- * data first:
- *  - the games subcollections are re-checked just before the transaction;
- *  - inside it, all six docs are re-read and accountVerdict must still say
- *    "stale", and newUserData.lastUpdated must be exactly what the scan saw.
- * The transaction fails and retries if any doc it read changes before it
- * commits, so a player who comes back mid-delete is never removed.
- * At most DELETE_BATCH accounts per call: up to 6 deletes each plus the log
- * entry must stay under Firestore's 500 writes per transaction.
+ * Deletes the accounts the scan picked, as they were when it read them: each
+ * one's docs (scan candidates carry them in `docs`) are deleted without being
+ * read again, so a player who came back after the scan is deleted too. The
+ * backup file holds every doc deleted here.
+ *
+ * Packed into batched writes of at most DELETE_BATCH_WRITES (Firestore
+ * allows 500 per batch; one is the log entry), [parallel] batches at a time.
+ * onBatch({deleted}) after each; shouldStop() is checked before each batch.
  */
-export const DELETE_BATCH = 80;
+export const DELETE_BATCH_WRITES = 499;
 
-export async function deleteAccounts(accounts, nowMs) {
-  if (accounts.length > DELETE_BATCH) throw new Error(`At most ${DELETE_BATCH} accounts per transaction.`);
+export function planDeleteBatches(accounts) {
+  const batches = [];
+  let current = { ids: [], refs: [] };
+  for (const a of accounts) {
+    const colls = PLAYER_COLLECTIONS.filter((c) => a.docs?.[c]);
+    if (!colls.length) continue;
+    if (current.refs.length + colls.length > DELETE_BATCH_WRITES) {
+      batches.push(current);
+      current = { ids: [], refs: [] };
+    }
+    current.ids.push(a.id);
+    for (const c of colls) current.refs.push([c, a.id]);
+  }
+  if (current.ids.length) batches.push(current);
+  return batches;
+}
+
+export async function deleteAllAccounts(accounts, { parallel = 4, onBatch, shouldStop } = {}) {
   const { fs, db } = await sdk();
   const email = await currentEmail();
-  const subGames = new Map();
-  await pool(accounts, 16, async (a) => {
-    subGames.set(a.id, await hasSubcollectionGames(a.id));
-  });
-
-  return fs.runTransaction(db, async (tx) => {
-    const fresh = await Promise.all(accounts.map(async (a) => {
-      const docs = {};
-      await Promise.all(PLAYER_COLLECTIONS.map(async (coll) => {
-        const s = await tx.get(fs.doc(db, coll, a.id));
-        docs[coll] = s.exists() ? s.data() : null;
-      }));
-      return docs;
-    }));
-    const deleted = [];
-    const skipped = [];
-    accounts.forEach((a, i) => {
-      const docs = fresh[i];
-      const v = accountVerdict(docs, nowMs, subGames.get(a.id));
-      if (!v.eligible || docs.newUserData?.lastUpdated !== a.lastUpdated) {
-        skipped.push(a.id);
-        return;
-      }
-      for (const coll of PLAYER_COLLECTIONS) if (docs[coll]) tx.delete(fs.doc(db, coll, a.id));
-      deleted.push(a.id);
-    });
-    tx.set(fs.doc(fs.collection(db, 'adminLog')), {
+  const deleted = [];
+  await pool(planDeleteBatches(accounts), parallel, async (b) => {
+    if (shouldStop?.()) return;
+    const batch = fs.writeBatch(db);
+    for (const [coll, id] of b.refs) batch.delete(fs.doc(db, coll, id));
+    batch.set(fs.doc(fs.collection(db, 'adminLog')), {
       at: fs.serverTimestamp(),
       email,
       action: 'cleanup',
-      note: `${deleted.length} deleted, ${skipped.length} skipped (changed since the scan)`,
+      note: `${b.ids.length} accounts deleted (${b.refs.length} docs)`,
       collection: 'newUserData',
-      ids: deleted,
-      skipped,
+      ids: b.ids,
       before: null,
       after: null,
     });
-    return { deleted, skipped };
+    await batch.commit();
+    deleted.push(...b.ids);
+    onBatch?.({ deleted: b.ids });
   });
-}
-
-/**
- * Deletes [accounts] in DELETE_BATCH-sized transactions, [parallel] at a
- * time (separate accounts, so they never contend). onBatch(result) after
- * each; shouldStop() is checked before each batch starts.
- */
-export async function deleteAllAccounts(accounts, { parallel = 4, onBatch, shouldStop } = {}) {
-  const batches = [];
-  for (let i = 0; i < accounts.length; i += DELETE_BATCH) batches.push(accounts.slice(i, i + DELETE_BATCH));
-  const total = { deleted: [], skipped: [] };
-  await pool(batches, parallel, async (batch) => {
-    if (shouldStop?.()) return;
-    const r = await deleteAccounts(batch, Date.now());
-    total.deleted.push(...r.deleted);
-    total.skipped.push(...r.skipped);
-    onBatch?.(r);
-  });
-  return total;
+  return { deleted };
 }
 
 // ---- Repair: accounts Canuckle can't save ------------------------------------

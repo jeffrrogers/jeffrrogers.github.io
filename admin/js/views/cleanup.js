@@ -1,10 +1,10 @@
 // Cleanup tab: find stale accounts (dry run), download a backup, then delete.
 // The rule itself is in ../cleanup.js.
 
-import { h, clear, toast, downloadJson } from '../ui.js?v=202610081750';
-import { summarize, thresholdDays, clockProblem, PLAYER_COLLECTIONS, MAX_GAMES } from '../cleanup.js?v=202610081750';
-import { findStaleAccounts, deleteAllAccounts, serverNow } from '../store.js?v=202610081750';
-import { USE_EMULATOR } from '../config.js?v=202610081750';
+import { h, clear, toast, downloadJson } from '../ui.js?v=202610081755';
+import { summarize, thresholdDays, clockProblem, PLAYER_COLLECTIONS, MAX_GAMES } from '../cleanup.js?v=202610081755';
+import { findStaleAccounts, deleteAllAccounts, serverNow } from '../store.js?v=202610081755';
+import { USE_EMULATOR } from '../config.js?v=202610081755';
 
 const state = {
   phase: 'idle', // idle | scanning | scanned | deleting | done
@@ -13,7 +13,6 @@ const state = {
   candidates: [], // {id, total, idleDays, lastUpdated}
   backupTaken: false,
   deleted: 0,
-  skipped: 0,
   stop: false,
   error: '',
   startedAt: 0,
@@ -27,7 +26,7 @@ export function renderCleanup(root, rerender) {
       h('tr', {}, h('th', {}, 'Games'), ...[0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10].map((n) => h('td', {}, n))),
       h('tr', {}, h('th', {}, 'Days idle'), ...[0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10].map((n) => h('td', {}, thresholdDays(n))))),
     h('p', {}, "Always kept: a linked email in any of the ID's docs; any sign of play in Canoku, Canolitaire, Canominoes or Canoggle (stats, streaks or saved puzzles); Canoku accounts with unmigrated old saves; and anything with a missing lastUpdated."),
-    h('p', {}, `Deleting removes the ID's doc in every player collection: ${PLAYER_COLLECTIONS.join(', ')}. Every account is checked again against fresh data at the moment of deletion, and skipped if anything changed.`));
+    h('p', {}, `Deleting removes the ID's doc in every player collection: ${PLAYER_COLLECTIONS.join(', ')}. Accounts are deleted as the scan found them, without another check, so scan and delete in one sitting.`));
 
   const busy = state.phase === 'scanning' || state.phase === 'deleting';
   const s = summarize(state.verdicts);
@@ -71,9 +70,9 @@ export function renderCleanup(root, rerender) {
         state.backupTaken ? 'Download backup again' : 'Download backup'),
       confirmInput, deleteBtn),
     state.phase === 'deleting' || state.phase === 'done'
-      ? h('p', {}, `Deleted ${state.deleted}. Skipped ${state.skipped} (updated since the scan).${state.phase === 'deleting' ? ' Working…' : ''}`)
+      ? h('p', {}, `Deleted ${state.deleted} of ${state.candidates.length}.${state.phase === 'deleting' ? ' Working…' : ''}`)
       : null,
-    state.phase === 'deleting' ? h('progress', { max: state.candidates.length, value: state.deleted + state.skipped }) : null);
+    state.phase === 'deleting' ? h('progress', { max: state.candidates.length, value: state.deleted }) : null);
 
   clear(root, rules, status, del,
     h('p', { class: 'muted small' }, 'The scan needs the (gamesCount, lastUpdated) index in firebase/firestore.indexes.json. If it is missing, the error below Scan includes a link that creates it.'));
@@ -98,7 +97,7 @@ async function checkClock() {
 async function scan(rerender) {
   Object.assign(state, {
     phase: 'scanning', scanned: 0, verdicts: [], candidates: [], backupTaken: false,
-    deleted: 0, skipped: 0, stop: false, error: '', startedAt: Date.now(),
+    deleted: 0, stop: false, error: '', startedAt: Date.now(),
   });
   rerender();
   const clock = await checkClock();
@@ -154,7 +153,6 @@ async function remove(rerender) {
       shouldStop: () => state.stop,
       onBatch: (r) => {
         state.deleted += r.deleted.length;
-        state.skipped += r.skipped.length;
         rerender();
       },
     });
@@ -162,7 +160,7 @@ async function remove(rerender) {
   } catch (e) {
     toast(`Delete stopped: ${e.message}`, { error: true });
   }
+  // The list stays for the "Deleted N of M" line; delete is off once done.
   state.phase = 'done';
-  state.candidates = [];
   rerender();
 }
