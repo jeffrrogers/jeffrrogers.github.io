@@ -7,13 +7,13 @@
 // solved, updatedAt} (solved false = answers revealed), written when a board
 // finishes. In-progress boards are local.
 
-import { daily, pct, historyStart, readJsonPref } from './common.js?v=202610081653';
-import { edOfMillis } from '../dates.js?v=202610081653';
-import { toMillis } from '../firebase.js?v=202610081653';
-import { readPref } from '../local.js?v=202610081653';
+import { daily, pct, historyStart, readJsonPref } from './common.js?v=202610091437';
+import { edOfMillis } from '../dates.js?v=202610091437';
+import { toMillis } from '../firebase.js?v=202610091437';
+import { readPref } from '../local.js?v=202610091437';
 import {
   SOLVED, FAILED, PROGRESS, emptyProgress, mark, storedStreak, intList, num, minEd, maxEd, noteFinish,
-} from '../status.js?v=202610081653';
+} from '../status.js?v=202610091437';
 
 const KINDS = [
   { key: 'd', label: 'Daily' },

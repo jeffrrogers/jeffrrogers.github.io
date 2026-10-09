@@ -3,12 +3,13 @@
 // previous seven, and a way into the archive at the end. Streaks and stats
 // live on the Stats tab, not here.
 
-import { h, ICONS } from '../ui.js?v=202610081653';
-import { longDate, weekdayName, shortDate, ymd } from '../dates.js?v=202610081653';
-import { recentIndices } from '../games/common.js?v=202610081653';
-import { SOLVED, FAILED, PLAYED, PROGRESS, isDone } from '../status.js?v=202610081653';
-import { LEAF_PATH } from '../badges/icons.js?v=202610081653';
-import { playProps } from './play.js?v=202610081653';
+import { h, ICONS } from '../ui.js?v=202610091437';
+import { longDate, weekdayName, shortDate, ymd } from '../dates.js?v=202610091437';
+import { recentIndices } from '../games/common.js?v=202610091437';
+import { SOLVED, FAILED, PLAYED, PROGRESS, isDone } from '../status.js?v=202610091437';
+import { LEAF_PATH } from '../badges/icons.js?v=202610091437';
+import { playProps } from './play.js?v=202610091437';
+import { orderedGames } from '../gameOrder.js?v=202610091437';
 
 const DEFAULT_CAPTION = {
   [SOLVED]: 'SOLVED',
@@ -220,5 +221,5 @@ export function renderGames(app) {
       h('span', { class: 'muted', text: uid ? `${doneToday} of ${daily.length} daily games finished today` : '' })),
     uid ? null : h('div', { class: 'notice' },
       'Welcome! Pick any game to start. Your streaks, archive and badges show up here once you have played.'),
-    games.map((g) => gameStrip(g, progress[g.id]?.progress, todayEd)));
+    orderedGames(app).map((g) => gameStrip(g, progress[g.id]?.progress, todayEd)));
 }

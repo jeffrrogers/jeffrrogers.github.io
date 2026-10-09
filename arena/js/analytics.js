@@ -1,6 +1,6 @@
 // Google Analytics, production only.
 
-import { GA_ID, IS_SANDBOX } from './config.js?v=202610081653';
+import { GA_ID, IS_SANDBOX } from './config.js?v=202610091437';
 
 export function initAnalytics() {
   if (IS_SANDBOX) return;

@@ -1,25 +1,26 @@
 // Boot, routing and the shared app state.
 
-import { IS_SANDBOX, IS_DEMO } from './config.js?v=202610081653';
-import { demoRaw } from './demo.js?v=202610081653';
-import { initAnalytics, track } from './analytics.js?v=202610081653';
-import { loadAds } from './ads.js?v=202610081653';
-import { todayEpochDay } from './dates.js?v=202610081653';
-import { playerId } from './local.js?v=202610081653';
-import { initialTheme, initialContrast, applyTheme, applyContrast } from './theme.js?v=202610081653';
-import { liveGames, gameById } from './games/registry.js?v=202610081653';
-import { loadProgress, loadFullHistory } from './progress.js?v=202610081653';
-import { evaluateBadges } from './badges/rules.js?v=202610081653';
+import { IS_SANDBOX, IS_DEMO } from './config.js?v=202610091437';
+import { demoRaw } from './demo.js?v=202610091437';
+import { initAnalytics, track } from './analytics.js?v=202610091437';
+import { loadAds } from './ads.js?v=202610091437';
+import { todayEpochDay } from './dates.js?v=202610091437';
+import { playerId } from './local.js?v=202610091437';
+import { initialTheme, initialContrast, applyTheme, applyContrast } from './theme.js?v=202610091437';
+import { liveGames, gameById } from './games/registry.js?v=202610091437';
+import { initialOrder, computeOrder } from './gameOrder.js?v=202610091437';
+import { loadProgress, loadFullHistory } from './progress.js?v=202610091437';
+import { evaluateBadges } from './badges/rules.js?v=202610091437';
 import {
   loadStoredBadges, needsDating, planSync, applySync, markAnnounced, markShared,
-} from './badges/store.js?v=202610081653';
-import { h, ICONS, closeSheet } from './ui.js?v=202610081653';
-import { renderGames } from './views/gamesTab.js?v=202610081653';
-import { renderArchive } from './views/archive.js?v=202610081653';
-import { renderStats, renderStatsDetail } from './views/statsTab.js?v=202610081653';
-import { renderBadgesPage, announce } from './views/badgesView.js?v=202610081653';
-import { openSettings, openSync, safeReturnPath } from './views/settings.js?v=202610081653';
-import { takeLeftForGame } from './views/play.js?v=202610081653';
+} from './badges/store.js?v=202610091437';
+import { h, ICONS, closeSheet } from './ui.js?v=202610091437';
+import { renderGames } from './views/gamesTab.js?v=202610091437';
+import { renderArchive } from './views/archive.js?v=202610091437';
+import { renderStats, renderStatsDetail } from './views/statsTab.js?v=202610091437';
+import { renderBadgesPage, announce } from './views/badgesView.js?v=202610091437';
+import { openSettings, openSync, safeReturnPath } from './views/settings.js?v=202610091437';
+import { takeLeftForGame } from './views/play.js?v=202610091437';
 
 const app = {
   uid: IS_DEMO ? 'DEMO' : playerId(),
@@ -33,7 +34,14 @@ const app = {
     if (!app.uid || IS_DEMO) return;
     markShared(app.uid, id).catch(() => {});
   },
+  // Settings calls this after the sort is switched or the games rearranged.
+  reorder() {
+    app.order = computeOrder(app.games, app.progress, app.todayEd);
+    refresh();
+  },
 };
+// Game ids in the order they're listed; see gameOrder.js.
+app.order = initialOrder(app.games);
 
 // ---- Theme ----------------------------------------------------------------
 // Light/dark and high contrast are set from Settings; see theme.js.
@@ -194,8 +202,13 @@ function openSyncLink() {
 // ---- Progress -------------------------------------------------------------
 
 let loading = null;
+let orderSettled = false;
 
-/** Reads every game's progress, repainting as each one lands. */
+/**
+ * Reads every game's progress, repainting as each one lands. The game order
+ * follows the first full read only: later reads in the same visit (coming
+ * back from a game) leave the rows where they are.
+ */
 function loadAll() {
   if (loading) return loading;
   app.syncing = true;
@@ -211,6 +224,10 @@ function loadAll() {
   }).then((state) => {
     app.syncing = false;
     app.syncError = Object.values(state).some((s) => s.status === 'error');
+    if (!orderSettled) {
+      orderSettled = true;
+      app.order = computeOrder(app.games, app.progress, app.todayEd);
+    }
     refresh();
   }).finally(() => {
     loading = null;

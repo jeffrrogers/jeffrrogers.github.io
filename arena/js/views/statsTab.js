@@ -1,11 +1,12 @@
 // The Stats tab: badges up top, then a card per game; and each game's
 // detail page.
 
-import { h, ICONS } from '../ui.js?v=202610081653';
-import { medalButton } from './badgesView.js?v=202610081653';
-import { streakChip } from './gamesTab.js?v=202610081653';
-import { PROGRESS, isDone } from '../status.js?v=202610081653';
-import { playProps } from './play.js?v=202610081653';
+import { h, ICONS } from '../ui.js?v=202610091437';
+import { medalButton } from './badgesView.js?v=202610091437';
+import { streakChip } from './gamesTab.js?v=202610091437';
+import { PROGRESS, isDone } from '../status.js?v=202610091437';
+import { playProps } from './play.js?v=202610091437';
+import { orderedGames } from '../gameOrder.js?v=202610091437';
 
 function numbers(game, progress) {
   const p = progress;
@@ -31,7 +32,7 @@ function gameCard(game, progress) {
 }
 
 export function renderStats(app) {
-  const { games, progress, badges } = app;
+  const { progress, badges } = app;
   const all = badges.results;
   const earned = all.filter((b) => b.earned);
   // Earned first (most recently earned first), then the closest locked ones.
@@ -47,7 +48,7 @@ export function renderStats(app) {
     h('div', { class: 'card' }, h('div', { class: 'shelf' }, shelf.map((b) => medalButton(app, b)))),
     h('div', { class: 'section-title' }, h('h2', { text: 'Your games' })),
     h('div', { class: 'stat-grid' },
-      games.map((g) => gameCard(g, progress[g.id]?.progress))));
+      orderedGames(app).map((g) => gameCard(g, progress[g.id]?.progress))));
 }
 
 function section(sec) {

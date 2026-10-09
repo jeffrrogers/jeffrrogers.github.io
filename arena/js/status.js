@@ -1,6 +1,6 @@
 // Shared vocabulary for puzzle status, and streak arithmetic.
 
-import { edOfMillis } from './dates.js?v=202610081653';
+import { edOfMillis } from './dates.js?v=202610091437';
 
 export const SOLVED = 'solved';     // won / completed
 export const FAILED = 'failed';     // finished without a win (Canuckle loss, Canoggle reveal)
@@ -92,6 +92,11 @@ export function minEd(a, b) {
 /** The later of two epoch days, or null if either is unknown. */
 export function maxEd(a, b) {
   return a == null || b == null ? null : Math.max(a, b);
+}
+
+/** Day puzzle [i] was finished: as the game recorded it, else the puzzle's own day. */
+export function finishOn(game, p, i) {
+  return p.finishedOn?.get(i) ?? game.edForIndex(i);
 }
 
 /** Records that puzzle [index] was finished at [millis], keeping the earliest. */
