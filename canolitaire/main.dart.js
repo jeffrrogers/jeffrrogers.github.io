@@ -25610,8 +25610,7 @@ s=A.b([],t.H7)
 for(r=A.qb(a.x,t.EW),q=r.length,p=0;p<q;++p)s.push(r[p].cE())
 o.m(0,"mv",s)
 o.m(0,"sec",a.ax)
-s=a.z
-o.m(0,"sc",s<0?0:s)
+o.m(0,"sc",a.z)
 o.m(0,"mc",a.Q)
 o.m(0,"st",a.ay.a)
 o.m(0,"ck",a.gUg())
@@ -86563,8 +86562,8 @@ s=q.pop()
 s.n2(r)
 r.y.push(s)
 r.z=r.z-s.gm3()
-if(s.gH_())++r.Q
-r.CK()},
+if(s.gH_()){++r.Q
+r.z-=2}r.CK()},
 oD(){var s,r=this,q=r.y
 if(q.length===0)return
 s=q.pop()
