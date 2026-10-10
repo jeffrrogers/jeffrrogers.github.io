@@ -1,9 +1,9 @@
 // Settings › Game order: arrange the games by hand. Any move switches
 // "Sort by most played" off, so the arrangement stays as the player left it.
 
-import { h, ICONS, openSheet, sheetHead } from '../ui.js?v=202610091437';
-import { orderedGames, saveCustomOrder, sortsByPlay } from '../gameOrder.js?v=202610091437';
-import { track } from '../analytics.js?v=202610091437';
+import { h, ICONS, openSheet, sheetHead } from '../ui.js?v=202610092217';
+import { orderedGames, saveCustomOrder, sortsByPlay } from '../gameOrder.js?v=202610092217';
+import { track } from '../analytics.js?v=202610092217';
 
 function note() {
   return sortsByPlay()

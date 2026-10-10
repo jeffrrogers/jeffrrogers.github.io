@@ -16,8 +16,8 @@
 // earned BY (the player's last finish that counts toward it); badges
 // backfilled before dating existed have no dated flag and are re-dated.
 
-import { getDocData, setMerge, SERVER_TIME, toMillis } from '../firebase.js?v=202610091437';
-import { millisOfEd, todayEpochDay } from '../dates.js?v=202610091437';
+import { getDocData, setMerge, SERVER_TIME, toMillis } from '../firebase.js?v=202610092217';
+import { millisOfEd, todayEpochDay } from '../dates.js?v=202610092217';
 
 function normalize(doc) {
   const out = {};
