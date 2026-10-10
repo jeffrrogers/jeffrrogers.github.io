@@ -1,18 +1,21 @@
 // Canuckle and Canuckle+ tabs: the puzzle table, the editor (edit or add) and
 // swapping two puzzles.
 
-import { h, clear, modal, toast, issues, availabilityGate } from '../ui.js?v=202610081755';
-import { GAMES, longDate, todayIndex, isAvailable, puzzlesAfterToday, nextIndex } from '../dates.js?v=202610081755';
-import { encodeAnswer } from '../codec.js?v=202610081755';
-import { segmentsToText, textToSegments, plainFact } from '../facts.js?v=202610081755';
-import { validatePuzzle, puzzleFlags } from '../validate.js?v=202610081755';
-import { swapPayload } from '../swap.js?v=202610081755';
-import { savePuzzle, swapPuzzles } from '../store.js?v=202610081755';
-import { ctx, loadGame, answerUses, duoUses, wordsFor, maxIndex, availabilityMessages } from '../context.js?v=202610081755';
-import { factCard, previewFrame } from '../preview.js?v=202610081755';
+import { h, clear, modal, toast, issues, availabilityGate } from '../ui.js?v=202610092357';
+import {
+  GAMES, longDate, todayIndex, isAvailable, puzzlesAfterToday, nextIndex, missingIndices, parseIndex,
+} from '../dates.js?v=202610092357';
+import { encodeAnswer } from '../codec.js?v=202610092357';
+import { segmentsToText, textToSegments, plainFact } from '../facts.js?v=202610092357';
+import { validatePuzzle, puzzleFlags } from '../validate.js?v=202610092357';
+import { swapPayload } from '../swap.js?v=202610092357';
+import { savePuzzle, swapPuzzles } from '../store.js?v=202610092357';
+import { ctx, loadGame, answerUses, duoUses, wordsFor, maxIndex, availabilityMessages } from '../context.js?v=202610092357';
+import { factCard, previewFrame } from '../preview.js?v=202610092357';
 
 const PAGE = 150;
 const RUNWAY_WARN_DAYS = 30;
+const GAPS_SHOWN = 12;
 
 const view = { canuckle: { q: '', filter: 'all', shown: PAGE }, plus: { q: '', filter: 'all', shown: PAGE } };
 
@@ -43,6 +46,17 @@ export function renderPuzzles(root, gameId, rerender) {
   const ahead = max == null ? null : puzzlesAfterToday(gameId, max);
   const unit = `${gameId === 'plus' ? 'week' : 'day'}${ahead === 1 ? '' : 's'}`;
 
+  // Numbers below the highest puzzle with nothing saved, newest first.
+  const gaps = missingIndices(gameId, ctx.puzzles[gameId], max).reverse();
+  const gapBanner = gaps.length ? h('div', { class: 'banner warn gaps' },
+    `${gaps.length} missing ${gaps.length === 1 ? 'puzzle' : 'puzzles'} below ${g.label(max)}: `,
+    gaps.slice(0, GAPS_SHOWN).map((i) => h('button', {
+      class: 'btn small',
+      title: `Add ${g.name} ${g.label(i)} · ${longDate(g.edForIndex(i))}`,
+      onclick: () => openEditor(gameId, i, rerender, { add: true }),
+    }, `Add ${g.label(i)}`)),
+    gaps.length > GAPS_SHOWN ? ` and ${gaps.length - GAPS_SHOWN} earlier (use Add at…).` : null) : null;
+
   const search = h('input', {
     type: 'search', placeholder: 'Search answer, #, date or fact', value: st.q,
     oninput: (e) => { st.q = e.target.value; st.shown = PAGE; st.refocus = true; rerender(); },
@@ -57,10 +71,12 @@ export function renderPuzzles(root, gameId, rerender) {
         : ahead < 0 ? `Out of puzzles: the last one was ${longDate(g.edForIndex(max))}. Players can't get a new ${g.name}.`
           : `${ahead} ${unit} of puzzles after today (last: ${g.label(max)}, ${longDate(g.edForIndex(max))}).`,
       ' Today is ', h('b', {}, g.label(today)), '.'),
+    gapBanner,
     h('div', { class: 'toolbar' },
       search, filter,
       h('span', { class: 'spacer' }),
       h('button', { class: 'btn', onclick: () => openSwap(gameId, rerender) }, 'Swap two…'),
+      h('button', { class: 'btn', onclick: () => openAddAt(gameId, rerender) }, 'Add at…'),
       h('button', { class: 'btn primary', onclick: () => openEditor(gameId, null, rerender) }, `Add ${g.label(nextIndex(gameId, max))}`)),
     h('p', { class: 'muted small' }, `${rows.length} of ${all.length} puzzles`),
     h('div', { class: 'table-wrap' },
@@ -92,11 +108,14 @@ export function renderPuzzles(root, gameId, rerender) {
   }
 }
 
-/** Edit an existing puzzle, or add the next one when [index] is null. */
-export async function openEditor(gameId, index, rerender) {
+/**
+ * Edit an existing puzzle, or add one: the next one when [index] is null, or
+ * at [index] (a gap, or past the end) when [add] is set.
+ */
+export async function openEditor(gameId, index, rerender, { add = index == null } = {}) {
   const g = GAMES[gameId];
-  const isNew = index == null;
-  const target = isNew ? nextIndex(gameId, maxIndex(gameId)) : index;
+  const isNew = add;
+  const target = index == null ? nextIndex(gameId, maxIndex(gameId)) : index;
   const existing = ctx.puzzles[gameId].get(target);
   const original = existing
     ? { answer: existing.answer, fact: existing.fact, factUrls: existing.factUrls }
@@ -176,6 +195,56 @@ export async function openEditor(gameId, index, rerender) {
   }
 }
 
+/** Asks for any number with no puzzle yet, then opens the editor to add it. */
+export async function openAddAt(gameId, rerender) {
+  const g = GAMES[gameId];
+  const max = maxIndex(gameId);
+  const chosen = await modal(`Add a ${g.name} puzzle at…`, (close) => {
+    const input = h('input', { type: 'text', inputMode: 'numeric', placeholder: g.label(nextIndex(gameId, max)), autocomplete: 'off' });
+    const note = h('div');
+    const go = h('button', { class: 'btn primary', disabled: true }, 'Continue');
+    let target = null;
+
+    const update = () => {
+      target = null;
+      go.disabled = true;
+      go.textContent = 'Continue';
+      go.onclick = null;
+      const i = parseIndex(gameId, input.value);
+      if (input.value.trim() === '') {
+        clear(note, h('p', { class: 'muted small' }, `Type a ${g.name} number${gameId === 'canuckle' ? '' : ` (${g.label(g.firstIndex + 79)} or ${g.firstIndex + 79} both work)`}.`));
+        return;
+      }
+      if (i == null || i < g.firstIndex) {
+        clear(note, issues({ errors: [`Enter a whole number from ${g.label(g.firstIndex)} up.`] }));
+        return;
+      }
+      const existing = ctx.puzzles[gameId].get(i);
+      if (existing) {
+        clear(note, issues({ warnings: [`${g.label(i)} already exists (${existing.answer || 'no answer'}, ${longDate(existing.ed)}).`] }));
+        go.disabled = false;
+        go.textContent = `Edit ${g.label(i)}`;
+        go.onclick = () => close({ index: i, add: false });
+        return;
+      }
+      target = i;
+      const where = max == null || i < max ? 'fills a gap' : i === max + 1 ? 'is the next one' : `leaves ${i - max - 1} empty before it`;
+      clear(note, h('p', { class: 'small' }, `${g.label(i)} is ${longDate(g.edForIndex(i))}, and ${where}.`));
+      go.disabled = false;
+      go.onclick = () => close({ index: target, add: true });
+    };
+    input.addEventListener('input', update);
+    input.addEventListener('keydown', (e) => { if (e.key === 'Enter' && !go.disabled) go.click(); });
+    update();
+    setTimeout(() => input.focus(), 0);
+    return h('div', {},
+      h('label', { class: 'field' }, h('span', {}, 'Puzzle number'), input),
+      note,
+      h('div', { class: 'actions' }, h('button', { class: 'btn', onclick: () => close() }, 'Cancel'), go));
+  });
+  if (chosen) await openEditor(gameId, chosen.index, rerender, { add: chosen.add });
+}
+
 export async function openSwap(gameId, rerender) {
   const g = GAMES[gameId];
   const done = await modal(`Swap two ${g.name} puzzles`, (close) => {
@@ -187,13 +256,8 @@ export async function openSwap(gameId, rerender) {
     const go = h('button', { class: 'btn primary', disabled: true }, 'Swap');
     let gate = { ok: () => true };
 
-    const parse = (input) => {
-      const raw = input.value.trim();
-      if (!raw) return null;
-      const n = Number(raw);
-      // Accept the player-facing number for Plus (#80) as well as the index.
-      return gameId === 'plus' && n < 60001 ? n + 60000 : n;
-    };
+    // Accepts the player-facing number for Plus (#80) as well as the index.
+    const parse = (input) => parseIndex(gameId, input.value);
     const fill = (card, p, i) => clear(card,
       p ? [
         h('div', { class: 'swap-title' }, `${g.label(i)} · ${longDate(p.ed)}`),

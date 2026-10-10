@@ -116,4 +116,32 @@ export function nextIndex(gameId, maxIndex) {
   return maxIndex == null ? GAMES[gameId].firstIndex : maxIndex + 1;
 }
 
+/**
+ * Indices between the lowest and highest saved puzzles ([existing] is a Set or
+ * Map of indices) with nothing saved, ascending. Numbers before the lowest
+ * saved one don't count: they were never stored, not skipped.
+ */
+export function missingIndices(gameId, existing, maxIndex) {
+  const out = [];
+  if (maxIndex == null) return out;
+  let min = maxIndex;
+  for (const i of existing.keys()) if (i < min) min = i;
+  for (let i = Math.max(min, GAMES[gameId].firstIndex); i < maxIndex; i++) {
+    if (!existing.has(i)) out.push(i);
+  }
+  return out;
+}
+
+/**
+ * An index typed by an admin. Canuckle+ and Duo also accept the number
+ * players see (#80 for 60080). Null when it isn't a whole number.
+ */
+export function parseIndex(gameId, raw) {
+  const text = String(raw ?? '').trim().replace(/^#/, '');
+  if (!/^\d+$/.test(text)) return null;
+  const n = Number(text);
+  const offset = GAMES[gameId].firstIndex - 1;
+  return offset > 0 && n <= offset ? n + offset : n;
+}
+
 export { MS_PER_DAY };
