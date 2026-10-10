@@ -8,11 +8,11 @@
 // isFromArchive}. Each guess is played on both boards; the puzzle is won once
 // both answers have been guessed and lost after seven guesses without both.
 
-import { epochDay, edOfMillis } from '../dates.js?v=202610092217';
-import { parseJsonList, readJsonPref, pct } from './common.js?v=202610092217';
+import { epochDay, edOfMillis } from '../dates.js?v=202610092232';
+import { parseJsonList, readJsonPref, pct } from './common.js?v=202610092232';
 import {
   SOLVED, FAILED, PROGRESS, emptyProgress, mark, currentStreak, longestStreak, num, minEd, noteFinish,
-} from '../status.js?v=202610092217';
+} from '../status.js?v=202610092232';
 
 const START = epochDay(2026, 10, 1);
 const BASE = 120001;
