@@ -5,15 +5,17 @@
 // is {ms, mn, mr, wf, bf, cw, bc, st, mx, ld, sd}; sd lists days whose MAIN
 // board was solved on merit. games/{day}.{d|m} holds {day, kind, req, bonus,
 // solved, updatedAt} (solved false = answers revealed), written when a board
-// finishes. In-progress boards are local.
+// finishes. A board left unfinished when its day ended is uploaded on the next
+// launch with done: false (absent on a finished record) and reads as in
+// progress; today's in-progress boards are local.
 
-import { daily, pct, historyStart, readJsonPref } from './common.js?v=202610092232';
-import { edOfMillis } from '../dates.js?v=202610092232';
-import { toMillis } from '../firebase.js?v=202610092232';
-import { readPref } from '../local.js?v=202610092232';
+import { daily, pct, historyStart, readJsonPref } from './common.js?v=202610102114';
+import { edOfMillis } from '../dates.js?v=202610102114';
+import { toMillis } from '../firebase.js?v=202610102114';
+import { readPref } from '../local.js?v=202610102114';
 import {
   SOLVED, FAILED, PROGRESS, emptyProgress, mark, storedStreak, intList, num, minEd, maxEd, noteFinish,
-} from '../status.js?v=202610092232';
+} from '../status.js?v=202610102114';
 
 const KINDS = [
   { key: 'd', label: 'Daily' },
@@ -99,7 +101,8 @@ export const canoggle = {
       try {
         const docs = await reader.queryAtLeast(['chainUserData', uid, 'games'], 'day', historyStart(recent, full));
         games = docs.map(({ data }) => ({
-          day: num(data.day), kind: data.kind, solved: data.solved === true, at: toMillis(data.updatedAt),
+          day: num(data.day), kind: data.kind, solved: data.solved === true, done: data.done !== false,
+          at: toMillis(data.updatedAt),
         }));
       } catch {
         // Fall back to day-level status.
@@ -129,12 +132,20 @@ export const canoggle = {
     const fullDays = new Map();
     for (const g of raw.games || []) {
       if (!g.day) continue;
+      if (g.done === false) {
+        // Left unfinished: started, not finished, and nothing to badge.
+        mark(p, g.day, PROGRESS, g.kind);
+        continue;
+      }
       const status = g.solved ? SOLVED : FAILED;
       mark(p, g.day, status, g.kind);
-      if (g.kind === 'd') mark(p, g.day, status);
+      // Either board finishes the day: a player who only wants the Mini has
+      // still played Canoggle today. mark keeps the better status, so a
+      // revealed Daily with a solved Mini reads as solved.
+      mark(p, g.day, status);
       if (g.solved) {
-        // sd counts the main board, so that solve is when the day was done.
-        if (g.kind === 'd') noteFinish(p, g.day, g.at);
+        p.doneIdx.add(g.day);
+        noteFinish(p, g.day, g.at);
         if (!fullDays.has(g.day)) fullDays.set(g.day, new Map());
         fullDays.get(g.day).set(g.kind, edOfMillis(g.at) ?? this.edForIndex(g.day));
       }
@@ -144,6 +155,9 @@ export const canoggle = {
         p.flagOn.sweep = minEd(p.flagOn.sweep, maxEd(kinds.get('d'), kinds.get('m')));
       }
     }
+    // Streaks still run over main-board solves only, as Canoggle's own does;
+    // doneIdx now includes Mini-only days.
+    p.streakIdx = new Set(raw.sd);
     p.played = num(raw.ms) + num(raw.mr);
     p.solved = num(raw.ms);
     p.streak = storedStreak(num(raw.st), num(raw.ld), todayIdx);

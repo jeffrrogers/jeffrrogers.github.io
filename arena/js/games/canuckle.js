@@ -6,11 +6,11 @@
 // entries use {guesses: [{guess}]} instead of userGuesses. startTimestamp is
 // local midnight of the day the game was started, archive games included.
 
-import { epochDay, edOfMillis } from '../dates.js?v=202610092232';
-import { parseJsonList, readJsonPref, pct } from './common.js?v=202610092232';
+import { epochDay, edOfMillis } from '../dates.js?v=202610102114';
+import { parseJsonList, readJsonPref, pct } from './common.js?v=202610102114';
 import {
   SOLVED, FAILED, PROGRESS, emptyProgress, mark, currentStreak, longestStreak, num, minEd, noteFinish,
-} from '../status.js?v=202610092232';
+} from '../status.js?v=202610102114';
 
 const ORIGINAL_START = epochDay(2022, 2, 10); // games #1-#142
 const ORIGINAL_END = epochDay(2022, 7, 1);
@@ -126,8 +126,10 @@ export const canuckle = {
   label: (i) => `#${i}`,
   resultLabel: guessLabel,
 
+  // A bare / reopens whichever mode the player last chose (Canuckle+ or Duo,
+  // say), so today's link names Canuckle itself
   link(index, _tier, isToday) {
-    return isToday ? '/' : `/?game=${index}`;
+    return isToday ? '/?canuckle=true' : `/?game=${index}`;
   },
 
   async fetch({ uid, reader }) {

@@ -3,13 +3,13 @@
 // previous seven, and a way into the archive at the end. Streaks and stats
 // live on the Stats tab, not here.
 
-import { h, ICONS } from '../ui.js?v=202610092232';
-import { longDate, weekdayName, shortDate, ymd } from '../dates.js?v=202610092232';
-import { recentIndices } from '../games/common.js?v=202610092232';
-import { SOLVED, FAILED, PLAYED, PROGRESS, isDone } from '../status.js?v=202610092232';
-import { LEAF_PATH } from '../badges/icons.js?v=202610092232';
-import { playProps } from './play.js?v=202610092232';
-import { orderedGames } from '../gameOrder.js?v=202610092232';
+import { h, ICONS } from '../ui.js?v=202610102114';
+import { longDate, weekdayName, shortDate, ymd } from '../dates.js?v=202610102114';
+import { recentIndices } from '../games/common.js?v=202610102114';
+import { SOLVED, FAILED, PLAYED, PROGRESS, isDone } from '../status.js?v=202610102114';
+import { LEAF_PATH } from '../badges/icons.js?v=202610102114';
+import { playProps } from './play.js?v=202610102114';
+import { orderedGames } from '../gameOrder.js?v=202610102114';
 
 const DEFAULT_CAPTION = {
   [SOLVED]: 'SOLVED',
