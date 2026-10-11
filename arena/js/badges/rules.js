@@ -5,8 +5,15 @@
 // first earned according to the games' own history (since()). Recording a
 // badge (and announcing it) is store.js's job, which is also why a badge that
 // depends on a recent window (Clean Sweep) only needs to be seen once.
+//
+// A badge that can be earned again says how often, one of two ways: times()
+// counts from a game's own all-time stats, and occurrences() lists a stable
+// key per earning (a puzzle index or calendar day), which store.js keeps so
+// the count survives history scrolling out of the recent window. parts() is
+// the checklist behind a badge that needs several things at once.
 
-import { SOLVED, minEd, finishOn } from '../status.js?v=202610102114';
+import { SOLVED, minEd, finishOn, num } from '../status.js?v=202610111506';
+import { todayEpochDay, weekdayName, shortDate } from '../dates.js?v=202610111506';
 
 function finishDays(game, p) {
   return [...p.doneIdx].map((i) => finishOn(game, p, i));
@@ -31,6 +38,18 @@ function runReachedOn(set, n, dayOf) {
     best = minEd(best, on);
   }
   return best;
+}
+
+/** One key per separate run of [n] or more consecutive members of [set]: the member that reached [n]. */
+function runKeys(set, n) {
+  const idx = [...set].sort((a, b) => a - b);
+  const keys = [];
+  let start = 0;
+  for (let k = 0; k < idx.length; k++) {
+    if (k > 0 && idx[k] !== idx[k - 1] + 1) start = k;
+    if (k - start + 1 === n) keys.push(idx[k]);
+  }
+  return keys;
 }
 
 function streakReachedOn(game, p, n) {
@@ -71,7 +90,8 @@ const SPECIALS = {
     { key: 'quick', name: 'Two and Through', glyph: 'star', tier: 'gold',
       desc: 'Win a Canuckle in two guesses or fewer.',
       check: (p) => [p.flags.quickWin ? 1 : 0, 1],
-      since: (p) => p.flagOn?.quickWin },
+      since: (p) => p.flagOn?.quickWin,
+      times: (p) => num(p.dist?.[0]) + num(p.dist?.[1]) },
     { key: 'archive', name: 'Time Traveller', glyph: 'clock', tier: 'silver',
       desc: 'Finish 10 Canuckle games from the archive.',
       check: (p) => [p.flags.archive || 0, 10],
@@ -81,7 +101,8 @@ const SPECIALS = {
     { key: 'perfect', name: 'Perfect Duo', glyph: 'star', tier: 'silver',
       desc: 'Solve both Canuckle Duo words by your fourth guess.',
       check: (p) => [p.flags.perfect ? 1 : 0, 1],
-      since: (p) => p.flagOn?.perfect },
+      since: (p) => p.flagOn?.perfect,
+      times: (p) => num(p.flags.perfects) },
     { key: 'perfect10', name: 'Perfect Ten', glyph: 'star', tier: 'gold',
       desc: 'Get 10 Perfect Duos.',
       check: (p) => [Math.min(p.flags.perfects || 0, 10), 10],
@@ -89,15 +110,18 @@ const SPECIALS = {
     { key: 'doubledouble', name: 'Double Double', glyph: 'cup', tier: 'gold',
       desc: 'Get a Perfect Duo two days in a row.',
       check: (p) => [p.flags.doubleDouble ? 1 : 0, 1],
-      since: (p) => p.flagOn?.doubleDouble },
+      since: (p) => p.flagOn?.doubleDouble,
+      occurrences: (p) => p.doubleDoubleIdx || [] },
     { key: 'twice', name: 'Twice as Nice', glyph: 'star', tier: 'gold',
       desc: 'Solve both Canuckle Duo words in just two guesses.',
       check: (p) => [p.flags.twice ? 1 : 0, 1],
-      since: (p) => p.flagOn?.twice },
+      since: (p) => p.flagOn?.twice,
+      times: (p) => num(p.dist?.[0]) },
     { key: 'lucky', name: 'Lucky Hoser', glyph: 'star', tier: 'bronze',
       desc: 'Win a Canuckle Duo on your seventh and final guess.',
       check: (p) => [p.flags.lucky ? 1 : 0, 1],
-      since: (p) => p.flagOn?.lucky },
+      since: (p) => p.flagOn?.lucky,
+      times: (p) => num(p.dist?.[5]) },
     { key: 'archive', name: 'Time Traveller', glyph: 'clock', tier: 'silver',
       desc: 'Finish 10 Canuckle Duo puzzles from the archive.',
       check: (p) => [Math.min(p.flags.archive || 0, 10), 10] },
@@ -105,19 +129,22 @@ const SPECIALS = {
   canoku: [
     { key: 'expert', name: 'Expert, Eh?', glyph: 'star', tier: 'gold',
       desc: 'Solve a 9×9 Expert board.',
-      check: (p) => [p.flags.expert9 ? 1 : 0, 1] },
+      check: (p) => [p.flags.expert9 ? 1 : 0, 1],
+      times: (p) => num(p.stats?.VHARD?.totalGames) },
   ],
   canolitaire: [
     { key: 'draw3', name: "Three's Company", glyph: 'star', tier: 'silver',
       desc: 'Win a Draw 3 deal.',
       check: (p) => [p.flags.draw3Win ? 1 : 0, 1],
-      since: (p) => p.flagOn?.draw3Win },
+      since: (p) => p.flagOn?.draw3Win,
+      times: (p) => num(p.draws?.d3?.dl?.w) + num(p.draws?.d3?.rd?.w) },
   ],
   canominoes: [
     { key: 'hard', name: 'Hard Case', glyph: 'star', tier: 'silver',
       desc: 'Solve a Hard Canominoes puzzle.',
       check: (p) => [p.flags.hardSolved ? 1 : 0, 1],
-      since: (p) => p.flagOn?.hardSolved },
+      since: (p) => p.flagOn?.hardSolved,
+      times: (p) => num(p.tierStats?.h?.w) },
   ],
   canoggle: [
     { key: 'canuckle', name: 'Canuckle Connection', glyph: 'leaf', tier: 'silver',
@@ -141,6 +168,8 @@ function gameBadges(game) {
       desc: `Reach a ${s.n}-${unit} ${game.name} streak.`,
       check: (p) => [Math.min(p.maxStreak, s.n), s.n],
       since: (p) => streakReachedOn(game, p, s.n),
+      // Each separate streak that reaches the length counts once.
+      occurrences: (p) => runKeys(p.streakIdx || p.doneIdx, s.n),
     });
   }
   for (const t of weekly ? WEEKLY_TOTALS : DAILY_TOTALS) {
@@ -157,6 +186,11 @@ function gameBadges(game) {
       desc: SWEEP_DESC[game.id],
       check: (p) => [p.flags.sweep ? 1 : 0, 1],
       since: (p) => p.flagOn?.sweep ?? null,
+      occurrences: (p) => p.sweepIdx || [],
+      parts: (p, todayEd) => ({
+        title: 'Today',
+        ...game.sweepParts(p.days.get(game.todayIndex(todayEd))),
+      }),
     });
   }
   for (const s of SPECIALS[game.id] || []) {
@@ -204,12 +238,39 @@ function longestRunOfDates(dates) {
   return best;
 }
 
+/** Calendar days on which at least [k] daily games were finished. */
+const sameDayKeys = (byDate, k) => [...byDate].filter(([, d]) => d.length >= k).map(([ed]) => ed);
+
+const names = (list) => list.map((g) => g.name).join(', ');
+
+const gameItem = (g, done, detail) => ({ label: g.name, logo: g.logo, done, detail });
+
 function familyBadges(games) {
-  const dailyCount = games.filter((g) => g.cadence === 'daily').length;
+  const dailies = games.filter((g) => g.cadence === 'daily');
+  const dailyCount = dailies.length;
+  /** Today's daily games, each ticked once finished, with the count done. */
+  const today = (state, todayEd) => {
+    const isDone = (g) => state[g.id]?.progress?.doneIdx.has(g.todayIndex(todayEd)) === true;
+    return {
+      done: dailies.filter(isDone).length,
+      missing: dailies.filter((g) => !isDone(g)),
+      items: dailies.map((g) => gameItem(g, isDone(g))),
+    };
+  };
+  const everPlayed = (state) => (g) => state[g.id]?.progress?.doneIdx.size > 0;
   const list = [{
     id: 'family.explorer', game: null, name: 'Explorer', glyph: 'compass', tier: 'bronze',
     desc: 'Finish a puzzle in every Canuckle game.',
-    check: ({ state }) => [games.filter((g) => state[g.id]?.progress?.doneIdx.size > 0).length, games.length],
+    check: ({ state }) => [games.filter(everPlayed(state)).length, games.length],
+    parts: ({ state }) => {
+      const tried = everPlayed(state);
+      const missing = games.filter((g) => !tried(g));
+      return {
+        title: `${games.length - missing.length} of ${games.length} games`,
+        items: games.map((g) => gameItem(g, tried(g))),
+        note: missing.length ? `Still to try: ${names(missing)}` : null,
+      };
+    },
     since: ({ state }) => games.reduce((on, g) => {
       const p = state[g.id]?.progress;
       const first = p ? nthEarliest(finishDays(g, p), 1) : null;
@@ -223,6 +284,18 @@ function familyBadges(games) {
         desc: 'Finish three different daily games on the same day.',
         check: ({ byDate }) => [Math.min(most(byDate), 3), 3],
         since: ({ byDate }) => sameDayReachedOn(byDate, 3),
+        occurrences: ({ byDate }) => sameDayKeys(byDate, 3),
+        bestDay: true,
+        parts: ({ state }, todayEd) => {
+          const t = today(state, todayEd);
+          const left = Math.max(0, 3 - t.done);
+          return {
+            title: `Today · ${Math.min(t.done, 3)} of 3`,
+            items: t.items,
+            note: left ? `${left} more to go, from ${names(t.missing)}` : null,
+            complete: !left,
+          };
+        },
       },
       {
         id: 'family.hattrickweek', game: null, name: 'Hat Trick Week', glyph: 'toque', tier: 'gold',
@@ -235,6 +308,25 @@ function familyBadges(games) {
           const days = new Set([...byDate].filter(([, d]) => d.length >= 3).map(([ed]) => ed));
           return runReachedOn(days, 7, (ed) => nthEarliest(byDate.get(ed), 3));
         },
+        occurrences: ({ byDate }) => runKeys(sameDayKeys(byDate, 3), 7),
+        parts: ({ byDate }, todayEd) => {
+          const hat = new Set(sameDayKeys(byDate, 3));
+          // The run still alive: through today, or through yesterday while
+          // today's Hat Trick is still to play.
+          const end = hat.has(todayEd) ? todayEd : todayEd - 1;
+          let run = 0;
+          while (hat.has(end - run)) run++;
+          const items = [];
+          for (let ed = todayEd - 6; ed <= todayEd; ed++) {
+            items.push({ label: `${weekdayName(ed)} ${shortDate(ed)}`, done: hat.has(ed) });
+          }
+          return {
+            title: `Current run · ${Math.min(run, 7)} of 7 days`,
+            items,
+            note: hat.has(todayEd) ? null : 'A Hat Trick today keeps the run going.',
+            complete: hat.has(todayEd) && run >= 7,
+          };
+        },
       },
     );
   }
@@ -244,6 +336,17 @@ function familyBadges(games) {
       desc: `Finish all ${dailyCount} daily games on the same day.`,
       check: ({ byDate }) => [Math.min(most(byDate), dailyCount), dailyCount],
       since: ({ byDate }) => sameDayReachedOn(byDate, dailyCount),
+      occurrences: ({ byDate }) => sameDayKeys(byDate, dailyCount),
+      bestDay: true,
+      parts: ({ state }, todayEd) => {
+        const t = today(state, todayEd);
+        return {
+          title: `Today · ${t.done} of ${dailyCount}`,
+          items: t.items,
+          note: t.missing.length ? `Still to play: ${names(t.missing)}` : null,
+          complete: t.missing.length === 0,
+        };
+      },
     });
   }
   if (games.length >= 3) {
@@ -254,6 +357,13 @@ function familyBadges(games) {
         g.cadence === 'daily' && (state[g.id]?.progress?.maxStreak || 0) >= 30).length, 3), 3],
       since: ({ state }) => nthEarliest(games.filter((g) => g.cadence === 'daily' && state[g.id]?.progress)
         .map((g) => streakReachedOn(g, state[g.id].progress, 30)), 3),
+      parts: ({ state }) => {
+        const best = (g) => state[g.id]?.progress?.maxStreak || 0;
+        return {
+          title: `${Math.min(dailies.filter((g) => best(g) >= 30).length, 3)} of 3 games`,
+          items: dailies.map((g) => gameItem(g, best(g) >= 30, `best streak ${Math.min(best(g), 30)} of 30`)),
+        };
+      },
     });
   }
   return list;
@@ -270,6 +380,8 @@ const COLLECTOR = {
  * state ([cross]) rather than Duo's alone.
  */
 function dailyDouble(canuckle, duo) {
+  // One entry per calendar day both were won: { ed, on }, with on the day
+  // the second of the two was finished.
   const pairs = (state) => {
     const pc = state[canuckle.id]?.progress;
     const pd = state[duo.id]?.progress;
@@ -281,15 +393,22 @@ function dailyDouble(canuckle, duo) {
     const out = [];
     for (const [i, d] of pd.days) {
       const ed = duo.edForIndex(i);
-      if (d.status === SOLVED && wonOn.has(ed)) out.push(Math.max(wonOn.get(ed), finishOn(duo, pd, i)));
+      if (d.status === SOLVED && wonOn.has(ed)) out.push({ ed, on: Math.max(wonOn.get(ed), finishOn(duo, pd, i)) });
     }
     return out;
   };
+  const wonToday = (state, g, todayEd) =>
+    state[g.id]?.progress?.days.get(g.todayIndex(todayEd))?.status === SOLVED;
   return {
     id: `${duo.id}.dailydouble`, game: duo.id, cross: true, name: 'Daily Double', glyph: 'pair', tier: 'silver',
     desc: 'Win Canuckle and Canuckle Duo on the same day.',
     check: ({ state }) => [Math.min(pairs(state).length, 1), 1],
-    since: ({ state }) => nthEarliest(pairs(state), 1),
+    since: ({ state }) => nthEarliest(pairs(state).map((x) => x.on), 1),
+    occurrences: ({ state }) => pairs(state).map((x) => x.ed),
+    parts: ({ state }, todayEd) => {
+      const items = [canuckle, duo].map((g) => gameItem(g, wonToday(state, g, todayEd)));
+      return { title: 'Today · win both', items, complete: items.every((i) => i.done) };
+    },
   };
 }
 
@@ -310,7 +429,7 @@ export function badgeDefinitions(games) {
  * earned by. [alreadyEarned] (ids recorded in the store) keeps a badge earned
  * even if the progress that earned it has since scrolled out of view.
  */
-export function evaluateBadges(games, state, alreadyEarned = new Set()) {
+export function evaluateBadges(games, state, alreadyEarned = new Set(), { stored = {}, todayEd = todayEpochDay() } = {}) {
   const byDate = finishesByDate(games, state);
   const ctx = { state, byDate };
   const lastActive = {};
@@ -331,13 +450,24 @@ export function evaluateBadges(games, state, alreadyEarned = new Set()) {
     const [have, need] = def.check(arg);
     const reached = have >= need;
     const on = reached && def.since ? def.since(arg) : null;
+    const earned = reached || alreadyEarned.has(def.id);
+    const keys = def.occurrences ? [...new Set(def.occurrences(arg))] : [];
+    let times = earned ? 1 : 0;
+    if (earned && def.times) times = Math.max(1, def.times(arg));
+    // Counted from the keys seen now plus the ones stored on earlier visits,
+    // which may have scrolled out of the recent window since.
+    if (earned && def.occurrences) times = Math.max(1, new Set([...keys, ...(stored[def.id]?.on || [])]).size);
     results.push({
       ...def,
       have,
       need,
-      earned: reached || alreadyEarned.has(def.id),
+      earned,
       earnedOn: Number.isFinite(on) ? on : null,
       earnedBy: reached ? (def.game ? lastActive[def.game] : anyActive) : null,
+      times,
+      occurrenceKeys: keys,
+      repeatable: !!(def.times || def.occurrences),
+      parts: def.parts ? def.parts(arg, todayEd) : null,
     });
   }
   const earned = results.filter((b) => b.earned);
@@ -352,6 +482,10 @@ export function evaluateBadges(games, state, alreadyEarned = new Set()) {
     earnedOn: reached && earned.every((b) => b.earnedOn != null)
       ? nthEarliest(earned.map((b) => b.earnedOn), 10) : null,
     earnedBy: reached ? anyActive : null,
+    times: reached || alreadyEarned.has(COLLECTOR.id) ? 1 : 0,
+    occurrenceKeys: [],
+    repeatable: false,
+    parts: null,
   });
   return results;
 }

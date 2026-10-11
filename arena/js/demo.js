@@ -11,7 +11,7 @@ function canuckleGames(todayIdx) {
   const list = [];
   for (let i = todayIdx - 40; i < todayIdx; i++) {
     if (i === todayIdx - 9) list.push({ answer: 'MAPLE', index: i, userGuesses: ['A', 'B', 'C', 'D', 'E', 'F'] });
-    else if (i % 6 === 0) continue;
+    else if (i % 9 === 0) continue;
     else list.push({ answer: 'MAPLE', index: i, userGuesses: ['MOOSE', 'TOQUE', 'MAPLE'].slice(i % 3) });
   }
   list.push({ answer: 'MAPLE', index: 900, userGuesses: ['MAPLE'], isFromArchive: true });
@@ -71,7 +71,7 @@ export function demoRaw(game, todayEd) {
     case 'canoggle':
       return {
         ms: 12, mn: 9, mr: 1, wf: 640, bf: 88, cw: 7, bc: 14, st: 12, mx: 12, ld: k, sd: range(k - 11, k),
-        games: [{ day: k, kind: 'd', solved: true }, { day: k, kind: 'm', solved: true }, { day: k - 1, kind: 'd', solved: true }],
+        games: [{ day: k, kind: 'd', solved: true }, { day: k, kind: 'm', solved: true }, { day: k - 1, kind: 'd', solved: true }, { day: k - 1, kind: 'm', solved: true }],
       };
     default:
       return null;

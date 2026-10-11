@@ -4,11 +4,11 @@
 // is weekly and its weeks start on Monday, so its grid is Monday-first and
 // each week is a single band across the row: the whole week is one puzzle.
 
-import { h, ICONS, statusIcon, tierMarks } from '../ui.js?v=202610102114';
-import { ymd, epochDay, monthTitle, daysInMonth, shortDate } from '../dates.js?v=202610102114';
-import { SOLVED, FAILED, PLAYED, PROGRESS, STATUS_LABEL, isDone } from '../status.js?v=202610102114';
-import { playProps } from './play.js?v=202610102114';
-import { streakChip } from './gamesTab.js?v=202610102114';
+import { h, ICONS, statusIcon, tierMarks } from '../ui.js?v=202610111506';
+import { ymd, epochDay, monthName, monthTitle, daysInMonth, shortDate } from '../dates.js?v=202610111506';
+import { SOLVED, FAILED, PLAYED, PROGRESS, STATUS_LABEL, isDone } from '../status.js?v=202610111506';
+import { playProps } from './play.js?v=202610111506';
+import { streakChip } from './gamesTab.js?v=202610111506';
 
 const DOW_SUNDAY = ['S', 'M', 'T', 'W', 'T', 'F', 'S'];
 const DOW_MONDAY = ['M', 'T', 'W', 'T', 'F', 'S', 'S'];
@@ -127,6 +127,12 @@ export function renderArchive(app, game) {
     }
     select.append(group);
   }
+  // What the heading shows: the month, with the year under it, since a phone
+  // has no room for "September 2026" on one line beside the buttons. The
+  // select sits invisibly on top and still does the picking.
+  const monthLine = h('span', { class: 'month-name' });
+  const monthYear = h('span', { class: 'month-year' });
+  const label = h('span', { class: 'month-label', 'aria-hidden': 'true' }, monthLine, monthYear);
   const grid = h('div', { class: 'month-grid' });
   const prev = h('button', { class: 'icon-btn', 'aria-label': 'Previous month', html: ICONS.back });
   const next = h('button', { class: 'icon-btn month-next', 'aria-label': 'Next month', html: ICONS.back });
@@ -136,6 +142,8 @@ export function renderArchive(app, game) {
     shownMonth.set(game.id, key);
     const { y, m } = fromKey(key);
     select.value = String(key);
+    monthLine.textContent = monthName(m);
+    monthYear.textContent = String(y);
     grid.replaceChildren(weekly
       ? weeklyGrid(game, progress, y, m, todayEd, todayIdx)
       : dailyGrid(game, progress, y, m, todayEd, todayIdx));
@@ -162,7 +170,7 @@ export function renderArchive(app, game) {
         h('span', { class: 'muted', text: `${finished} of ${total} ${weekly ? 'weeks' : 'puzzles'} finished` })),
       streakChip(game, progress)),
     h('section', { class: 'month' },
-      h('div', { class: 'month-nav' }, prev, h('div', { class: 'month-title' }, select), todayBtn, next),
+      h('div', { class: 'month-nav' }, prev, h('div', { class: 'month-title' }, h('div', { class: 'month-pick' }, select, label)), todayBtn, next),
       grid),
     legend(game));
 }

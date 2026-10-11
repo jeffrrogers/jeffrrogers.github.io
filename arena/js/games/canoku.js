@@ -9,12 +9,12 @@
 // migrated (savesVersion < 2) still have per-day subcollections
 // canokuUserData/{id}/{dayIndex}, one document per mode, {gameData: <JSON>}.
 
-import { daily } from './common.js?v=202610102114';
-import { readPref, prefKeys } from '../local.js?v=202610102114';
-import { duration } from '../dates.js?v=202610102114';
+import { daily } from './common.js?v=202610111506';
+import { readPref, prefKeys } from '../local.js?v=202610111506';
+import { duration } from '../dates.js?v=202610111506';
 import {
   SOLVED, PROGRESS, emptyProgress, mark, currentStreak, longestStreak, intList, num, minEd, noteFinish,
-} from '../status.js?v=202610102114';
+} from '../status.js?v=202610111506';
 
 const SIZES = [
   { suffix: '', label: '9×9', stat: '' },
@@ -81,6 +81,15 @@ export const canoku = {
     return null;
   },
   label: (i) => `#${i}`,
+
+  // Clean Sweep's checklist for one day's entry (p.days), for the badge sheet.
+  sweepParts(entry) {
+    const items = SIZES.map((s) => {
+      const won = TIERS.find((t) => t.group === s.label && entry?.tiers?.[t.key] === SOLVED);
+      return { label: s.label, done: !!won, detail: won ? won.label : 'any level' };
+    });
+    return { items, complete: items.every((i) => i.done) };
+  },
 
   // Always pass the day: Canoku remembers the last archive date it showed, so
   // a bare ?mode= could reopen an old puzzle instead of today's.
@@ -167,6 +176,7 @@ export const canoku = {
       for (const b of boards) mark(p, Number(i), b.complete ? SOLVED : PROGRESS, b.mode);
     }
     let sweep = false;
+    p.sweepIdx = [];
     for (const [i, modes] of Object.entries(raw.days || {})) {
       const idx = Number(i);
       for (const m of modes) mark(p, idx, m.complete ? SOLVED : PROGRESS, m.mode);
@@ -174,6 +184,7 @@ export const canoku = {
         .map((m) => TIERS.find((t) => t.key === m.mode)?.group));
       if (SIZES.every((s) => sizesDone.has(s.label))) {
         sweep = true;
+        p.sweepIdx.push(idx);
         // Boards carry no finish time; the day's first solve is the best date.
         p.flagOn.sweep = minEd(p.flagOn.sweep, p.finishedOn.get(idx) ?? this.edForIndex(idx));
       }

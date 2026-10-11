@@ -7,13 +7,13 @@
 // st (0 playing, 1 won, 2 abandoned), sec, updatedAt}; updatedAt is the last
 // write, which for a finished deal is when it finished.
 
-import { daily, pct, historyStart, readJsonPref } from './common.js?v=202610102114';
-import { duration, edOfMillis } from '../dates.js?v=202610102114';
-import { toMillis } from '../firebase.js?v=202610102114';
-import { readPref } from '../local.js?v=202610102114';
+import { daily, pct, historyStart, readJsonPref } from './common.js?v=202610111506';
+import { duration, edOfMillis } from '../dates.js?v=202610111506';
+import { toMillis } from '../firebase.js?v=202610111506';
+import { readPref } from '../local.js?v=202610111506';
 import {
   SOLVED, PLAYED, PROGRESS, emptyProgress, mark, storedStreak, intList, num, minEd, maxEd, noteFinish,
-} from '../status.js?v=202610102114';
+} from '../status.js?v=202610111506';
 
 const DRAWS = ['1', '3'];
 const LEVELS = ['e', 'm', 'h'];
@@ -62,6 +62,16 @@ export const canolitaire = {
     return null;
   },
   label: (i) => `#${i}`,
+
+  // Clean Sweep's checklist for one day's entry (p.days), for the badge sheet.
+  sweepParts(entry) {
+    const won = (t) => entry?.tiers?.[t.key] === SOLVED;
+    return {
+      items: TIERS.map((t) => ({ label: `${t.group} · ${t.label}`, done: won(t) })),
+      note: 'Win all three Draw 1 deals, or all three Draw 3 deals.',
+      complete: DRAWS.some((d) => TIERS.filter((t) => t.group === `Draw ${d}`).every(won)),
+    };
+  },
 
   link(index, tier, isToday) {
     const params = new URLSearchParams();
@@ -121,10 +131,12 @@ export const canolitaire = {
       if (kind === 'd' && Number(day) >= todayIdx - 7) mark(p, Number(day), PROGRESS, tierKey(Number(dm), Number(df)));
     }
     let sweep = false;
-    for (const tiers of won.values()) {
+    p.sweepIdx = [];
+    for (const [day, tiers] of won) {
       for (const d of DRAWS) {
         if (!LEVELS.every((l) => tiers.has(d + l))) continue;
         sweep = true;
+        if (!p.sweepIdx.includes(day)) p.sweepIdx.push(day);
         p.flagOn.sweep = minEd(p.flagOn.sweep, LEVELS.reduce((on, l) => maxEd(on, tiers.get(d + l)), -Infinity));
       }
     }

@@ -9,13 +9,13 @@
 // launch with done: false (absent on a finished record) and reads as in
 // progress; today's in-progress boards are local.
 
-import { daily, pct, historyStart, readJsonPref } from './common.js?v=202610102114';
-import { edOfMillis } from '../dates.js?v=202610102114';
-import { toMillis } from '../firebase.js?v=202610102114';
-import { readPref } from '../local.js?v=202610102114';
+import { daily, pct, historyStart, readJsonPref } from './common.js?v=202610111506';
+import { edOfMillis } from '../dates.js?v=202610111506';
+import { toMillis } from '../firebase.js?v=202610111506';
+import { readPref } from '../local.js?v=202610111506';
 import {
   SOLVED, FAILED, PROGRESS, emptyProgress, mark, storedStreak, intList, num, minEd, maxEd, noteFinish,
-} from '../status.js?v=202610102114';
+} from '../status.js?v=202610111506';
 
 const KINDS = [
   { key: 'd', label: 'Daily' },
@@ -82,6 +82,12 @@ export const canoggle = {
     return null;
   },
   label: (i) => `#${i}`,
+
+  // Clean Sweep's checklist for one day's entry (p.days), for the badge sheet.
+  sweepParts(entry) {
+    const items = KINDS.map((k) => ({ label: k.label, done: entry?.tiers?.[k.key] === SOLVED }));
+    return { items, complete: items.every((i) => i.done) };
+  },
 
   link(index, tier, isToday) {
     const params = new URLSearchParams();
@@ -150,8 +156,10 @@ export const canoggle = {
         fullDays.get(g.day).set(g.kind, edOfMillis(g.at) ?? this.edForIndex(g.day));
       }
     }
-    for (const kinds of fullDays.values()) {
+    p.sweepIdx = [];
+    for (const [day, kinds] of fullDays) {
       if (kinds.has('d') && kinds.has('m')) {
+        p.sweepIdx.push(day);
         p.flagOn.sweep = minEd(p.flagOn.sweep, maxEd(kinds.get('d'), kinds.get('m')));
       }
     }

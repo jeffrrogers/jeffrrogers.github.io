@@ -8,11 +8,11 @@
 // isFromArchive}. Each guess is played on both boards; the puzzle is won once
 // both answers have been guessed and lost after seven guesses without both.
 
-import { epochDay, edOfMillis } from '../dates.js?v=202610102114';
-import { parseJsonList, readJsonPref, pct } from './common.js?v=202610102114';
+import { epochDay, edOfMillis } from '../dates.js?v=202610111506';
+import { parseJsonList, readJsonPref, pct } from './common.js?v=202610111506';
 import {
   SOLVED, FAILED, PROGRESS, emptyProgress, mark, currentStreak, longestStreak, num, minEd, noteFinish,
-} from '../status.js?v=202610102114';
+} from '../status.js?v=202610111506';
 
 const START = epochDay(2026, 10, 1);
 const BASE = 120001;
@@ -164,9 +164,11 @@ export const canuckleDuo = {
     p.streakIdx = winDays;
     // Double Double: a Perfect Duo on two days in a row (daily puzzles).
     let doubleDouble = false;
+    p.doubleDoubleIdx = []; // the second day of each pair, one per Double Double
     for (const [i, on] of perfectDays) {
       if (!perfectDays.has(i + 1)) continue;
       doubleDouble = true;
+      p.doubleDoubleIdx.push(i + 1);
       p.flagOn.doubleDouble = minEd(p.flagOn.doubleDouble, Math.max(on, perfectDays.get(i + 1)));
     }
     p.flags = { perfect: perfects > 0, perfects, twice, lucky, doubleDouble, archive };

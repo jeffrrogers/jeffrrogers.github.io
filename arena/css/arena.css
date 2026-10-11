@@ -892,24 +892,38 @@ a.set-row:hover, button.set-row:hover { color: var(--text); background: rgba(127
 }
 .month-title { flex: 1; display: flex; justify-content: center; min-width: 0; }
 
-/* Reads as the month heading, opens the browser's own month list. */
+/* The month heading, with the year under it. The browser's own month list
+   opens from a select laid invisibly over it. */
+.month-pick { position: relative; max-width: 100%; }
+.month-label {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  min-height: 44px;
+  justify-content: center;
+  padding: 5px 26px 5px 10px;
+  border: 1px solid transparent;
+  border-radius: 12px;
+  background: transparent url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Cpath d='M7 10l5 5 5-5' fill='none' stroke='%235E5B57' stroke-width='2.4' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E") no-repeat right 5px center / 18px;
+}
+.month-name {
+  color: var(--text);
+  font: 800 clamp(15px, 4.4vw, 18px)/1.15 var(--display);
+  white-space: nowrap;
+  letter-spacing: -0.02em;
+}
+.month-year { color: var(--muted); font: 400 12px/1.2 var(--body); }
 .month-select {
   appearance: none;
   -webkit-appearance: none;
-  max-width: 100%;
-  min-height: 44px;
-  padding: 8px 34px 8px 14px;
-  border: 1px solid transparent;
-  border-radius: 12px;
-  background: transparent url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Cpath d='M7 10l5 5 5-5' fill='none' stroke='%235E5B57' stroke-width='2.4' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E") no-repeat right 8px center / 18px;
-  color: var(--text);
-  font: 800 18px/1.2 var(--display);
-  letter-spacing: -0.02em;
-  text-align: center;
-  text-align-last: center;
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  opacity: 0;
   cursor: pointer;
 }
-.month-select:hover { border-color: var(--border); background-color: var(--surface-2); }
+.month-select:hover + .month-label { border-color: var(--border); background-color: var(--surface-2); }
+.month-select:focus-visible + .month-label { outline: 2px solid var(--game, var(--text)); outline-offset: 2px; }
 .month-select option, .month-select optgroup {
   font: 400 15px/1.4 var(--body);
   color: var(--text);
@@ -927,6 +941,13 @@ a.set-row:hover, button.set-row:hover { color: var(--text); background: rgba(127
 }
 .month-today[hidden] { display: none; }
 .month-nav .month-next { order: 3; }
+/* The smallest phones: a tighter row so "September" still fits beside
+   the buttons. */
+@media (max-width: 359px) {
+  .month-nav { gap: 4px; }
+  .month-nav .icon-btn { width: 38px; height: 38px; }
+  .month-today { padding: 7px 9px; }
+}
 
 .cal {
   display: grid;
@@ -1057,6 +1078,24 @@ a.week-band:hover { border-color: var(--muted); color: var(--text); }
 .badge-btn:hover { background: var(--surface-2); }
 .badge-btn .sub { font: 400 11px/1.2 var(--body); color: var(--muted); }
 
+/* "x4" on a medal earned more than once, at its top-right edge. */
+.medal-wrap { position: relative; display: inline-block; line-height: 0; }
+.badge-count {
+  position: absolute;
+  top: 0;
+  right: -6px;
+  min-width: 24px;
+  padding: 3px 6px;
+  border-radius: 999px;
+  border: 2px solid var(--surface);
+  background: var(--badge, var(--accent));
+  color: #fff;
+  font: 800 11px/1 var(--display);
+  font-variant-numeric: tabular-nums;
+  text-align: center;
+}
+.medal-wrap.big .badge-count { top: 8px; right: 0; padding: 5px 9px; font-size: 15px; }
+
 .badge-grid {
   display: grid;
   grid-template-columns: repeat(auto-fill, minmax(96px, 1fr));
@@ -1139,6 +1178,43 @@ a.week-band:hover { border-color: var(--muted); color: var(--text); }
 .badge-sheet h2 { font-size: 24px; }
 .badge-sheet p { margin: 8px 0 16px; }
 .badge-sheet .actions { display: flex; gap: 10px; justify-content: center; flex-wrap: wrap; }
+
+/* The checklist behind a multi-part badge: what's done, and what's still to do. */
+.badge-parts {
+  margin: 0 auto 16px;
+  max-width: 360px;
+  text-align: left;
+  border: 1px solid var(--border);
+  border-radius: 14px;
+  padding: 12px 14px;
+}
+.badge-sheet .badge-parts p.note { margin: 10px 0 0; font-size: 13px; color: var(--muted); }
+.badge-parts h3 {
+  margin: 0 0 4px;
+  font: 700 11px/1.2 var(--display);
+  letter-spacing: .1em;
+  text-transform: uppercase;
+  color: var(--accent-text);
+}
+.progress-bar + .badge-parts { margin-top: 14px; }
+.badge-parts h4 { margin: 0 0 8px; font: 700 14px/1.3 var(--display); }
+.badge-parts ul { list-style: none; margin: 0; padding: 0; display: grid; gap: 6px; }
+.badge-parts li { display: flex; align-items: center; gap: 8px; min-width: 0; font-size: 14px; }
+.badge-parts .tick {
+  flex: none;
+  width: 20px;
+  height: 20px;
+  border-radius: 50%;
+  border: 2px solid var(--locked);
+  display: grid;
+  place-items: center;
+}
+.badge-parts .tick .icon { width: 13px; height: 13px; }
+.badge-parts li.done .tick { border-color: var(--solved); background: var(--solved); color: var(--on-accent); }
+.badge-parts img { flex: none; width: 22px; height: 22px; }
+.badge-parts .label { min-width: 0; overflow-wrap: anywhere; }
+.badge-parts li:not(.done) .label { color: var(--muted); }
+.badge-parts .detail { margin-left: auto; flex: none; font-size: 12px; color: var(--muted); }
 
 .unlock h3 {
   font-size: 13px;

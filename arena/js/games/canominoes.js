@@ -3,17 +3,20 @@
 // Source: pipsSourceCode/lib/model/daily.dart (day 1 = 2026-09-02, fixed at
 // launch) and data/{stats,user,prefs_keys}.dart. dominoUserData/{id} is the
 // stats blob {e,m,h: {p,w,bs,fm,ts}, st, ms, ld, sd}; games/{day}.{tier}
-// holds {day, tier, sec, mc, solved, updatedAt} and is only written on a solve
-// (so updatedAt is when it was solved); in-progress boards come from this
-// browser's domGame_{day}_{tier} saves.
+// holds {day, tier, sec, mc, ht, solved, done, updatedAt}, written on a solve
+// (so updatedAt is when it was solved). A board left unfinished when its day
+// ended is uploaded on the next launch with solved: false, done: false (done is
+// absent on older solved records) and reads as in progress, on any device.
+// Today's in-progress boards come from this browser's domGame_{day}_{tier}
+// saves.
 
-import { daily, pct, historyStart, readJsonPref } from './common.js?v=202610102114';
-import { duration, edOfMillis } from '../dates.js?v=202610102114';
-import { toMillis } from '../firebase.js?v=202610102114';
-import { readPref } from '../local.js?v=202610102114';
+import { daily, pct, historyStart, readJsonPref } from './common.js?v=202610111506';
+import { duration, edOfMillis } from '../dates.js?v=202610111506';
+import { toMillis } from '../firebase.js?v=202610111506';
+import { readPref } from '../local.js?v=202610111506';
 import {
   SOLVED, PROGRESS, emptyProgress, mark, storedStreak, intList, num, minEd, maxEd, noteFinish,
-} from '../status.js?v=202610102114';
+} from '../status.js?v=202610111506';
 
 const LEVELS = [
   { key: 'e', label: 'Easy' },
@@ -70,6 +73,12 @@ export const canominoes = {
   },
   label: (i) => `#${i}`,
 
+  // Clean Sweep's checklist for one day's entry (p.days), for the badge sheet.
+  sweepParts(entry) {
+    const items = LEVELS.map((l) => ({ label: l.label, done: entry?.tiers?.[l.key] === SOLVED }));
+    return { items, complete: items.every((i) => i.done) };
+  },
+
   link(index, tier, isToday) {
     const params = new URLSearchParams();
     if (!isToday) params.set('day', String(index));
@@ -88,7 +97,8 @@ export const canominoes = {
       try {
         const docs = await reader.queryAtLeast(['dominoUserData', uid, 'games'], 'day', historyStart(recent, full));
         games = docs.map(({ data }) => ({
-          day: num(data.day), tier: data.tier, solved: data.solved === true, at: toMillis(data.updatedAt),
+          day: num(data.day), tier: data.tier, solved: data.solved === true, done: data.done !== false,
+          at: toMillis(data.updatedAt),
         }));
       } catch {
         // Fall back to day-level status.
@@ -118,7 +128,13 @@ export const canominoes = {
     }
     const solvedTiers = new Map(); // day -> Map of tier -> epoch day solved
     for (const g of raw.games || []) {
-      if (!g.day || !g.solved) continue;
+      if (!g.day) continue;
+      if (g.done === false) {
+        // Left unfinished: started, not finished, and nothing to badge.
+        mark(p, g.day, PROGRESS, g.tier);
+        continue;
+      }
+      if (!g.solved) continue;
       mark(p, g.day, SOLVED, g.tier);
       noteFinish(p, g.day, g.at);
       const on = edOfMillis(g.at) ?? this.edForIndex(g.day);
@@ -126,8 +142,10 @@ export const canominoes = {
       solvedTiers.get(g.day).set(g.tier, on);
       if (g.tier === 'h') p.flagOn.hardSolved = minEd(p.flagOn.hardSolved, on);
     }
-    for (const tiers of solvedTiers.values()) {
+    p.sweepIdx = [];
+    for (const [day, tiers] of solvedTiers) {
       if (!LEVELS.every((l) => tiers.has(l.key))) continue;
+      p.sweepIdx.push(day);
       p.flagOn.sweep = minEd(p.flagOn.sweep, LEVELS.reduce((on, l) => maxEd(on, tiers.get(l.key)), -Infinity));
     }
     let played = 0;

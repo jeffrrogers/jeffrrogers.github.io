@@ -60,6 +60,11 @@ export function weekdayName(ed) {
   return WEEKDAYS[ymd(ed).weekday];
 }
 
+/** "October" */
+export function monthName(m) {
+  return MONTHS_LONG[m - 1];
+}
+
 /** "October 2026" */
 export function monthTitle(y, m) {
   return `${MONTHS_LONG[m - 1]} ${y}`;
