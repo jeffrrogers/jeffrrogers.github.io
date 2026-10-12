@@ -339,6 +339,13 @@ div.right { right: 0; }
   margin-left: auto;
   font-size: 13px;
   color: var(--muted);
+  text-align: right;
+}
+
+@media (max-width: 420px) {
+  .tabs .wrap { gap: 2px; }
+  .tab { padding: 10px 13px; }
+  .sync-note { font-size: 12px; }
 }
 
 main { padding: 20px 0 64px; }
@@ -1053,13 +1060,6 @@ a.week-band:hover { border-color: var(--muted); color: var(--text); }
   margin: 24px 0 10px;
 }
 .section-title h2 { font-size: 18px; }
-
-.shelf {
-  display: flex;
-  gap: 12px;
-  overflow-x: auto;
-  padding: 4px 2px 8px;
-}
 
 .badge-btn {
   flex: none;

@@ -1,26 +1,26 @@
 // Boot, routing and the shared app state.
 
-import { IS_SANDBOX, IS_DEMO } from './config.js?v=202610111506';
-import { demoRaw } from './demo.js?v=202610111506';
-import { initAnalytics, track } from './analytics.js?v=202610111506';
-import { loadAds } from './ads.js?v=202610111506';
-import { todayEpochDay } from './dates.js?v=202610111506';
-import { playerId } from './local.js?v=202610111506';
-import { initialTheme, initialContrast, applyTheme, applyContrast } from './theme.js?v=202610111506';
-import { liveGames, gameById } from './games/registry.js?v=202610111506';
-import { initialOrder, computeOrder } from './gameOrder.js?v=202610111506';
-import { loadProgress, loadFullHistory } from './progress.js?v=202610111506';
-import { evaluateBadges } from './badges/rules.js?v=202610111506';
+import { IS_SANDBOX, IS_DEMO } from './config.js?v=202610121923';
+import { demoRaw } from './demo.js?v=202610121923';
+import { initAnalytics, track } from './analytics.js?v=202610121923';
+import { loadAds } from './ads.js?v=202610121923';
+import { todayEpochDay } from './dates.js?v=202610121923';
+import { playerId } from './local.js?v=202610121923';
+import { initialTheme, initialContrast, applyTheme, applyContrast } from './theme.js?v=202610121923';
+import { liveGames, gameById } from './games/registry.js?v=202610121923';
+import { initialOrder, computeOrder } from './gameOrder.js?v=202610121923';
+import { loadProgress, loadFullHistory } from './progress.js?v=202610121923';
+import { evaluateBadges } from './badges/rules.js?v=202610121923';
 import {
   loadStoredBadges, needsDating, planSync, applySync, markAnnounced, markShared,
-} from './badges/store.js?v=202610111506';
-import { h, ICONS, closeSheet } from './ui.js?v=202610111506';
-import { renderGames } from './views/gamesTab.js?v=202610111506';
-import { renderArchive } from './views/archive.js?v=202610111506';
-import { renderStats, renderStatsDetail } from './views/statsTab.js?v=202610111506';
-import { renderBadgesPage, announce } from './views/badgesView.js?v=202610111506';
-import { openSettings, openSync, safeReturnPath } from './views/settings.js?v=202610111506';
-import { takeLeftForGame } from './views/play.js?v=202610111506';
+} from './badges/store.js?v=202610121923';
+import { h, ICONS, closeSheet } from './ui.js?v=202610121923';
+import { renderGames } from './views/gamesTab.js?v=202610121923';
+import { renderArchive } from './views/archive.js?v=202610121923';
+import { renderStats, renderStatsDetail } from './views/statsTab.js?v=202610121923';
+import { renderBadgesPage, announce } from './views/badgesView.js?v=202610121923';
+import { openSettings, openSync, safeReturnPath } from './views/settings.js?v=202610121923';
+import { takeLeftForGame } from './views/play.js?v=202610121923';
 
 const app = {
   uid: IS_DEMO ? 'DEMO' : playerId(),
@@ -98,14 +98,16 @@ function route() {
 }
 
 function renderTabs(r) {
-  const isStats = r.name === 'stats' || r.name === 'badges';
+  const current = r.name === 'stats' || r.name === 'badges' ? r.name : 'games';
   const note = app.uid
     ? app.syncing ? 'Syncing…' : app.syncError ? 'Showing saved progress' : ''
     : '';
+  const tab = (id, label) => h('a', { class: 'tab', href: `#${id}`, 'aria-current': current === id ? 'page' : null, text: label });
   document.getElementById('tabs').replaceChildren(h('nav', { class: 'tabs', 'aria-label': 'Arena sections' },
     h('div', { class: 'wrap' },
-      h('a', { class: 'tab', href: '#games', 'aria-current': isStats ? null : 'page', text: 'Games' }),
-      h('a', { class: 'tab', href: '#stats', 'aria-current': isStats ? 'page' : null, text: 'Stats' }),
+      tab('games', 'Games'),
+      tab('stats', 'Stats'),
+      tab('badges', 'Badges'),
       h('span', { class: 'sync-note', role: 'status', text: note }))));
 }
 

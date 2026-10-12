@@ -35,3 +35,7 @@ export const WORD_LIST_URLS = {
   five: ['/data/words.json', 'https://jeffrrogers.github.io/data/words.json'],
   plus: ['/data/words_plus.json', 'https://jeffrrogers.github.io/data/words_plus.json'],
 };
+
+// Where the Flutter games' daily puzzle files are served, tried in order: this
+// site, then the sandbox (for local dev, and for games not yet on production).
+export const GAME_SITES = ['/', 'https://jeffrrogers.github.io/'];

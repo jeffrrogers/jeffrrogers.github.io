@@ -1,12 +1,12 @@
-// The Stats tab: badges up top, then a card per game; and each game's
-// detail page.
+// The Stats tab: a card per game; and each game's detail page. Badges have
+// their own tab (badgesView.js).
 
-import { h, ICONS } from '../ui.js?v=202610111506';
-import { medalButton } from './badgesView.js?v=202610111506';
-import { streakChip } from './gamesTab.js?v=202610111506';
-import { PROGRESS, isDone } from '../status.js?v=202610111506';
-import { playProps } from './play.js?v=202610111506';
-import { orderedGames } from '../gameOrder.js?v=202610111506';
+import { h, ICONS } from '../ui.js?v=202610121923';
+import { medalButton } from './badgesView.js?v=202610121923';
+import { streakChip } from './gamesTab.js?v=202610121923';
+import { PROGRESS, isDone } from '../status.js?v=202610121923';
+import { playProps } from './play.js?v=202610121923';
+import { orderedGames } from '../gameOrder.js?v=202610121923';
 
 function numbers(game, progress) {
   const p = progress;
@@ -32,21 +32,9 @@ function gameCard(game, progress) {
 }
 
 export function renderStats(app) {
-  const { progress, badges } = app;
-  const all = badges.results;
-  const earned = all.filter((b) => b.earned);
-  // Earned first (most recently earned first), then the closest locked ones.
-  const shelf = [
-    ...earned.sort((a, b) => (badges.stored[b.id]?.earnedAt || 0) - (badges.stored[a.id]?.earnedAt || 0)),
-    ...all.filter((b) => !b.earned).sort((a, b) => b.have / b.need - a.have / a.need),
-  ].slice(0, 12);
-
+  const { progress } = app;
   return h('div', { class: 'wrap' },
-    h('div', { class: 'section-title', style: { marginTop: '0' } },
-      h('h2', { text: `Badges · ${earned.length} of ${all.length}` }),
-      h('a', { href: '#badges', text: 'See all' })),
-    h('div', { class: 'card' }, h('div', { class: 'shelf' }, shelf.map((b) => medalButton(app, b)))),
-    h('div', { class: 'section-title' }, h('h2', { text: 'Your games' })),
+    h('div', { class: 'section-title', style: { marginTop: '0' } }, h('h2', { text: 'Your games' })),
     h('div', { class: 'stat-grid' },
       orderedGames(app).map((g) => gameCard(g, progress[g.id]?.progress))));
 }
@@ -87,5 +75,5 @@ export function renderStatsDetail(app, game) {
     h('div', { class: 'detail-sections' }, game.detail(progress).map(section)),
     gameBadges.length ? h('div', { class: 'section-title' }, h('h2', { text: 'Badges' })) : null,
     gameBadges.length ? h('div', { class: 'card' }, h('div', { class: 'badge-grid' }, gameBadges.map((b) => medalButton(app, b)))) : null,
-    h('p', { style: { marginTop: '16px' } }, h('a', { href: `#archive/${game.id}`, text: `Open the ${game.name} archive` })));
+    h('p', { style: { marginTop: '16px' } }, h('a', { href: `#archive/${game.id}`, text: `Open the ${game.name} Archive` })));
 }

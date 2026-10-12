@@ -2,14 +2,14 @@
 // transaction that also writes an adminLog entry with the docs before and
 // after, so any edit, swap or import can be restored from the Log tab.
 
-import { sdk, currentEmail } from './firebase.js?v=202610092357';
-import { GAMES } from './dates.js?v=202610092357';
-import { decodeAnswer } from './codec.js?v=202610092357';
+import { sdk, currentEmail } from './firebase.js?v=202610121923';
+import { GAMES } from './dates.js?v=202610121923';
+import { decodeAnswer } from './codec.js?v=202610121923';
 import {
   PLAYER_COLLECTIONS, GAMES_SUBCOLLECTION_PARENTS, MAX_GAMES, queryCutoff, accountVerdict, quickVerdict,
-} from './cleanup.js?v=202610092357';
-import { pool } from './pool.js?v=202610092357';
-import { repairAccount } from './repair.js?v=202610092357';
+} from './cleanup.js?v=202610121923';
+import { pool } from './pool.js?v=202610121923';
+import { repairAccount } from './repair.js?v=202610121923';
 
 // ---- Puzzles --------------------------------------------------------------
 
@@ -40,6 +40,21 @@ export async function loadPuzzles(gameId) {
     out.set(p.index, p);
   }
   return out;
+}
+
+/**
+ * Canoku's puzzleCount (the last puzzle players get before it loops), and
+ * whether docs <count> and <count + 1> exist, to catch a count that's out of
+ * step with the puzzles. Null count when the doc is missing.
+ */
+export async function loadCanokuCount() {
+  const { fs, db } = await sdk();
+  const snap = await fs.getDoc(fs.doc(db, 'canokuNewData', 'puzzleCount'));
+  const count = snap.exists() && Number.isInteger(snap.data().count) ? snap.data().count : null;
+  if (count == null) return { count };
+  const [last, next] = await Promise.all([count, count + 1]
+    .map((i) => fs.getDoc(fs.doc(db, 'canokuNewData', String(i)))));
+  return { count, lastExists: last.exists(), nextExists: next.exists() };
 }
 
 // Firestore rejects undefined anywhere in a document.

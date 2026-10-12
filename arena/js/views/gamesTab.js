@@ -3,13 +3,13 @@
 // previous seven, and a way into the archive at the end. Streaks and stats
 // live on the Stats tab, not here.
 
-import { h, ICONS } from '../ui.js?v=202610111506';
-import { longDate, weekdayName, shortDate, ymd } from '../dates.js?v=202610111506';
-import { recentIndices } from '../games/common.js?v=202610111506';
-import { SOLVED, FAILED, PLAYED, PROGRESS, isDone } from '../status.js?v=202610111506';
-import { LEAF_PATH } from '../badges/icons.js?v=202610111506';
-import { playProps } from './play.js?v=202610111506';
-import { orderedGames } from '../gameOrder.js?v=202610111506';
+import { h, ICONS } from '../ui.js?v=202610121923';
+import { longDate, weekdayName, shortDate, ymd } from '../dates.js?v=202610121923';
+import { recentIndices } from '../games/common.js?v=202610121923';
+import { SOLVED, FAILED, PLAYED, PROGRESS, isDone } from '../status.js?v=202610121923';
+import { LEAF_PATH } from '../badges/icons.js?v=202610121923';
+import { playProps } from './play.js?v=202610121923';
+import { orderedGames } from '../gameOrder.js?v=202610121923';
 
 const DEFAULT_CAPTION = {
   [SOLVED]: 'SOLVED',
@@ -134,7 +134,7 @@ function seeAllCard(game) {
   return h('a', {
     class: 'gcard past-card see-all',
     href: `#archive/${game.id}`,
-    'aria-label': `${game.name} archive, see every puzzle`,
+    'aria-label': `${game.name} Archive, see every puzzle`,
   },
   h('span', { class: 'see-all-icon', html: ICONS.calendar }),
   h('span', { class: 'pc-label', text: 'ARCHIVE' }),

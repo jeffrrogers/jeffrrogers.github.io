@@ -1,12 +1,12 @@
 // Badge medals, the badge detail sheet, the full badge page, and the unlock
 // announcement.
 
-import { h, ICONS, openSheet, sheetHead, toast } from '../ui.js?v=202610111506';
-import { longDate, todayEpochDay } from '../dates.js?v=202610111506';
-import { medalSvg, LEAF_PATH } from '../badges/icons.js?v=202610111506';
-import { shareBadge, shareShelf } from '../badges/share.js?v=202610111506';
-import { gameById } from '../games/registry.js?v=202610111506';
-import { track } from '../analytics.js?v=202610111506';
+import { h, ICONS, openSheet, sheetHead, toast } from '../ui.js?v=202610121923';
+import { longDate, todayEpochDay } from '../dates.js?v=202610121923';
+import { medalSvg, LEAF_PATH } from '../badges/icons.js?v=202610121923';
+import { shareBadge, shareShelf } from '../badges/share.js?v=202610121923';
+import { gameById } from '../games/registry.js?v=202610121923';
+import { track } from '../analytics.js?v=202610121923';
 
 const FAMILY_COLOR = '#D52B1E';
 
@@ -138,6 +138,7 @@ export function announce(app, badges, onDone) {
   next();
 }
 
+/** The Badges tab: every badge, grouped by game. */
 export function renderBadgesPage(app) {
   const all = app.badges.results;
   const earned = all.filter((b) => b.earned).length;
@@ -147,7 +148,6 @@ export function renderBadgesPage(app) {
   ];
   return h('div', { class: 'wrap' },
     h('div', { class: 'page-head' },
-      h('a', { class: 'icon-btn', href: '#stats', 'aria-label': 'Back to stats', html: ICONS.back }),
       h('div', { class: 'grow' }, h('h1', { text: 'Badges' }),
         h('span', { class: 'muted', text: `${earned} of ${all.length} earned` })),
       h('button', {

@@ -4,11 +4,11 @@
 // is weekly and its weeks start on Monday, so its grid is Monday-first and
 // each week is a single band across the row: the whole week is one puzzle.
 
-import { h, ICONS, statusIcon, tierMarks } from '../ui.js?v=202610111506';
-import { ymd, epochDay, monthName, monthTitle, daysInMonth, shortDate } from '../dates.js?v=202610111506';
-import { SOLVED, FAILED, PLAYED, PROGRESS, STATUS_LABEL, isDone } from '../status.js?v=202610111506';
-import { playProps } from './play.js?v=202610111506';
-import { streakChip } from './gamesTab.js?v=202610111506';
+import { h, ICONS, statusIcon, tierMarks } from '../ui.js?v=202610121923';
+import { ymd, epochDay, monthName, monthTitle, daysInMonth, shortDate } from '../dates.js?v=202610121923';
+import { SOLVED, FAILED, PLAYED, PROGRESS, STATUS_LABEL, isDone } from '../status.js?v=202610121923';
+import { playProps } from './play.js?v=202610121923';
+import { streakChip } from './gamesTab.js?v=202610121923';
 
 const DOW_SUNDAY = ['S', 'M', 'T', 'W', 'T', 'F', 'S'];
 const DOW_MONDAY = ['M', 'T', 'W', 'T', 'F', 'S', 'S'];
@@ -166,7 +166,7 @@ export function renderArchive(app, game) {
       h('a', { class: 'icon-btn', href: '#games', 'aria-label': 'Back to games', html: ICONS.back }),
       h('img', { src: game.logo, alt: '' }),
       h('div', { class: 'grow' },
-        h('h1', { text: `${game.name} archive` }),
+        h('h1', { text: `${game.name} Archive` }),
         h('span', { class: 'muted', text: `${finished} of ${total} ${weekly ? 'weeks' : 'puzzles'} finished` })),
       streakChip(game, progress)),
     h('section', { class: 'month' },
