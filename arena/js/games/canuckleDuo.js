@@ -1,20 +1,20 @@
 // Canuckle Duo: two five-letter words in seven shared guesses, daily, served
 // from the Canuckle app.
 //
-// Source: canuckleSourceCode/lib/words.dart duoIndex (day 1 = 2026-10-01,
-// index 120001, shown to players as index - 120000) and lib/duo/duo_models.dart.
+// Source: canuckleSourceCode/lib/words.dart duoIndex (day 1 = the launch date,
+// LAUNCH_DATE in config.js, index 120001, shown to players as index - 120000) and lib/duo/duo_models.dart.
 // Progress is `duoGames` in the same newUserData/{id} document as Canuckle: a
 // list of JSON strings {answers: [a, b], index, userGuesses, startTimestamp,
 // isFromArchive}. Each guess is played on both boards; the puzzle is won once
 // both answers have been guessed and lost after seven guesses without both.
 
-import { epochDay, edOfMillis } from '../dates.js?v=202610130131';
-import { parseJsonList, readJsonPref, pct } from './common.js?v=202610130131';
+import { edOfMillis } from '../dates.js?v=202610131030';
+import { launchEd } from '../config.js?v=202610131030';
+import { parseJsonList, readJsonPref, pct } from './common.js?v=202610131030';
 import {
   SOLVED, FAILED, PROGRESS, emptyProgress, mark, currentStreak, longestStreak, num, minEd, noteFinish,
-} from '../status.js?v=202610130131';
+} from '../status.js?v=202610131030';
 
-const START = epochDay(2026, 10, 1);
 const BASE = 120001;
 export const DUO_MAX_GUESSES = 7;
 
@@ -78,14 +78,15 @@ export const canuckleDuo = {
   card: { tint: ['#EFE7F8', '#2B2140'], frame: ['#CDB6EA', '#4A3670'] },
   cadence: 'daily',
   step: 1,
-  firstEd: START,
+  get firstEd() { return launchEd('duo'); },
   tiers: [],
 
   indexForEd(ed) {
-    return ed < START ? null : ed - START + BASE;
+    const start = launchEd('duo');
+    return ed < start ? null : ed - start + BASE;
   },
   edForIndex(i) {
-    return START + i - BASE;
+    return launchEd('duo') + i - BASE;
   },
   todayIndex(todayEd) {
     return this.indexForEd(todayEd);

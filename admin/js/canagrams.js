@@ -9,8 +9,6 @@
 // SLOTS is four characters per word (row, column, A/D, length; base 36). BLOB
 // deciphers to GRIDWORDS|BONUS|CANUCKLESLOT, the bonus list front-coded.
 
-export const CANAGRAMS_START = [2026, 10, 13];
-
 const ALPHABET = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789,|';
 const SALT = 0x3C61A7;
 

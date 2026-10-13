@@ -5,16 +5,18 @@
 // something inside Canuckle, plus the Ko-fi and social links Canuckle keeps in
 // its menu.
 
-import { h, ICONS, openSheet, sheetHead, toast } from '../ui.js?v=202610130131';
-import { ARENA_VERSION } from '../config.js?v=202610130131';
-import { readPref, prefKeys, arenaSet } from '../local.js?v=202610130131';
-import { getDocData, setMerge } from '../firebase.js?v=202610130131';
-import { currentTheme, currentContrast, setTheme, setContrast } from '../theme.js?v=202610130131';
-import { ID_DOCS, isValidUserId, planIdSwitch, applyIdSwitch } from '../idSwitch.js?v=202610130131';
-import { track } from '../analytics.js?v=202610130131';
-import { openPrivacy } from '../privacy.js?v=202610130131';
-import { sortsByPlay, setSortByPlay } from '../gameOrder.js?v=202610130131';
-import { openGameOrder } from './gameOrderSheet.js?v=202610130131';
+import { h, ICONS, openSheet, sheetHead, toast } from '../ui.js?v=202610131030';
+import {
+  ARENA_VERSION, IS_SANDBOX, sandboxOffsetWeeks, setSandboxOffsetWeeks, parseOffsetWeeks, offsetBannerText,
+} from '../config.js?v=202610131030';
+import { readPref, prefKeys, arenaSet } from '../local.js?v=202610131030';
+import { getDocData, setMerge } from '../firebase.js?v=202610131030';
+import { currentTheme, currentContrast, setTheme, setContrast } from '../theme.js?v=202610131030';
+import { ID_DOCS, isValidUserId, planIdSwitch, applyIdSwitch } from '../idSwitch.js?v=202610131030';
+import { track } from '../analytics.js?v=202610131030';
+import { openPrivacy } from '../privacy.js?v=202610131030';
+import { sortsByPlay, setSortByPlay } from '../gameOrder.js?v=202610131030';
+import { openGameOrder } from './gameOrderSheet.js?v=202610131030';
 
 const SUPPORT_EMAIL = 'info@canucklegame.ca';
 const KOFI_URL = 'https://ko-fi.com/canuckle';
@@ -339,6 +341,42 @@ export function openSync(app, { returnTo = null } = {}) {
   ask();
 }
 
+// ---- Sandbox -------------------------------------------------------------------
+
+/**
+ * Sandbox only: how many weeks earlier than production the new games launch
+ * (config.js). Saving reloads, so every game is numbered from the new dates.
+ */
+function sandboxSection() {
+  const input = h('input', {
+    type: 'number',
+    step: '1',
+    inputmode: 'numeric',
+    value: String(sandboxOffsetWeeks()),
+    'aria-label': 'Launch date offset in weeks',
+  });
+  const form = h('form', { class: 'inline-form' }, input, h('button', { class: 'btn small', type: 'submit', text: 'Apply' }));
+  form.addEventListener('submit', (e) => {
+    e.preventDefault();
+    const n = parseOffsetWeeks(input.value);
+    if (n == null) {
+      toast('Enter a whole number of weeks');
+      return;
+    }
+    setSandboxOffsetWeeks(n);
+    location.reload();
+  });
+  return section('Sandbox',
+    h('div', { class: 'set-card' },
+      h('div', { class: 'set-row column' },
+        h('div', { class: 'set-label', text: 'Launch date offset (weeks)' }),
+        h('div', {
+          class: 'set-detail',
+          text: `${offsetBannerText(sandboxOffsetWeeks())}. 0 matches production; the games read the same setting.`,
+        }),
+        form)));
+}
+
 // ---- The sheet --------------------------------------------------------------
 
 function socialsRow() {
@@ -418,7 +456,7 @@ function build(app, onTheme) {
           h('span', { class: 'set-detail selectable', text: SUPPORT_EMAIL })),
         h('span', { html: ICONS.chevron }))));
 
-  return [display, account, support, feedback];
+  return [display, account, support, feedback, IS_SANDBOX ? sandboxSection() : null];
 }
 
 export function openSettings(app) {

@@ -7,8 +7,9 @@
 //   todayIndex(ed)     today's puzzle index
 //   step               days per puzzle (1 daily, 7 weekly)
 
-import { readPref } from '../local.js?v=202610130131';
-import { epochDay } from '../dates.js?v=202610130131';
+import { readPref } from '../local.js?v=202610131030';
+import { epochDay } from '../dates.js?v=202610131030';
+import { launchEd } from '../config.js?v=202610131030';
 
 /** A game whose puzzle #1 is on [start] (y, m, d) and changes each day. */
 export function daily(y, m, d) {
@@ -19,6 +20,27 @@ export function daily(y, m, d) {
     firstEd: startEd,
     indexForEd: (ed) => (ed < startEd ? null : ed - startEd + 1),
     edForIndex: (i) => startEd + i - 1,
+    todayIndex(todayEd) {
+      return this.indexForEd(todayEd);
+    },
+  };
+}
+
+/**
+ * A daily game whose puzzle #1 is on its launch date in config.js (moved by
+ * the sandbox offset). The date is looked up on every call rather than copied,
+ * so firstEd is a getter the adapter declares itself (a spread would freeze it):
+ *   ...launchDaily('canoggle'), get firstEd() { return launchEd('canoggle'); }
+ */
+export function launchDaily(id) {
+  return {
+    cadence: 'daily',
+    step: 1,
+    indexForEd(ed) {
+      const startEd = launchEd(id);
+      return ed < startEd ? null : ed - startEd + 1;
+    },
+    edForIndex: (i) => launchEd(id) + i - 1,
     todayIndex(todayEd) {
       return this.indexForEd(todayEd);
     },

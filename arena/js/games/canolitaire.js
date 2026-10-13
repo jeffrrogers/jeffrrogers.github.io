@@ -1,19 +1,20 @@
 // Canuckle Canolitaire: six daily deals (Draw 1 / Draw 3 x Easy / Medium / Hard).
 //
-// Source: solitaireSourceCode/lib/model/daily.dart (day 1 = 2026-08-25) and
+// Source: solitaireSourceCode/lib/model/daily.dart (day 1 = launch date, LAUNCH_DATE in config.js) and
 // data/{stats,user}.dart. solitaireUserData/{id} holds {d1, d3, st, ms, ld,
 // cd}; cd lists days ATTEMPTED (the streak counts playing, not winning).
 // Game documents in games/ carry {day, dm (draw index), df (tier index),
 // st (0 playing, 1 won, 2 abandoned), sec, updatedAt}; updatedAt is the last
 // write, which for a finished deal is when it finished.
 
-import { daily, pct, historyStart, readJsonPref } from './common.js?v=202610130131';
-import { duration, edOfMillis } from '../dates.js?v=202610130131';
-import { toMillis } from '../firebase.js?v=202610130131';
-import { readPref } from '../local.js?v=202610130131';
+import { launchDaily, pct, historyStart, readJsonPref } from './common.js?v=202610131030';
+import { duration, edOfMillis } from '../dates.js?v=202610131030';
+import { toMillis } from '../firebase.js?v=202610131030';
+import { launchEd } from '../config.js?v=202610131030';
+import { readPref } from '../local.js?v=202610131030';
 import {
   SOLVED, PLAYED, PROGRESS, emptyProgress, mark, storedStreak, intList, num, minEd, maxEd, noteFinish,
-} from '../status.js?v=202610130131';
+} from '../status.js?v=202610131030';
 
 const DRAWS = ['1', '3'];
 const LEVELS = ['e', 'm', 'h'];
@@ -52,7 +53,8 @@ export const canolitaire = {
   color: '#1E5A3C',
   blurb: 'Six daily deals of Canadian solitaire.',
   card: { tint: ['#DFEFE6', '#15291F'], frame: ['#9CCBB0', '#24503A'] },
-  ...daily(2026, 8, 25),
+  ...launchDaily('canolitaire'),
+  get firstEd() { return launchEd('canolitaire'); },
   tiers: TIERS,
   resultLabel(entry) {
     const won = Object.values(entry?.tiers || {}).filter((s) => s === SOLVED).length;

@@ -1,16 +1,17 @@
 // Canuckle Admin: sign-in gate, header and tabs.
 
-import { h, clear, toast } from './ui.js?v=202610130148';
-import { ADMIN_EMAILS, SITE_LABEL } from './config.js?v=202610130148';
-import { onUser, signIn, signOut } from './firebase.js?v=202610130148';
-import { ctx, loadAll, loadWords } from './context.js?v=202610130148';
-import { renderPuzzles } from './views/puzzles.js?v=202610130148';
-import { renderDuo } from './views/duo.js?v=202610130148';
-import { renderRunway } from './views/runway.js?v=202610130148';
-import { renderCleanup } from './views/cleanup.js?v=202610130148';
-import { renderLog } from './views/log.js?v=202610130148';
-import { renderRepair } from './views/repair.js?v=202610130148';
-import { renderCanagrams } from './views/canagrams.js?v=202610130148';
+import { h, clear, toast } from './ui.js?v=202610131030';
+import { ADMIN_EMAILS, SITE_LABEL, IS_SANDBOX } from './config.js?v=202610131030';
+import { OFFSET_WEEKS } from './launch.js?v=202610131030';
+import { onUser, signIn, signOut } from './firebase.js?v=202610131030';
+import { ctx, loadAll, loadWords } from './context.js?v=202610131030';
+import { renderPuzzles } from './views/puzzles.js?v=202610131030';
+import { renderDuo } from './views/duo.js?v=202610131030';
+import { renderRunway } from './views/runway.js?v=202610131030';
+import { renderCleanup } from './views/cleanup.js?v=202610131030';
+import { renderLog } from './views/log.js?v=202610131030';
+import { renderRepair } from './views/repair.js?v=202610131030';
+import { renderCanagrams } from './views/canagrams.js?v=202610131030';
 
 const TABS = [
   ['canuckle', 'Canuckle'],
@@ -67,7 +68,10 @@ function header() {
     h('div', { class: 'brand' },
       h('img', { src: 'images/canuckle.svg', alt: '', width: 28, height: 28 }),
       h('span', {}, 'Canuckle Admin'),
-      h('span', { class: `env env-${SITE_LABEL.toLowerCase()}` }, SITE_LABEL)),
+      h('span', {
+        class: `env env-${SITE_LABEL.toLowerCase()}`,
+        title: IS_SANDBOX ? 'New games' launch dates, moved by flutter.sandboxOffsetWeeks (?sandboxOffsetWeeks=N)' : null,
+      }, OFFSET_WEEKS ? `${SITE_LABEL} · preview dates ${OFFSET_WEEKS < 0 ? '+' + -OFFSET_WEEKS : '−' + OFFSET_WEEKS} wk` : SITE_LABEL)),
     h('span', { class: 'spacer' }),
     h('button', { class: 'icon-btn', title: 'Light / dark', 'aria-label': 'Toggle light or dark', onclick: toggleTheme }, '◐'),
     user ? h('span', { class: 'who' }, user.email) : null,

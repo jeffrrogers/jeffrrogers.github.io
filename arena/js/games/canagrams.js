@@ -1,7 +1,7 @@
 // Canagrams: the daily anagram crossword. One puzzle a day, easiest on Monday
 // and toughest on Sunday, with a shaped "fun board" on Saturday.
 //
-// Source: canagramsSourceCode/lib/model/daily.dart (day 1 = 2026-10-13, fixed
+// Source: canagramsSourceCode/lib/model/daily.dart (day 1 = LAUNCH_DATE in config.js, fixed
 // at launch) and data/{stats,user,prefs_keys}.dart. anagramUserData/{id} is
 // {ds, nh, pt, bp, ft, wf, bf, cw, sn, fe, st, mx, ld, sd}; sd lists every day
 // solved. games/{day} holds {day, pts, ms, hints, words, bonus, cw, solved,
@@ -10,14 +10,13 @@
 // uploaded on the next launch with done: false and reads as in progress;
 // today's in-progress board is local.
 
-import { daily, historyStart, readJsonPref } from './common.js?v=202610130131';
-import { toMillis } from '../firebase.js?v=202610130131';
-import { readPref } from '../local.js?v=202610130131';
+import { launchDaily, historyStart, readJsonPref } from './common.js?v=202610131030';
+import { toMillis } from '../firebase.js?v=202610131030';
+import { launchEd } from '../config.js?v=202610131030';
+import { readPref } from '../local.js?v=202610131030';
 import {
   SOLVED, PROGRESS, emptyProgress, mark, storedStreak, intList, num, noteFinish,
-} from '../status.js?v=202610130131';
-
-const START = [2026, 10, 13];
+} from '../status.js?v=202610131030';
 
 const COUNTS = ['ds', 'nh', 'pt', 'bp', 'wf', 'bf', 'cw', 'sn', 'mx'];
 
@@ -90,7 +89,8 @@ export const canagrams = {
   color: '#0E7C7B',
   blurb: 'Spell words from the wheel to fill the daily crossword.',
   card: { tint: ['#DDF0EF', '#12302F'], frame: ['#9BD3D1', '#1F5554'] },
-  ...daily(...START),
+  ...launchDaily('canagrams'),
+  get firstEd() { return launchEd('canagrams'); },
   // One puzzle a day: no tiers, like Canuckle.
   tiers: [],
   resultLabel(entry) {

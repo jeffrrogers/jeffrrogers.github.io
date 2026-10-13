@@ -12,8 +12,9 @@
 // the count survives history scrolling out of the recent window. parts() is
 // the checklist behind a badge that needs several things at once.
 
-import { SOLVED, minEd, finishOn, num } from '../status.js?v=202610130131';
-import { todayEpochDay, weekdayName, shortDate } from '../dates.js?v=202610130131';
+import { SOLVED, minEd, finishOn, num } from '../status.js?v=202610131030';
+import { todayEpochDay, weekdayName, shortDate } from '../dates.js?v=202610131030';
+import { LAUNCH_DATE } from '../config.js?v=202610131030';
 
 function finishDays(game, p) {
   return [...p.doneIdx].map((i) => finishOn(game, p, i));
@@ -284,7 +285,21 @@ const names = (list) => list.map((g) => g.name).join(', ');
 
 const gameItem = (g, done, detail) => ({ label: g.name, logo: g.logo, done, detail });
 
-function familyBadges(games) {
+/**
+ * True when [games] is every game in config.js's LAUNCH_DATE, i.e. the arena
+ * is showing every game because they have all launched.
+ */
+export function coversEveryGame(games) {
+  const ids = new Set(games.map((g) => g.id));
+  return Object.keys(LAUNCH_DATE).every((id) => ids.has(id));
+}
+
+/**
+ * [allLaunched]: every game is live. Explorer and Full Slate only exist from
+ * then on, so their targets (every game, every daily game) are set once and
+ * never move as games launch. A badge already recorded stays in the store.
+ */
+function familyBadges(games, allLaunched) {
   const dailies = games.filter((g) => g.cadence === 'daily');
   const dailyCount = dailies.length;
   /** Today's daily games, each ticked once finished, with the count done. */
@@ -297,7 +312,8 @@ function familyBadges(games) {
     };
   };
   const everPlayed = (state) => (g) => state[g.id]?.progress?.doneIdx.size > 0;
-  const list = [{
+  const list = [];
+  if (allLaunched) list.push({
     id: 'family.explorer', game: null, name: 'Explorer', glyph: 'compass', tier: 'bronze',
     desc: 'Finish a puzzle in every Canuckle game.',
     check: ({ state }) => [games.filter(everPlayed(state)).length, games.length],
@@ -315,7 +331,7 @@ function familyBadges(games) {
       const first = p ? nthEarliest(finishDays(g, p), 1) : null;
       return on == null || first == null ? null : Math.max(on, first);
     }, -Infinity),
-  }];
+  });
   if (dailyCount >= 3) {
     list.push(
       {
@@ -369,10 +385,10 @@ function familyBadges(games) {
       },
     );
   }
-  if (dailyCount >= 4) {
+  if (allLaunched && dailyCount >= 4) {
     list.push({
       id: 'family.fullslate', game: null, name: 'Full Slate', glyph: 'slate', tier: 'gold',
-      desc: `Finish all ${dailyCount} daily games on the same day.`,
+      desc: 'Finish every daily game on the same day.',
       check: ({ byDate }) => [Math.min(most(byDate), dailyCount), dailyCount],
       since: ({ byDate }) => sameDayReachedOn(byDate, dailyCount),
       occurrences: ({ byDate }) => sameDayKeys(byDate, dailyCount),
@@ -388,7 +404,7 @@ function familyBadges(games) {
       },
     });
   }
-  if (games.length >= 3) {
+  if (dailyCount >= 3) {
     list.push({
       id: 'family.truenorth', game: null, name: 'True North', glyph: 'north', tier: 'gold',
       desc: 'Reach a 30-day streak in three different games.',
@@ -451,9 +467,12 @@ function dailyDouble(canuckle, duo) {
   };
 }
 
-/** Every badge definition for the given (live) games. */
-export function badgeDefinitions(games) {
-  const list = [...familyBadges(games), COLLECTOR, ...games.flatMap(gameBadges)];
+/**
+ * Every badge definition for the given (live) games. [allLaunched] defaults to
+ * whether [games] is every game there is.
+ */
+export function badgeDefinitions(games, allLaunched = coversEveryGame(games)) {
+  const list = [...familyBadges(games, allLaunched), COLLECTOR, ...games.flatMap(gameBadges)];
   const canuckle = games.find((g) => g.id === 'canuckle');
   const duo = games.find((g) => g.id === 'duo');
   if (canuckle && duo) list.push(dailyDouble(canuckle, duo));
@@ -468,7 +487,8 @@ export function badgeDefinitions(games) {
  * earned by. [alreadyEarned] (ids recorded in the store) keeps a badge earned
  * even if the progress that earned it has since scrolled out of view.
  */
-export function evaluateBadges(games, state, alreadyEarned = new Set(), { stored = {}, todayEd = todayEpochDay() } = {}) {
+export function evaluateBadges(games, state, alreadyEarned = new Set(),
+  { stored = {}, todayEd = todayEpochDay(), allLaunched = coversEveryGame(games) } = {}) {
   const byDate = finishesByDate(games, state);
   const ctx = { state, byDate };
   const lastActive = {};
@@ -481,7 +501,7 @@ export function evaluateBadges(games, state, alreadyEarned = new Set(), { stored
   const anyActive = active.length ? Math.max(...active) : null;
 
   const results = [];
-  for (const def of badgeDefinitions(games)) {
+  for (const def of badgeDefinitions(games, allLaunched)) {
     if (def === COLLECTOR) continue;
     const p = def.game ? state[def.game]?.progress : null;
     if (def.game && !p) continue;

@@ -1,6 +1,6 @@
 // Canominoes: three daily domino puzzles (Easy / Medium / Hard).
 //
-// Source: pipsSourceCode/lib/model/daily.dart (day 1 = 2026-09-02, fixed at
+// Source: pipsSourceCode/lib/model/daily.dart (day 1 = LAUNCH_DATE in config.js, fixed at
 // launch) and data/{stats,user,prefs_keys}.dart. dominoUserData/{id} is the
 // stats blob {e,m,h: {p,w,bs,fm,ts}, st, ms, ld, sd}; games/{day}.{tier}
 // holds {day, tier, sec, mc, ht, solved, done, updatedAt}, written on a solve
@@ -10,13 +10,14 @@
 // Today's in-progress boards come from this browser's domGame_{day}_{tier}
 // saves.
 
-import { daily, pct, historyStart, readJsonPref } from './common.js?v=202610130131';
-import { duration, edOfMillis } from '../dates.js?v=202610130131';
-import { toMillis } from '../firebase.js?v=202610130131';
-import { readPref } from '../local.js?v=202610130131';
+import { launchDaily, pct, historyStart, readJsonPref } from './common.js?v=202610131030';
+import { duration, edOfMillis } from '../dates.js?v=202610131030';
+import { toMillis } from '../firebase.js?v=202610131030';
+import { launchEd } from '../config.js?v=202610131030';
+import { readPref } from '../local.js?v=202610131030';
 import {
   SOLVED, PROGRESS, emptyProgress, mark, storedStreak, intList, num, minEd, maxEd, noteFinish,
-} from '../status.js?v=202610130131';
+} from '../status.js?v=202610131030';
 
 const LEVELS = [
   { key: 'e', label: 'Easy' },
@@ -62,7 +63,8 @@ export const canominoes = {
   color: '#2A2A33',
   blurb: 'Fill the board with dominoes, three puzzles a day.',
   card: { tint: ['#E9E9EE', '#24242B'], frame: ['#C4C4CF', '#3A3A45'] },
-  ...daily(2026, 9, 2),
+  ...launchDaily('canominoes'),
+  get firstEd() { return launchEd('canominoes'); },
   tiers: LEVELS,
   resultLabel(entry) {
     const solved = Object.values(entry?.tiers || {}).filter((s) => s === SOLVED).length;

@@ -5,7 +5,10 @@
 // Source: canuckleSourceCode/lib/words.dart dateForIndex / todayIndex /
 // plusIndex / duoIndex. Canuckle #1-142 ran 2022-02-10 to 2022-07-01, then
 // #143 restarted on 2022-10-04. Canuckle+ is weekly from Monday 2025-03-31
-// (index 60001). Duo is daily from 2026-10-01 (index 120001).
+// (index 60001). Duo is daily from its launch date (index 120001; see launch.js,
+// moved earlier on the sandbox).
+
+import { launchEd } from './launch.js?v=202610131030';
 
 const MS_PER_DAY = 86400000;
 
@@ -40,7 +43,7 @@ const ORIGINAL_START = epochDay(2022, 2, 10);
 const ORIGINAL_END = epochDay(2022, 7, 1);
 const CANUCKLE_START = epochDay(2022, 10, 4);
 const PLUS_START = epochDay(2025, 3, 31);
-const DUO_START = epochDay(2026, 10, 1);
+const DUO_START = launchEd('duo');
 
 const FIVE = [5];
 

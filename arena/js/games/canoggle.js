@@ -1,6 +1,6 @@
 // Canoggle: the daily word hunt, a main board plus a 3x3 Mini.
 //
-// Source: squaredleSourceCode/lib/model/daily.dart (day 1 = 2026-09-03,
+// Source: squaredleSourceCode/lib/model/daily.dart (day 1 = LAUNCH_DATE in config.js,
 // fixed at launch) and data/{stats,user,prefs_keys}.dart. chainUserData/{id}
 // is {ms, mn, mr, wf, bf, cw, bc, st, mx, ld, sd}; sd lists days whose MAIN
 // board was solved on merit. games/{day}.{d|m} holds {day, kind, req, bonus,
@@ -9,13 +9,14 @@
 // launch with done: false (absent on a finished record) and reads as in
 // progress; today's in-progress boards are local.
 
-import { daily, pct, historyStart, readJsonPref } from './common.js?v=202610130131';
-import { edOfMillis } from '../dates.js?v=202610130131';
-import { toMillis } from '../firebase.js?v=202610130131';
-import { readPref } from '../local.js?v=202610130131';
+import { launchDaily, pct, historyStart, readJsonPref } from './common.js?v=202610131030';
+import { edOfMillis } from '../dates.js?v=202610131030';
+import { toMillis } from '../firebase.js?v=202610131030';
+import { launchEd } from '../config.js?v=202610131030';
+import { readPref } from '../local.js?v=202610131030';
 import {
   SOLVED, FAILED, PROGRESS, emptyProgress, mark, storedStreak, intList, num, minEd, maxEd, noteFinish,
-} from '../status.js?v=202610130131';
+} from '../status.js?v=202610131030';
 
 const KINDS = [
   { key: 'd', label: 'Daily' },
@@ -68,7 +69,8 @@ export const canoggle = {
   color: '#D35F1B',
   blurb: 'Find words in the daily grid, plus a Mini.',
   card: { tint: ['#FCE9DC', '#3A2416'], frame: ['#F1BC97', '#5C351D'] },
-  ...daily(2026, 9, 3),
+  ...launchDaily('canoggle'),
+  get firstEd() { return launchEd('canoggle'); },
   tiers: KINDS,
   resultLabel(entry) {
     const daily = entry?.tiers?.d === SOLVED;

@@ -3,13 +3,14 @@
 // previous seven, and a way into the archive at the end. Streaks and stats
 // live on the Stats tab, not here.
 
-import { h, ICONS } from '../ui.js?v=202610130131';
-import { longDate, weekdayName, shortDate, ymd } from '../dates.js?v=202610130131';
-import { recentIndices } from '../games/common.js?v=202610130131';
-import { SOLVED, FAILED, PLAYED, PROGRESS, isDone } from '../status.js?v=202610130131';
-import { LEAF_PATH } from '../badges/icons.js?v=202610130131';
-import { playProps } from './play.js?v=202610130131';
-import { orderedGames } from '../gameOrder.js?v=202610130131';
+import { h, ICONS } from '../ui.js?v=202610131030';
+import { longDate, weekdayName, shortDate, ymd } from '../dates.js?v=202610131030';
+import { recentIndices } from '../games/common.js?v=202610131030';
+import { SOLVED, FAILED, PLAYED, PROGRESS, isDone } from '../status.js?v=202610131030';
+import { LEAF_PATH } from '../badges/icons.js?v=202610131030';
+import { playProps } from './play.js?v=202610131030';
+import { orderedGames } from '../gameOrder.js?v=202610131030';
+import { launchEd } from '../config.js?v=202610131030';
 
 const DEFAULT_CAPTION = {
   [SOLVED]: 'SOLVED',
@@ -169,8 +170,37 @@ if (typeof window !== 'undefined') {
   });
 }
 
+/** "Launches Thu Nov 5" for a game not out yet, or null if it is. */
+export function launchLabel(game, todayEd) {
+  const ed = launchEd(game.id);
+  return ed != null && todayEd < ed ? `Launches ${weekdayName(ed)} ${shortDate(ed)}` : null;
+}
+
+/** A game before its launch: one card with the date, nothing to play yet. */
+function comingSoonStrip(game, todayEd) {
+  const when = launchLabel(game, todayEd) || 'Coming soon';
+  const card = h('div', {
+    class: 'gcard today-card coming-soon',
+    role: 'group',
+    'aria-label': `${game.name}, coming soon, ${when}`,
+  },
+  h('span', { class: 'tc-top' },
+    h('span', { class: 'tc-text' },
+      h('span', { class: 'tc-name', text: game.name }),
+      h('span', { class: 'tc-blurb', text: game.blurb })),
+    h('img', { class: 'tc-logo', src: game.logo, alt: '' })),
+  h('span', { class: 'tc-bottom' },
+    h('span', {},
+      h('span', { class: 'tc-kicker', text: 'COMING SOON' }),
+      h('span', { class: 'tc-when', text: when }))));
+  return h('section', { class: 'strip-row', style: cardVars(game), 'aria-label': game.name },
+    h('div', { class: 'strip' }, card));
+}
+
 function gameStrip(game, progress, todayEd) {
   const todayIdx = game.todayIndex(todayEd);
+  // Never "#null": a game whose first puzzle is still to come.
+  if (todayIdx == null) return comingSoonStrip(game, todayEd);
   const [today, ...past] = recentIndices(game, todayEd);
   const strip = h('div', { class: 'strip' },
     todayCard(game, progress?.days.get(today), todayIdx),
@@ -221,5 +251,7 @@ export function renderGames(app) {
       h('span', { class: 'muted', text: uid ? `${doneToday} of ${daily.length} daily games finished today` : '' })),
     uid ? null : h('div', { class: 'notice' },
       'Welcome! Pick any game to start. Your streaks, archive and badges show up here once you have played.'),
-    orderedGames(app).map((g) => gameStrip(g, progress[g.id]?.progress, todayEd)));
+    orderedGames(app).map((g) => gameStrip(g, progress[g.id]?.progress, todayEd)),
+    // Sandbox only (production hides them): games still to launch at this offset.
+    (app.upcoming || []).map((g) => comingSoonStrip(g, todayEd)));
 }

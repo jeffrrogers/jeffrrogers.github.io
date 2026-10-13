@@ -1,7 +1,8 @@
 // How many days of puzzles each daily game has left, for the Days left tab.
 //
 // Canuckle, Canuckle+ and Duo come from their Firestore collections (see
-// dates.js). The others number puzzles from 1 on their first day, like the
+// dates.js). The others number puzzles from 1 on their first day (launch.js,
+// moved earlier on the sandbox; Canoku's is fixed), like the
 // arena's daily() in js/games/common.js:
 //   Canoku       canokuNewData/<n>, players get up to puzzleCount.count
 //                (Canoku/lib/user.dart initializeGameData)
@@ -13,7 +14,8 @@
 //                (canagramsSourceCode/lib/model/daily.dart; extend with
 //                tools/generate_dailies.dart, see tools/PUZZLE_GENERATION.md)
 
-import { epochDay } from './dates.js?v=202610130148';
+import { epochDay } from './dates.js?v=202610131030';
+import { launchEd } from './launch.js?v=202610131030';
 
 export const DAILY_GAMES = {
   canoku: {
@@ -24,25 +26,25 @@ export const DAILY_GAMES = {
   },
   canolitaire: {
     name: 'Canolitaire',
-    startEd: epochDay(2026, 8, 25),
+    startEd: launchEd('canolitaire'),
     file: 'canolitaire/assets/assets/data/dailies.json',
     afterEnd: 'Deals are no longer checked to be winnable.',
   },
   canominoes: {
     name: 'Canominoes',
-    startEd: epochDay(2026, 9, 2),
+    startEd: launchEd('canominoes'),
     file: 'canominoes/assets/assets/data/dailies_index.json',
     afterEnd: 'Puzzles repeat from #1.',
   },
   canoggle: {
     name: 'Canoggle',
-    startEd: epochDay(2026, 9, 3),
+    startEd: launchEd('canoggle'),
     file: 'canoggle/assets/assets/data/dailies_index.json',
     afterEnd: 'Puzzles (and the Mini) repeat from #1.',
   },
   canagrams: {
     name: 'Canagrams',
-    startEd: epochDay(2026, 10, 13),
+    startEd: launchEd('canagrams'),
     file: 'canagrams/assets/assets/data/dailies_index.json',
     afterEnd: 'Earlier weeks repeat, weekday for weekday.',
   },
