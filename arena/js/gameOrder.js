@@ -4,8 +4,8 @@
 // The order is settled once per visit (see app.js) rather than on every
 // repaint, so rows don't jump around while each game's progress lands.
 
-import { finishOn } from './status.js?v=202610131111';
-import { arenaGet, arenaSet } from './local.js?v=202610131111';
+import { finishOn } from './status.js?v=202610131530';
+import { arenaGet, arenaSet } from './local.js?v=202610131530';
 
 export const RECENT_DAYS = 30;
 // A weekly puzzle (Canuckle+) counts as this many plays, so a game played
