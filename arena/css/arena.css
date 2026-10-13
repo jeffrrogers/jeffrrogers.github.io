@@ -216,6 +216,18 @@ div.right { right: 0; }
   div.adbox_6, div.adbox_7 { display: none; }
 }
 
+/* Off production (sandbox/localhost) no ad tag loads: show where ads go, in
+   the same colours as the games' pages. ads.js sets html.ad-preview. */
+html.ad-preview div.adbox_1 { background-color: green; }
+html.ad-preview div.adbox_2 { background-color: blue; }
+html.ad-preview div.adbox_3 { background-color: yellow; }
+html.ad-preview div.adbox_4,
+html.ad-preview div.adbox_7 { background-color: orange; }
+html.ad-preview div.adbox_5 { background-color: purple; }
+html.ad-preview div.adbox_6 { background-color: red; }
+html.ad-preview div.mobileadbox { background-color: red; }
+html.ad-preview div.mobileadbox_2 { background-color: green; }
+
 /* ---- Header ------------------------------------------------------------ */
 
 .banner {

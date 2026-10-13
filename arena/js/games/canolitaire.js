@@ -7,14 +7,14 @@
 // st (0 playing, 1 won, 2 abandoned), sec, updatedAt}; updatedAt is the last
 // write, which for a finished deal is when it finished.
 
-import { launchDaily, pct, historyStart, readJsonPref } from './common.js?v=202610131030';
-import { duration, edOfMillis } from '../dates.js?v=202610131030';
-import { toMillis } from '../firebase.js?v=202610131030';
-import { launchEd } from '../config.js?v=202610131030';
-import { readPref } from '../local.js?v=202610131030';
+import { launchDaily, pct, historyStart, readJsonPref } from './common.js?v=202610131111';
+import { duration, edOfMillis } from '../dates.js?v=202610131111';
+import { toMillis } from '../firebase.js?v=202610131111';
+import { launchEd } from '../config.js?v=202610131111';
+import { readPref } from '../local.js?v=202610131111';
 import {
   SOLVED, PLAYED, PROGRESS, emptyProgress, mark, storedStreak, intList, num, minEd, maxEd, noteFinish,
-} from '../status.js?v=202610131030';
+} from '../status.js?v=202610131111';
 
 const DRAWS = ['1', '3'];
 const LEVELS = ['e', 'm', 'h'];

@@ -1,11 +1,11 @@
 // Days left tab: how far each daily game's puzzles run past today.
 
-import { h, clear } from '../ui.js?v=202610131030';
-import { GAMES, longDate, todayEpochDay, todayIndex } from '../dates.js?v=202610131030';
-import { DAILY_GAMES, dailyIndex, dailyEd, daysInFile } from '../runway.js?v=202610131030';
-import { GAME_SITES } from '../config.js?v=202610131030';
-import { loadCanokuCount } from '../store.js?v=202610131030';
-import { maxIndex } from '../context.js?v=202610131030';
+import { h, clear } from '../ui.js?v=202610131111';
+import { GAMES, longDate, todayEpochDay, todayIndex } from '../dates.js?v=202610131111';
+import { DAILY_GAMES, dailyIndex, dailyEd, daysInFile } from '../runway.js?v=202610131111';
+import { GAME_SITES } from '../config.js?v=202610131111';
+import { loadCanokuCount } from '../store.js?v=202610131111';
+import { maxIndex } from '../context.js?v=202610131111';
 
 const RUNWAY_WARN_DAYS = 30;
 

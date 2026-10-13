@@ -1,9 +1,9 @@
 // Opening a puzzle: straight into the game, or via a difficulty picker for
 // games with several puzzles per day.
 
-import { h, openSheet, sheetHead, statusIcon } from '../ui.js?v=202610131030';
-import { shortDate, weekdayName } from '../dates.js?v=202610131030';
-import { track } from '../analytics.js?v=202610131030';
+import { h, openSheet, sheetHead, statusIcon } from '../ui.js?v=202610131111';
+import { shortDate, weekdayName } from '../dates.js?v=202610131111';
+import { track } from '../analytics.js?v=202610131111';
 
 /** Short label for a puzzle relative to today: "Today", "Yesterday", "Wed". */
 export function whenLabel(game, index, todayIdx) {
@@ -26,7 +26,7 @@ export function dateLabel(game, index) {
 const LEFT_FOR_GAME = 'arena.leftForGame';
 
 function trackPlay(game, index, tier, isToday) {
-  track('arena_play', { game: game.id, index, tier: tier || '', today: isToday ? 1 : 0 });
+  track('arena_play', { target_game: game.id, index, tier: tier || '', today: isToday ? 1 : 0 });
   // Remembered for this tab only, so the arena knows to look again for a
   // result that is still on its way to Firestore when the player comes back.
   try {

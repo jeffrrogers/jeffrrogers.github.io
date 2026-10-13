@@ -47,7 +47,7 @@ addEventListener("message", eventListener);
 if (!window._flutter) {
   window._flutter = {};
 }
-_flutter.buildConfig = {"engineRevision":"4c525dac5ebe5971c5708ef73558ed8edcf4a362","builds":[{"compileTarget":"dart2js","renderer":"canvaskit","mainJsPath":"main.dart.js?v=202610131029"},{}]};
+_flutter.buildConfig = {"engineRevision":"4c525dac5ebe5971c5708ef73558ed8edcf4a362","builds":[{"compileTarget":"dart2js","renderer":"canvaskit","mainJsPath":"main.dart.js?v=202610131109"},{}]};
 
 
 // -- Service worker ---------------------------------------------------------
@@ -74,7 +74,8 @@ _flutter.buildConfig = {"engineRevision":"4c525dac5ebe5971c5708ef73558ed8edcf4a3
 // does -- long enough on a cold start to trip the 60s error UI and show a
 // developer a failure that is not real.
 //
-// So on localhost: no fatal-error timeout, and no ad tag.
+// So on localhost: no fatal-error timeout. (No ad tag either -- localhost is
+// not production; see CANUCKLE_PROD below.)
 const IS_LOCAL_DEV =
   location.hostname === 'localhost' ||
   location.hostname === '127.0.0.1' ||
@@ -122,7 +123,13 @@ async function runEntrypoint(engineInitializer) {
     // Its own canvas/WebGL contexts can otherwise starve CanvasKit's during
     // the critical startup window -- which here is exactly when a first-time
     // visitor's how-to overlay is painting.
-    if (!IS_LOCAL_DEV && AD_TAG_URL) {
+    //
+    // Production only. window.CANUCKLE_PROD is set by the hostname test at the
+    // top of index.html's <head> (true on canucklegame.ca and its subdomains),
+    // so the sandbox and localhost never load Yolla and show the coloured
+    // placeholder slots instead. Strictly === true: a page without that
+    // script must not serve ads by default.
+    if (!IS_LOCAL_DEV && AD_TAG_URL && window.CANUCKLE_PROD === true) {
       setTimeout(function () {
         const s = document.createElement('script');
         s.async = true;

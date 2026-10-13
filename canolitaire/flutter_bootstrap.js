@@ -48,7 +48,7 @@ addEventListener("message", eventListener);
 if (!window._flutter) {
   window._flutter = {};
 }
-_flutter.buildConfig = {"engineRevision":"4c525dac5ebe5971c5708ef73558ed8edcf4a362","builds":[{"compileTarget":"dart2js","renderer":"canvaskit","mainJsPath":"main.dart.js?v=202610131028"},{}]};
+_flutter.buildConfig = {"engineRevision":"4c525dac5ebe5971c5708ef73558ed8edcf4a362","builds":[{"compileTarget":"dart2js","renderer":"canvaskit","mainJsPath":"main.dart.js?v=202610131109"},{}]};
 
 
 // -- Service worker ---------------------------------------------------------
@@ -75,7 +75,8 @@ _flutter.buildConfig = {"engineRevision":"4c525dac5ebe5971c5708ef73558ed8edcf4a3
 // build does -- long enough on a cold start or a modest machine to trip the
 // 60s error UI and show a developer a failure that is not real.
 //
-// So on localhost: no fatal-error timeout, and no ad tag. Neither belongs in
+// So on localhost: no fatal-error timeout, and no ad tag (the ad tag also
+// requires window.CANUCKLE_PROD, so it never loads off production anyway). Neither belongs in
 // a dev session, and the honest signal there is the Flutter console, not a
 // "couldn't load the game" panel.
 const IS_LOCAL_DEV =
@@ -115,7 +116,11 @@ async function runEntrypoint(engineInitializer) {
     // The ad's own canvas/WebGL contexts can otherwise starve CanvasKit's
     // during the critical startup window, right as the first-launch how-to
     // overlay is painting.
-    if (!IS_LOCAL_DEV) {
+    //
+    // Production only: window.CANUCKLE_PROD is set by the hostname test at
+    // the top of index.html's <head>. Off canucklegame.ca (the sandbox,
+    // localhost) no Yolla loads and the ad slots show coloured placeholders.
+    if (!IS_LOCAL_DEV && window.CANUCKLE_PROD === true) {
       setTimeout(function () {
         const s = document.createElement('script');
         s.async = true;

@@ -48,7 +48,7 @@ addEventListener("message", eventListener);
 if (!window._flutter) {
   window._flutter = {};
 }
-_flutter.buildConfig = {"engineRevision":"4c525dac5ebe5971c5708ef73558ed8edcf4a362","builds":[{"compileTarget":"dart2wasm","renderer":"skwasm","mainWasmPath":"main.dart.wasm?v=202610131027","jsSupportRuntimePath":"main.dart.mjs?v=202610131027"},{"compileTarget":"dart2js","renderer":"canvaskit","mainJsPath":"main.dart.js?v=202610131027"}]};
+_flutter.buildConfig = {"engineRevision":"4c525dac5ebe5971c5708ef73558ed8edcf4a362","builds":[{"compileTarget":"dart2wasm","renderer":"skwasm","mainWasmPath":"main.dart.wasm?v=202610131108","jsSupportRuntimePath":"main.dart.mjs?v=202610131108"},{"compileTarget":"dart2js","renderer":"canvaskit","mainJsPath":"main.dart.js?v=202610131108"}]};
 
 
 // Register SW directly -- not through Flutter's deprecated serviceWorkerSettings.
@@ -95,7 +95,10 @@ async function runEntrypoint(engineInitializer) {
     // during the critical startup window. The ad's own canvas/WebGL
     // contexts can otherwise starve CanvasKit's context right as
     // first-launch overlays (e.g. the how-to-play popup) are painting.
-    setTimeout(function () {
+    // Production only: window.CANUCKLE_PROD is set by the index.html host
+    // test, and off production (sandbox, localhost) the ad slots show
+    // coloured placeholders instead. Missing flag = not production.
+    if (window.CANUCKLE_PROD === true) setTimeout(function () {
       const s = document.createElement('script');
       s.async = true;
       s.type = 'text/javascript';

@@ -1,12 +1,27 @@
 ﻿<!DOCTYPE html>
 <html lang="en">
 <head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+  <script>
+    // Production = canucklegame.ca and its subdomains. Off it (sandbox, localhost)
+    // there are no analytics and no Yolla; ad slots show coloured placeholders.
+    // Analytics is Firebase Analytics (G-RPLYG6MC2K), started from Dart on
+    // production only -- it loads gtag.js itself, so nothing is loaded here.
+    window.CANUCKLE_PROD = /(^|\.)canucklegame\.ca$/.test(location.hostname);
+    if (!window.CANUCKLE_PROD) document.documentElement.classList.add('ad-preview');
+  </script>
   <!--
-    DEPLOYED SHELL -- lives at canuckleSite/canolitaire/index.html.
+    DEPLOYED SHELL -- the ONE template for both canuckleSite/canolitaire/ and
+    the sandbox's canolitaire/. deploy_to_site.ps1 and deploy_to_io.ps1 copy
+    this file over the target's index.html on every run (never the build
+    output's index.html), so edit it here, not in either site.
 
-    deploy_to_site.ps1 deliberately does NOT copy index.html from the build
-    output, so this file is hand-maintained. It carries what the build knows
-    nothing about: the ad slots, the GA4 tag, and the base href.
+    It carries what the build knows nothing about: the ad slots and the base
+    href. Production vs sandbox is decided at runtime by the CANUCKLE_PROD
+    hostname test above: off canucklegame.ca there are no analytics (the Dart
+    side makes the same test), no Yolla, and the ad slots show coloured
+    placeholders.
 
     The base href is hardcoded rather than passed at build time because
     flutter.js resolves every path with `new URL(path, document.baseURI)` --
@@ -21,8 +36,6 @@
   <link rel="preconnect" href="https://portal.cdn.yollamedia.com" crossorigin>
   <link rel="dns-prefetch" href="https://portal.cdn.yollamedia.com">
 
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
   <meta http-equiv="Content-language" content="en">
   <meta name="googlebot" value="notranslate">
   <meta name="description" content="A daily Canadian solitaire game. Everyone gets the same Klondike deal each day, plus unlimited free play.">
@@ -34,6 +47,7 @@
   <title>Canolitaire - A daily Canadian card game</title>
 
   <!-- Open Graph / Twitter -->
+  <link rel="canonical" href="https://www.canucklegame.ca/canolitaire/">
   <meta property="og:url" content="https://www.canucklegame.ca/canolitaire/">
   <meta property="og:type" content="website">
   <meta property="og:title" content="Canolitaire - A daily Canadian card game">
@@ -218,6 +232,17 @@
       div.adbox_6, div.adbox_7 { width: calc(50vw - 380px); }
     }
 
+    /* Off production (sandbox/localhost): show where ads go. */
+    html.ad-preview div.adbox_1 { background-color: green; }
+    html.ad-preview div.adbox_2 { background-color: blue; }
+    html.ad-preview div.adbox_3 { background-color: yellow; }
+    html.ad-preview div.adbox_4,
+    html.ad-preview div.adbox_7 { background-color: orange; }
+    html.ad-preview div.adbox_5 { background-color: purple; }
+    html.ad-preview div.adbox_6 { background-color: red; }
+    html.ad-preview div.mobileadbox { background-color: red; }
+    html.ad-preview div.mobileadbox_2 { background-color: green; }
+
     .sol-error { display: none; color: #fff; text-align: center; padding: 0 24px; }
     #sol-loading.sol-error-state .sol-word { display: none; }
     #sol-loading.sol-error-state .sol-error { display: block; }
@@ -233,17 +258,6 @@
       cursor: pointer;
     }
   </style>
-
-  <!-- GA4. Replace G-XXXXXXXXXX with the Canolitaire property before launch.
-       Deliberately NOT Canoku's G-51PE0HTHXT: reusing it would merge two
-       games' traffic into one property and make either unreadable. -->
-  <script async src="https://www.googletagmanager.com/gtag/js?id=G-XXXXXXXXXX"></script>
-  <script>
-    window.dataLayer = window.dataLayer || [];
-    function gtag(){dataLayer.push(arguments);}
-    gtag('js', new Date());
-    gtag('config', 'G-XXXXXXXXXX');
-  </script>
 </head>
 <body>
   <div class="bg">
@@ -326,14 +340,15 @@
     </div><!-- .game -->
   </div><!-- .bg -->
 
-  <!-- The ?version= stamp is rewritten by deploy_to_site.ps1 on every deploy;
+  <!-- The ?version= stamp is rewritten by both deploy scripts on every deploy;
        flutter_bootstrap.js is cached for an hour otherwise. Do not remove the
        query string -- the script warns loudly if it cannot find it, because a
        deploy that never reaches returning visitors is the failure mode.
 
        The Yolla ad tag is NOT loaded here. flutter_bootstrap.js injects it two
-       seconds after the first frame, so its WebGL contexts cannot starve
-       CanvasKit's during startup. -->
-  <script src="flutter_bootstrap.js?version=202610131028" async></script>
+       seconds after runApp(), and only when CANUCKLE_PROD is true, so its
+       WebGL contexts cannot starve CanvasKit's during startup and the sandbox
+       never serves live ads. -->
+  <script src="flutter_bootstrap.js?version=202610131109" async></script>
 </body>
 </html>

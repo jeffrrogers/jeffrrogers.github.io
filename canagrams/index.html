@@ -1,16 +1,32 @@
 ﻿<!DOCTYPE html>
 <html lang="en">
 <head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+  <script>
+    // Production = canucklegame.ca and its subdomains. Off it (sandbox, localhost)
+    // there are no analytics and no Yolla; ad slots show coloured placeholders.
+    // Analytics is Firebase Analytics (G-RPLYG6MC2K), started from Dart on
+    // production only -- it loads gtag.js itself, so nothing is loaded here.
+    window.CANUCKLE_PROD = /(^|\.)canucklegame\.ca$/.test(location.hostname);
+    if (!window.CANUCKLE_PROD) document.documentElement.classList.add('ad-preview');
+  </script>
   <!--
-    DEPLOYED SHELL -- the template for canuckleSite/canagrams/index.html.
+    DEPLOYED SHELL -- ONE template for BOTH sites: canuckleSite/canagrams/ and
+    the sandbox's canagrams/.
 
-    Neither deploy script copies index.html out of the build output, so the
-    deployed file is hand-maintained. This one is the seed: deploy_to_io.ps1
-    copies it into the test site on the first deploy and never touches it
-    again, and deploy_to_site.ps1 tells you to create production's from it.
+    Neither deploy script copies index.html out of the build output. Instead
+    both copy THIS file to the target on every run (then stamp the bootstrap
+    ?version=), so edit it here -- never the deployed copies, which are
+    overwritten. Every production/sandbox difference comes from the
+    CANUCKLE_PROD host test above (and its Dart twin in lib/analytics.dart):
+    Firebase Analytics starts only on canucklegame.ca, flutter_bootstrap.js
+    injects Yolla only there, and everywhere else the ad slots get the
+    coloured html.ad-preview placeholders below. Off production the Dart
+    analytics wrapper is a no-op and never touches the Firebase Analytics SDK.
 
-    It carries what the build knows nothing about: the ad slots, the GA4 tag,
-    the Open Graph tags and the base href.
+    It carries what the build knows nothing about: the ad slots, the
+    production test, the Open Graph tags and the base href.
 
     The base href is hardcoded rather than passed at build time because
     flutter.js resolves every path with `new URL(path, document.baseURI)` -- so
@@ -29,8 +45,6 @@
   <link rel="preconnect" href="https://portal.cdn.yollamedia.com" crossorigin>
   <link rel="dns-prefetch" href="https://portal.cdn.yollamedia.com">
 
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
   <meta http-equiv="Content-language" content="en">
   <meta name="googlebot" value="notranslate">
   <meta name="description" content="A daily Canadian anagram crossword. Spell words from a wheel of letters to fill the grid, and find the hidden Canuckle word. A new puzzle every day.">
@@ -40,6 +54,8 @@
   <meta name="theme-color" content="#CF2319">
 
   <title>Canagrams - A daily Canadian anagram crossword</title>
+
+  <link rel="canonical" href="https://www.canucklegame.ca/canagrams/">
 
   <!-- Open Graph / Twitter -->
   <meta property="og:url" content="https://www.canucklegame.ca/canagrams/">
@@ -246,6 +262,17 @@
       div.adbox_1, div.adbox_2, div.adbox_3, div.adbox_4,
       div.adbox_6, div.adbox_7 { width: calc(50vw - 380px); }
     }
+
+    /* Off production (sandbox/localhost): show where ads go. */
+    html.ad-preview div.adbox_1 { background-color: green; }
+    html.ad-preview div.adbox_2 { background-color: blue; }
+    html.ad-preview div.adbox_3 { background-color: yellow; }
+    html.ad-preview div.adbox_4,
+    html.ad-preview div.adbox_7 { background-color: orange; }
+    html.ad-preview div.adbox_5 { background-color: purple; }
+    html.ad-preview div.adbox_6 { background-color: red; }
+    html.ad-preview div.mobileadbox { background-color: red; }
+    html.ad-preview div.mobileadbox_2 { background-color: green; }
   </style>
 
   <script>
@@ -275,28 +302,10 @@
     })();
   </script>
 
-  <!-- GA4 -- THE FAMILY'S SHARED PROPERTY, on purpose.
-       G-51PE0HTHXT is what canucklegame.ca's root, /canoku/ and /sens/ all
-       report to. GA4 breaks reports down by page path, so /canagrams/ is
-       already distinguishable inside it without a second property to set up
-       and remember.
-
-       Solitaire's template says the opposite -- "deliberately NOT Canoku's" --
-       and left a G-XXXXXXXXXX placeholder. That intention was never carried
-       through: solitaire's deployed copy still has the placeholder, so it
-       reports nothing at all. Reporting into the shared property beats
-       reporting nowhere.
-
-       For a dedicated property instead, register one and replace both ids
-       below. deploy_to_io.ps1 warns when a TEST build points at a live
-       property, which this now is. -->
-  <script async src="https://www.googletagmanager.com/gtag/js?id=G-51PE0HTHXT"></script>
-  <script>
-    window.dataLayer = window.dataLayer || [];
-    function gtag(){dataLayer.push(arguments);}
-    gtag('js', new Date());
-    gtag('config', 'G-51PE0HTHXT');
-  </script>
+  <!-- Analytics is Firebase Analytics (G-RPLYG6MC2K, the family's one GA4
+       property), started from Dart on production only; it loads gtag.js
+       itself and every event carries game=canagrams. Do NOT add a gtag/js tag
+       or a gtag('config') for that id here: page views would count twice. -->
 </head>
 <body>
   <div class="bg">
@@ -386,8 +395,8 @@
        deploy that never reaches returning visitors is the failure mode.
 
        The ad tag is NOT loaded here. flutter_bootstrap.js injects it two
-       seconds after the first frame, so its WebGL contexts cannot starve
-       CanvasKit's during startup. -->
-  <script src="flutter_bootstrap.js?version=202610131030" async></script>
+       seconds after runApp(), on production (CANUCKLE_PROD) only, so its
+       WebGL contexts cannot starve CanvasKit's during startup. -->
+  <script src="flutter_bootstrap.js?version=202610131111" async></script>
 </body>
 </html>

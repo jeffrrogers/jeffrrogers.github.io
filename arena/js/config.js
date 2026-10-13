@@ -4,8 +4,8 @@
 // production (canucklegame.ca). All game links are root-relative, so the only
 // thing that differs is which games are visible and whether analytics runs.
 
-import { readPref, writePref } from './local.js?v=202610131030';
-import { epochDay, todayEpochDay } from './dates.js?v=202610131030';
+import { readPref, writePref } from './local.js?v=202610131111';
+import { epochDay, todayEpochDay } from './dates.js?v=202610131111';
 
 const host = typeof location === 'undefined' ? '' : location.hostname;
 
@@ -17,7 +17,12 @@ export const IS_SANDBOX =
 export const IS_DEMO =
   IS_SANDBOX && typeof location !== 'undefined' && new URLSearchParams(location.search).has('demo');
 
-export const GA_ID = 'G-51PE0HTHXT';
+// Production = canucklegame.ca and its subdomains. Analytics and live ads run
+// only there; anywhere else (sandbox, localhost, a Vercel preview) they don't.
+export const IS_PROD_HOST = /(^|\.)canucklegame\.ca$/.test(host);
+
+// The Firebase-linked "canuckle (web)" GA4 stream every game reports to.
+export const GA_ID = 'G-RPLYG6MC2K';
 
 // Canuckle's web app in the shared canuckle-c2157 project. Swap appId for a
 // dedicated "arena" web app once one is registered in the Firebase console.

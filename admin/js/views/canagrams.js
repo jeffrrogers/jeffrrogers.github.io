@@ -7,14 +7,14 @@
 // calendar lasts, which Canuckle words it uses, and how many people solve each
 // day. To change or extend the calendar, regenerate it in the game project.
 
-import { h, clear, modal, toast, safeHref } from '../ui.js?v=202610131030';
-import { GAME_SITES } from '../config.js?v=202610131030';
-import { longDate, todayEpochDay } from '../dates.js?v=202610131030';
-import { sdk } from '../firebase.js?v=202610131030';
-import { launchEd } from '../launch.js?v=202610131030';
+import { h, clear, modal, toast, safeHref } from '../ui.js?v=202610131111';
+import { GAME_SITES } from '../config.js?v=202610131111';
+import { longDate, todayEpochDay } from '../dates.js?v=202610131111';
+import { sdk } from '../firebase.js?v=202610131111';
+import { launchEd } from '../launch.js?v=202610131111';
 import {
   RUNGS, unpackCanagrams, gridRows, rungOf, summarizePlayers,
-} from '../canagrams.js?v=202610131030';
+} from '../canagrams.js?v=202610131111';
 
 const START_ED = launchEd('canagrams');
 const DATA = 'canagrams/assets/assets/data/';
