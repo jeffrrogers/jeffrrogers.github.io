@@ -7,13 +7,13 @@
 // calendar lasts, which Canuckle words it uses, and how many people solve each
 // day. To change or extend the calendar, regenerate it in the game project.
 
-import { h, clear, modal, toast } from '../ui.js?v=202610130058';
-import { GAME_SITES } from '../config.js?v=202610130058';
-import { epochDay, longDate, todayEpochDay } from '../dates.js?v=202610130058';
-import { sdk } from '../firebase.js?v=202610130058';
+import { h, clear, modal, toast, safeHref } from '../ui.js?v=202610130148';
+import { GAME_SITES } from '../config.js?v=202610130148';
+import { epochDay, longDate, todayEpochDay } from '../dates.js?v=202610130148';
+import { sdk } from '../firebase.js?v=202610130148';
 import {
   CANAGRAMS_START, RUNGS, unpackCanagrams, gridRows, rungOf, summarizePlayers,
-} from '../canagrams.js?v=202610130058';
+} from '../canagrams.js?v=202610130148';
 
 const START_ED = epochDay(...CANAGRAMS_START);
 const DATA = 'canagrams/assets/assets/data/';
@@ -126,6 +126,20 @@ function summary(root) {
         ]));
 }
 
+/** A fact with its `[words](https://...)` links as real links (game: lib/ui/fact_text.dart). */
+function factNodes(fact) {
+  const out = [];
+  let at = 0;
+  for (const m of fact.matchAll(/\[([^\[\]]+)\]\((https:\/\/[^\s()]+)\)/g)) {
+    if (m.index > at) out.push(fact.slice(at, m.index));
+    const href = safeHref(m[2]);
+    out.push(href ? h('a', { href, target: '_blank', rel: 'noopener' }, m[1]) : m[1]);
+    at = m.index + m[0].length;
+  }
+  out.push(fact.slice(at));
+  return out;
+}
+
 function openDay(d) {
   const p = d.p;
   modal(`Canagrams #${d.day}`, () => [
@@ -134,7 +148,7 @@ function openDay(d) {
     h('pre', { class: 'mono', style: 'line-height:1.25;font-size:15px' }, gridRows(p).join('\n')),
     h('p', {}, h('b', {}, `Grid (${p.slots.length}): `), p.slots.map((s) => s.word).join(', ')),
     h('p', { class: 'muted small' }, h('b', {}, `Bonus (${p.bonus.length}): `), p.bonus.join(', ')),
-    data.facts[p.canuckle] ? h('p', { class: 'muted' }, h('b', {}, 'Fun fact: '), data.facts[p.canuckle]) : null,
+    data.facts[p.canuckle] ? h('p', { class: 'muted' }, h('b', {}, 'Fun fact: '), factNodes(data.facts[p.canuckle])) : null,
   ], { wide: true });
 }
 
