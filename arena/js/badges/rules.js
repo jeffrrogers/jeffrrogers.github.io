@@ -12,8 +12,8 @@
 // the count survives history scrolling out of the recent window. parts() is
 // the checklist behind a badge that needs several things at once.
 
-import { SOLVED, minEd, finishOn, num } from '../status.js?v=202610121923';
-import { todayEpochDay, weekdayName, shortDate } from '../dates.js?v=202610121923';
+import { SOLVED, minEd, finishOn, num } from '../status.js?v=202610130131';
+import { todayEpochDay, weekdayName, shortDate } from '../dates.js?v=202610130131';
 
 function finishDays(game, p) {
   return [...p.doneIdx].map((i) => finishOn(game, p, i));
@@ -150,6 +150,45 @@ const SPECIALS = {
     { key: 'canuckle', name: 'Canuckle Connection', glyph: 'leaf', tier: 'silver',
       desc: 'Find the hidden Canuckle word on 10 boards.',
       check: (p) => [p.flags.canuckleWords || 0, 10] },
+  ],
+  // Picked on the Canagrams design page (2026-10-13). Some come in bronze,
+  // silver and gold; each level is its own badge, the way the streaks are.
+  canagrams: [
+    ...[[10, 'bronze'], [25, 'silver'], [100, 'gold']].map(([n, tier]) => ({
+      key: `canuckle${n}`, name: 'Canuckle Connection', glyph: 'leaf', tier,
+      desc: `Spell the Canuckle word on ${n} Canagrams boards.`,
+      check: (p) => [Math.min(p.flags.canuckleWords || 0, n), n],
+      since: (p) => nthEarliest(p.flagOn?.canuckleDays || [], n),
+    })),
+    ...[[1, 'bronze'], [5, 'silver'], [20, 'gold']].map(([n, tier]) => ({
+      key: `fullweek${n}`, name: 'Full Week', glyph: 'star', tier,
+      desc: n === 1
+        ? 'Solve every Canagrams puzzle from Monday to Sunday of one week.'
+        : `Solve every Canagrams puzzle from Monday to Sunday, ${n} weeks over.`,
+      check: (p) => [Math.min(p.flags.fullWeeks || 0, n), n],
+      since: (p) => nthEarliest(p.flagOn?.fullWeekDays || [], n),
+      ...(n === 1 ? { occurrences: (p) => p.fullWeekIdx || [] } : {}),
+    })),
+    { key: 'sunday', name: 'Sunday Best', glyph: 'star', tier: 'gold',
+      desc: 'Solve 10 Sunday Canagrams puzzles without a hint.',
+      check: (p) => [Math.min(p.flags.sundayNoHint || 0, 10), 10] },
+    ...[[25, 'bronze'], [100, 'silver'], [250, 'gold']].map(([n, tier]) => ({
+      key: `nopeek${n}`, name: 'No Peeking', glyph: 'star', tier,
+      desc: `Solve ${n} Canagrams puzzles without a hint.`,
+      check: (p) => [Math.min(p.flags.noHint || 0, n), n],
+      since: (p) => nthEarliest(p.flagOn?.noHintDays || [], n),
+    })),
+    { key: 'speed', name: 'Speed Speller', glyph: 'clock', tier: 'silver',
+      desc: 'Solve a Monday, Tuesday or Wednesday Canagrams in under 2 minutes.',
+      check: (p) => [p.flags.fastestEarlyMs > 0 && p.flags.fastestEarlyMs < 120000 ? 1 : 0, 1] },
+    ...[[50, 'bronze'], [250, 'silver'], [1000, 'gold']].map(([n, tier]) => ({
+      key: `bonus${n}`, name: 'Bonus Hunter', glyph: 'star', tier,
+      desc: `Find ${n} Canagrams bonus words.`,
+      check: (p) => [Math.min(p.flags.bonusWords || 0, n), n],
+    })),
+    { key: 'score', name: 'High Scorer', glyph: 'star', tier: 'gold',
+      desc: 'Score 1,500 points or more on one Canagrams puzzle.',
+      check: (p) => [p.flags.bestPoints >= 1500 ? 1 : 0, 1] },
   ],
 };
 

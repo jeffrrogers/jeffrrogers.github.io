@@ -7,7 +7,7 @@
 //
 // Always kept, whenever in doubt:
 //  - a linked email in any of the ID's docs
-//  - any sign of play in Canoku, Canolitaire, Canominoes or Canoggle
+//  - any sign of play in Canoku, Canolitaire, Canominoes, Canoggle or Canagrams
 //  - Canoku accounts whose old per-day saves haven't been migrated
 //    (savesVersion < 2): those saves can't be inspected from here
 //  - anything with a missing or unreadable lastUpdated
@@ -23,11 +23,12 @@ export const PLAYER_COLLECTIONS = [
   'solitaireUserData',
   'dominoUserData',
   'chainUserData',
+  'anagramUserData',
   'arenaUserData',
 ];
 
 /** Games whose finished puzzles live in a `games` subcollection. */
-export const GAMES_SUBCOLLECTION_PARENTS = ['solitaireUserData', 'dominoUserData', 'chainUserData'];
+export const GAMES_SUBCOLLECTION_PARENTS = ['solitaireUserData', 'dominoUserData', 'chainUserData', 'anagramUserData'];
 
 export function thresholdDays(totalGames) {
   return 10 + (Math.max(totalGames, 1) - 1) * 5;
@@ -71,7 +72,7 @@ export function hasCanokuProgress(doc) {
   return hasPositiveNumber(doc, ['savesVersion']);
 }
 
-/** Whether a Canolitaire / Canominoes / Canoggle parent doc shows any play. */
+/** Whether a Canolitaire / Canominoes / Canoggle / Canagrams parent doc shows any play. */
 export function hasStatsProgress(doc) {
   return !!doc && hasPositiveNumber(doc, ['settings', 'updatedAt']);
 }
@@ -83,7 +84,7 @@ function hasEmail(doc) {
 /**
  * The decision for one ID.
  * @param docs {newUserData, canokuUserData, solitaireUserData, dominoUserData,
- *   chainUserData, arenaUserData}: each doc's data, or null when missing
+ *   chainUserData, anagramUserData, arenaUserData}: each doc's data, or null when missing
  * @param hasSubGames whether any `games` subcollection has a doc (or null when
  *   it wasn't checked, which keeps the account)
  * @returns {{eligible: boolean, reason: string, total: number, days: number, idleDays: number|null}}

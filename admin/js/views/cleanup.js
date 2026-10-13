@@ -1,10 +1,10 @@
 // Cleanup tab: find stale accounts (dry run), download a backup, then delete.
 // The rule itself is in ../cleanup.js.
 
-import { h, clear, toast, downloadJson } from '../ui.js?v=202610121923';
-import { summarize, thresholdDays, clockProblem, PLAYER_COLLECTIONS, MAX_GAMES } from '../cleanup.js?v=202610121923';
-import { findStaleAccounts, deleteAllAccounts, serverNow } from '../store.js?v=202610121923';
-import { USE_EMULATOR } from '../config.js?v=202610121923';
+import { h, clear, toast, downloadJson } from '../ui.js?v=202610130058';
+import { summarize, thresholdDays, clockProblem, PLAYER_COLLECTIONS, MAX_GAMES } from '../cleanup.js?v=202610130058';
+import { findStaleAccounts, deleteAllAccounts, serverNow } from '../store.js?v=202610130058';
+import { USE_EMULATOR } from '../config.js?v=202610130058';
 
 const state = {
   phase: 'idle', // idle | scanning | scanned | deleting | done
@@ -25,7 +25,7 @@ export function renderCleanup(root, rerender) {
     h('table', { class: 'mini' },
       h('tr', {}, h('th', {}, 'Games'), ...[0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10].map((n) => h('td', {}, n))),
       h('tr', {}, h('th', {}, 'Days idle'), ...[0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10].map((n) => h('td', {}, thresholdDays(n))))),
-    h('p', {}, "Always kept: a linked email in any of the ID's docs; any sign of play in Canoku, Canolitaire, Canominoes or Canoggle (stats, streaks or saved puzzles); Canoku accounts with unmigrated old saves; and anything with a missing lastUpdated."),
+    h('p', {}, "Always kept: a linked email in any of the ID's docs; any sign of play in Canoku, Canolitaire, Canominoes, Canoggle or Canagrams (stats, streaks or saved puzzles); Canoku accounts with unmigrated old saves; and anything with a missing lastUpdated."),
     h('p', {}, `Deleting removes the ID's doc in every player collection: ${PLAYER_COLLECTIONS.join(', ')}. Accounts are deleted as the scan found them, without another check, so scan and delete in one sitting.`));
 
   const busy = state.phase === 'scanning' || state.phase === 'deleting';

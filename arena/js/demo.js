@@ -73,6 +73,16 @@ export function demoRaw(game, todayEd) {
         ms: 12, mn: 9, mr: 1, wf: 640, bf: 88, cw: 7, bc: 14, st: 12, mx: 12, ld: k, sd: range(k - 11, k),
         games: [{ day: k, kind: 'd', solved: true }, { day: k, kind: 'm', solved: true }, { day: k - 1, kind: 'd', solved: true }, { day: k - 1, kind: 'm', solved: true }],
       };
+    case 'canagrams':
+      return {
+        ds: 9, nh: 4, pt: 8640, bp: 1312, ft: 151000, wf: 96, bf: 31, cw: 8, sn: 1, fe: 104000,
+        st: 9, mx: 9, ld: k, sd: range(k - 8, k),
+        games: [
+          { day: k, pts: 1104, ms: 214000, hints: 0, cw: true, solved: true },
+          { day: k - 1, pts: 1312, ms: 260000, hints: 0, cw: true, solved: true },
+          { day: k - 2, pts: 702, ms: 151000, hints: 2, cw: false, solved: true },
+        ],
+      };
     default:
       return null;
   }

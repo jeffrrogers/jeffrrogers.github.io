@@ -20,7 +20,7 @@
 // planIdSwitch is pure (data in, operations out) so the order and the encoding
 // are unit-tested; applyIdSwitch performs the operations.
 
-import { writePref, removePref } from './local.js?v=202610121923';
+import { writePref, removePref } from './local.js?v=202610130131';
 
 /** Collections read for the new id, by game. */
 export const ID_DOCS = {
@@ -29,6 +29,7 @@ export const ID_DOCS = {
   canolitaire: 'solitaireUserData',
   canominoes: 'dominoUserData',
   canoggle: 'chainUserData',
+  canagrams: 'anagramUserData',
 };
 
 /** What an id must look like before it is used in a document path. */
@@ -100,7 +101,7 @@ export function planIdSwitch({ oldId, newId, docs, keys = [], oldIds = [] }) {
   remove('solFreeGame');
   removePrefixed('solDailyGame_');
 
-  // Canominoes and Canoggle merge local stats into the server's, so an empty
+  // Canominoes, Canoggle and Canagrams merge local stats into the server's, so an empty
   // local copy simply takes the new account's.
   remove('domStats');
   remove('domPendingUpload');
@@ -110,6 +111,11 @@ export function planIdSwitch({ oldId, newId, docs, keys = [], oldIds = [] }) {
   remove('chnPendingUpload');
   remove('chnPlayedGames');
   removePrefixed('chnGame_');
+  remove('cgmStats');
+  remove('cgmPendingUpload');
+  remove('cgmPlayedGames');
+  remove('cgmProgressUploaded');
+  removePrefixed('cgmGame_');
   // Canoku's unfinished boards belong to the old account
   removePrefixed('canokuGame_');
   // The old account's recent solves, or they would show as this one's.

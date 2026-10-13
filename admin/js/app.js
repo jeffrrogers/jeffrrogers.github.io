@@ -1,20 +1,22 @@
 // Canuckle Admin: sign-in gate, header and tabs.
 
-import { h, clear, toast } from './ui.js?v=202610121923';
-import { ADMIN_EMAILS, SITE_LABEL } from './config.js?v=202610121923';
-import { onUser, signIn, signOut } from './firebase.js?v=202610121923';
-import { ctx, loadAll, loadWords } from './context.js?v=202610121923';
-import { renderPuzzles } from './views/puzzles.js?v=202610121923';
-import { renderDuo } from './views/duo.js?v=202610121923';
-import { renderRunway } from './views/runway.js?v=202610121923';
-import { renderCleanup } from './views/cleanup.js?v=202610121923';
-import { renderLog } from './views/log.js?v=202610121923';
-import { renderRepair } from './views/repair.js?v=202610121923';
+import { h, clear, toast } from './ui.js?v=202610130058';
+import { ADMIN_EMAILS, SITE_LABEL } from './config.js?v=202610130058';
+import { onUser, signIn, signOut } from './firebase.js?v=202610130058';
+import { ctx, loadAll, loadWords } from './context.js?v=202610130058';
+import { renderPuzzles } from './views/puzzles.js?v=202610130058';
+import { renderDuo } from './views/duo.js?v=202610130058';
+import { renderRunway } from './views/runway.js?v=202610130058';
+import { renderCleanup } from './views/cleanup.js?v=202610130058';
+import { renderLog } from './views/log.js?v=202610130058';
+import { renderRepair } from './views/repair.js?v=202610130058';
+import { renderCanagrams } from './views/canagrams.js?v=202610130058';
 
 const TABS = [
   ['canuckle', 'Canuckle'],
   ['plus', 'Canuckle+'],
   ['duo', 'Duo'],
+  ['canagrams', 'Canagrams'],
   ['runway', 'Days left'],
   ['cleanup', 'Cleanup'],
   ['repair', 'Repair'],
@@ -103,6 +105,7 @@ function rerender() {
   const t = tab();
   if (t === 'canuckle' || t === 'plus') renderPuzzles(main, t, rerender);
   else if (t === 'duo') renderDuo(main, rerender);
+  else if (t === 'canagrams') renderCanagrams(main, rerender);
   else if (t === 'runway') renderRunway(main, rerender);
   else if (t === 'cleanup') renderCleanup(main, rerender);
   else if (t === 'repair') renderRepair(main, rerender);

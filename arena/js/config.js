@@ -38,6 +38,7 @@ const LIVE_IN_PRODUCTION = {
   canolitaire: false,
   canominoes: false,
   canoggle: false,
+  canagrams: false,
 };
 
 export function isLive(gameId) {

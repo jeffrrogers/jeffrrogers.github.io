@@ -16,6 +16,7 @@ const PALETTE = {
   canolitaire: ['#1E5A3C', '#123824'],
   canominoes: ['#2A2A33', '#15151B'],
   canoggle: ['#D35F1B', '#9E4512'],
+  canagrams: ['#0E7C7B', '#0A5958'],
   night: ['#2A2050', '#1A1430'],
   aurora: ['#16305A', '#0E1E36'],
   slate: ['#3A3A44', '#2B2B33'],
@@ -196,6 +197,46 @@ const ART = {
     + '<path d="M75.5 54a8 8 0 1 0 0 12" fill="none" stroke="#fff" stroke-width="5"/>'
     + '<path d="M80 57a2.3 2.3 0 1 1 4 2l-5 3.5h6" fill="none" stroke="#fff" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/></g>',
 
+  // Canagrams: the letter wheel with the leaf in the middle.
+  wheel: () => {
+    const tiles = [0, 1, 2, 3, 4, 5].map((k) => {
+      const a = -Math.PI / 2 + (k * Math.PI) / 3;
+      const x = (60 + 22 * Math.cos(a)).toFixed(1);
+      const y = (60 + 22 * Math.sin(a)).toFixed(1);
+      return `<circle cx="${x}" cy="${y}" r="8" fill="#fff"/>`;
+    }).join('');
+    return '<circle cx="60" cy="60" r="32" fill="#fff" opacity=".22"/>' + tiles
+      + `<text x="60" y="41" text-anchor="middle" font-family="Sora, 'Clear Sans', sans-serif" font-weight="800" font-size="9" fill="#0A5958">C</text>`
+      + leaf(51, 51, 0.18, '#D52B1E');
+  },
+
+  // Full Week: seven squares, Monday to Sunday, all ticked.
+  week: () => [0, 1, 2, 3, 4, 5, 6].map((k) =>
+    `<rect x="${27 + k * 9.6}" y="${50 - k * 2}" width="8" height="${12 + k * 4}" rx="2" fill="#fff"/>`).join('')
+    + '<circle cx="60" cy="84" r="9" fill="#2FA866" stroke="#fff" stroke-width="2"/>'
+    + '<path d="M55.5 84l3 3 6-6" fill="none" stroke="#fff" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"/>',
+
+  // Sunday Best: a calendar page reading SUN, and no eye on it.
+  sunday: () => '<rect x="38" y="36" width="44" height="46" rx="6" fill="#fff"/><rect x="38" y="36" width="44" height="13" rx="6" fill="#D52B1E"/>'
+    + '<rect x="38" y="44" width="44" height="5" fill="#D52B1E"/>'
+    + `<text x="60" y="71" text-anchor="middle" font-family="Sora, 'Clear Sans', sans-serif" font-weight="800" font-size="15" fill="#0A5958">SUN</text>`
+    + '<path d="M80 62l4.6 9.4 10.4 1.5-7.5 7.3 1.8 10.3L80 85.6l-9.3 4.9 1.8-10.3-7.5-7.3 10.4-1.5z" fill="#F5C443" stroke="#fff" stroke-width="2" stroke-linejoin="round"/>',
+
+  // No Peeking: a closed eye.
+  closedEye: () => '<path d="M34 58c14 14 38 14 52 0" fill="none" stroke="#fff" stroke-width="5" stroke-linecap="round"/>'
+    + [[42, 66, 38, 74], [52, 70, 50, 79], [60, 71, 60, 80], [68, 70, 70, 79], [78, 66, 82, 74]]
+      .map(([a, b, c, d]) => `<path d="M${a} ${b}L${c} ${d}" stroke="#fff" stroke-width="3.5" stroke-linecap="round"/>`).join('')
+    + leaf(52, 34, 0.16, '#D52B1E'),
+
+  // Speed Speller: a stopwatch.
+  stopwatch: () => '<rect x="55" y="30" width="10" height="7" rx="2" fill="#fff"/><circle cx="60" cy="63" r="24" fill="#fff"/>'
+    + '<circle cx="60" cy="63" r="19" fill="none" stroke="#0E7C7B" stroke-width="1.5" stroke-dasharray="2 4"/>'
+    + '<path d="M60 63V48M60 63l9 6" stroke="#D52B1E" stroke-width="3.5" stroke-linecap="round"/><circle cx="60" cy="63" r="3" fill="#17171A"/>',
+
+  // Bonus Hunter: a burst of stars.
+  stars: () => [[60, 40, 1], [42, 64, 0.7], [78, 64, 0.7], [60, 82, 0.55]].map(([x, y, k]) =>
+    `<path transform="translate(${x} ${y}) scale(${k})" d="M0-16l4.6 9.4 10.4 1.5-7.5 7.3 1.8 10.3L0 7.6l-9.3 4.9 1.8-10.3-7.5-7.3 10.4-1.5z" fill="#F5C443" stroke="#fff" stroke-width="2" stroke-linejoin="round"/>`).join(''),
+
   padlock: () => '<rect x="49" y="54" width="22" height="18" rx="4" fill="#8A847B"/><path d="M53 54v-5a7 7 0 0 1 14 0v5" fill="none" stroke="#8A847B" stroke-width="3.5"/><circle cx="60" cy="62" r="2.5" fill="#D9D4CC"/>',
 };
 
@@ -208,6 +249,8 @@ function design(badge) {
   const weekly = scope === 'plus';
   const streak = /^streak(\d+)$/.exec(key || '');
   const total = /^total(\d+)$/.exec(key || '');
+  // Canagrams' tiered badges: the art for the kind, the number on a ribbon.
+  const tiered = scope === 'canagrams' && /^(canuckle|fullweek|nopeek|bonus)(\d+)$/.exec(key || '');
 
   if (scope === 'family') {
     switch (key) {
@@ -234,6 +277,21 @@ function design(badge) {
   if (total) {
     const n = Number(total[1]);
     return { palette: game, art: ART.stack(n, PALETTE[game]?.[1] || '#A61F15', RING[badge.tier || 'bronze']) };
+  }
+  if (tiered) {
+    const art = { canuckle: ART.wheel, fullweek: ART.week, nopeek: ART.closedEye, bonus: ART.stars }[tiered[1]]();
+    const n = tiered[2];
+    const face = badge.tier === 'gold' ? RING.gold : '#FFFFFF';
+    const text = tiered[1] === 'fullweek' ? (n === '1' ? 'ONE WEEK' : `${n} WEEKS`) : n;
+    return { palette: game, art, ribbon: [text, face, PALETTE.canagrams[1], 87] };
+  }
+  if (scope === 'canagrams') {
+    switch (key) {
+      case 'sunday': return { palette: game, art: ART.sunday() };
+      case 'speed': return { palette: game, art: ART.stopwatch(), ribbon: ['UNDER 2:00', '#FFFFFF', PALETTE.canagrams[1], 87] };
+      case 'score': return { palette: game, art: ART.trophy(), ribbon: ['1,500', RING.gold, '#7A2A12', 87] };
+      default: break;
+    }
   }
   switch (key) {
     case 'first': return { palette: game, art: ART.flag() };
