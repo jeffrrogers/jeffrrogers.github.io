@@ -31395,13 +31395,13 @@ case 8:s=10
 return A.n(n.bh("Int","sandboxOffsetWeeks",m),$async$RP)
 case 10:case 9:l=m
 if(l==null)l=A.b7y(n)
-$.ajJ=l==null?4:l
+$.ajJ=l==null?5:l
 p=2
 s=6
 break
 case 4:p=3
 i=o.pop()
-$.ajJ=4
+$.ajJ=5
 s=6
 break
 case 3:s=2
@@ -110358,7 +110358,7 @@ $.aOq=null
 $.ky=!1
 $.L=!1
 $.d3=!1
-$.ajJ=4
+$.ajJ=5
 $.bO=null
 $.wc=!1
 $.wd=!1
@@ -110610,7 +110610,7 @@ return B.LK})
 s($,"bn0","b2L",()=>new A.ap0())
 s($,"bir","ln",()=>new A.a7E())
 s($,"biq","aRQ",()=>A.c9("(^|\\.)canucklegame\\.ca$",!1))
-s($,"bjT","N9",()=>A.cq(2026,10,28,0,0,0,0))
+s($,"bjT","N9",()=>A.cq(2026,11,4,0,0,0,0))
 r($,"biH","bT",()=>new A.aaS())
 s($,"bkN","b1y",()=>$.ln())
 s($,"bl_","b1C",()=>A.aPK(null))

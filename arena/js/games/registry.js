@@ -1,14 +1,14 @@
 // Every game the arena knows about, in display order.
 
-import { isLive } from '../config.js?v=202610131530';
-import { canuckle } from './canuckle.js?v=202610131530';
-import { canucklePlus } from './canucklePlus.js?v=202610131530';
-import { canuckleDuo } from './canuckleDuo.js?v=202610131530';
-import { canoku } from './canoku.js?v=202610131530';
-import { canolitaire } from './canolitaire.js?v=202610131530';
-import { canominoes } from './canominoes.js?v=202610131530';
-import { canoggle } from './canoggle.js?v=202610131530';
-import { canagrams } from './canagrams.js?v=202610131530';
+import { isLive } from '../config.js?v=202610141418';
+import { canuckle } from './canuckle.js?v=202610141418';
+import { canucklePlus } from './canucklePlus.js?v=202610141418';
+import { canuckleDuo } from './canuckleDuo.js?v=202610141418';
+import { canoku } from './canoku.js?v=202610141418';
+import { canolitaire } from './canolitaire.js?v=202610141418';
+import { canominoes } from './canominoes.js?v=202610141418';
+import { canoggle } from './canoggle.js?v=202610141418';
+import { canagrams } from './canagrams.js?v=202610141418';
 
 export const ALL_GAMES = [canuckle, canucklePlus, canuckleDuo, canoku, canolitaire, canominoes, canoggle, canagrams];
 

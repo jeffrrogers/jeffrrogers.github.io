@@ -1,6 +1,6 @@
 // Firestore access, loaded lazily so the page paints before the SDK arrives.
 
-import { FIREBASE_CONFIG, FIREBASE_SDK } from './config.js?v=202610131530';
+import { FIREBASE_CONFIG, FIREBASE_SDK } from './config.js?v=202610141418';
 
 const TIMEOUT_MS = 10000;
 
