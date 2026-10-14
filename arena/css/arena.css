@@ -247,6 +247,8 @@ html.ad-preview div.mobileadbox_2 { background-color: green; }
   pointer-events: none;
   user-select: none;
 }
+/* Two scatter layouts, one per banner size (see SCATTER_PHONE in app.js). */
+.banner .tile.phone { display: none; }
 
 .lockup {
   position: absolute;
@@ -294,31 +296,10 @@ html.ad-preview div.mobileadbox_2 { background-color: green; }
   z-index: 2;
 }
 
-.sandbox-bar {
-  font: 600 12px/1.3 var(--body);
-  text-align: center;
-  padding: 4px 12px;
-  background: #1F5E96;
-  color: #fff;
-}
-
-.sandbox-ribbon {
-  position: absolute;
-  top: 12px;
-  left: 12px;
-  z-index: 2;
-  font: 700 11px/1 var(--body);
-  letter-spacing: .08em;
-  padding: 6px 10px;
-  border-radius: 999px;
-  background: #1F5E96;
-  color: #fff;
-}
-
 @media (max-width: 600px) {
   .banner { height: 156px; }
-  .banner .tile { width: calc(var(--s) * .72px); height: calc(var(--s) * .72px); }
-  .banner .tile.wide-only { display: none; }
+  .banner .tile.wide { display: none; }
+  .banner .tile.phone { display: block; }
   .lockup { gap: 12px; }
   .lockup img { width: 64px; height: 64px; }
   .wordmark { font-size: 30px; }

@@ -1,26 +1,26 @@
 // Boot, routing and the shared app state.
 
-import { IS_SANDBOX, IS_DEMO, isLive, sandboxOffsetWeeks, offsetBannerText } from './config.js?v=202610141418';
-import { demoRaw } from './demo.js?v=202610141418';
-import { initAnalytics, track } from './analytics.js?v=202610141418';
-import { loadAds } from './ads.js?v=202610141418';
-import { todayEpochDay } from './dates.js?v=202610141418';
-import { playerId } from './local.js?v=202610141418';
-import { initialTheme, initialContrast, applyTheme, applyContrast } from './theme.js?v=202610141418';
-import { ALL_GAMES, liveGames, gameById } from './games/registry.js?v=202610141418';
-import { initialOrder, computeOrder } from './gameOrder.js?v=202610141418';
-import { loadProgress, loadFullHistory } from './progress.js?v=202610141418';
-import { evaluateBadges } from './badges/rules.js?v=202610141418';
+import { IS_SANDBOX, IS_DEMO, isLive } from './config.js?v=202610141542';
+import { demoRaw } from './demo.js?v=202610141542';
+import { initAnalytics, track } from './analytics.js?v=202610141542';
+import { loadAds } from './ads.js?v=202610141542';
+import { todayEpochDay } from './dates.js?v=202610141542';
+import { playerId } from './local.js?v=202610141542';
+import { initialTheme, initialContrast, applyTheme, applyContrast } from './theme.js?v=202610141542';
+import { ALL_GAMES, liveGames, gameById } from './games/registry.js?v=202610141542';
+import { initialOrder, computeOrder } from './gameOrder.js?v=202610141542';
+import { loadProgress, loadFullHistory } from './progress.js?v=202610141542';
+import { evaluateBadges } from './badges/rules.js?v=202610141542';
 import {
   loadStoredBadges, needsDating, planSync, applySync, markAnnounced, markShared,
-} from './badges/store.js?v=202610141418';
-import { h, ICONS, closeSheet } from './ui.js?v=202610141418';
-import { renderGames } from './views/gamesTab.js?v=202610141418';
-import { renderArchive } from './views/archive.js?v=202610141418';
-import { renderStats, renderStatsDetail } from './views/statsTab.js?v=202610141418';
-import { renderBadgesPage, announce } from './views/badgesView.js?v=202610141418';
-import { openSettings, openSync, safeReturnPath } from './views/settings.js?v=202610141418';
-import { takeLeftForGame } from './views/play.js?v=202610141418';
+} from './badges/store.js?v=202610141542';
+import { h, ICONS, closeSheet } from './ui.js?v=202610141542';
+import { renderGames } from './views/gamesTab.js?v=202610141542';
+import { renderArchive } from './views/archive.js?v=202610141542';
+import { renderStats, renderStatsDetail } from './views/statsTab.js?v=202610141542';
+import { renderBadgesPage, announce } from './views/badgesView.js?v=202610141542';
+import { openSettings, openSync, safeReturnPath } from './views/settings.js?v=202610141542';
+import { takeLeftForGame } from './views/play.js?v=202610141542';
 
 const app = {
   uid: IS_DEMO ? 'DEMO' : playerId(),
@@ -53,19 +53,45 @@ applyContrast(initialContrast());
 
 // ---- Header ---------------------------------------------------------------
 
-// Scattered background tiles: [logo, left %, top px, size px, rotation, wide-only].
+// Scattered background tiles: [logo, left %, top px, size px, rotation].
+// The wide layout, for the 180px banner.
 const SCATTER = [
-  ['canominoes', -4, -12, 87, -13, true],
-  ['canoggle', 9.8, 119, 82, 3, true],
-  ['canolitaire', 19.9, -42, 81, -4, false],
-  ['canuckle-duo', 24.9, 147, 63, 3, false],
-  ['canuckle', 40.8, -44, 61, 8, true],
-  ['canolitaire', 50.5, 149, 69, -5, false],
-  ['canuckle', 61.5, -44, 61, 10, true],
-  ['canagrams', 72, 137, 96, -1, false],
-  ['canuckle-plus', 81.8, -8, 76, 13, true],
-  ['canoku', 92.5, 100, 87, 10, false],
+  ['canominoes', -4, -12, 87, -13],
+  ['canoggle', 9.8, 119, 82, 3],
+  ['canolitaire', 19.9, -42, 81, -4],
+  ['canuckle-duo', 24.9, 147, 63, 3],
+  ['canuckle', 40.8, -44, 61, 8],
+  ['canolitaire', 50.5, 149, 69, -5],
+  ['canuckle', 61.5, -44, 61, 10],
+  ['canagrams', 72, 137, 96, -1],
+  ['canuckle-plus', 81.8, -8, 76, 13],
+  ['canoku', 92.5, 100, 87, 10],
 ];
+
+// The phone layout, for the 156px banner. Its own positions rather than the
+// wide ones scaled down: those sit mostly above and below a banner this
+// short, which left only slivers showing. These keep to the space round the
+// lockup (about 46-110px tall, the middle ~70% wide) and clear the settings
+// button: a band along the top, a band along the bottom, and the two sides.
+const SCATTER_PHONE = [
+  ['canuckle', -2, 6, 50, -10],
+  ['canoku', -4, 92, 56, 8],
+  ['canagrams', 21, -12, 52, 6],
+  ['canolitaire', 40, -8, 46, -6],
+  ['canominoes', 60, -14, 54, 10],
+  ['canuckle-plus', 86, 56, 50, 12],
+  ['canuckle-duo', 24, 114, 48, -4],
+  ['canuckle', 46, 118, 44, 9],
+  ['canolitaire', 65, 112, 50, -12],
+  ['canoggle', 88, 110, 48, -8],
+];
+
+const scatterTiles = (layout, cls) => layout.map(([logo, left, top, size, rot]) => h('img', {
+  class: `tile ${cls}`,
+  src: `images/${logo}.svg`,
+  alt: '',
+  style: { left: `${left}%`, top: `${top}px`, '--s': String(size), '--r': String(rot) },
+}));
 
 function renderHeader() {
   const settings = h('button', {
@@ -75,25 +101,16 @@ function renderHeader() {
     onClick: () => openSettings(app),
   });
   const banner = h('header', { class: 'banner' },
-    SCATTER.map(([logo, left, top, size, rot, wideOnly]) => h('img', {
-      class: `tile${wideOnly ? ' wide-only' : ''}`,
-      src: `images/${logo}.svg`,
-      alt: '',
-      style: { left: `${left}%`, top: `${top}px`, '--s': String(size), '--r': String(rot) },
-    })),
+    scatterTiles(SCATTER, 'wide'),
+    scatterTiles(SCATTER_PHONE, 'phone'),
     h('a', { class: 'lockup', href: '#games', 'aria-label': 'Canuckle Games Arena home' },
       h('img', { src: 'images/arena.svg', alt: '' }),
       h('span', { class: 'wordmark' },
         h('span', { class: 'wm-name', text: 'Canuckle' }),
         ' ',
         h('span', { class: 'wm-sub', text: 'Games Arena' }))),
-    IS_SANDBOX ? h('span', { class: 'sandbox-ribbon', text: 'SANDBOX' }) : null,
     settings);
-  // The sandbox says how far its launch dates are moved (see config.js).
-  const bar = IS_SANDBOX
-    ? h('div', { class: 'sandbox-bar', role: 'note', text: offsetBannerText(sandboxOffsetWeeks()) })
-    : null;
-  document.getElementById('header').replaceChildren(...(bar ? [bar] : []), banner);
+  document.getElementById('header').replaceChildren(banner);
 }
 
 // ---- Routing --------------------------------------------------------------

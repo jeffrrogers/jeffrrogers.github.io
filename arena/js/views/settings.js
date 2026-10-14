@@ -5,18 +5,18 @@
 // something inside Canuckle, plus the Ko-fi and social links Canuckle keeps in
 // its menu.
 
-import { h, ICONS, openSheet, sheetHead, toast } from '../ui.js?v=202610141418';
+import { h, ICONS, openSheet, sheetHead, toast } from '../ui.js?v=202610141542';
 import {
   ARENA_VERSION, IS_SANDBOX, sandboxOffsetWeeks, setSandboxOffsetWeeks, parseOffsetWeeks, offsetBannerText,
-} from '../config.js?v=202610141418';
-import { readPref, prefKeys, arenaSet } from '../local.js?v=202610141418';
-import { getDocData, setMerge } from '../firebase.js?v=202610141418';
-import { currentTheme, currentContrast, setTheme, setContrast } from '../theme.js?v=202610141418';
-import { ID_DOCS, isValidUserId, planIdSwitch, applyIdSwitch } from '../idSwitch.js?v=202610141418';
-import { track } from '../analytics.js?v=202610141418';
-import { openPrivacy } from '../privacy.js?v=202610141418';
-import { sortsByPlay, setSortByPlay } from '../gameOrder.js?v=202610141418';
-import { openGameOrder } from './gameOrderSheet.js?v=202610141418';
+} from '../config.js?v=202610141542';
+import { readPref, prefKeys, arenaSet } from '../local.js?v=202610141542';
+import { getDocData, setMerge } from '../firebase.js?v=202610141542';
+import { currentTheme, currentContrast, setTheme, setContrast } from '../theme.js?v=202610141542';
+import { ID_DOCS, isValidUserId, planIdSwitch, applyIdSwitch } from '../idSwitch.js?v=202610141542';
+import { track } from '../analytics.js?v=202610141542';
+import { openPrivacy } from '../privacy.js?v=202610141542';
+import { sortsByPlay, setSortByPlay } from '../gameOrder.js?v=202610141542';
+import { openGameOrder } from './gameOrderSheet.js?v=202610141542';
 
 const SUPPORT_EMAIL = 'info@canucklegame.ca';
 const KOFI_URL = 'https://ko-fi.com/canuckle';
