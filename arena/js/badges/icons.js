@@ -2,6 +2,8 @@
 // an illustration of what the badge is for. Built from constants only, so the
 // markup is safe to inject. The artwork for a badge is picked from its id.
 
+import { LOGOS } from './logos.js?v=202610151655';
+
 export const LEAF_PATH = 'M50 5L57 19L64 15L61 38L72 27L75 34L86 32L82 45L90 49L70 64L73 73L53 70L53 92L47 92L47 70L27 73L30 64L10 49L18 45L14 32L25 34L28 27L39 38L36 15L43 19Z';
 
 const RING = { bronze: '#C07A3E', silver: '#B9BCC2', gold: '#E2B23B', none: '#F1E9DB' };
@@ -25,6 +27,10 @@ const PALETTE = {
 
 const leaf = (x, y, s, fill) =>
   `<path transform="translate(${x} ${y}) scale(${s})" d="${LEAF_PATH}" fill="${fill}"/>`;
+
+/** A game's logo drawn [size] across with its top left at (x, y). */
+const logo = (id, x, y, size) =>
+  `<g transform="translate(${x} ${y}) scale(${size / 160})">${LOGOS[id]}</g>`;
 
 const hex = (r, fill, sw) => {
   const p = (a) => {
@@ -102,11 +108,15 @@ const ART = {
     return `<ellipse cx="${x}" cy="${y}" rx="7" ry="3.2" fill="#17171A"/><ellipse cx="${x}" cy="${y - 1.4}" rx="7" ry="2.6" fill="#3A3A40"/>`;
   }).join(''),
 
+  // Full Slate: every daily game's logo on a slate, four over three.
   slate: () => {
-    const colours = ['#D52B1E', '#C08A12', '#1F5E96', '#1E5A3C', '#17171A', '#D35F1B'];
-    const tiles = colours.map((c, i) =>
-      `<rect x="${36 + (i % 3) * 16.5}" y="${45 + Math.floor(i / 3) * 17}" width="15" height="15" rx="4" fill="${c}" stroke="#fff" stroke-width="1.5"/>`).join('');
-    return `<rect x="31" y="40" width="58" height="42" rx="6" fill="#4C4C58" stroke="#8A6A3A" stroke-width="3"/>${tiles}`
+    const tiles = Object.keys(LOGOS).map((id, i) => {
+      const row = i < 4 ? 0 : 1;
+      const x = row ? 37.5 + (i - 4) * 15.5 : 30 + i * 15.5;
+      const y = 44 + row * 16;
+      return `<rect x="${x - 1}" y="${y - 1}" width="15" height="15" rx="4" fill="#fff"/>${logo(id, x, y, 13)}`;
+    }).join('');
+    return `<rect x="26" y="39" width="68" height="40" rx="6" fill="#4C4C58" stroke="#8A6A3A" stroke-width="3"/>${tiles}`
       + '<circle cx="84" cy="84" r="9" fill="#2FA866" stroke="#fff" stroke-width="2"/><path d="M79.5 84l3 3 6-6" fill="none" stroke="#fff" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"/>';
   },
 
@@ -190,24 +200,25 @@ const ART = {
     + '<path d="M54 28c-3-3 3-5 0-8M62 28c-3-3 3-5 0-8" fill="none" stroke="#fff" stroke-width="2" stroke-linecap="round" opacity=".7"/>'
     + '<rect x="80" y="74" width="9" height="9" rx="2" fill="#fff" stroke="#E9E2D6"/><rect x="83" y="64" width="9" height="9" rx="2" fill="#fff" stroke="#E9E2D6"/>',
 
-  // Daily Double: Canuckle's tile and Duo's tile side by side.
+  // Daily Double: the Canuckle and Duo logos side by side, each scaled from
+  // its 160 box down to a 32 tile.
   pair: () => '<g transform="rotate(-8 46 60)"><rect x="30" y="42" width="32" height="32" rx="8" fill="#D52B1E" stroke="#fff" stroke-width="2"/>'
-    + '<path d="M49.5 52a8 8 0 1 0 0 12" fill="none" stroke="#fff" stroke-width="5"/></g>'
+    + `${logo('canuckle', 30, 42, 32)}</g>`
     + '<g transform="rotate(8 74 60)"><rect x="58" y="44" width="32" height="32" rx="8" fill="#6B3FA0" stroke="#fff" stroke-width="2"/>'
-    + '<path d="M75.5 54a8 8 0 1 0 0 12" fill="none" stroke="#fff" stroke-width="5"/>'
-    + '<path d="M80 57a2.3 2.3 0 1 1 4 2l-5 3.5h6" fill="none" stroke="#fff" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/></g>',
+    + `${logo('duo', 58, 44, 32)}</g>`,
 
-  // Canagrams: the letter wheel with the leaf in the middle.
+  // Canagrams: the logo's letter wheel, C-A-N-A-D-A round a big leaf, lifted
+  // clear of the ribbon.
   wheel: () => {
-    const tiles = [0, 1, 2, 3, 4, 5].map((k) => {
+    const tiles = [...'CANADA'].map((t, k) => {
       const a = -Math.PI / 2 + (k * Math.PI) / 3;
       const x = (60 + 22 * Math.cos(a)).toFixed(1);
       const y = (60 + 22 * Math.sin(a)).toFixed(1);
-      return `<circle cx="${x}" cy="${y}" r="8" fill="#fff"/>`;
+      return `<circle cx="${x}" cy="${y}" r="8" fill="#fff"/>`
+        + `<text x="${x}" y="${(Number(y) + 3.2).toFixed(1)}" text-anchor="middle" font-family="Sora, 'Clear Sans', sans-serif" font-weight="800" font-size="9" fill="#0A5958">${t}</text>`;
     }).join('');
-    return '<circle cx="60" cy="60" r="32" fill="#fff" opacity=".22"/>' + tiles
-      + `<text x="60" y="41" text-anchor="middle" font-family="Sora, 'Clear Sans', sans-serif" font-weight="800" font-size="9" fill="#0A5958">C</text>`
-      + leaf(51, 51, 0.18, '#D52B1E');
+    return '<g transform="translate(0 -5)"><circle cx="60" cy="60" r="32" fill="#fff" opacity=".22"/>' + tiles
+      + leaf(44.9, 45.4, 0.3, '#D52B1E') + '</g>';
   },
 
   // Full Week: seven squares, Monday to Sunday, all ticked.

@@ -1,12 +1,12 @@
 // Badge medals, the badge detail sheet, the full badge page, and the unlock
 // announcement.
 
-import { h, ICONS, openSheet, sheetHead, toast } from '../ui.js?v=202610141542';
-import { longDate, todayEpochDay } from '../dates.js?v=202610141542';
-import { medalSvg, LEAF_PATH } from '../badges/icons.js?v=202610141542';
-import { shareBadge, shareShelf } from '../badges/share.js?v=202610141542';
-import { gameById } from '../games/registry.js?v=202610141542';
-import { track } from '../analytics.js?v=202610141542';
+import { h, ICONS, openSheet, sheetHead, toast } from '../ui.js?v=202610151655';
+import { longDate, todayEpochDay } from '../dates.js?v=202610151655';
+import { medalSvg, LEAF_PATH } from '../badges/icons.js?v=202610151655';
+import { shareBadge, shareShelf } from '../badges/share.js?v=202610151655';
+import { gameById } from '../games/registry.js?v=202610151655';
+import { track } from '../analytics.js?v=202610151655';
 
 const FAMILY_COLOR = '#D52B1E';
 
@@ -157,6 +157,7 @@ export function renderBadgesPage(app) {
     sections.filter((s) => s.list.length).map((s) => h('section', { class: 'card', style: { marginBottom: '12px' } },
       h('div', { class: 'row-head', style: { padding: '0 0 10px' } },
         s.logo ? h('img', { src: s.logo, alt: '', style: { width: '28px', height: '28px' } }) : null,
-        h('h2', { text: s.title })),
+        h('div', { class: 'grow' }, h('h2', { text: s.title }),
+          h('p', { class: 'muted', text: `${s.list.filter((b) => b.earned).length} of ${s.list.length} earned` }))),
       h('div', { class: 'badge-grid' }, s.list.map((b) => medalButton(app, b))))));
 }

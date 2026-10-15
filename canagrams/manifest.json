@@ -1,10 +1,11 @@
-﻿{
+{
     "name": "Canagrams",
     "short_name": "Canagrams",
-    "start_url": ".",
+    "start_url": "/canagrams/",
+    "scope": "/canagrams/",
     "display": "standalone",
-    "background_color": "#0175C2",
-    "theme_color": "#0175C2",
+    "background_color": "#FFF4F4",
+    "theme_color": "#CF2319",
     "description": "A daily Canadian anagram crossword.",
     "orientation": "portrait-primary",
     "prefer_related_applications": false,

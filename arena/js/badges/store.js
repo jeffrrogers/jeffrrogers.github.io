@@ -21,8 +21,8 @@
 // holds after the earnings scroll out of the window the arena reads. Growing
 // it never announces anything: only a badge's first earning is announced.
 
-import { getDocData, setMerge, SERVER_TIME, toMillis } from '../firebase.js?v=202610141542';
-import { millisOfEd, todayEpochDay } from '../dates.js?v=202610141542';
+import { getDocData, setMerge, SERVER_TIME, toMillis } from '../firebase.js?v=202610151655';
+import { millisOfEd, todayEpochDay } from '../dates.js?v=202610151655';
 
 function normalize(doc) {
   const out = {};
