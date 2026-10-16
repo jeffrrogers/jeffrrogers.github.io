@@ -12,9 +12,9 @@
 // the count survives history scrolling out of the recent window. parts() is
 // the checklist behind a badge that needs several things at once.
 
-import { SOLVED, minEd, finishOn, num } from '../status.js?v=202610151655';
-import { todayEpochDay, weekdayName, shortDate } from '../dates.js?v=202610151655';
-import { LAUNCH_DATE } from '../config.js?v=202610151655';
+import { SOLVED, minEd, finishOn, num } from '../status.js?v=202610152203';
+import { todayEpochDay, weekdayName, shortDate } from '../dates.js?v=202610152203';
+import { LAUNCH_DATE } from '../config.js?v=202610152203';
 
 function finishDays(game, p) {
   return [...p.doneIdx].map((i) => finishOn(game, p, i));
@@ -63,6 +63,42 @@ const DAILY_STREAKS = [
   { n: 100, name: 'Centurion', tier: 'gold' },
   { n: 365, name: 'Year Round', tier: 'gold' },
 ];
+/**
+ * Canuckle's and Duo's streak badges: the tiers Canuckle's share text tags a
+ * streak with (canuckleSourceCode/lib/ui/share_lines.dart), plus Year Round.
+ * Each ring changes at the tier named for it. Only the tiers a player has
+ * reached, and the next one, are shown (see [evaluateBadges]).
+ */
+const STREAK_LADDER = [
+  { n: 5, name: 'Star', tag: '#CanuckleStar', tier: 'bronze' },
+  { n: 10, name: 'Bronze Team', tag: '#CanuckleBronzeTeam', tier: 'bronze' },
+  { n: 20, name: '20 Club', tag: '#Canuckle20Club', tier: 'bronze' },
+  { n: 25, name: 'Silver Team', tag: '#CanuckleSilverTeam', tier: 'silver' },
+  { n: 30, name: '30 Club', tag: '#Canuckle30Club', tier: 'silver' },
+  { n: 40, name: '40 Club', tag: '#Canuckle40Club', tier: 'silver' },
+  { n: 50, name: 'Gold Team', tag: '#CanuckleGoldTeam', tier: 'gold' },
+  { n: 75, name: 'Diamond Team', tag: '#CanuckleDiamondTeam', tier: 'gold' },
+  { n: 100, name: 'Centurion', tag: '#CanuckleCenturion', tier: 'gold' },
+  { n: 125, name: 'Master', tag: '#CanuckleMaster', tier: 'gold' },
+  { n: 150, name: 'Guru', tag: '#CanuckleGuru', tier: 'gold' },
+  { n: 200, name: 'Legend', tag: '#CanuckleLegend', tier: 'gold' },
+  { n: 250, name: 'Grandmaster', tag: '#CanuckleGrandmaster', tier: 'gold' },
+  { n: 300, name: 'Platinum', tag: '#CanucklePlatinum', tier: 'platinum' },
+  { n: 350, name: 'Supreme', tag: '#CanuckleSupreme', tier: 'platinum' },
+  { n: 365, name: 'Year Round', tag: null, tier: 'gold' },
+  { n: 400, name: 'EHlite', tag: '#CanuckleEHlite', tier: 'platinum' },
+  { n: 500, name: 'God', tag: '#CanuckleGod', tier: 'platinum' },
+  { n: 600, name: 'Oracle', tag: '#CanuckleOracle', tier: 'platinum' },
+  { n: 700, name: 'Maestro', tag: '#CanuckleMaestro', tier: 'platinum' },
+  { n: 750, name: 'Virtuoso', tag: '#CanuckleVirtuoso', tier: 'platinum' },
+  { n: 800, name: 'Phenom', tag: '#CanucklePhenom', tier: 'platinum' },
+  { n: 900, name: 'Titan', tag: '#CanuckleTitan', tier: 'platinum' },
+  { n: 1000, name: 'Immortal', tag: '#CanuckleImmortal', tier: 'platinum' },
+];
+const LADDER_GAMES = new Set(['canuckle', 'duo']);
+/** On a Roll (7 days) before the ladder: kept for those who earned it, earned by no one new. */
+const RETIRED_STREAK = { n: 7, name: 'On a Roll', tier: 'bronze' };
+
 const WEEKLY_STREAKS = [
   { n: 4, name: 'Monthly Regular', tier: 'bronze' },
   { n: 12, name: 'Season Pass', tier: 'silver' },
@@ -202,15 +238,29 @@ function gameBadges(game) {
     check: (p) => [Math.min(p.doneIdx.size, 1), 1],
     since: (p) => nthEarliest(finishDays(game, p), 1),
   }];
-  for (const s of weekly ? WEEKLY_STREAKS : DAILY_STREAKS) {
-    list.push({
-      id: `${game.id}.streak${s.n}`, game: game.id, name: s.name, glyph: 'flame', tier: s.tier,
-      desc: `Reach a ${s.n}-${unit} ${game.name} streak.`,
-      check: (p) => [Math.min(p.maxStreak, s.n), s.n],
-      since: (p) => streakReachedOn(game, p, s.n),
-      // Each separate streak that reaches the length counts once.
-      occurrences: (p) => runKeys(p.streakIdx || p.doneIdx, s.n),
-    });
+  const streak = (s, extra = {}) => ({
+    id: `${game.id}.streak${s.n}`, game: game.id, name: s.name, glyph: 'flame', tier: s.tier,
+    desc: `Reach a ${s.n}-${unit} ${game.name} streak.`,
+    check: (p) => [Math.min(p.maxStreak, s.n), s.n],
+    since: (p) => streakReachedOn(game, p, s.n),
+    // Each separate streak that reaches the length counts once.
+    occurrences: (p) => runKeys(p.streakIdx || p.doneIdx, s.n),
+    ...extra,
+  });
+  if (LADDER_GAMES.has(game.id)) {
+    for (const s of [RETIRED_STREAK, ...STREAK_LADDER].sort((a, b) => a.n - b.n)) {
+      if (s === RETIRED_STREAK) {
+        list.push(streak(s, { retired: true }));
+        continue;
+      }
+      list.push(streak(s, {
+        ladder: game.id,
+        n: s.n,
+        ...(s.tag ? { desc: `Reach a ${s.n}-day ${game.name} streak. Your shares now carry ${s.tag}.` } : {}),
+      }));
+    }
+  } else {
+    for (const s of weekly ? WEEKLY_STREAKS : DAILY_STREAKS) list.push(streak(s));
   }
   for (const t of weekly ? WEEKLY_TOTALS : DAILY_TOTALS) {
     list.push({
@@ -500,14 +550,16 @@ export function evaluateBadges(games, state, alreadyEarned = new Set(),
   const active = Object.values(lastActive).filter((d) => d != null);
   const anyActive = active.length ? Math.max(...active) : null;
 
-  const results = [];
+  let results = [];
   for (const def of badgeDefinitions(games, allLaunched)) {
     if (def === COLLECTOR) continue;
+    // A retired badge is only ever one somebody already holds.
+    if (def.retired && !alreadyEarned.has(def.id)) continue;
     const p = def.game ? state[def.game]?.progress : null;
     if (def.game && !p) continue;
     const arg = def.game && !def.cross ? p : ctx;
     const [have, need] = def.check(arg);
-    const reached = have >= need;
+    const reached = have >= need && !def.retired;
     const on = reached && def.since ? def.since(arg) : null;
     const earned = reached || alreadyEarned.has(def.id);
     const keys = def.occurrences ? [...new Set(def.occurrences(arg))] : [];
@@ -529,6 +581,13 @@ export function evaluateBadges(games, state, alreadyEarned = new Set(),
       parts: def.parts ? def.parts(arg, todayEd) : null,
     });
   }
+  // A streak ladder shows the tiers reached and the next one, not the twenty
+  // still out of sight.
+  const next = {};
+  for (const r of results) {
+    if (r.ladder && !r.earned) next[r.ladder] = Math.min(next[r.ladder] ?? Infinity, r.n);
+  }
+  results = results.filter((r) => !r.ladder || r.earned || r.n === next[r.ladder]);
   const earned = results.filter((b) => b.earned);
   const reached = earned.length >= 10;
   results.unshift({

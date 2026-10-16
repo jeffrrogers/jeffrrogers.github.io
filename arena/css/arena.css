@@ -1184,6 +1184,33 @@ a.week-band:hover { border-color: var(--muted); color: var(--text); }
 .badge-sheet p { margin: 8px 0 16px; }
 .badge-sheet .actions { display: flex; gap: 10px; justify-content: center; flex-wrap: wrap; }
 
+/* The summary of several badges earned at once: every one at a glance,
+   grouped by game, each opening its details in place. */
+.badge-summary-list > h2 { font-size: 22px; margin-top: 4px; }
+.badge-summary-section { text-align: left; margin: 0 0 14px; }
+.badge-summary-section .row-head { padding: 0 0 6px; gap: 10px; }
+.badge-summary-section .row-head img { width: 26px; height: 26px; }
+.badge-summary-section .row-head h4 { margin: 0; flex: 1; font: 700 15px/1.2 var(--display); }
+.badge-summary-section .row-head .muted { font-size: 12px; }
+.badge-summary-section .badge-grid { grid-template-columns: repeat(auto-fill, minmax(88px, 1fr)); }
+.badge-summary-section .badge-btn { width: auto; }
+.badge-summary .actions { margin-top: 6px; }
+.badge-back {
+  display: flex;
+  width: fit-content;
+  align-items: center;
+  gap: 6px;
+  margin: 0 0 10px;
+  padding: 8px 12px 8px 8px;
+  border: 1px solid var(--border);
+  border-radius: 999px;
+  background: none;
+  color: var(--text);
+  font: 600 14px/1 var(--body);
+}
+.badge-back span { font-size: 20px; line-height: 0; margin-top: -2px; }
+.badge-back:hover { background: var(--surface-2); }
+
 /* The checklist behind a multi-part badge: what's done, and what's still to do. */
 .badge-parts {
   margin: 0 auto 16px;

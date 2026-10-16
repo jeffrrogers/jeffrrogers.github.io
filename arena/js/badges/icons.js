@@ -2,11 +2,11 @@
 // an illustration of what the badge is for. Built from constants only, so the
 // markup is safe to inject. The artwork for a badge is picked from its id.
 
-import { LOGOS } from './logos.js?v=202610151655';
+import { LOGOS } from './logos.js?v=202610152203';
 
 export const LEAF_PATH = 'M50 5L57 19L64 15L61 38L72 27L75 34L86 32L82 45L90 49L70 64L73 73L53 70L53 92L47 92L47 70L27 73L30 64L10 49L18 45L14 32L25 34L28 27L39 38L36 15L43 19Z';
 
-const RING = { bronze: '#C07A3E', silver: '#B9BCC2', gold: '#E2B23B', none: '#F1E9DB' };
+const RING = { bronze: '#C07A3E', silver: '#B9BCC2', gold: '#E2B23B', platinum: '#DDE8F0', none: '#F1E9DB' };
 
 // Inner colour and its darker edge, per game.
 const PALETTE = {
@@ -251,10 +251,221 @@ const ART = {
   padlock: () => '<rect x="49" y="54" width="22" height="18" rx="4" fill="#8A847B"/><path d="M53 54v-5a7 7 0 0 1 14 0v5" fill="none" stroke="#8A847B" stroke-width="3.5"/><circle cx="60" cy="62" r="2.5" fill="#D9D4CC"/>',
 };
 
+// ---- Streak ladder art (Canuckle and Duo) --------------------------------------
+// Each tier of the ladder (STREAK_LADDER in rules.js) has its own symbol in front
+// of a flame, so the set reads as streak badges. Year Round (365) and the retired
+// On a Roll keep the campfire.
+
+const W = '#FFFFFF';
+
+/** A five-pointed star centred on (cx, cy). */
+function starPath(cx, cy, R, r = R * 0.45) {
+  let d = '';
+  for (let k = 0; k < 10; k++) {
+    const a = -Math.PI / 2 + (k * Math.PI) / 5;
+    const rad = k % 2 ? r : R;
+    d += `${k ? 'L' : 'M'}${(cx + rad * Math.cos(a)).toFixed(1)} ${(cy + rad * Math.sin(a)).toFixed(1)}`;
+  }
+  return d + 'Z';
+}
+
+/** A four-pointed sparkle centred on (cx, cy). */
+const sparkle = (cx, cy, s, fill, stroke = 'none', width = 1.2) =>
+  `<path d="M${cx} ${cy - s}Q${cx + s * 0.18} ${cy - s * 0.18} ${cx + s} ${cy}Q${cx + s * 0.18} ${cy + s * 0.18} ${cx} ${cy + s}Q${cx - s * 0.18} ${cy + s * 0.18} ${cx - s} ${cy}Q${cx - s * 0.18} ${cy - s * 0.18} ${cx} ${cy - s}Z" fill="${fill}" stroke="${stroke}" stroke-width="${width}" stroke-linejoin="round"/>`;
+
+/** The flame every ladder medal has behind its symbol. */
+const LADDER_FLAME = () =>
+  FLAME(60, 21, 50, 60, '#F07A1A')
+  + FLAME(60, 33, 34, 46, '#F9A73E')
+  + FLAME(60, 46, 20, 30, '#FFD15C');
+
+/** A sports medal on its neck ribbon: [disc] and [rim] colours. */
+const medalOnRibbon = (disc, rim) =>
+  '<path d="M49 30h9l6 22h-9z" fill="#D52B1E" stroke="#fff" stroke-width="1.4"/>'
+  + '<path d="M71 30h-9l-6 22h9z" fill="#F4F1EA" stroke="#fff" stroke-width="1.4"/>'
+  + `<circle cx="60" cy="63" r="15" fill="${rim}" stroke="#fff" stroke-width="2.4"/>`
+  + `<circle cx="60" cy="63" r="10.5" fill="${disc}"/>`
+  + leaf(53.5, 56.5, 0.13, '#FFFFFF');
+
+const LADDER_ART = {
+  5: () => `<path d="${starPath(60, 60, 19)}" fill="#FFD34E" stroke="${W}" stroke-width="2.6" stroke-linejoin="round"/>`,
+
+  10: () => medalOnRibbon('#D89558', '#A9652E'),
+
+  20: () => '<circle cx="60" cy="60" r="23" fill="#FFF4C2" opacity=".35"/>'
+    + `<path d="${starPath(60, 60, 17)}" fill="#FFE48A" stroke="${W}" stroke-width="2.6" stroke-linejoin="round"/>`
+    + sparkle(80, 40, 5, '#FFFFFF') + sparkle(39, 74, 4, '#FFFFFF') + sparkle(41, 42, 3, '#FFFFFF'),
+
+  25: () => medalOnRibbon('#D9DCE1', '#9EA2AA'),
+
+  30: () => sparkle(55, 62, 15, '#FFE48A', W, 2.2) + sparkle(75, 43, 8, '#FFE48A', W, 2)
+    + sparkle(76, 74, 6, '#FFE48A', W, 1.8),
+
+  40: () => `<path transform="translate(39 39) scale(.42)" d="${LEAF_PATH}" fill="#D52B1E" stroke="${W}" stroke-width="3.6" stroke-linejoin="round"/>`,
+
+  50: () => medalOnRibbon('#F5CD55', '#C9951F'),
+
+  75: () => '<path d="M43 52 L51 43 H69 L77 52 L60 78 Z" fill="#8FD3F4" stroke="#fff" stroke-width="2.4" stroke-linejoin="round"/>'
+    + '<path d="M43 52 H77 M51 43 L56 52 L60 78 L64 52 L69 43 M56 52 L60 43 L64 52" fill="none" stroke="#3E8FB8" stroke-width="1.2" stroke-linejoin="round"/>'
+    + '<path d="M51 43 L56 52 H43 Z M64 52 L69 43 L77 52 Z" fill="#C9EEFF"/>',
+
+  // The 100 and its two underlines, red with a white stroke round them.
+  100: () => `<text x="60" y="65" text-anchor="middle" font-family="Sora, 'Clear Sans', sans-serif" font-weight="800" font-size="21" fill="#D52B1E" stroke="#FFFFFF" stroke-width="3.2" stroke-linejoin="round" paint-order="stroke" transform="rotate(-8 60 60)" letter-spacing="-.5">100</text>`
+    + '<path d="M41 72.5 Q60 68 79 65.5 M43 77 Q60 72.5 78 70" stroke="#FFFFFF" stroke-width="6" fill="none" stroke-linecap="round"/>'
+    + '<path d="M41 72.5 Q60 68 79 65.5 M43 77 Q60 72.5 78 70" stroke="#D52B1E" stroke-width="2.6" fill="none" stroke-linecap="round"/>',
+
+  // The trophy, with a white stroke laid under each part.
+  125: () => '<g transform="translate(9 4) scale(.85)">'
+    + '<g fill="#FFFFFF" stroke="#FFFFFF" stroke-width="5" stroke-linejoin="round">'
+    + '<path d="M44 44c-9 0-9 14 2 15M76 44c9 0 9 14-2 15" fill="none" stroke-width="9" stroke-linecap="round"/>'
+    + '<path d="M43 36h34v12c0 12-7 21-17 21s-17-9-17-21z"/>'
+    + '<rect x="56" y="68" width="8" height="8"/><rect x="46" y="76" width="28" height="9" rx="3"/><rect x="42" y="84" width="36" height="6" rx="2"/>'
+    + '</g>'
+    + ART.trophy() + '</g>',
+
+  // A brain from the side, front to the left: the cerebrum with its folds,
+  // the cerebellum tucked under the back, and the brain stem below.
+  150: () => '<path d="M62 67 Q63 74 65.5 79" stroke="#FFFFFF" stroke-width="8" stroke-linecap="round"/>'
+    + '<path d="M62 67 Q63 74 65.5 79" stroke="#E896B2" stroke-width="5" stroke-linecap="round"/>'
+    + '<ellipse cx="72.5" cy="67.5" rx="8.5" ry="5.5" fill="#E896B2" stroke="#FFFFFF" stroke-width="2.2"/>'
+    + '<path d="M66.5 66 Q72.5 64 78.5 66.5 M67 69.5 Q72.5 68 78 70" stroke="#B9577C" stroke-width="1.1" fill="none" stroke-linecap="round"/>'
+    + '<path d="M37.5 57 C36 45 46 37.5 58 38 C71 37.5 83.5 44 83.5 55 C84 62.5 79 66 73 64.5 C70 69.5 63.5 69.5 60 66.5 C55 70 46.5 69.5 43.5 65 C39.5 64 37.5 61 37.5 57 Z" fill="#F7B3C9" stroke="#FFFFFF" stroke-width="2.4" stroke-linejoin="round"/>'
+    + '<path d="M43 59.5 Q53 55 64.5 60 Q69 61.5 72 60 M59 40 Q56 47 61 51 Q63.5 54 61 57 M45 49 Q48.5 44.5 53.5 48 M65 44 Q69.5 41 74 46 M70 52.5 Q75.5 50.5 79.5 55 M47.5 64.5 Q52 61.5 56.5 64.5 M51 52 Q54.5 50 57 53" stroke="#C25F86" stroke-width="1.6" fill="none" stroke-linecap="round"/>'
+    + '<path d="M43 48 Q46 42 52 40.5" stroke="#FFFFFF" stroke-opacity=".6" stroke-width="1.8" fill="none" stroke-linecap="round"/>',
+
+  200: () => '<path d="M41 70 L39 47 L50 57 L60 40 L70 57 L81 47 L79 70 Z" fill="#F5C443" stroke="#fff" stroke-width="2.4" stroke-linejoin="round"/>'
+    + '<rect x="41" y="66" width="38" height="8" rx="2" fill="#E2A92C" stroke="#fff" stroke-width="1.6"/>'
+    + '<circle cx="50" cy="70" r="2.2" fill="#D52B1E"/><circle cx="60" cy="70" r="2.4" fill="#1F5E96"/><circle cx="70" cy="70" r="2.2" fill="#D52B1E"/>'
+    + '<circle cx="39" cy="46" r="2.6" fill="#fff"/><circle cx="60" cy="39" r="2.8" fill="#fff"/><circle cx="81" cy="46" r="2.6" fill="#fff"/>',
+
+  // A chess queen: a coronet of five points, each with a ball, over a
+  // flared body on a broad base.
+  250: () => ['<g fill="#2A2A33" stroke="#FFFFFF" stroke-width="2.2" stroke-linejoin="round">',
+    '<path d="M48 51 L46 39 L53 45 L56 35 L60 43 L64 35 L67 45 L74 39 L72 51 Z"/>',
+    '<path d="M50.5 54 H69.5 L67.5 58 Q70 66 73.5 71 H46.5 Q50 66 52.5 58 Z"/>',
+    '<rect x="48" y="50" width="24" height="5" rx="2"/>',
+    '<rect x="43" y="70.5" width="34" height="7" rx="2.5"/>',
+    ...[[46, 37.5], [56, 33.5], [64, 33.5], [74, 37.5]].map(([x, y]) => `<circle cx="${x}" cy="${y}" r="2.6"/>`),
+    '</g>',
+    '<path d="M55 60 Q53.5 65 51 69" stroke="#FFFFFF" stroke-opacity=".5" stroke-width="1.6" fill="none" stroke-linecap="round"/>',
+  ].join(''),
+
+  300: () => '<circle cx="60" cy="60" r="19" fill="#E6EAEE" stroke="#fff" stroke-width="2.4"/>'
+    + '<path d="M60 41 A19 19 0 0 1 79 60 L68 60 A8 8 0 0 0 60 52 Z" fill="#B5E3F7" opacity=".9"/>'
+    + '<path d="M41 60 A19 19 0 0 1 49 44.5 L55.5 54 A8 8 0 0 0 52 60 Z" fill="#F7C1DF" opacity=".9"/>'
+    + '<path d="M60 79 A19 19 0 0 1 45 71.6 L53.7 65 A8 8 0 0 0 60 68 Z" fill="#FDF1B5" opacity=".9"/>'
+    + '<circle cx="60" cy="60" r="7.5" fill="#C7CED6" stroke="#fff" stroke-width="1.4"/><circle cx="60" cy="60" r="3.2" fill="#3A3A44"/>',
+
+  // A superhero from the waist up: a red cape flaring out behind broad
+  // shoulders, a muscled blue suit with big arms, a masked face.
+  350: () => '<path d="M45 46 Q60 41 75 46 L87 79 Q81 75.5 75 79.5 Q68 75.5 60 79.5 Q52 75.5 45 79.5 Q39 75.5 33 79 Z" fill="#D52B1E" stroke="#FFFFFF" stroke-width="2.2" stroke-linejoin="round"/>'
+    + '<path d="M49 50 L44 78.5 M71 50 L76 78.5" stroke="#8E0E07" stroke-width="1.4" opacity=".7"/>'
+    // Arms: thick upper arms swelling out from the shoulders.
+    + ['-1', '1'].map((side) => {
+      const s = Number(side);
+      return `<g transform="translate(60 0) scale(${s} 1)">`
+        + '<path d="M-12 47 Q-25 47 -26 58 Q-27 67 -21 73 Q-17 75 -15 71 Q-13 64 -14 57 Z" fill="#2E66C8" stroke="#FFFFFF" stroke-width="2.2" stroke-linejoin="round"/>'
+        + '<path d="M-20 54 Q-23 60 -21 66" stroke="#1D4A9A" stroke-width="1.4" fill="none" stroke-linecap="round"/>'
+        + '<circle cx="-18" cy="73.5" r="3.6" fill="#F2C29B" stroke="#FFFFFF" stroke-width="1.6"/>'
+        + '</g>';
+    }).join('')
+    // Torso: broad at the shoulders, narrow at the waist.
+    + '<path d="M46 46.5 Q60 42.5 74 46.5 Q73.5 57 70 64 Q67 71 66 75 H54 Q53 71 50 64 Q46.5 57 46 46.5 Z" fill="#2E66C8" stroke="#FFFFFF" stroke-width="2.2" stroke-linejoin="round"/>'
+    + '<path d="M50.5 55 Q55.5 59 60 55.5 Q64.5 59 69.5 55 M60 56 V72 M55.5 63 Q60 64.5 64.5 63 M56 68 Q60 69.5 64 68" stroke="#1D4A9A" stroke-width="1.4" fill="none" stroke-linecap="round"/>'
+    + '<rect x="53.5" y="72" width="13" height="3.6" rx="1.2" fill="#F5C443" stroke="#FFFFFF" stroke-width="1"/>'
+    + leaf(56, 46.5, 0.08, '#FFFFFF')
+    // Head and mask.
+    + '<rect x="57" y="40" width="6" height="5" fill="#F2C29B"/>'
+    + '<circle cx="60" cy="36" r="7" fill="#F2C29B" stroke="#FFFFFF" stroke-width="1.8"/>'
+    + '<path d="M52.8 34.5 Q60 31 67.2 34.5 L67 37.5 Q63.5 39.5 60 37.5 Q56.5 39.5 53 37.5 Z" fill="#17171A"/>'
+    + '<ellipse cx="57" cy="35.4" rx="1.6" ry="1" fill="#FFFFFF"/><ellipse cx="63" cy="35.4" rx="1.6" ry="1" fill="#FFFFFF"/>'
+    + '<path d="M53.5 33 Q55 28.5 60 28.5 Q65 28.5 66.5 33 Q60 30.5 53.5 33 Z" fill="#3A2A1C"/>',
+
+  400: () => '<path d="M38 45 Q49 41 60 45 Q71 49 82 45 V73 Q71 77 60 73 Q49 69 38 73 Z" fill="#FFFFFF" stroke="#fff" stroke-width="2.4" stroke-linejoin="round"/>'
+    + '<path d="M38 45 Q42.5 43.5 47 43.3 V71.3 Q42.5 71.5 38 73 Z" fill="#D52B1E"/><path d="M73 47.2 Q77.5 46.8 82 45 V73 Q77.5 74.7 73 75.2 Z" fill="#D52B1E"/>'
+    + leaf(52.5, 51, 0.15, '#D52B1E')
+    + '<path d="M38 45 Q49 41 60 45 Q71 49 82 45 V73 Q71 77 60 73 Q49 69 38 73 Z" fill="none" stroke="#E2DBD0" stroke-width="1"/>',
+
+  500: () => '<ellipse cx="60" cy="41" rx="15" ry="4.6" fill="none" stroke="#8ED0FF" stroke-width="3.6"/>'
+    + '<ellipse cx="60" cy="41" rx="15" ry="4.6" fill="none" stroke="#fff" stroke-width="1.2" opacity=".8"/>'
+    + '<circle cx="60" cy="63" r="15" fill="#FFD34E" stroke="#fff" stroke-width="2.4"/>'
+    + '<path d="M51.5 60 Q54 62.5 56.5 60 M63.5 60 Q66 62.5 68.5 60" stroke="#6B3A10" stroke-width="1.8" fill="none" stroke-linecap="round"/>'
+    + '<path d="M53 67 Q60 73 67 67" stroke="#6B3A10" stroke-width="2" fill="none" stroke-linecap="round"/>'
+    + '<circle cx="50" cy="66" r="2.4" fill="#F59A7A" opacity=".7"/><circle cx="70" cy="66" r="2.4" fill="#F59A7A" opacity=".7"/>',
+
+  600: () => '<path d="M47 68 H73 L77 77 H43 Z" fill="#C9951F" stroke="#fff" stroke-width="2" stroke-linejoin="round"/>'
+    + '<circle cx="60" cy="55" r="16" fill="#8E6BE0" stroke="#fff" stroke-width="2.4"/>'
+    + '<circle cx="60" cy="55" r="16" fill="#C9B6FF" opacity=".35" transform="translate(-3 -3) scale(1.05)"/>'
+    + '<ellipse cx="54" cy="48" rx="5" ry="3.4" fill="#FFFFFF" opacity=".75" transform="rotate(-30 54 48)"/>'
+    + sparkle(64, 58, 4, '#FFFFFF') + sparkle(56, 63, 2.6, '#FFFFFF'),
+
+  700: () => '<path d="M43 78 L70 51" stroke="#fff" stroke-width="8" stroke-linecap="round"/>'
+    + '<path d="M43 78 L70 51" stroke="#17171A" stroke-width="5" stroke-linecap="round"/>'
+    + '<path d="M64.5 56.5 L70 51" stroke="#FFFFFF" stroke-width="5" stroke-linecap="round"/>'
+    + sparkle(76, 44, 9, '#FFE48A', '#FFFFFF') + sparkle(63, 39, 4, '#FFFFFF') + sparkle(82, 58, 3.4, '#FFFFFF'),
+
+  750: () => ['-1', '1'].map((side) => {
+    const s = Number(side);
+    return `<g transform="translate(${60 + s * 11} 61) rotate(${s * 14}) scale(${s} 1)">`
+      + '<path d="M-8 14 V-2 Q-8 -6 -5.5 -6 Q-3 -6 -3 -2 V-12 Q-3 -15.5 -0.5 -15.5 Q2 -15.5 2 -12 V-11 Q2 -14 4.5 -14 Q7 -14 7 -11 V-4 Q7 -7 9.5 -7 Q12 -7 12 -4 V6 Q12 15 3 15 Z" fill="#F2C29B" stroke="#fff" stroke-width="2.2" stroke-linejoin="round"/>'
+      + '<path d="M-3 -2 V3 M2 -11 V2 M7 -4 V3" stroke="#C98A60" stroke-width="1.2" fill="none" stroke-linecap="round"/>'
+      + '</g>';
+  }).join('')
+    + '<path d="M44 38 L47 43 M60 34 V40 M76 38 L73 43" stroke="#FFFFFF" stroke-width="2.4" stroke-linecap="round"/>',
+
+  800: () => '<path d="M60 31 L64 39 L72 34 L71 43 L80 43 L74 50 L60 48 L46 50 L40 43 L49 43 L48 34 L56 39 Z" fill="#FFB43A" stroke="#fff" stroke-width="2" stroke-linejoin="round"/>'
+    + '<path d="M60 36 L62.5 41 L67 39 L66.5 44 L60 45 L53.5 44 L53 39 L57.5 41 Z" fill="#FFF0A8"/>'
+    + '<path d="M45 60 Q45 48 60 48 Q75 48 75 60 Q75 78 60 78 Q45 78 45 60 Z" fill="#FFD34E" stroke="#fff" stroke-width="2.4"/>'
+    + '<circle cx="54" cy="60" r="3" fill="#fff" stroke="#6B3A10" stroke-width="1.4"/><circle cx="66" cy="60" r="3" fill="#fff" stroke="#6B3A10" stroke-width="1.4"/>'
+    + '<ellipse cx="60" cy="70" rx="4" ry="4.6" fill="#6B3A10"/>',
+
+  // A flexed arm: the upper arm across the bottom with the bicep bulging up
+  // from it, the forearm rising at the elbow to a clenched fist.
+  900: () => '<path d="M37 77 Q35 66 42 62 Q46 47 58 47 Q66 47 68 55 L68 48 Q63 46 63 40 Q63 31 72 31 Q82 31 82 41 Q82 46 79 48.5 L81 66 Q82 78 69 79 L43 80 Q38 80 37 77 Z" fill="#F2C29B" stroke="#FFFFFF" stroke-width="2.4" stroke-linejoin="round"/>'
+    + '<path d="M44 62 Q48 52 57 51 Q63 51 65 57" stroke="#FFFFFF" stroke-opacity=".55" stroke-width="2" fill="none" stroke-linecap="round"/>'
+    + '<path d="M68 56 Q66 63 59 66 M69 48.5 Q74 50 79 48.5" stroke="#C98A60" stroke-width="1.6" fill="none" stroke-linecap="round"/>'
+    + '<path d="M66.5 37 Q70 35.5 73 37 M68 42 Q72 40.5 76 42" stroke="#C98A60" stroke-width="1.4" fill="none" stroke-linecap="round"/>',
+
+  // Infinity as one unbroken loop: a single figure-eight stroke, its colour
+  // flowing from purple to blue across it, crossing over itself in the middle.
+  1000: () => {
+    const d = 'M60 60 C66 50 70.5 47.5 75 47.5 C80.5 47.5 84 53 84 60 C84 67 80.5 72.5 75 72.5 C70.5 72.5 66 70 60 60 '
+      + 'C54 50 49.5 47.5 45 47.5 C39.5 47.5 36 53 36 60 C36 67 39.5 72.5 45 72.5 C49.5 72.5 54 70 60 60';
+    // The stroke rising left to right through the middle, drawn again on
+    // top so the loop reads as passing over itself.
+    const over = 'M53.5 69 C56 66.5 58 63.5 60 60 C62 56.5 64 53.5 66.5 51';
+    return '<defs><linearGradient id="ladder-infinity" x1="36" x2="84" y1="0" y2="0" gradientUnits="userSpaceOnUse">'
+      + '<stop offset="0" stop-color="#7A4FD0"/><stop offset="1" stop-color="#3FA9E8"/></linearGradient></defs>'
+      + `<path d="${d}" fill="none" stroke="#FFFFFF" stroke-width="11.5" stroke-linejoin="round"/>`
+      + `<path d="${d}" fill="none" stroke="url(#ladder-infinity)" stroke-width="7" stroke-linejoin="round"/>`
+      + `<path d="${over}" fill="none" stroke="#FFFFFF" stroke-width="11.5" stroke-linecap="butt"/>`
+      + `<path d="${over}" fill="none" stroke="url(#ladder-infinity)" stroke-width="7" stroke-linecap="butt"/>`
+      + '<path d="M40 55.5 Q42 50.5 46.5 50" stroke="#FFFFFF" stroke-opacity=".7" stroke-width="1.6" fill="none" stroke-linecap="round"/>';
+  },
+};
+
+/** The design for a ladder badge, or null for any other badge. */
+function ladderDesign(badge) {
+  const [scope, key] = badge.id.split('.');
+  if (scope !== 'canuckle' && scope !== 'duo') return null;
+  const m = /^streak(\d+)$/.exec(key || '');
+  if (!m) return null;
+  const n = Number(m[1]);
+  const art = LADDER_ART[n];
+  if (!art) return null; // Year Round and the retired On a Roll keep the campfire.
+  return {
+    palette: scope,
+    art: LADDER_FLAME() + art(),
+    ribbon: [`${n} DAYS`, '#FFFFFF', PALETTE[scope][1], 87],
+  };
+}
+
 const STREAK_LEVEL = { 7: 0, 30: 1, 100: 2, 365: 3, 4: 0, 12: 1, 52: 2 };
 
 /** What to draw for a badge: { palette, art } from its id. */
 function design(badge) {
+  const ladder = ladderDesign(badge);
+  if (ladder) return ladder;
   const [scope, key] = badge.id.split('.');
   const game = scope === 'family' ? 'family' : scope;
   const weekly = scope === 'plus';

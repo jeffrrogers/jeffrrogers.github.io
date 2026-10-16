@@ -1,26 +1,26 @@
 // Boot, routing and the shared app state.
 
-import { IS_SANDBOX, IS_DEMO, isLive } from './config.js?v=202610151655';
-import { demoRaw } from './demo.js?v=202610151655';
-import { initAnalytics, track } from './analytics.js?v=202610151655';
-import { loadAds } from './ads.js?v=202610151655';
-import { todayEpochDay } from './dates.js?v=202610151655';
-import { playerId } from './local.js?v=202610151655';
-import { initialTheme, initialContrast, applyTheme, applyContrast } from './theme.js?v=202610151655';
-import { ALL_GAMES, liveGames, gameById } from './games/registry.js?v=202610151655';
-import { initialOrder, computeOrder } from './gameOrder.js?v=202610151655';
-import { loadProgress, loadFullHistory } from './progress.js?v=202610151655';
-import { evaluateBadges } from './badges/rules.js?v=202610151655';
+import { IS_SANDBOX, IS_DEMO, isLive } from './config.js?v=202610152203';
+import { demoRaw } from './demo.js?v=202610152203';
+import { initAnalytics, track } from './analytics.js?v=202610152203';
+import { loadAds } from './ads.js?v=202610152203';
+import { todayEpochDay } from './dates.js?v=202610152203';
+import { playerId } from './local.js?v=202610152203';
+import { initialTheme, initialContrast, applyTheme, applyContrast } from './theme.js?v=202610152203';
+import { ALL_GAMES, liveGames, gameById } from './games/registry.js?v=202610152203';
+import { initialOrder, computeOrder } from './gameOrder.js?v=202610152203';
+import { loadProgress, loadFullHistory } from './progress.js?v=202610152203';
+import { evaluateBadges } from './badges/rules.js?v=202610152203';
 import {
-  loadStoredBadges, needsDating, planSync, applySync, markAnnounced, markShared,
-} from './badges/store.js?v=202610151655';
-import { h, ICONS, closeSheet } from './ui.js?v=202610151655';
-import { renderGames } from './views/gamesTab.js?v=202610151655';
-import { renderArchive } from './views/archive.js?v=202610151655';
-import { renderStats, renderStatsDetail } from './views/statsTab.js?v=202610151655';
-import { renderBadgesPage, announce } from './views/badgesView.js?v=202610151655';
-import { openSettings, openSync, safeReturnPath } from './views/settings.js?v=202610151655';
-import { takeLeftForGame } from './views/play.js?v=202610151655';
+  loadStoredBadges, needsDating, planSync, applySync, markAnnounced, markAnnouncedMany, markShared,
+} from './badges/store.js?v=202610152203';
+import { h, ICONS, closeSheet } from './ui.js?v=202610152203';
+import { renderGames } from './views/gamesTab.js?v=202610152203';
+import { renderArchive } from './views/archive.js?v=202610152203';
+import { renderStats, renderStatsDetail } from './views/statsTab.js?v=202610152203';
+import { renderBadgesPage, announce, announceMany, unlockStyle } from './views/badgesView.js?v=202610152203';
+import { openSettings, openSync, safeReturnPath } from './views/settings.js?v=202610152203';
+import { takeLeftForGame } from './views/play.js?v=202610152203';
 
 const app = {
   uid: IS_DEMO ? 'DEMO' : playerId(),
@@ -175,10 +175,16 @@ async function syncBadges() {
   evaluate();
   if (!app.uid) return;
   if (IS_DEMO) {
-    // ?demo&unlock previews the unlock announcement with one badge; nothing is saved.
-    if (!new URLSearchParams(location.search).has('unlock')) return;
-    const sample = app.badges.results.find((b) => b.earned && b.tier === 'gold')
-      || app.badges.results.find((b) => b.earned);
+    // ?demo&unlock previews the unlock announcement with one badge, and
+    // ?demo&unlock=many the summary of several; nothing is saved.
+    const unlock = new URLSearchParams(location.search).get('unlock');
+    if (unlock == null) return;
+    const earned = app.badges.results.filter((b) => b.earned);
+    if (unlock === 'many') {
+      if (earned.length) announceMany(app, earned, () => {}, { firstVisit: true });
+      return;
+    }
+    const sample = earned.find((b) => b.tier === 'gold') || earned[0];
     if (sample) announce(app, [sample], () => {});
     return;
   }
@@ -196,10 +202,19 @@ async function syncBadges() {
     app.badges.synced = true;
     evaluate();
     refresh();
-    const toAnnounce = plan.announce
+    // A first visit summarises what the history already earned; later visits
+    // announce what's new, one badge on its own or several as a summary.
+    const ids = plan.firstVisit ? plan.summary : plan.announce;
+    const toAnnounce = ids
       .map((id) => app.badges.results.find((b) => b.id === id))
       .filter(Boolean);
-    if (toAnnounce.length) {
+    const style = unlockStyle(toAnnounce.length);
+    if (style === 'summary') {
+      announceMany(app, toAnnounce, (shown) => {
+        for (const id of shown) if (app.badges.stored[id]) app.badges.stored[id].announcedAt = Date.now();
+        markAnnouncedMany(app.uid, shown).catch(() => {});
+      }, { firstVisit: plan.firstVisit });
+    } else if (style === 'single' && !plan.firstVisit) {
       announce(app, toAnnounce, (id) => {
         if (app.badges.stored[id]) app.badges.stored[id].announcedAt = Date.now();
         markAnnounced(app.uid, id).catch(() => {});

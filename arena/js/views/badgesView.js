@@ -1,12 +1,12 @@
 // Badge medals, the badge detail sheet, the full badge page, and the unlock
-// announcement.
+// announcements: one badge at a time, or a summary of several.
 
-import { h, ICONS, openSheet, sheetHead, toast } from '../ui.js?v=202610151655';
-import { longDate, todayEpochDay } from '../dates.js?v=202610151655';
-import { medalSvg, LEAF_PATH } from '../badges/icons.js?v=202610151655';
-import { shareBadge, shareShelf } from '../badges/share.js?v=202610151655';
-import { gameById } from '../games/registry.js?v=202610151655';
-import { track } from '../analytics.js?v=202610151655';
+import { h, ICONS, openSheet, sheetHead, toast } from '../ui.js?v=202610152203';
+import { longDate, shortDate, todayEpochDay } from '../dates.js?v=202610152203';
+import { medalSvg, LEAF_PATH } from '../badges/icons.js?v=202610152203';
+import { shareBadge, shareShelf } from '../badges/share.js?v=202610152203';
+import { gameById } from '../games/registry.js?v=202610152203';
+import { track } from '../analytics.js?v=202610152203';
 
 const FAMILY_COLOR = '#D52B1E';
 
@@ -74,9 +74,21 @@ export function medalButton(app, badge) {
 
 export function openBadgeSheet(app, badge) {
   let close;
+  const body = badgeDetail(app, badge, { onClose: () => close() });
+  close = openSheet(body, { label: badge.name });
+}
+
+/**
+ * A badge's details: its medal, what it's for, and when it was earned or how
+ * close it is. [onBack], when given, adds a way back to wherever it was opened
+ * from inside the same sheet (the summary of new badges).
+ */
+function badgeDetail(app, badge, { onClose, onBack = null }) {
   const game = badge.game ? gameById(badge.game) : null;
-  const body = h('div', { class: 'badge-sheet' },
-    sheetHead(game ? game.name : 'Games Arena badge', () => close()),
+  return h('div', { class: 'badge-sheet' },
+    sheetHead(game ? game.name : 'Games Arena badge', onClose),
+    onBack ? h('button', { class: 'badge-back', type: 'button', onClick: onBack },
+      h('span', { 'aria-hidden': 'true', text: '‹' }), 'Back to your badges') : null,
     h('span', { class: 'medal-wrap big' }, h('span', { html: medalSvg(badge, badgeColor(badge), 140) }), countChip(badge)),
     h('h2', { text: badge.name }),
     h('p', { class: 'muted', text: badge.desc }),
@@ -95,7 +107,6 @@ export function openBadgeSheet(app, badge) {
         badge.bestDay ? h('p', { class: 'muted', text: `Best day so far: ${badge.have} of ${badge.need}` })
           : badge.parts ? null : h('p', { class: 'muted', text: `${badge.have} of ${badge.need}` }),
         partsList(badge)));
-  close = openSheet(body, { label: badge.name });
 }
 
 function leafBurst() {
@@ -136,6 +147,98 @@ export function announce(app, badges, onDone) {
     });
   };
   next();
+}
+
+/**
+ * How to tell a player about [count] badges to announce: nothing, the single
+ * unlock, or (for two or more, so a long-awaited first visit or a few days'
+ * play doesn't become a run of pop-ups) the summary.
+ */
+export function unlockStyle(count) {
+  if (count <= 0) return 'none';
+  return count === 1 ? 'single' : 'summary';
+}
+
+/** The day a badge was recorded as earned, for its tile in the summary. */
+function earnedShort(app, badge) {
+  const rec = app.badges.stored[badge.id];
+  const ed = badge.earnedOn ?? (rec ? todayEpochDay(new Date(rec.earnedAt)) : null);
+  if (ed == null) return '';
+  return badge.earnedOn != null || rec?.dated ? shortDate(ed) : `By ${shortDate(ed)}`;
+}
+
+/**
+ * Every badge in [badges] at a glance, in one scrolling sheet, grouped like
+ * the Badges tab. Tapping one shows its details in place, with a way back to
+ * the list where it was. [firstVisit] greets someone new to the arena who has
+ * already earned these. onDone(ids) once, when the sheet closes.
+ */
+export function announceMany(app, badges, onDone, { firstVisit = false } = {}) {
+  track('badge_summary', { count: badges.length, first_visit: firstVisit });
+  let close;
+  let scrollTop = 0;
+  const sheetEl = () => body.closest('.sheet');
+
+  const sections = [
+    { title: 'Games Arena', logo: 'images/arena.svg', list: badges.filter((b) => !b.game) },
+    ...app.games.map((g) => ({ title: g.name, logo: g.logo, list: badges.filter((b) => b.game === g.id) })),
+  ].filter((s) => s.list.length);
+
+  const tile = (b) => h('button', {
+    class: 'badge-btn',
+    type: 'button',
+    'aria-label': `${b.name}, earned${b.times > 1 ? ` ${b.times} times` : ''}. Show details`,
+    onClick: () => showDetail(b),
+  }, h('span', { class: 'medal-wrap' }, h('span', { html: medalSvg(b, badgeColor(b), 64) }), countChip(b)),
+  b.name, h('span', { class: 'sub', text: earnedShort(app, b) }));
+
+  const list = h('div', { class: 'badge-summary-list' },
+    leafBurst(),
+    h('h3', { text: firstVisit ? 'Welcome to the Arena' : 'Badges unlocked' }),
+    h('h2', { text: firstVisit ? `You've already earned ${badges.length} badges` : `${badges.length} new badges` }),
+    h('p', { class: 'muted', text: 'Tap any badge to see what it’s for.' }),
+    sections.map((s) => h('section', { class: 'badge-summary-section' },
+      h('div', { class: 'row-head' },
+        h('img', { src: s.logo, alt: '' }),
+        h('h4', { text: s.title }),
+        h('span', { class: 'muted', text: `${s.list.length} ${firstVisit ? 'earned' : 'new'}` })),
+      h('div', { class: 'badge-grid' }, s.list.map(tile)))),
+    h('div', { class: 'actions' },
+      h('button', {
+        class: 'btn secondary',
+        type: 'button',
+        text: 'See all badges',
+        onClick: () => { close(); location.hash = '#badges'; },
+      }),
+      h('button', { class: 'btn', type: 'button', text: 'Done', onClick: () => close() })));
+
+  const detail = h('div', { class: 'badge-summary-detail', hidden: true });
+  const body = h('div', { class: 'badge-sheet unlock badge-summary' },
+    sheetHead(firstVisit ? 'Your badges' : 'New badges', () => close()),
+    list, detail);
+
+  function showDetail(b) {
+    scrollTop = sheetEl()?.scrollTop || 0;
+    detail.replaceChildren(badgeDetail(app, b, { onClose: () => close(), onBack: showList }));
+    // The summary's own heading would sit above the badge's.
+    detail.querySelector('.sheet-head')?.remove();
+    list.hidden = true;
+    detail.hidden = false;
+    if (sheetEl()) sheetEl().scrollTop = 0;
+    detail.querySelector('.badge-back')?.focus();
+  }
+  function showList() {
+    detail.hidden = true;
+    detail.replaceChildren();
+    list.hidden = false;
+    if (sheetEl()) sheetEl().scrollTop = scrollTop;
+  }
+
+  close = openSheet(body, {
+    label: firstVisit ? `Your badges: ${badges.length} earned` : `${badges.length} new badges`,
+    scrollHint: true,
+    onClose: () => onDone(badges.map((b) => b.id)),
+  });
 }
 
 /** The Badges tab: every badge, grouped by game. */

@@ -21,8 +21,8 @@
 // holds after the earnings scroll out of the window the arena reads. Growing
 // it never announces anything: only a badge's first earning is announced.
 
-import { getDocData, setMerge, SERVER_TIME, toMillis } from '../firebase.js?v=202610151655';
-import { millisOfEd, todayEpochDay } from '../dates.js?v=202610151655';
+import { getDocData, setMerge, SERVER_TIME, toMillis } from '../firebase.js?v=202610152203';
+import { millisOfEd, todayEpochDay } from '../dates.js?v=202610152203';
 
 function normalize(doc) {
   const out = {};
@@ -88,7 +88,10 @@ export function planSync(results, stored, todayEd = todayEpochDay()) {
   }
 
   if (backfill) {
-    return { write: newIds, backfill: true, announce: [], redate: [], dates, grow };
+    // Recorded quietly, as already announced, but shown once as a summary:
+    // someone arriving with months of games behind them sees what they've
+    // earned rather than nothing at all.
+    return { write: newIds, backfill: true, announce: [], summary: newIds, firstVisit: true, redate: [], dates, grow };
   }
   const unannounced = Object.entries(stored.badges)
     .filter(([, b]) => !b.announcedAt && !b.backfill)
@@ -97,6 +100,8 @@ export function planSync(results, stored, todayEd = todayEpochDay()) {
     write: newIds,
     backfill: false,
     announce: [...new Set([...unannounced, ...newIds])],
+    summary: [],
+    firstVisit: false,
     redate,
     dates,
     grow,
@@ -143,6 +148,14 @@ export async function applySync(uid, plan, stored) {
 
 export async function markAnnounced(uid, id) {
   await setMerge(['arenaUserData', uid], { badges: { [id]: { announcedAt: SERVER_TIME } }, updatedAt: SERVER_TIME });
+}
+
+/** Marks every badge in [ids] announced, in one write: what a summary showed. */
+export async function markAnnouncedMany(uid, ids) {
+  if (!ids.length) return;
+  const badges = {};
+  for (const id of ids) badges[id] = { announcedAt: SERVER_TIME };
+  await setMerge(['arenaUserData', uid], { badges, updatedAt: SERVER_TIME });
 }
 
 export async function markShared(uid, id) {
