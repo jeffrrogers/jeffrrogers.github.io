@@ -4,8 +4,8 @@
 // production (canucklegame.ca). All game links are root-relative, so the only
 // thing that differs is which games are visible and whether analytics runs.
 
-import { readPref, writePref } from './local.js?v=202610152210';
-import { epochDay, todayEpochDay } from './dates.js?v=202610152210';
+import { readPref, writePref } from './local.js?v=202610152331';
+import { epochDay, todayEpochDay } from './dates.js?v=202610152331';
 
 const host = typeof location === 'undefined' ? '' : location.hostname;
 
@@ -24,8 +24,9 @@ export const IS_PROD_HOST = /(^|\.)canucklegame\.ca$/.test(host);
 // The Firebase-linked "canuckle (web)" GA4 stream every game reports to.
 export const GA_ID = 'G-RPLYG6MC2K';
 
-// Canuckle's web app in the shared canuckle-c2157 project. Swap appId for a
-// dedicated "arena" web app once one is registered in the Firebase console.
+// Canuckle's web app in the shared canuckle-c2157 project, reused on purpose
+// like every game: events are told apart by their `game` parameter
+// (game: 'arena' here, see analytics.js).
 export const FIREBASE_CONFIG = {
   apiKey: 'AIzaSyCKMCGkDrYFUIAe67sgg1lw0CbkTH02F9A',
   authDomain: 'canuckle-c2157.firebaseapp.com',
@@ -35,7 +36,7 @@ export const FIREBASE_CONFIG = {
   appId: '1:696912074479:web:c1a785ef5bcd76c58c6d1a',
 };
 
-export const FIREBASE_SDK = 'https://www.gstatic.com/firebasejs/11.0.2';
+export const FIREBASE_SDK = 'https://www.gstatic.com/firebasejs/13.0.0';
 
 // ---- Launch dates -----------------------------------------------------------
 //
