@@ -1181,6 +1181,9 @@ a.week-band:hover { border-color: var(--muted); color: var(--text); }
 .badge-sheet { text-align: center; }
 .badge-sheet .medal { margin: 4px auto 10px; display: block; }
 .badge-sheet h2 { font-size: 24px; }
+/* Centred on the whole sheet, not just the room left of the close button:
+   the same space (button plus gap) on the title's other side. */
+.badge-sheet .sheet-head h2 { padding-left: 52px; }
 .badge-sheet p { margin: 8px 0 16px; }
 .badge-sheet .actions { display: flex; gap: 10px; justify-content: center; flex-wrap: wrap; }
 

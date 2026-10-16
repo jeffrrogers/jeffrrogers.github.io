@@ -1,26 +1,26 @@
 // Boot, routing and the shared app state.
 
-import { IS_SANDBOX, IS_DEMO, isLive } from './config.js?v=202610152203';
-import { demoRaw } from './demo.js?v=202610152203';
-import { initAnalytics, track } from './analytics.js?v=202610152203';
-import { loadAds } from './ads.js?v=202610152203';
-import { todayEpochDay } from './dates.js?v=202610152203';
-import { playerId } from './local.js?v=202610152203';
-import { initialTheme, initialContrast, applyTheme, applyContrast } from './theme.js?v=202610152203';
-import { ALL_GAMES, liveGames, gameById } from './games/registry.js?v=202610152203';
-import { initialOrder, computeOrder } from './gameOrder.js?v=202610152203';
-import { loadProgress, loadFullHistory } from './progress.js?v=202610152203';
-import { evaluateBadges } from './badges/rules.js?v=202610152203';
+import { IS_SANDBOX, IS_DEMO, isLive } from './config.js?v=202610152210';
+import { demoRaw } from './demo.js?v=202610152210';
+import { initAnalytics, track } from './analytics.js?v=202610152210';
+import { loadAds } from './ads.js?v=202610152210';
+import { todayEpochDay } from './dates.js?v=202610152210';
+import { playerId } from './local.js?v=202610152210';
+import { initialTheme, initialContrast, applyTheme, applyContrast } from './theme.js?v=202610152210';
+import { ALL_GAMES, liveGames, gameById } from './games/registry.js?v=202610152210';
+import { initialOrder, computeOrder } from './gameOrder.js?v=202610152210';
+import { loadProgress, loadFullHistory } from './progress.js?v=202610152210';
+import { evaluateBadges } from './badges/rules.js?v=202610152210';
 import {
   loadStoredBadges, needsDating, planSync, applySync, markAnnounced, markAnnouncedMany, markShared,
-} from './badges/store.js?v=202610152203';
-import { h, ICONS, closeSheet } from './ui.js?v=202610152203';
-import { renderGames } from './views/gamesTab.js?v=202610152203';
-import { renderArchive } from './views/archive.js?v=202610152203';
-import { renderStats, renderStatsDetail } from './views/statsTab.js?v=202610152203';
-import { renderBadgesPage, announce, announceMany, unlockStyle } from './views/badgesView.js?v=202610152203';
-import { openSettings, openSync, safeReturnPath } from './views/settings.js?v=202610152203';
-import { takeLeftForGame } from './views/play.js?v=202610152203';
+} from './badges/store.js?v=202610152210';
+import { h, ICONS, closeSheet } from './ui.js?v=202610152210';
+import { renderGames } from './views/gamesTab.js?v=202610152210';
+import { renderArchive } from './views/archive.js?v=202610152210';
+import { renderStats, renderStatsDetail } from './views/statsTab.js?v=202610152210';
+import { renderBadgesPage, announce, announceMany, unlockStyle } from './views/badgesView.js?v=202610152210';
+import { openSettings, openSync, safeReturnPath } from './views/settings.js?v=202610152210';
+import { takeLeftForGame } from './views/play.js?v=202610152210';
 
 const app = {
   uid: IS_DEMO ? 'DEMO' : playerId(),
