@@ -1,17 +1,17 @@
 // Canuckle and Canuckle+ tabs: the puzzle table, the editor (edit or add) and
 // swapping two puzzles.
 
-import { h, clear, modal, toast, issues, availabilityGate } from '../ui.js?v=202610141429';
+import { h, clear, modal, toast, issues, availabilityGate } from '../ui.js?v=202610202259';
 import {
   GAMES, longDate, todayIndex, isAvailable, puzzlesAfterToday, nextIndex, missingIndices, parseIndex,
-} from '../dates.js?v=202610141429';
-import { encodeAnswer } from '../codec.js?v=202610141429';
-import { segmentsToText, textToSegments, plainFact } from '../facts.js?v=202610141429';
-import { validatePuzzle, puzzleFlags } from '../validate.js?v=202610141429';
-import { swapPayload } from '../swap.js?v=202610141429';
-import { savePuzzle, swapPuzzles } from '../store.js?v=202610141429';
-import { ctx, loadGame, answerUses, duoUses, wordsFor, maxIndex, availabilityMessages } from '../context.js?v=202610141429';
-import { factCard, previewFrame } from '../preview.js?v=202610141429';
+} from '../dates.js?v=202610202259';
+import { encodeAnswer } from '../codec.js?v=202610202259';
+import { segmentsToText, textToSegments, plainFact, duoFactOf } from '../facts.js?v=202610202259';
+import { validatePuzzle, puzzleFlags } from '../validate.js?v=202610202259';
+import { swapPayload } from '../swap.js?v=202610202259';
+import { savePuzzle, swapPuzzles } from '../store.js?v=202610202259';
+import { ctx, loadGame, answerUses, duoUses, wordsFor, maxIndex, availabilityMessages } from '../context.js?v=202610202259';
+import { factCard, previewFrame } from '../preview.js?v=202610202259';
 
 const PAGE = 150;
 const RUNWAY_WARN_DAYS = 30;
@@ -174,12 +174,18 @@ export async function openEditor(gameId, index, rerender, { add = index == null 
 
     update();
     const dist = existing?.data.distribution;
+    // Duo days showing their own version of this fact won't pick up edits here
+    const duoOwn = gameId === 'canuckle'
+      ? (duoUses().get(target) || []).filter((d) => duoFactOf(ctx.puzzles.duo.get(d), target))
+      : [];
     return h('div', { class: 'editor' },
       h('div', { class: 'editor-form' },
         h('label', { class: 'field' }, h('span', {}, `Answer (${g.answerLengths.join(' or ')} letters)`), answer),
         h('label', { class: 'field' }, h('span', {}, 'Fun fact'), factText),
         h('p', { class: 'muted small' },
           'Write links as [link text](https://…). Spaces count: they show exactly as typed. Type \\[ or \\] for a literal bracket.'),
+        duoOwn.length ? h('p', { class: 'muted small' },
+          `Duo ${duoOwn.map(GAMES.duo.label).join(', ')} ${duoOwn.length > 1 ? 'have their' : 'has its'} own version of this fact; editing it here won't change ${duoOwn.length > 1 ? 'those' : 'that'}.`) : null,
         dist ? h('p', { class: 'muted small' }, 'Results so far: ',
           g.distKeys.map((k) => `${k} ${dist[k] ?? 0}`).join(' · ')) : null,
         problems,
@@ -285,6 +291,8 @@ export async function openSwap(gameId, rerender) {
         for (const i of [a, b]) {
           const d = uses.get(i) || [];
           if (d.length) warnings.push(`Canuckle #${i} is used by Duo ${d.map(GAMES.duo.label).join(', ')}; those days will get the swapped word.`);
+          const own = d.filter((x) => duoFactOf(ctx.puzzles.duo.get(x), i));
+          if (own.length) warnings.push(`Duo ${own.map(GAMES.duo.label).join(', ')} ${own.length > 1 ? 'have their' : 'has its'} own fact for #${i}, which stays with #${i} and would describe the old word. Reset or rewrite it after swapping.`);
         }
       }
       notes.append(h('p', { class: 'small' }, 'The answer, fun fact and results move together; the dates stay put.'));

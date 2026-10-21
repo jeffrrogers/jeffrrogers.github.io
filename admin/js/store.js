@@ -2,14 +2,14 @@
 // transaction that also writes an adminLog entry with the docs before and
 // after, so any edit, swap or import can be restored from the Log tab.
 
-import { sdk, currentEmail } from './firebase.js?v=202610141429';
-import { GAMES } from './dates.js?v=202610141429';
-import { decodeAnswer } from './codec.js?v=202610141429';
+import { sdk, currentEmail } from './firebase.js?v=202610202259';
+import { GAMES } from './dates.js?v=202610202259';
+import { decodeAnswer } from './codec.js?v=202610202259';
 import {
   PLAYER_COLLECTIONS, GAMES_SUBCOLLECTION_PARENTS, MAX_GAMES, queryCutoff, accountVerdict, quickVerdict,
-} from './cleanup.js?v=202610141429';
-import { pool } from './pool.js?v=202610141429';
-import { repairAccount } from './repair.js?v=202610141429';
+} from './cleanup.js?v=202610202259';
+import { pool } from './pool.js?v=202610202259';
+import { repairAccount } from './repair.js?v=202610202259';
 
 // ---- Puzzles --------------------------------------------------------------
 
@@ -19,7 +19,8 @@ export function toPuzzle(gameId, docId, data) {
   const base = { gameId, docId, index, data, ed: GAMES[gameId].edForIndex(index) };
   if (gameId === 'duo') {
     const puzzles = Array.isArray(data.puzzles) ? data.puzzles.filter((p) => Number.isInteger(p)) : [];
-    return { ...base, puzzles, badge: data.badge || null };
+    const facts = data.facts && typeof data.facts === 'object' ? data.facts : {};
+    return { ...base, puzzles, badge: data.badge || null, facts };
   }
   return {
     ...base,

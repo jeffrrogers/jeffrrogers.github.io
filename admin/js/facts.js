@@ -106,6 +106,35 @@ export function sameFact(a, b) {
   return segmentsToText(a.fact, a.factUrls) === segmentsToText(b.fact, b.factUrls);
 }
 
+// A Duo day can carry its own version of a word's fact (a fact that wished a
+// Merry Christmas when it first ran), in the day doc's `facts` map keyed by
+// Canuckle puzzle #: {"956": {fact: [...], factUrls: [...]}}. Words without
+// one show their Canuckle fact (canuckleSourceCode/lib/duo/duo_models.dart).
+
+/** Duo [day]'s own version of Canuckle #[puzzle]'s fact, or null. */
+export function duoFactOf(day, puzzle) {
+  const f = day?.facts?.[String(puzzle)];
+  if (!f || !Array.isArray(f.fact) || !f.fact.join('').trim()) return null;
+  return { fact: f.fact, factUrls: Array.isArray(f.factUrls) ? f.factUrls : [] };
+}
+
+/**
+ * The `facts` map to store for a Duo day: only words whose edited fact
+ * ([edited][n], for puzzles[n]) differs from their Canuckle fact. Undefined
+ * when none do, so the field is dropped from the doc.
+ */
+export function duoFactsToSave(puzzles, edited, canuckle) {
+  const out = {};
+  puzzles.forEach((i, n) => {
+    const f = edited[n];
+    if (!Number.isInteger(i) || !f || !f.fact.join('').trim()) return;
+    const p = canuckle.get(i);
+    if (p && sameFact(f, { fact: p.fact || [], factUrls: p.factUrls || [] })) return;
+    out[String(i)] = { fact: f.fact, factUrls: f.factUrls };
+  });
+  return Object.keys(out).length ? out : undefined;
+}
+
 /** Plain text of a fact, for search and the table. */
 export function plainFact(fact = []) {
   return fact.join('');

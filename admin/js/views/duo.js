@@ -1,13 +1,15 @@
-// Canuckle Duo tab: the day table, the day editor (two Canuckle puzzles and
-// an optional "Linked by" / "Theme" badge) and importing a schedule JSON
+// Canuckle Duo tab: the day table, the day editor (two Canuckle puzzles, an
+// optional "Linked by" / "Theme" badge and optional Duo versions of their fun
+// facts) and importing a schedule JSON
 // (canuckleSourceCode/tool/duo_schedule_year1.json).
 
-import { h, clear, modal, toast, issues, availabilityGate } from '../ui.js?v=202610141429';
-import { GAMES, longDate, todayIndex, isAvailable, puzzlesAfterToday, nextIndex } from '../dates.js?v=202610141429';
-import { validateDuo } from '../validate.js?v=202610141429';
-import { savePuzzle, importDuo } from '../store.js?v=202610141429';
-import { ctx, loadGame, duoUses, maxIndex, availabilityMessages } from '../context.js?v=202610141429';
-import { factCard, badgeChip, miniSwitch, previewFrame } from '../preview.js?v=202610141429';
+import { h, clear, modal, toast, issues, availabilityGate } from '../ui.js?v=202610202259';
+import { segmentsToText, textToSegments, sameFact, duoFactOf, duoFactsToSave } from '../facts.js?v=202610202259';
+import { GAMES, longDate, todayIndex, isAvailable, puzzlesAfterToday, nextIndex } from '../dates.js?v=202610202259';
+import { validateDuo } from '../validate.js?v=202610202259';
+import { savePuzzle, importDuo } from '../store.js?v=202610202259';
+import { ctx, loadGame, duoUses, maxIndex, availabilityMessages } from '../context.js?v=202610202259';
+import { factCard, badgeChip, miniSwitch, previewFrame } from '../preview.js?v=202610202259';
 
 const PAGE = 150;
 const st = { q: '', filter: 'all', shown: PAGE, refocus: false };
@@ -18,8 +20,19 @@ function answerOf(i) {
 }
 
 function duoProblems(d, uses) {
-  return validateDuo({ index: d.index, docId: d.docId, puzzles: d.puzzles, badge: d.badge },
+  return validateDuo({ index: d.index, docId: d.docId, puzzles: d.puzzles, badge: d.badge, facts: d.facts },
     { canuckle: ctx.puzzles.canuckle, duoUses: uses });
+}
+
+// The words on day [d] that show a Duo version of their fact
+function ownFacts(d) {
+  return d.puzzles.filter((i) => duoFactOf(d, i));
+}
+
+// Canuckle #[i]'s fact as editor text
+function canuckleFactText(i) {
+  const p = ctx.puzzles.canuckle.get(i);
+  return p ? segmentsToText(p.fact, p.factUrls) : '';
 }
 
 export function renderDuo(root, rerender) {
@@ -36,6 +49,7 @@ export function renderDuo(root, rerender) {
       if (!r.errors.length && !r.warnings.length) return false;
     }
     if (st.filter === 'nobadge' && d.badge) return false;
+    if (st.filter === 'duofact' && !ownFacts(d).length) return false;
     if (!q) return true;
     return String(d.index) === q
       || g.label(d.index).toLowerCase() === q
@@ -58,7 +72,7 @@ export function renderDuo(root, rerender) {
     h('div', { class: 'toolbar' },
       search,
       h('select', { onchange: (e) => { st.filter = e.target.value; st.shown = PAGE; rerender(); } },
-        [['all', 'All'], ['future', 'Future only'], ['available', 'Available to players'], ['flagged', 'Flagged'], ['nobadge', 'No badge']]
+        [['all', 'All'], ['future', 'Future only'], ['available', 'Available to players'], ['flagged', 'Flagged'], ['nobadge', 'No badge'], ['duofact', 'Has a Duo fact']]
           .map(([v, l]) => h('option', { value: v, selected: st.filter === v }, l))),
       h('span', { class: 'spacer' }),
       h('button', { class: 'btn', onclick: () => openImport(rerender) }, 'Import schedule…'),
@@ -70,6 +84,7 @@ export function renderDuo(root, rerender) {
         h('tbody', {}, rows.slice(0, st.shown).map((d) => {
           const r = duoProblems(d, uses);
           const plays = g.distKeys.reduce((n, k) => n + (Number(d.data.distribution?.[k]) || 0), 0);
+          const own = ownFacts(d);
           return h('tr', {
             class: [d.index === today ? 'today' : '', isAvailable('duo', d.index) ? '' : 'future'].join(' '),
             tabIndex: 0,
@@ -81,7 +96,9 @@ export function renderDuo(root, rerender) {
           h('td', { class: 'answer' }, d.puzzles.map((i) => `${answerOf(i) || '?'} (#${i})`).join(' + ') || '—'),
           h('td', {}, d.badge ? `${d.badge.type === 'linked' ? 'Linked by' : 'Theme'}: ${d.badge.label}` : ''),
           h('td', { class: 'num' }, plays || ''),
-          h('td', {}, r.errors.map((e) => h('span', { class: 'flag err' }, e)), r.warnings.length ? h('span', { class: 'flag' }, `${r.warnings.length} warning${r.warnings.length > 1 ? 's' : ''}`) : null));
+          h('td', {},
+            own.length ? h('span', { class: 'pill', title: own.map((i) => `${answerOf(i) || '?'} (#${i})`).join(', ') }, own.length > 1 ? '2 Duo facts' : 'Duo fact') : null,
+            r.errors.map((e) => h('span', { class: 'flag err' }, e)), r.warnings.length ? h('span', { class: 'flag' }, `${r.warnings.length} warning${r.warnings.length > 1 ? 's' : ''}`) : null));
         })))),
     rows.length > st.shown
       ? h('button', { class: 'btn more', onclick: () => { st.shown += PAGE; rerender(); } }, `Show ${Math.min(PAGE, rows.length - st.shown)} more`)
@@ -141,14 +158,55 @@ export async function openDuoEditor(index, rerender) {
     label.addEventListener('input', () => update());
 
     const badge = () => (type.value ? { type: type.value, label: label.value.trim() } : null);
+
+    // One fact box per word: starts with the day's Duo version if it has one,
+    // else the Canuckle fact. Saving keeps only the ones edited away from
+    // Canuckle's, so an untouched box costs nothing
+    const factBoxes = [a, b].map((picker) => {
+      const box = {
+        picker,
+        puzzle: undefined,
+        area: h('textarea', { rows: 4, spellcheck: true }),
+        title: h('span'),
+        status: h('span', { class: 'muted small' }),
+        reset: h('button', { type: 'button', class: 'btn small' }, 'Reset to Canuckle fact'),
+      };
+      box.area.addEventListener('input', () => update());
+      box.reset.addEventListener('click', () => { box.area.value = canuckleFactText(box.puzzle); update(); });
+      box.el = h('div', { class: 'field' }, box.title, box.area, h('div', { class: 'row' }, box.status, box.reset));
+      return box;
+    });
+    const edited = () => factBoxes.map((box) => textToSegments(box.area.value));
+    // Reloads a box whose word was changed, and says whether it differs
+    function syncFacts() {
+      for (const box of factBoxes) {
+        const i = box.picker.value();
+        const p = ctx.puzzles.canuckle.get(i);
+        if (i !== box.puzzle) {
+          box.puzzle = i;
+          const own = existing && duoFactOf(existing, i);
+          box.area.value = own ? segmentsToText(own.fact, own.factUrls) : canuckleFactText(i);
+          box.title.textContent = p ? `Fun fact: ${p.answer} (#${i})` : 'Fun fact: pick a word';
+        }
+        box.area.disabled = !p;
+        const differs = !!p && !!box.area.value.trim()
+          && !sameFact(textToSegments(box.area.value), { fact: p.fact, factUrls: p.factUrls });
+        box.status.textContent = !p ? '' : differs ? 'Duo version, differs from Canuckle'
+          : box.area.value.trim() ? 'Using the Canuckle fact' : 'Empty, so the Canuckle fact shows';
+        box.reset.disabled = !differs;
+      }
+    }
+
     let shown = 0;
     const pv = previewFrame(() => {
       const ps = [a.value(), b.value()];
       const answers = ps.map((i) => answerOf(i));
       const chip = badge();
+      const own = edited();
       const facts = ps.map((i, n) => {
         const p = ctx.puzzles.canuckle.get(i);
-        return { answer: answers[n], fact: p?.fact || [], factUrls: p?.factUrls || [] };
+        const f = own[n].fact.join('').trim() ? own[n] : { fact: p?.fact || [], factUrls: p?.factUrls || [] };
+        return { answer: answers[n], ...f };
       });
       const sel = facts[shown] ? shown : 0;
       return h('div', { class: 'pv-stack' },
@@ -164,8 +222,10 @@ export async function openDuoEditor(index, rerender) {
     });
 
     let gate = { el: null, ok: () => true };
+    const factsToSave = () => duoFactsToSave([a.value(), b.value()], edited(), ctx.puzzles.canuckle);
     function update() {
-      const d = { index: target, docId: String(target), puzzles: [a.value(), b.value()], badge: badge() };
+      syncFacts();
+      const d = { index: target, docId: String(target), puzzles: [a.value(), b.value()], badge: badge(), facts: factsToSave() };
       const r = validateDuo(d, { canuckle: ctx.puzzles.canuckle, duoUses: duoUses() });
       clear(problems, issues(r));
       save.disabled = r.errors.length > 0 || !gate.ok();
@@ -178,6 +238,8 @@ export async function openDuoEditor(index, rerender) {
       const changes = { puzzles: [a.value(), b.value()] };
       const bd = badge();
       changes.badge = bd && bd.label ? bd : null;
+      // Undefined when no word has a Duo version, which drops the field
+      changes.facts = factsToSave();
       if (isNew) changes.distribution = Object.fromEntries(g.distKeys.map((k) => [k, 0]));
       save.disabled = true;
       try {
@@ -195,6 +257,9 @@ export async function openDuoEditor(index, rerender) {
         h('div', { class: 'pickers' }, a.el, b.el),
         h('label', { class: 'field' }, h('span', {}, 'Badge'), type),
         h('label', { class: 'field' }, h('span', {}, 'Badge label'), label),
+        h('p', { class: 'muted small' },
+          'Each word shows its Canuckle fun fact. Edit one to give this day its own version, e.g. when the fact mentions the day it first ran. Links are written [link text](https://…).'),
+        factBoxes.map((box) => box.el),
         problems,
         gateSlot,
         h('div', { class: 'actions' }, h('button', { class: 'btn', onclick: () => close(false) }, 'Cancel'), save)),

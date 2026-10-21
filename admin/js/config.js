@@ -23,7 +23,7 @@ export const FIREBASE_CONFIG = {
   appId: '1:696912074479:web:c1a785ef5bcd76c58c6d1a',
 };
 
-export const FIREBASE_SDK = 'https://www.gstatic.com/firebasejs/11.0.2';
+export const FIREBASE_SDK = 'https://www.gstatic.com/firebasejs/13.0.0';
 
 // Must match isAdmin() in firebase/firestore.rules. The rules are what
 // actually protect the data; this only gives other accounts a clear message.

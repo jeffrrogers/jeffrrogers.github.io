@@ -1,7 +1,8 @@
 // Checks before a puzzle is saved, and the flags shown in the tables.
 // Errors block saving; warnings are shown and can be saved past.
 
-import { GAMES } from './dates.js?v=202610141429';
+import { GAMES } from './dates.js?v=202610202259';
+import { duoFactOf } from './facts.js?v=202610202259';
 
 // How recent a Canuckle puzzle may be and still be reused in Duo
 // (canuckleSourceCode/tool/generate_duo_schedule.dart excludeRecent).
@@ -45,7 +46,8 @@ export function validatePuzzle(p, ctx = {}) {
 }
 
 /**
- * @param d {index, docId, puzzles: [a, b], badge: {type, label}|null}
+ * @param d {index, docId, puzzles: [a, b], badge: {type, label}|null,
+ *   facts: {[canuckleIndex]: {fact[], factUrls[]}} (optional Duo versions)}
  * @param ctx {canuckle: Map<index, {answer}>, duoUses: Map<canuckleIndex, duoIndex[]>}
  */
 export function validateDuo(d, ctx = {}) {
@@ -71,7 +73,13 @@ export function validateDuo(d, ctx = {}) {
     else if (gap <= DUO_RECENT_GAP) warnings.push(`Canuckle #${i} was only ${gap} days earlier; players may remember it.`);
     const others = (ctx.duoUses?.get(i) || []).filter((x) => x !== d.index);
     if (others.length) warnings.push(`Canuckle #${i} is also used on Duo ${others.map(GAMES.duo.label).join(', ')}.`);
-    if (p.answer && !(p.fact || []).join('').trim()) warnings.push(`Canuckle #${i} has no fun fact.`);
+    const own = duoFactOf(d, i);
+    if (own) {
+      if (own.fact.length !== own.factUrls.length) errors.push(`The Duo fact for #${i} has text and links out of step.`);
+      for (const u of own.factUrls) {
+        if (u && !/^https?:\/\/\S+$/i.test(u)) errors.push(`Link in the Duo fact for #${i} is not a web address: ${u}`);
+      }
+    } else if (p.answer && !(p.fact || []).join('').trim()) warnings.push(`Canuckle #${i} has no fun fact.`);
   }
 
   const badge = d.badge;
