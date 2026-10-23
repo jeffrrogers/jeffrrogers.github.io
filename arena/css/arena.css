@@ -1178,9 +1178,14 @@ a.week-band:hover { border-color: var(--muted); color: var(--text); }
 
 /* ---- Badge sheet / unlock ---------------------------------------------- */
 
-.badge-sheet { text-align: center; }
+.badge-sheet, .finished-sheet { text-align: center; }
 .badge-sheet .medal { margin: 4px auto 10px; display: block; }
 .badge-sheet h2 { font-size: 24px; }
+/* "You've finished today's puzzle", from a Badges-tab Play button. */
+.finished-sheet .sheet-head { text-align: left; }
+.finished-sheet > h2 { font-size: 22px; margin-top: 8px; }
+.finished-sheet p { margin: 8px 0 18px; }
+.finished-sheet .actions { display: flex; gap: 10px; justify-content: center; flex-wrap: wrap; }
 /* Centred on the whole sheet, not just the room left of the close button:
    the same space (button plus gap) on the title's other side. */
 .badge-sheet .sheet-head h2 { padding-left: 52px; }

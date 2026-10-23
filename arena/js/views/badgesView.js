@@ -1,12 +1,13 @@
 // Badge medals, the badge detail sheet, the full badge page, and the unlock
 // announcements: one badge at a time, or a summary of several.
 
-import { h, ICONS, openSheet, sheetHead, toast } from '../ui.js?v=202610152331';
-import { longDate, shortDate, todayEpochDay } from '../dates.js?v=202610152331';
-import { medalSvg, LEAF_PATH } from '../badges/icons.js?v=202610152331';
-import { shareBadge, shareShelf } from '../badges/share.js?v=202610152331';
-import { gameById } from '../games/registry.js?v=202610152331';
-import { track } from '../analytics.js?v=202610152331';
+import { h, ICONS, openSheet, sheetHead, toast } from '../ui.js?v=202610222320';
+import { longDate, shortDate, todayEpochDay } from '../dates.js?v=202610222320';
+import { medalSvg, LEAF_PATH } from '../badges/icons.js?v=202610222320';
+import { shareBadge, shareShelf } from '../badges/share.js?v=202610222320';
+import { gameById } from '../games/registry.js?v=202610222320';
+import { track } from '../analytics.js?v=202610222320';
+import { playTodayProps } from './play.js?v=202610222320';
 
 const FAMILY_COLOR = '#D52B1E';
 
@@ -241,13 +242,27 @@ export function announceMany(app, badges, onDone, { firstVisit = false } = {}) {
   });
 }
 
+/** "Play" at the end of a game's heading: today's puzzle, or its archive once that's done. */
+function playButton(app, game) {
+  const todayIdx = game.todayIndex(app.todayEd);
+  if (todayIdx == null) return null;
+  const entry = app.progress[game.id]?.progress?.days.get(todayIdx);
+  return h('a', {
+    class: 'btn small',
+    style: { background: game.color },
+    'aria-label': `Play ${game.name}`,
+    ...playTodayProps(game, entry, todayIdx),
+    text: 'Play',
+  });
+}
+
 /** The Badges tab: every badge, grouped by game. */
 export function renderBadgesPage(app) {
   const all = app.badges.results;
   const earned = all.filter((b) => b.earned).length;
   const sections = [
     { title: 'Games Arena', logo: 'images/arena.svg', list: all.filter((b) => !b.game) },
-    ...app.games.map((g) => ({ title: g.name, logo: g.logo, list: all.filter((b) => b.game === g.id) })),
+    ...app.games.map((g) => ({ title: g.name, logo: g.logo, game: g, list: all.filter((b) => b.game === g.id) })),
   ];
   return h('div', { class: 'wrap' },
     h('div', { class: 'page-head' },
@@ -259,8 +274,9 @@ export function renderBadgesPage(app) {
       }, h('span', { html: ICONS.share }), 'Share')),
     sections.filter((s) => s.list.length).map((s) => h('section', { class: 'card', style: { marginBottom: '12px' } },
       h('div', { class: 'row-head', style: { padding: '0 0 10px' } },
-        s.logo ? h('img', { src: s.logo, alt: '', style: { width: '28px', height: '28px' } }) : null,
+        s.logo ? h('img', { src: s.logo, alt: '' }) : null,
         h('div', { class: 'grow' }, h('h2', { text: s.title }),
-          h('p', { class: 'muted', text: `${s.list.filter((b) => b.earned).length} of ${s.list.length} earned` }))),
+          h('p', { class: 'muted', text: `${s.list.filter((b) => b.earned).length} of ${s.list.length} earned` })),
+        s.game ? playButton(app, s.game) : null),
       h('div', { class: 'badge-grid' }, s.list.map((b) => medalButton(app, b))))));
 }

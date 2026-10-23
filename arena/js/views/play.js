@@ -1,9 +1,10 @@
 // Opening a puzzle: straight into the game, or via a difficulty picker for
 // games with several puzzles per day.
 
-import { h, openSheet, sheetHead, statusIcon } from '../ui.js?v=202610152331';
-import { shortDate, weekdayName } from '../dates.js?v=202610152331';
-import { track } from '../analytics.js?v=202610152331';
+import { h, openSheet, sheetHead, statusIcon } from '../ui.js?v=202610222320';
+import { shortDate, weekdayName } from '../dates.js?v=202610222320';
+import { track } from '../analytics.js?v=202610222320';
+import { isDone } from '../status.js?v=202610222320';
 
 /** Short label for a puzzle relative to today: "Today", "Yesterday", "Wed". */
 export function whenLabel(game, index, todayIdx) {
@@ -66,6 +67,47 @@ export function playProps(game, index, entry, todayIdx) {
       openTierSheet(game, index, entry, todayIdx);
     },
   };
+}
+
+/**
+ * Props for a plain "Play" link to today's puzzle. Once today's one puzzle is
+ * finished it offers the archive instead, when there are earlier puzzles to
+ * play. Games with several puzzles a day still open their picker, which shows
+ * what's left.
+ */
+export function playTodayProps(game, entry, todayIdx) {
+  const props = playProps(game, todayIdx, entry, todayIdx);
+  const hasArchive = game.indexForEd(game.edForIndex(todayIdx) - game.step) != null;
+  if (game.tiers.length || !isDone(entry?.status) || !hasArchive) return props;
+  return {
+    href: props.href,
+    onClick: (e) => {
+      e.preventDefault();
+      openFinishedSheet(game, props);
+    },
+  };
+}
+
+function openFinishedSheet(game, todayProps) {
+  const when = game.cadence === 'weekly' ? 'this week’s' : 'today’s';
+  let close;
+  const body = h('div', { class: 'finished-sheet' },
+    sheetHead(game.name, () => close(), game.logo),
+    h('h2', { text: `You’ve finished ${when} puzzle` }),
+    h('p', { class: 'muted', text: `Earlier ${game.name} puzzles are waiting in the archive.` }),
+    h('div', { class: 'actions' },
+      h('a', {
+        class: 'btn secondary',
+        href: todayProps.href,
+        // Close as the game opens, so the dialog isn't still up on Back.
+        onClick: (e) => {
+          todayProps.onClick(e);
+          close();
+        },
+        text: game.cadence === 'weekly' ? 'See this week’s' : 'See today’s',
+      }),
+      h('a', { class: 'btn', style: { background: game.color }, href: `#archive/${game.id}`, text: 'Open the Archive' })));
+  close = openSheet(body, { label: `${game.name}: ${when} puzzle finished` });
 }
 
 export function openTierSheet(game, index, entry, todayIdx) {
