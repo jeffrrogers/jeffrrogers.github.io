@@ -1,33 +1,45 @@
 // Canagrams tab: the shipped puzzle calendar, read back out of the game's own
-// files, and an optional summary of every player's stats.
+// files, each day's fun fact, and an optional summary of every player's stats.
 //
 // Canagrams' puzzles are built offline and shipped inside the game
-// (canagramsSourceCode/tools/generate_dailies.dart), so there is nothing to
-// edit here -- this is for looking: what each day's board is, how long the
-// calendar lasts, which Canuckle words it uses, and how many people solve each
-// day. To change or extend the calendar, regenerate it in the game project.
+// (canagramsSourceCode/tools/generate_dailies.dart): to change or extend the
+// calendar, regenerate it in the game project. What CAN be edited here is the
+// fun fact. Each day shows the Canuckle fact for its Canuckle word, copied from
+// the recap without the date it ran, so a fact like "Today is Election Day!" is
+// wrong on Canagrams. Giving a day its own fact writes canagramsGameData/{day};
+// the game shows that instead, and the Canuckle fact otherwise.
 
-import { h, clear, modal, toast, safeHref } from '../ui.js?v=202610202259';
-import { GAME_SITES } from '../config.js?v=202610202259';
-import { longDate, todayEpochDay } from '../dates.js?v=202610202259';
-import { sdk } from '../firebase.js?v=202610202259';
-import { launchEd } from '../launch.js?v=202610202259';
+import { h, clear, modal, toast, issues, safeHref } from '../ui.js?v=202610222159';
+import { GAME_SITES } from '../config.js?v=202610222159';
+import { longDate, todayEpochDay } from '../dates.js?v=202610222159';
+import { sdk } from '../firebase.js?v=202610222159';
+import { launchEd } from '../launch.js?v=202610222159';
 import {
   RUNGS, unpackCanagrams, gridRows, rungOf, summarizePlayers,
-} from '../canagrams.js?v=202610202259';
+} from '../canagrams.js?v=202610222159';
+import {
+  segmentsToText, textToSegments, canagramsFactOf, canagramsFactToSave, looksDateBound,
+} from '../facts.js?v=202610222159';
+import { loadCanagramsFacts, saveCanagramsFact } from '../store.js?v=202610222159';
+import { factCard, previewFrame } from '../preview.js?v=202610222159';
 
 const START_ED = launchEd('canagrams');
 const DATA = 'canagrams/assets/assets/data/';
 const PAGE = 28;
 const WARN_DAYS = 30;
 
-/** {site, days: [{day, p}], facts} once loaded, or {error}. */
+/**
+ * {site, days: [{day, p}], facts, own, ownError} once loaded, or {error}.
+ * facts: word -> the Canuckle fact shipped in the game. own: day -> its
+ * canagramsGameData doc.
+ */
 let data = null;
 let loading = false;
 let players = null; // summarizePlayers(...) once loaded
 let playersLoading = false;
 let from = null; // first day shown
 let query = '';
+let filter = 'all';
 
 const todayIdx = () => todayEpochDay() - START_ED + 1;
 
@@ -55,7 +67,14 @@ async function load() {
       } catch {
         // Facts are a nicety here.
       }
-      return { site, days, facts };
+      let own = new Map();
+      let ownError = null;
+      try {
+        own = await loadCanagramsFacts();
+      } catch (e) {
+        ownError = e.message;
+      }
+      return { site, days, facts, own, ownError };
     } catch (e) {
       lastError = e;
     }
@@ -141,31 +160,125 @@ function factNodes(fact) {
   return out;
 }
 
-function openDay(d) {
-  const p = d.p;
-  modal(`Canagrams #${d.day}`, () => [
-    h('p', { class: 'muted' }, `${longDate(START_ED + d.day - 1)} · ${RUNGS[rungOf(d.day)]} · ${p.shape}`),
-    h('p', {}, 'Wheel ', h('b', { class: 'mono' }, p.letters.split('').join(' ')), ' · Canuckle word ', h('b', {}, p.canuckle)),
-    h('pre', { class: 'mono', style: 'line-height:1.25;font-size:15px' }, gridRows(p).join('\n')),
-    h('p', {}, h('b', {}, `Grid (${p.slots.length}): `), p.slots.map((s) => s.word).join(', ')),
-    h('p', { class: 'muted small' }, h('b', {}, `Bonus (${p.bonus.length}): `), p.bonus.join(', ')),
-    data.facts[p.canuckle] ? h('p', { class: 'muted' }, h('b', {}, 'Fun fact: '), factNodes(data.facts[p.canuckle])) : null,
-  ], { wide: true });
+/** Day [day]'s own fact, or null when it shows the Canuckle fact. */
+function ownFact(day) {
+  return canagramsFactOf(data.own.get(day));
 }
 
-function table() {
+/** Days still showing a Canuckle fact that reads as tied to the day it ran. */
+function datedUnfixed(d) {
+  return !!d.p && !ownFact(d.day) && looksDateBound(data.facts[d.p.canuckle] || '');
+}
+
+/** Problems with edited fact text: links must be https, as the game draws only those. */
+function factIssues(text) {
+  const errors = [];
+  const warnings = [];
+  const f = textToSegments(text);
+  for (const u of f.factUrls) {
+    if (u && !/^https:\/\/\S+$/i.test(u)) errors.push(`The game only links https:// addresses: ${u}`);
+  }
+  if (text.trim() && looksDateBound(text)) warnings.push('This still reads as tied to a date ("today", "happy …").');
+  return { errors, warnings };
+}
+
+async function openDay(d, rerender) {
+  const p = d.p;
+  const canuckleText = data.facts[p.canuckle] || '';
+  const own = ownFact(d.day);
+
+  const saved = await modal(`Canagrams #${d.day} · ${longDate(START_ED + d.day - 1)}`, (close) => {
+    const area = h('textarea', { rows: 6, spellcheck: true });
+    area.value = own ? segmentsToText(own.fact, own.factUrls) : canuckleText;
+    const status = h('span', { class: 'muted small' });
+    const reset = h('button', { type: 'button', class: 'btn small' }, 'Reset to Canuckle fact');
+    const problems = h('div');
+    const save = h('button', { class: 'btn primary' }, 'Save');
+
+    const pv = previewFrame(() => {
+      const shown = area.value.trim() ? textToSegments(area.value) : textToSegments(canuckleText);
+      return h('div', { class: 'pv-stack' },
+        h('div', { class: 'pv-caption' }, 'Fun fact on the Canuckle word and at the end'),
+        factCard({ kind: 'canuckle', answer: p.canuckle, ...shown }));
+    });
+
+    function update() {
+      const next = canagramsFactToSave(area.value, canuckleText);
+      status.textContent = next ? 'Canagrams version, differs from Canuckle'
+        : area.value.trim() ? 'Using the Canuckle fact' : 'Empty, so the Canuckle fact shows';
+      reset.disabled = !next;
+      const r = factIssues(area.value);
+      clear(problems, issues(r));
+      // Nothing to write when the day already stores what the box says.
+      const unchanged = segmentsToText(next?.fact, next?.factUrls)
+        === segmentsToText(own?.fact, own?.factUrls);
+      save.disabled = r.errors.length > 0 || unchanged;
+      pv.refresh();
+    }
+    area.addEventListener('input', update);
+    reset.addEventListener('click', () => { area.value = canuckleText; update(); });
+    save.addEventListener('click', async () => {
+      save.disabled = true;
+      try {
+        await saveCanagramsFact(d.day, canagramsFactToSave(area.value, canuckleText));
+        close(true);
+      } catch (e) {
+        toast(`Not saved: ${e.message}`, { error: true });
+        update();
+      }
+    });
+    update();
+
+    return [
+      h('p', { class: 'muted' }, `${RUNGS[rungOf(d.day)]} · ${p.shape} · wheel `,
+        h('b', { class: 'mono' }, p.letters.split('').join(' ')), ' · Canuckle word ', h('b', {}, p.canuckle)),
+      h('div', { class: 'editor' },
+        h('div', { class: 'editor-form' },
+          h('label', { class: 'field' }, h('span', {}, `Fun fact: ${p.canuckle}`), area),
+          h('div', { class: 'row' }, status, reset),
+          h('p', { class: 'muted small' },
+            'This day shows the Canuckle fact for its word unless you give it its own. Rewrite facts that '
+            + 'mention the day they first ran ("Today is…", "Happy…"). Links are written [link text](https://…). '
+            + 'Saving a blank box, or the Canuckle text, goes back to the Canuckle fact.'),
+          data.ownError ? h('p', { class: 'err' }, `Couldn't read saved Canagrams facts: ${data.ownError}`) : null,
+          problems,
+          h('div', { class: 'actions' }, h('button', { class: 'btn', onclick: () => close(false) }, 'Cancel'), save)),
+        pv.el),
+      h('pre', { class: 'mono', style: 'line-height:1.25;font-size:15px' }, gridRows(p).join('\n')),
+      h('p', {}, h('b', {}, `Grid (${p.slots.length}): `), p.slots.map((s) => s.word).join(', ')),
+      h('p', { class: 'muted small' }, h('b', {}, `Bonus (${p.bonus.length}): `), p.bonus.join(', ')),
+      canuckleText ? h('p', { class: 'muted small' }, h('b', {}, 'Canuckle fact: '), factNodes(canuckleText)) : null,
+    ];
+  }, { wide: true });
+
+  if (saved) {
+    toast(`Canagrams #${d.day} fact saved.`);
+    try {
+      data.own = await loadCanagramsFacts();
+    } catch (e) {
+      data.ownError = e.message;
+    }
+    rerender();
+  }
+}
+
+function table(rerender) {
   const t = todayIdx();
   const q = query.trim().toUpperCase();
-  const rows = q
-    ? data.days.filter((d) => d.p && (d.p.canuckle.includes(q) || d.p.slots.some((s) => s.word === q) || String(d.day) === q))
+  const keep = (d) => (filter === 'own' ? !!ownFact(d.day) : filter === 'dated' ? datedUnfixed(d) : true);
+  const rows = q || filter !== 'all'
+    ? data.days.filter((d) => d.p && keep(d)
+      && (!q || d.p.canuckle.includes(q) || d.p.slots.some((s) => s.word === q) || String(d.day) === q))
     : data.days.slice(Math.max(0, from - 1), from - 1 + PAGE);
   return h('div', { class: 'table-wrap' },
     h('table', { class: 'grid' },
-      h('thead', {}, h('tr', {}, ['#', 'Date', 'Day', 'Shape', 'Canuckle word', 'Wheel', 'Words', 'Bonus', players ? 'Solved by' : null]
+      h('thead', {}, h('tr', {}, ['#', 'Date', 'Day', 'Shape', 'Canuckle word', 'Wheel', 'Words', 'Bonus', 'Fact', players ? 'Solved by' : null]
         .filter(Boolean).map((x) => h('th', {}, x)))),
       h('tbody', {}, rows.map((d) => h('tr', {
         class: d.day === t ? 'today' : d.day > t ? 'future' : '',
-        onclick: () => d.p && openDay(d),
+        tabIndex: 0,
+        onclick: () => d.p && openDay(d, rerender),
+        onkeydown: (e) => { if (e.key === 'Enter' && d.p) openDay(d, rerender); },
       },
       h('td', { class: 'num' }, String(d.day)),
       h('td', { class: 'nowrap' }, longDate(START_ED + d.day - 1)),
@@ -175,6 +288,9 @@ function table() {
       h('td', { class: 'mono' }, d.p?.letters || ''),
       h('td', { class: 'num' }, d.p ? String(d.p.slots.length) : ''),
       h('td', { class: 'num' }, d.p ? String(d.p.bonus.length) : ''),
+      h('td', { class: 'nowrap' },
+        ownFact(d.day) ? h('span', { class: 'pill' }, 'Canagrams fact') : null,
+        datedUnfixed(d) ? h('span', { class: 'flag', title: data.facts[d.p.canuckle] }, 'Date-bound?') : null),
       players ? h('td', { class: 'num' }, String(players.byDay.get(d.day) || 0)) : null)))));
 }
 
@@ -209,14 +325,22 @@ export function renderCanagrams(root, rerender) {
       el?.setSelectionRange(query.length, query.length);
     },
   });
+  const paged = !query && filter === 'all';
+  const dated = data.days.filter(datedUnfixed).length;
   clear(root,
     summary(root),
+    dated ? h('div', { class: 'banner warn' },
+      `${dated} day${dated === 1 ? '' : 's'} still show a Canuckle fact that reads as tied to the day it first ran. `,
+      h('a', { href: '#canagrams', onclick: (e) => { e.preventDefault(); filter = 'dated'; rerender(); } }, 'Show them')) : null,
     h('div', { class: 'toolbar' },
       search,
-      h('button', { class: 'btn small', disabled: !!query || from <= 1, onclick: () => { from = Math.max(1, from - PAGE); rerender(); } }, '‹ Earlier'),
-      h('button', { class: 'btn small', disabled: !!query, onclick: () => { from = Math.max(1, todayIdx() - 7); rerender(); } }, 'Today'),
-      h('button', { class: 'btn small', disabled: !!query || from + PAGE > data.days.length, onclick: () => { from += PAGE; rerender(); } }, 'Later ›'),
+      h('select', { onchange: (e) => { filter = e.target.value; rerender(); } },
+        [['all', 'All days'], ['dated', 'Date-bound fact, not yet fixed'], ['own', 'Has a Canagrams fact']]
+          .map(([v, l]) => h('option', { value: v, selected: filter === v }, l))),
+      h('button', { class: 'btn small', disabled: !paged || from <= 1, onclick: () => { from = Math.max(1, from - PAGE); rerender(); } }, '‹ Earlier'),
+      h('button', { class: 'btn small', disabled: !paged, onclick: () => { from = Math.max(1, todayIdx() - 7); rerender(); } }, 'Today'),
+      h('button', { class: 'btn small', disabled: !paged || from + PAGE > data.days.length, onclick: () => { from += PAGE; rerender(); } }, 'Later ›'),
       h('button', { class: 'btn small', onclick: () => { data = null; players = null; rerender(); } }, 'Refresh')),
-    table(),
-    h('p', { class: 'muted small' }, 'Tap a day to see its board. Future days are greyed. Answers here are spoilers for players, not for you.'));
+    table(rerender),
+    h('p', { class: 'muted small' }, 'Tap a day to see its board and edit its fun fact. Future days are greyed. Answers here are spoilers for players, not for you.'));
 }

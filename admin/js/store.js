@@ -2,14 +2,14 @@
 // transaction that also writes an adminLog entry with the docs before and
 // after, so any edit, swap or import can be restored from the Log tab.
 
-import { sdk, currentEmail } from './firebase.js?v=202610202259';
-import { GAMES } from './dates.js?v=202610202259';
-import { decodeAnswer } from './codec.js?v=202610202259';
+import { sdk, currentEmail } from './firebase.js?v=202610222159';
+import { GAMES } from './dates.js?v=202610222159';
+import { decodeAnswer } from './codec.js?v=202610222159';
 import {
   PLAYER_COLLECTIONS, GAMES_SUBCOLLECTION_PARENTS, MAX_GAMES, queryCutoff, accountVerdict, quickVerdict,
-} from './cleanup.js?v=202610202259';
-import { pool } from './pool.js?v=202610202259';
-import { repairAccount } from './repair.js?v=202610202259';
+} from './cleanup.js?v=202610222159';
+import { pool } from './pool.js?v=202610222159';
+import { repairAccount } from './repair.js?v=202610222159';
 
 // ---- Puzzles --------------------------------------------------------------
 
@@ -168,6 +168,38 @@ export async function importDuo(docs, onProgress) {
     done += chunk.length;
     onProgress?.(done, ids.length);
   }
+}
+
+// ---- Canagrams facts ----------------------------------------------------------
+
+export const CANAGRAMS_FACTS = 'canagramsGameData';
+
+/** Every Canagrams day doc, as Map<day, data>. At most one per shipped day. */
+export async function loadCanagramsFacts() {
+  const { fs, db } = await sdk();
+  const snap = await fs.getDocs(fs.collection(db, CANAGRAMS_FACTS));
+  const out = new Map();
+  for (const d of snap.docs) {
+    const day = Number(d.id);
+    if (Number.isInteger(day)) out.set(day, d.data());
+  }
+  return out;
+}
+
+/**
+ * Sets Canagrams [day]'s own fact ({fact, factUrls}), or removes it when
+ * [segments] is null -- the doc goes too once nothing else is on it. Logged,
+ * so the Log tab can restore it.
+ */
+export function saveCanagramsFact(day, segments) {
+  const id = String(day);
+  return writeWithLog(CANAGRAMS_FACTS, [id], (before) => {
+    const { fact, factUrls, ...rest } = before[id] || {};
+    if (segments) return { [id]: { ...rest, day, fact: segments.fact, factUrls: segments.factUrls } };
+    if (!before[id]) return {};
+    delete rest.day;
+    return { [id]: Object.keys(rest).length ? { ...rest, day } : null };
+  }, { action: segments ? 'edit' : 'clear', note: `Canagrams #${day} fact` });
 }
 
 // ---- Game versions ----------------------------------------------------------

@@ -8,7 +8,7 @@
 // (index 60001). Duo is daily from its launch date (index 120001; see launch.js,
 // moved earlier on the sandbox).
 
-import { launchEd } from './launch.js?v=202610202259';
+import { launchEd } from './launch.js?v=202610222159';
 
 const MS_PER_DAY = 86400000;
 

@@ -135,6 +135,41 @@ export function duoFactsToSave(puzzles, edited, canuckle) {
   return Object.keys(out).length ? out : undefined;
 }
 
+// A Canagrams day can carry its own fact in canagramsGameData/{day}
+// ({fact: [...], factUrls: [...]}), for a word whose Canuckle fact was written
+// for the day it first ran ("Today is Election Day!"). Days without one show
+// the Canuckle fact shipped in the game's canuckle_facts.json, which is a
+// single string in the same [words](https://...) form as the editor text
+// (canagramsSourceCode/lib/data/facts_repository.dart).
+
+/** Canagrams day doc [doc]'s own fact, or null. */
+export function canagramsFactOf(doc) {
+  if (!doc || !Array.isArray(doc.fact) || !doc.fact.join('').trim()) return null;
+  return { fact: doc.fact, factUrls: Array.isArray(doc.factUrls) ? doc.factUrls : [] };
+}
+
+/**
+ * What to store for a Canagrams day from the edited text: the segments, or
+ * null (remove the day's fact) when the text is blank or matches the
+ * Canuckle fact [canuckleText], so an untouched day costs nothing.
+ */
+export function canagramsFactToSave(text, canuckleText = '') {
+  if (!text.trim()) return null;
+  const f = textToSegments(text);
+  return sameFact(f, textToSegments(canuckleText)) ? null : f;
+}
+
+// Openers of facts written for the day they first ran: "Today is Election
+// Day!", "Happy Canada Day!", "Tonight's the finale". "Today, Canadians ..."
+// (meaning nowadays) is left alone.
+const DATED = /\b(today is|today marks|today we|today's the|is today|tonight|tomorrow|yesterday|this weekend|merry christmas)\b/i;
+const HAPPY = /\b[Hh]appy (?:[A-Z]|\d|new year)/;
+
+/** Whether a fact reads as tied to the date it first ran. */
+export function looksDateBound(text = '') {
+  return DATED.test(text) || HAPPY.test(text);
+}
+
 /** Plain text of a fact, for search and the table. */
 export function plainFact(fact = []) {
   return fact.join('');

@@ -12,7 +12,7 @@
 // explicit ?sandboxOffsetWeeks=N on the admin URL previews shifted dates for
 // that page load only; it is never read from or saved to localStorage.
 
-import { IS_SANDBOX } from './config.js?v=202610202259';
+import { IS_SANDBOX } from './config.js?v=202610222159';
 
 export const LAUNCH_DATE = {
   duo: [2026, 11, 4],
