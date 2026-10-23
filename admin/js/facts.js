@@ -159,6 +159,18 @@ export function canagramsFactToSave(text, canuckleText = '') {
   return sameFact(f, textToSegments(canuckleText)) ? null : f;
 }
 
+// A Canoggle day carries one fact per board -- the Daily and the Mini each
+// have their own Canuckle word -- in canoggleGameData/{day}'s `facts` map,
+// keyed by the board's PuzzleKind key: {d: {fact, factUrls}, m: {...}}. A
+// board without one shows the Canuckle fact shipped in the game
+// (squaredleSourceCode/lib/data/facts_repository.dart). The text to save is
+// worked out exactly as for Canagrams, by canagramsFactToSave.
+
+/** Canoggle day doc [doc]'s own fact for [board] ('d' or 'm'), or null. */
+export function canoggleFactOf(doc, board) {
+  return canagramsFactOf(doc?.facts?.[board]);
+}
+
 // Openers of facts written for the day they first ran: "Today is Election
 // Day!", "Happy Canada Day!", "Tonight's the finale". "Today, Canadians ..."
 // (meaning nowadays) is left alone.

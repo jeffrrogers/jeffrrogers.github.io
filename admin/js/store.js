@@ -2,14 +2,14 @@
 // transaction that also writes an adminLog entry with the docs before and
 // after, so any edit, swap or import can be restored from the Log tab.
 
-import { sdk, currentEmail } from './firebase.js?v=202610222159';
-import { GAMES } from './dates.js?v=202610222159';
-import { decodeAnswer } from './codec.js?v=202610222159';
+import { sdk, currentEmail } from './firebase.js?v=202610222250';
+import { GAMES } from './dates.js?v=202610222250';
+import { decodeAnswer } from './codec.js?v=202610222250';
 import {
   PLAYER_COLLECTIONS, GAMES_SUBCOLLECTION_PARENTS, MAX_GAMES, queryCutoff, accountVerdict, quickVerdict,
-} from './cleanup.js?v=202610222159';
-import { pool } from './pool.js?v=202610222159';
-import { repairAccount } from './repair.js?v=202610222159';
+} from './cleanup.js?v=202610222250';
+import { pool } from './pool.js?v=202610222250';
+import { repairAccount } from './repair.js?v=202610222250';
 
 // ---- Puzzles --------------------------------------------------------------
 
@@ -200,6 +200,46 @@ export function saveCanagramsFact(day, segments) {
     delete rest.day;
     return { [id]: Object.keys(rest).length ? { ...rest, day } : null };
   }, { action: segments ? 'edit' : 'clear', note: `Canagrams #${day} fact` });
+}
+
+// ---- Canoggle facts -----------------------------------------------------------
+
+export const CANOGGLE_FACTS = 'canoggleGameData';
+
+/** Canoggle's boards, by the key the game ships them under (PuzzleKind.key). */
+export const CANOGGLE_BOARDS = { d: 'Daily', m: 'Mini' };
+
+/** Every Canoggle day doc, as Map<day, data>. At most one per shipped day. */
+export async function loadCanoggleFacts() {
+  const { fs, db } = await sdk();
+  const snap = await fs.getDocs(fs.collection(db, CANOGGLE_FACTS));
+  const out = new Map();
+  for (const d of snap.docs) {
+    const day = Number(d.id);
+    if (Number.isInteger(day)) out.set(day, d.data());
+  }
+  return out;
+}
+
+/**
+ * Sets the own fact ({fact, factUrls}) of Canoggle [day]'s [board] ('d' or
+ * 'm'), or removes it when [segments] is null -- the doc goes too once neither
+ * board has one and nothing else is on it. Logged, so the Log tab can restore
+ * it.
+ */
+export function saveCanoggleFact(day, board, segments) {
+  if (!CANOGGLE_BOARDS[board]) throw new Error(`Unknown Canoggle board: ${board}`);
+  const id = String(day);
+  return writeWithLog(CANOGGLE_FACTS, [id], (before) => {
+    const { facts, ...rest } = before[id] || {};
+    const next = { ...(facts && typeof facts === 'object' ? facts : {}) };
+    if (segments) next[board] = { fact: segments.fact, factUrls: segments.factUrls };
+    else if (!next[board]) return {};
+    else delete next[board];
+    delete rest.day;
+    if (Object.keys(next).length) return { [id]: { ...rest, day, facts: next } };
+    return { [id]: Object.keys(rest).length ? { ...rest, day } : null };
+  }, { action: segments ? 'edit' : 'clear', note: `Canoggle #${day} ${CANOGGLE_BOARDS[board]} fact` });
 }
 
 // ---- Game versions ----------------------------------------------------------
