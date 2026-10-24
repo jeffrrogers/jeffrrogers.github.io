@@ -12,9 +12,9 @@
 // the count survives history scrolling out of the recent window. parts() is
 // the checklist behind a badge that needs several things at once.
 
-import { SOLVED, minEd, finishOn, num } from '../status.js?v=202610222320';
-import { todayEpochDay, weekdayName, shortDate } from '../dates.js?v=202610222320';
-import { LAUNCH_DATE } from '../config.js?v=202610222320';
+import { SOLVED, minEd, finishOn, num } from '../status.js?v=202610232157';
+import { todayEpochDay, weekdayName, shortDate } from '../dates.js?v=202610232157';
+import { LAUNCH_DATE } from '../config.js?v=202610232157';
 
 function finishDays(game, p) {
   return [...p.doneIdx].map((i) => finishOn(game, p, i));
@@ -66,8 +66,8 @@ const DAILY_STREAKS = [
 /**
  * Canuckle's and Duo's streak badges: the tiers Canuckle's share text tags a
  * streak with (canuckleSourceCode/lib/ui/share_lines.dart), plus Year Round.
- * Each ring changes at the tier named for it. Only the tiers a player has
- * reached, and the next one, are shown (see [evaluateBadges]).
+ * Each ring changes at the tier named for it. The arena shows the ladder as
+ * one tile, like every tier family (see families.js).
  */
 const STREAK_LADDER = [
   { n: 5, name: 'Star', tag: '#CanuckleStar', tier: 'bronze' },
@@ -122,6 +122,12 @@ const SWEEP_DESC = {
   canoggle: 'Solve both the Daily board and the Mini on the same day.',
 };
 
+/**
+ * A tier family: badges that are higher levels of one another, shown as one
+ * tile (families.js). [unit] counts what the levels need, singular and plural.
+ */
+const tierFamily = (family, familyName, unit) => ({ family, familyName, unit });
+
 const SPECIALS = {
   canuckle: [
     { key: 'quick', name: 'Two and Through', glyph: 'star', tier: 'gold',
@@ -136,11 +142,13 @@ const SPECIALS = {
   ],
   duo: [
     { key: 'perfect', name: 'Perfect Duo', glyph: 'star', tier: 'silver',
+      ...tierFamily('duo.perfect', 'Perfect Duos', ['Perfect Duo', 'Perfect Duos']),
       desc: 'Solve both Canuckle Duo words by your fourth guess.',
       check: (p) => [p.flags.perfect ? 1 : 0, 1],
       since: (p) => p.flagOn?.perfect,
       times: (p) => num(p.flags.perfects) },
     { key: 'perfect10', name: 'Perfect Ten', glyph: 'star', tier: 'gold',
+      ...tierFamily('duo.perfect', 'Perfect Duos', ['Perfect Duo', 'Perfect Duos']),
       desc: 'Get 10 Perfect Duos.',
       check: (p) => [Math.min(p.flags.perfects || 0, 10), 10],
       since: (p) => nthEarliest(p.flagOn?.perfectDays || [], 10) },
@@ -189,16 +197,19 @@ const SPECIALS = {
       check: (p) => [p.flags.canuckleWords || 0, 10] },
   ],
   // Picked on the Canagrams design page (2026-10-13). Some come in bronze,
-  // silver and gold; each level is its own badge, the way the streaks are.
+  // silver and gold; each level is its own badge, the way the streaks are,
+  // and the levels of one are a tier family.
   canagrams: [
     ...[[10, 'bronze'], [25, 'silver'], [100, 'gold']].map(([n, tier]) => ({
       key: `canuckle${n}`, name: 'Canuckle Connection', glyph: 'leaf', tier,
+      ...tierFamily('canagrams.canuckle', null, ['board', 'boards']),
       desc: `Spell the Canuckle word on ${n} Canagrams boards.`,
       check: (p) => [Math.min(p.flags.canuckleWords || 0, n), n],
       since: (p) => nthEarliest(p.flagOn?.canuckleDays || [], n),
     })),
     ...[[1, 'bronze'], [5, 'silver'], [20, 'gold']].map(([n, tier]) => ({
       key: `fullweek${n}`, name: 'Full Week', glyph: 'star', tier,
+      ...tierFamily('canagrams.fullweek', null, ['week', 'weeks']),
       desc: n === 1
         ? 'Solve every Canagrams puzzle from Monday to Sunday of one week.'
         : `Solve every Canagrams puzzle from Monday to Sunday, ${n} weeks over.`,
@@ -211,6 +222,7 @@ const SPECIALS = {
       check: (p) => [Math.min(p.flags.sundayNoHint || 0, 10), 10] },
     ...[[25, 'bronze'], [100, 'silver'], [250, 'gold']].map(([n, tier]) => ({
       key: `nopeek${n}`, name: 'No Peeking', glyph: 'star', tier,
+      ...tierFamily('canagrams.nopeek', null, ['puzzle', 'puzzles']),
       desc: `Solve ${n} Canagrams puzzles without a hint.`,
       check: (p) => [Math.min(p.flags.noHint || 0, n), n],
       since: (p) => nthEarliest(p.flagOn?.noHintDays || [], n),
@@ -220,6 +232,7 @@ const SPECIALS = {
       check: (p) => [p.flags.fastestEarlyMs > 0 && p.flags.fastestEarlyMs < 120000 ? 1 : 0, 1] },
     ...[[50, 'bronze'], [250, 'silver'], [1000, 'gold']].map(([n, tier]) => ({
       key: `bonus${n}`, name: 'Bonus Hunter', glyph: 'star', tier,
+      ...tierFamily('canagrams.bonus', null, ['bonus word', 'bonus words']),
       desc: `Find ${n} Canagrams bonus words.`,
       check: (p) => [Math.min(p.flags.bonusWords || 0, n), n],
     })),
@@ -240,6 +253,7 @@ function gameBadges(game) {
   }];
   const streak = (s, extra = {}) => ({
     id: `${game.id}.streak${s.n}`, game: game.id, name: s.name, glyph: 'flame', tier: s.tier,
+    ...tierFamily(`${game.id}.streak`, 'Streak', [unit, `${unit}s`]),
     desc: `Reach a ${s.n}-${unit} ${game.name} streak.`,
     check: (p) => [Math.min(p.maxStreak, s.n), s.n],
     since: (p) => streakReachedOn(game, p, s.n),
@@ -250,12 +264,11 @@ function gameBadges(game) {
   if (LADDER_GAMES.has(game.id)) {
     for (const s of [RETIRED_STREAK, ...STREAK_LADDER].sort((a, b) => a.n - b.n)) {
       if (s === RETIRED_STREAK) {
-        list.push(streak(s, { retired: true }));
+        // Not a level of the ladder any more: a badge of its own.
+        list.push(streak(s, { retired: true, family: null }));
         continue;
       }
       list.push(streak(s, {
-        ladder: game.id,
-        n: s.n,
         ...(s.tag ? { desc: `Reach a ${s.n}-day ${game.name} streak. Your shares now carry ${s.tag}.` } : {}),
       }));
     }
@@ -265,6 +278,7 @@ function gameBadges(game) {
   for (const t of weekly ? WEEKLY_TOTALS : DAILY_TOTALS) {
     list.push({
       id: `${game.id}.total${t.n}`, game: game.id, name: t.name, glyph: 'stack', tier: t.tier,
+      ...tierFamily(`${game.id}.total`, 'Puzzles finished', ['puzzle', 'puzzles']),
       desc: `Finish ${t.n} ${game.name} puzzles.`,
       check: (p) => [Math.min(p.doneIdx.size, t.n), t.n],
       since: (p) => nthEarliest(finishDays(game, p), t.n),
@@ -550,7 +564,7 @@ export function evaluateBadges(games, state, alreadyEarned = new Set(),
   const active = Object.values(lastActive).filter((d) => d != null);
   const anyActive = active.length ? Math.max(...active) : null;
 
-  let results = [];
+  const results = [];
   for (const def of badgeDefinitions(games, allLaunched)) {
     if (def === COLLECTOR) continue;
     // A retired badge is only ever one somebody already holds.
@@ -581,13 +595,6 @@ export function evaluateBadges(games, state, alreadyEarned = new Set(),
       parts: def.parts ? def.parts(arg, todayEd) : null,
     });
   }
-  // A streak ladder shows the tiers reached and the next one, not the twenty
-  // still out of sight.
-  const next = {};
-  for (const r of results) {
-    if (r.ladder && !r.earned) next[r.ladder] = Math.min(next[r.ladder] ?? Infinity, r.n);
-  }
-  results = results.filter((r) => !r.ladder || r.earned || r.n === next[r.ladder]);
   const earned = results.filter((b) => b.earned);
   const reached = earned.length >= 10;
   results.unshift({

@@ -1,26 +1,26 @@
 // Boot, routing and the shared app state.
 
-import { IS_SANDBOX, IS_DEMO, isLive } from './config.js?v=202610222320';
-import { demoRaw } from './demo.js?v=202610222320';
-import { initAnalytics, track } from './analytics.js?v=202610222320';
-import { loadAds } from './ads.js?v=202610222320';
-import { todayEpochDay } from './dates.js?v=202610222320';
-import { playerId } from './local.js?v=202610222320';
-import { initialTheme, initialContrast, applyTheme, applyContrast } from './theme.js?v=202610222320';
-import { ALL_GAMES, liveGames, gameById } from './games/registry.js?v=202610222320';
-import { initialOrder, computeOrder } from './gameOrder.js?v=202610222320';
-import { loadProgress, loadFullHistory } from './progress.js?v=202610222320';
-import { evaluateBadges } from './badges/rules.js?v=202610222320';
+import { IS_SANDBOX, IS_DEMO, isLive } from './config.js?v=202610232157';
+import { demoRaw } from './demo.js?v=202610232157';
+import { initAnalytics, track } from './analytics.js?v=202610232157';
+import { loadAds } from './ads.js?v=202610232157';
+import { todayEpochDay } from './dates.js?v=202610232157';
+import { playerId } from './local.js?v=202610232157';
+import { initialTheme, initialContrast, applyTheme, applyContrast } from './theme.js?v=202610232157';
+import { ALL_GAMES, liveGames, gameById } from './games/registry.js?v=202610232157';
+import { initialOrder, computeOrder } from './gameOrder.js?v=202610232157';
+import { loadProgress, loadFullHistory } from './progress.js?v=202610232157';
+import { evaluateBadges } from './badges/rules.js?v=202610232157';
 import {
   loadStoredBadges, needsDating, planSync, applySync, markAnnounced, markAnnouncedMany, markShared,
-} from './badges/store.js?v=202610222320';
-import { h, ICONS, closeSheet } from './ui.js?v=202610222320';
-import { renderGames } from './views/gamesTab.js?v=202610222320';
-import { renderArchive } from './views/archive.js?v=202610222320';
-import { renderStats, renderStatsDetail } from './views/statsTab.js?v=202610222320';
-import { renderBadgesPage, announce, announceMany, unlockStyle } from './views/badgesView.js?v=202610222320';
-import { openSettings, openSync, safeReturnPath } from './views/settings.js?v=202610222320';
-import { takeLeftForGame } from './views/play.js?v=202610222320';
+} from './badges/store.js?v=202610232157';
+import { h, ICONS, closeSheet } from './ui.js?v=202610232157';
+import { renderGames } from './views/gamesTab.js?v=202610232157';
+import { renderArchive } from './views/archive.js?v=202610232157';
+import { renderStats, renderStatsDetail } from './views/statsTab.js?v=202610232157';
+import { renderBadgesPage, announce, announceMany, unlockStyle } from './views/badgesView.js?v=202610232157';
+import { openSettings, openSync, safeReturnPath } from './views/settings.js?v=202610232157';
+import { takeLeftForGame } from './views/play.js?v=202610232157';
 
 const app = {
   uid: IS_DEMO ? 'DEMO' : playerId(),
@@ -175,8 +175,9 @@ async function syncBadges() {
   evaluate();
   if (!app.uid) return;
   if (IS_DEMO) {
-    // ?demo&unlock previews the unlock announcement with one badge, and
-    // ?demo&unlock=many the summary of several; nothing is saved.
+    // ?demo&unlock previews the unlock announcement with one badge,
+    // ?demo&unlock=level a tier family's level up, and ?demo&unlock=many the
+    // summary of several; nothing is saved.
     const unlock = new URLSearchParams(location.search).get('unlock');
     if (unlock == null) return;
     const earned = app.badges.results.filter((b) => b.earned);
@@ -184,7 +185,9 @@ async function syncBadges() {
       if (earned.length) announceMany(app, earned, () => {}, { firstVisit: true });
       return;
     }
-    const sample = earned.find((b) => b.tier === 'gold') || earned[0];
+    // A level up is any level of a family but its first.
+    const levelUp = (b) => b.family && app.badges.results.find((o) => o.family === b.family) !== b;
+    const sample = (unlock === 'level' && earned.find(levelUp)) || earned.find((b) => b.tier === 'gold') || earned[0];
     if (sample) announce(app, [sample], () => {});
     return;
   }

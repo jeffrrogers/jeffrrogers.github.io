@@ -1,12 +1,12 @@
 // The Stats tab: a card per game; and each game's detail page. Badges have
 // their own tab (badgesView.js).
 
-import { h, ICONS } from '../ui.js?v=202610222320';
-import { medalButton } from './badgesView.js?v=202610222320';
-import { streakChip } from './gamesTab.js?v=202610222320';
-import { PROGRESS, isDone } from '../status.js?v=202610222320';
-import { playProps } from './play.js?v=202610222320';
-import { orderedGames } from '../gameOrder.js?v=202610222320';
+import { h, ICONS } from '../ui.js?v=202610232157';
+import { badgeTiles } from './badgesView.js?v=202610232157';
+import { streakChip } from './gamesTab.js?v=202610232157';
+import { PROGRESS, isDone } from '../status.js?v=202610232157';
+import { playProps } from './play.js?v=202610232157';
+import { orderedGames } from '../gameOrder.js?v=202610232157';
 
 function numbers(game, progress) {
   const p = progress;
@@ -74,6 +74,6 @@ export function renderStatsDetail(app, game) {
     h('div', { class: 'card' }, numbers(game, progress)),
     h('div', { class: 'detail-sections' }, game.detail(progress).map(section)),
     gameBadges.length ? h('div', { class: 'section-title' }, h('h2', { text: 'Badges' })) : null,
-    gameBadges.length ? h('div', { class: 'card' }, h('div', { class: 'badge-grid' }, gameBadges.map((b) => medalButton(app, b)))) : null,
+    gameBadges.length ? h('div', { class: 'card' }, h('div', { class: 'badge-grid' }, badgeTiles(app, gameBadges))) : null,
     h('p', { style: { marginTop: '16px' } }, h('a', { href: `#archive/${game.id}`, text: `Open the ${game.name} Archive` })));
 }
