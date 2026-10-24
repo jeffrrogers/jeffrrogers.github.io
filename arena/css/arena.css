@@ -63,8 +63,9 @@
   color-scheme: dark;
 }
 
-/* High contrast: darker secondary text and firmer borders. Results outside
-   any one game (badge checklists) use Canuckle's orange and blue. */
+/* High contrast: darker secondary text and firmer borders. Results other
+   than a game's archive days (Stats, badge checklists) use Canuckle's orange
+   and blue. */
 :root[data-contrast="high"] {
   --muted: #3F3D3A;
   --border: #B9B3AB;
@@ -78,8 +79,8 @@
   --played: #85C0F9;
   --progress: #85C0F9;
 }
-/* Inside a game (its Games-tab strip, archive and stats; see gameColours in
-   ui.js), results take the game's high-contrast colour: its own colour tuned
+/* A game's archive days (its Games-tab strip and archive; see gameColours in
+   ui.js) take the game's high-contrast colour: its own colour tuned
    to 3:1 on the card frame, deeper in light and brighter in dark. Played is a
    paler fill of it; the tile shapes and the calendar's fills tell results
    apart without relying on colour. Dark mode's bright fills take dark marks. */

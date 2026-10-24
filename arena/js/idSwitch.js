@@ -20,7 +20,7 @@
 // planIdSwitch is pure (data in, operations out) so the order and the encoding
 // are unit-tested; applyIdSwitch performs the operations.
 
-import { writePref, removePref } from './local.js?v=202610241337';
+import { writePref, removePref } from './local.js?v=202610241359';
 
 /** Collections read for the new id, by game. */
 export const ID_DOCS = {
