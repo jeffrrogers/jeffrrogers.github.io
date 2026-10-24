@@ -3,14 +3,14 @@
 // previous seven, and a way into the archive at the end. Streaks and stats
 // live on the Stats tab, not here.
 
-import { h, ICONS } from '../ui.js?v=202610232157';
-import { longDate, weekdayName, shortDate, ymd } from '../dates.js?v=202610232157';
-import { recentIndices } from '../games/common.js?v=202610232157';
-import { SOLVED, FAILED, PLAYED, PROGRESS, isDone } from '../status.js?v=202610232157';
-import { LEAF_PATH } from '../badges/icons.js?v=202610232157';
-import { playProps } from './play.js?v=202610232157';
-import { orderedGames } from '../gameOrder.js?v=202610232157';
-import { launchEd } from '../config.js?v=202610232157';
+import { h, ICONS, gameColours } from '../ui.js?v=202610241337';
+import { longDate, weekdayName, shortDate, ymd } from '../dates.js?v=202610241337';
+import { recentIndices } from '../games/common.js?v=202610241337';
+import { SOLVED, FAILED, PLAYED, PROGRESS, isDone } from '../status.js?v=202610241337';
+import { LEAF_PATH } from '../badges/icons.js?v=202610241337';
+import { playProps } from './play.js?v=202610241337';
+import { orderedGames } from '../gameOrder.js?v=202610241337';
+import { launchEd } from '../config.js?v=202610241337';
 
 const DEFAULT_CAPTION = {
   [SOLVED]: 'SOLVED',
@@ -26,14 +26,18 @@ function caption(game, entry, isToday) {
   return game.resultLabel?.(entry) || DEFAULT_CAPTION[status];
 }
 
-/** CSS custom properties that colour a game's cards in both themes. */
+/** A game's colours, and the custom properties that colour its cards in both themes. */
 function cardVars(game) {
+  const colours = gameColours(game);
   return {
-    '--game': game.color,
-    '--tint': game.card.tint[0],
+    ...colours,
+    style: {
+      ...colours.style,
+      '--tint': game.card.tint[0],
     '--tint-dark': game.card.tint[1],
     '--frame': game.card.frame[0],
-    '--frame-dark': game.card.frame[1],
+      '--frame-dark': game.card.frame[1],
+    },
   };
 }
 
@@ -52,7 +56,7 @@ export function resultTile(game, status) {
   switch (status) {
     case SOLVED:
       inner = `<rect x="10" y="10" width="44" height="44" rx="8" style="fill:var(--tile-solved, var(--game))"/>`
-        + `<path transform="translate(17 16.5) scale(.3)" d="${LEAF_PATH}" fill="#fff"/>`;
+        + `<path transform="translate(17 16.5) scale(.3)" d="${LEAF_PATH}" style="fill:var(--on-result, #fff)"/>`;
       break;
     case FAILED:
       inner = '<rect x="10" y="10" width="44" height="44" rx="8" fill="#6B6862"/>'
@@ -60,7 +64,7 @@ export function resultTile(game, status) {
       break;
     case PLAYED:
       inner = `<rect x="10" y="10" width="44" height="44" rx="8" style="fill:var(--tile-progress, var(--game))"/>`
-        + '<circle cx="32" cy="32" r="9" fill="none" stroke="#fff" stroke-width="4"/>';
+        + '<circle cx="32" cy="32" r="9" fill="none" stroke-width="4" style="stroke:var(--on-result, #fff)"/>';
       break;
     case PROGRESS:
       inner = '<rect x="10" y="10" width="44" height="44" rx="8" fill="#fff"/>'
@@ -193,7 +197,7 @@ function comingSoonStrip(game, todayEd) {
     h('span', {},
       h('span', { class: 'tc-kicker', text: 'COMING SOON' }),
       h('span', { class: 'tc-when', text: when }))));
-  return h('section', { class: 'strip-row', style: cardVars(game), 'aria-label': game.name },
+  return h('section', { class: 'strip-row', ...cardVars(game), 'aria-label': game.name },
     h('div', { class: 'strip' }, card));
 }
 
@@ -206,7 +210,7 @@ function gameStrip(game, progress, todayEd) {
     todayCard(game, progress?.days.get(today), todayIdx),
     past.map((i) => pastCard(game, i, progress?.days.get(i), todayIdx)),
     seeAllCard(game));
-  const row = h('section', { class: 'strip-row', style: cardVars(game), 'aria-label': game.name },
+  const row = h('section', { class: 'strip-row', ...cardVars(game), 'aria-label': game.name },
     strip,
     // Cards run from today on the left back in time to the right.
     h('button', {

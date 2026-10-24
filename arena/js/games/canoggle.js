@@ -9,14 +9,14 @@
 // launch with done: false (absent on a finished record) and reads as in
 // progress; today's in-progress boards are local.
 
-import { launchDaily, pct, historyStart, readJsonPref } from './common.js?v=202610232157';
-import { edOfMillis } from '../dates.js?v=202610232157';
-import { toMillis } from '../firebase.js?v=202610232157';
-import { launchEd } from '../config.js?v=202610232157';
-import { readPref } from '../local.js?v=202610232157';
+import { launchDaily, pct, historyStart, readJsonPref } from './common.js?v=202610241337';
+import { edOfMillis } from '../dates.js?v=202610241337';
+import { toMillis } from '../firebase.js?v=202610241337';
+import { launchEd } from '../config.js?v=202610241337';
+import { readPref } from '../local.js?v=202610241337';
 import {
   SOLVED, FAILED, PROGRESS, emptyProgress, mark, storedStreak, intList, num, minEd, maxEd, noteFinish,
-} from '../status.js?v=202610232157';
+} from '../status.js?v=202610241337';
 
 const KINDS = [
   { key: 'd', label: 'Daily' },
@@ -67,6 +67,8 @@ export const canoggle = {
   name: 'Canoggle',
   logo: 'images/canoggle.svg',
   color: '#D35F1B',
+  // High contrast: the colour tuned to 3:1 on the card frame, light then dark.
+  hc: ['#B35117', '#E2661D'],
   blurb: 'Find words in the daily grid, plus a Mini.',
   card: { tint: ['#FCE9DC', '#3A2416'], frame: ['#F1BC97', '#5C351D'] },
   ...launchDaily('canoggle'),

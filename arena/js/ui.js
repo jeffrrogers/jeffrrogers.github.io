@@ -1,6 +1,6 @@
 // Small DOM helpers, icons, sheets and toasts.
 
-import { SOLVED, FAILED, PLAYED, PROGRESS, STATUS_LABEL } from './status.js?v=202610232157';
+import { SOLVED, FAILED, PLAYED, PROGRESS, STATUS_LABEL } from './status.js?v=202610241337';
 
 /**
  * Creates an element. props: class, text, html (trusted constant markup
@@ -50,10 +50,22 @@ export const ICONS = {
   share: SVG('<path d="M12 3v12M7 8l5-5 5 5" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/><path d="M5 13v6a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2v-6" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"/>'),
 };
 
+/**
+ * A game's colours as CSS custom properties, for an element that shows that
+ * game: its colour, and the high-contrast pair arena.css swaps in. Spread into
+ * the element's props; data-game marks it for those rules.
+ */
+export function gameColours(game) {
+  return {
+    'data-game': game.id,
+    style: { '--game': game.color, '--game-hc': game.hc[0], '--game-hc-dark': game.hc[1] },
+  };
+}
+
 /** A status glyph. On a coloured "today" tile pass light=true. */
 export function statusIcon(status, light = false) {
   const c = (v) => (light ? '#fff' : `var(--${v})`);
-  const ink = light ? 'var(--game)' : '#fff';
+  const ink = light ? 'var(--game)' : 'var(--on-result, #fff)';
   let body;
   switch (status) {
     case SOLVED:

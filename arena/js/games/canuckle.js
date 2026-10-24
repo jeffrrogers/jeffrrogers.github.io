@@ -6,11 +6,11 @@
 // entries use {guesses: [{guess}]} instead of userGuesses. startTimestamp is
 // local midnight of the day the game was started, archive games included.
 
-import { epochDay, edOfMillis } from '../dates.js?v=202610232157';
-import { parseJsonList, readJsonPref, pct } from './common.js?v=202610232157';
+import { epochDay, edOfMillis } from '../dates.js?v=202610241337';
+import { parseJsonList, readJsonPref, pct } from './common.js?v=202610241337';
 import {
   SOLVED, FAILED, PROGRESS, emptyProgress, mark, currentStreak, longestStreak, num, minEd, noteFinish,
-} from '../status.js?v=202610232157';
+} from '../status.js?v=202610241337';
 
 const ORIGINAL_START = epochDay(2022, 2, 10); // games #1-#142
 const ORIGINAL_END = epochDay(2022, 7, 1);
@@ -104,6 +104,8 @@ export const canuckle = {
   name: 'Canuckle',
   logo: 'images/canuckle.svg',
   color: '#D52B1E',
+  // High contrast: the colour tuned to 3:1 on the card frame, light then dark.
+  hc: ['#D12A1D', '#E65B51'],
   blurb: 'Guess the daily five-letter Canadian word.',
   card: { tint: ['#FBE4E1', '#3A1D1B'], frame: ['#F2B8B2', '#6A2A24'] },
   cadence: 'daily',

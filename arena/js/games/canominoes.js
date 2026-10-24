@@ -10,14 +10,14 @@
 // Today's in-progress boards come from this browser's domGame_{day}_{tier}
 // saves.
 
-import { launchDaily, pct, historyStart, readJsonPref } from './common.js?v=202610232157';
-import { duration, edOfMillis } from '../dates.js?v=202610232157';
-import { toMillis } from '../firebase.js?v=202610232157';
-import { launchEd } from '../config.js?v=202610232157';
-import { readPref } from '../local.js?v=202610232157';
+import { launchDaily, pct, historyStart, readJsonPref } from './common.js?v=202610241337';
+import { duration, edOfMillis } from '../dates.js?v=202610241337';
+import { toMillis } from '../firebase.js?v=202610241337';
+import { launchEd } from '../config.js?v=202610241337';
+import { readPref } from '../local.js?v=202610241337';
 import {
   SOLVED, PROGRESS, emptyProgress, mark, storedStreak, intList, num, minEd, maxEd, noteFinish,
-} from '../status.js?v=202610232157';
+} from '../status.js?v=202610241337';
 
 const LEVELS = [
   { key: 'e', label: 'Easy' },
@@ -61,6 +61,8 @@ export const canominoes = {
   name: 'Canominoes',
   logo: 'images/canominoes.svg',
   color: '#2A2A33',
+  // High contrast: the colour tuned to 3:1 on the card frame, light then dark.
+  hc: ['#2A2A33', '#B4B4C0'],
   blurb: 'Fill the board with dominoes, three puzzles a day.',
   card: { tint: ['#E9E9EE', '#24242B'], frame: ['#C4C4CF', '#3A3A45'] },
   ...launchDaily('canominoes'),

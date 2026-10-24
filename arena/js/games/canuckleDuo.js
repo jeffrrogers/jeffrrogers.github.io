@@ -8,12 +8,12 @@
 // isFromArchive}. Each guess is played on both boards; the puzzle is won once
 // both answers have been guessed and lost after seven guesses without both.
 
-import { edOfMillis } from '../dates.js?v=202610232157';
-import { launchEd } from '../config.js?v=202610232157';
-import { parseJsonList, readJsonPref, pct } from './common.js?v=202610232157';
+import { edOfMillis } from '../dates.js?v=202610241337';
+import { launchEd } from '../config.js?v=202610241337';
+import { parseJsonList, readJsonPref, pct } from './common.js?v=202610241337';
 import {
   SOLVED, FAILED, PROGRESS, emptyProgress, mark, currentStreak, longestStreak, num, minEd, noteFinish,
-} from '../status.js?v=202610232157';
+} from '../status.js?v=202610241337';
 
 const BASE = 120001;
 export const DUO_MAX_GUESSES = 7;
@@ -74,6 +74,8 @@ export const canuckleDuo = {
   name: 'Canuckle Duo',
   logo: 'images/canuckle-duo.svg',
   color: '#6B3FA0',
+  // High contrast: the colour tuned to 3:1 on the card frame, light then dark.
+  hc: ['#6B3FA0', '#A279D2'],
   blurb: 'Two words, seven guesses, every day.',
   card: { tint: ['#EFE7F8', '#2B2140'], frame: ['#CDB6EA', '#4A3670'] },
   cadence: 'daily',

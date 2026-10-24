@@ -10,13 +10,13 @@
 // uploaded on the next launch with done: false and reads as in progress;
 // today's in-progress board is local.
 
-import { launchDaily, historyStart, readJsonPref } from './common.js?v=202610232157';
-import { toMillis } from '../firebase.js?v=202610232157';
-import { launchEd } from '../config.js?v=202610232157';
-import { readPref } from '../local.js?v=202610232157';
+import { launchDaily, historyStart, readJsonPref } from './common.js?v=202610241337';
+import { toMillis } from '../firebase.js?v=202610241337';
+import { launchEd } from '../config.js?v=202610241337';
+import { readPref } from '../local.js?v=202610241337';
 import {
   SOLVED, PROGRESS, emptyProgress, mark, storedStreak, intList, num, noteFinish,
-} from '../status.js?v=202610232157';
+} from '../status.js?v=202610241337';
 
 const COUNTS = ['ds', 'nh', 'pt', 'bp', 'wf', 'bf', 'cw', 'sn', 'mx'];
 
@@ -87,6 +87,8 @@ export const canagrams = {
   name: 'Canagrams',
   logo: 'images/canagrams.svg',
   color: '#0E7C7B',
+  // High contrast: the colour tuned to 3:1 on the card frame, light then dark.
+  hc: ['#0E7C7B', '#3FBFBD'],
   blurb: 'Spell words from the wheel to fill the daily crossword.',
   card: { tint: ['#DDF0EF', '#12302F'], frame: ['#9BD3D1', '#1F5554'] },
   ...launchDaily('canagrams'),

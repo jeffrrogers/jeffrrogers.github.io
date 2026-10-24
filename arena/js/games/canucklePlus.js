@@ -4,12 +4,12 @@
 // 2025-03-31, index = weeks + 60001, shown to players as index - 60000.
 // Progress is `plusGames` in the same newUserData/{id} document as Canuckle.
 
-import { epochDay } from '../dates.js?v=202610232157';
-import { pct } from './common.js?v=202610232157';
-import { readGame, distribution, guessLabel, gamesWithPending } from './canuckle.js?v=202610232157';
+import { epochDay } from '../dates.js?v=202610241337';
+import { pct } from './common.js?v=202610241337';
+import { readGame, distribution, guessLabel, gamesWithPending } from './canuckle.js?v=202610241337';
 import {
   SOLVED, PROGRESS, emptyProgress, mark, currentStreak, longestStreak, num, noteFinish,
-} from '../status.js?v=202610232157';
+} from '../status.js?v=202610241337';
 
 const START = epochDay(2025, 3, 31);
 const BASE = 60001;
@@ -19,6 +19,8 @@ export const canucklePlus = {
   name: 'Canuckle+',
   logo: 'images/canuckle-plus.svg',
   color: '#C08A12',
+  // High contrast: the colour tuned to 3:1 on the card frame, light then dark.
+  hc: ['#986E0E', '#E9A816'],
   blurb: 'A new six or seven-letter word every Monday.',
   card: { tint: ['#FAF0D6', '#33290F'], frame: ['#EBD18F', '#5E4A16'] },
   cadence: 'weekly',

@@ -7,14 +7,14 @@
 // st (0 playing, 1 won, 2 abandoned), sec, updatedAt}; updatedAt is the last
 // write, which for a finished deal is when it finished.
 
-import { launchDaily, pct, historyStart, readJsonPref } from './common.js?v=202610232157';
-import { duration, edOfMillis } from '../dates.js?v=202610232157';
-import { toMillis } from '../firebase.js?v=202610232157';
-import { launchEd } from '../config.js?v=202610232157';
-import { readPref } from '../local.js?v=202610232157';
+import { launchDaily, pct, historyStart, readJsonPref } from './common.js?v=202610241337';
+import { duration, edOfMillis } from '../dates.js?v=202610241337';
+import { toMillis } from '../firebase.js?v=202610241337';
+import { launchEd } from '../config.js?v=202610241337';
+import { readPref } from '../local.js?v=202610241337';
 import {
   SOLVED, PLAYED, PROGRESS, emptyProgress, mark, storedStreak, intList, num, minEd, maxEd, noteFinish,
-} from '../status.js?v=202610232157';
+} from '../status.js?v=202610241337';
 
 const DRAWS = ['1', '3'];
 const LEVELS = ['e', 'm', 'h'];
@@ -51,6 +51,8 @@ export const canolitaire = {
   name: 'Canolitaire',
   logo: 'images/canolitaire.svg',
   color: '#1E5A3C',
+  // High contrast: the colour tuned to 3:1 on the card frame, light then dark.
+  hc: ['#1E5A3C', '#4DB882'],
   blurb: 'Six daily deals of Canadian solitaire.',
   card: { tint: ['#DFEFE6', '#15291F'], frame: ['#9CCBB0', '#24503A'] },
   ...launchDaily('canolitaire'),

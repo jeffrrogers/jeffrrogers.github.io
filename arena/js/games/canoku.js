@@ -9,12 +9,12 @@
 // migrated (savesVersion < 2) still have per-day subcollections
 // canokuUserData/{id}/{dayIndex}, one document per mode, {gameData: <JSON>}.
 
-import { daily } from './common.js?v=202610232157';
-import { readPref, prefKeys } from '../local.js?v=202610232157';
-import { duration } from '../dates.js?v=202610232157';
+import { daily } from './common.js?v=202610241337';
+import { readPref, prefKeys } from '../local.js?v=202610241337';
+import { duration } from '../dates.js?v=202610241337';
 import {
   SOLVED, PROGRESS, emptyProgress, mark, currentStreak, longestStreak, intList, num, minEd, noteFinish,
-} from '../status.js?v=202610232157';
+} from '../status.js?v=202610241337';
 
 const SIZES = [
   { suffix: '', label: '9×9', stat: '' },
@@ -67,6 +67,8 @@ export const canoku = {
   name: 'Canoku',
   logo: 'images/canoku.svg',
   color: '#1F5E96',
+  // High contrast: the colour tuned to 3:1 on the card frame, light then dark.
+  hc: ['#1F5E96', '#549CDC'],
   blurb: 'Daily sudoku with Canadian symbols, in three sizes.',
   card: { tint: ['#E1ECF7', '#17283A'], frame: ['#A9C6E3', '#2A4C6E'] },
   ...daily(2023, 10, 16),

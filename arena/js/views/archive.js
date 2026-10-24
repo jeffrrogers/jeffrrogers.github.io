@@ -4,11 +4,11 @@
 // is weekly and its weeks start on Monday, so its grid is Monday-first and
 // each week is a single band across the row: the whole week is one puzzle.
 
-import { h, ICONS, statusIcon, tierMarks } from '../ui.js?v=202610232157';
-import { ymd, epochDay, monthName, monthTitle, daysInMonth, shortDate } from '../dates.js?v=202610232157';
-import { SOLVED, FAILED, PLAYED, PROGRESS, STATUS_LABEL, isDone } from '../status.js?v=202610232157';
-import { playProps } from './play.js?v=202610232157';
-import { streakChip } from './gamesTab.js?v=202610232157';
+import { h, ICONS, statusIcon, tierMarks, gameColours } from '../ui.js?v=202610241337';
+import { ymd, epochDay, monthName, monthTitle, daysInMonth, shortDate } from '../dates.js?v=202610241337';
+import { SOLVED, FAILED, PLAYED, PROGRESS, STATUS_LABEL, isDone } from '../status.js?v=202610241337';
+import { playProps } from './play.js?v=202610241337';
+import { streakChip } from './gamesTab.js?v=202610241337';
 
 const DOW_SUNDAY = ['S', 'M', 'T', 'W', 'T', 'F', 'S'];
 const DOW_MONDAY = ['M', 'T', 'W', 'T', 'F', 'S', 'S'];
@@ -161,7 +161,7 @@ export function renderArchive(app, game) {
   select.addEventListener('change', () => go(Number(select.value)));
   show();
 
-  return h('div', { class: 'wrap', style: { '--game': game.color } },
+  return h('div', { class: 'wrap', ...gameColours(game) },
     h('div', { class: 'page-head' },
       h('a', { class: 'icon-btn', href: '#games', 'aria-label': 'Back to games', html: ICONS.back }),
       h('img', { src: game.logo, alt: '' }),
