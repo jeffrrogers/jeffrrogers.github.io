@@ -46449,8 +46449,8 @@ o=p.b
 n=o.length
 m=r.f
 if(m||r.gbF()===o.length)p=r.GZ().gvT()
-else{l=A.aOl(B.B,r.d,r.e,r.c,!1,p,!1)
-k=l.a+l.b-l.c
+else{l=A.aOl(B.B,r.d,r.e,r.c,r.x,p,!1)
+k=l.a+l.b-(l.c+l.d)
 p=k<0?0:k}j=a6.e
 i=$.j9()
 j=B.ly.h(0,A.mj(i.dn(0-A.bJ(7*$.il,0,0,0).a).dn(A.bJ(j-1,0,0,0).a)))
