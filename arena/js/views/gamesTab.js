@@ -3,14 +3,14 @@
 // previous seven, and a way into the archive at the end. Streaks and stats
 // live on the Stats tab, not here.
 
-import { h, ICONS, gameColours } from '../ui.js?v=202610241359';
-import { longDate, weekdayName, shortDate, ymd } from '../dates.js?v=202610241359';
-import { recentIndices } from '../games/common.js?v=202610241359';
-import { SOLVED, FAILED, PLAYED, PROGRESS, isDone } from '../status.js?v=202610241359';
-import { LEAF_PATH } from '../badges/icons.js?v=202610241359';
-import { playProps } from './play.js?v=202610241359';
-import { orderedGames } from '../gameOrder.js?v=202610241359';
-import { launchEd } from '../config.js?v=202610241359';
+import { h, ICONS, gameColours } from '../ui.js?v=202610242127';
+import { longDate, weekdayName, shortDate, ymd } from '../dates.js?v=202610242127';
+import { recentIndices } from '../games/common.js?v=202610242127';
+import { SOLVED, FAILED, PLAYED, PROGRESS, isDone } from '../status.js?v=202610242127';
+import { LEAF_PATH } from '../badges/icons.js?v=202610242127';
+import { playProps } from './play.js?v=202610242127';
+import { orderedGames } from '../gameOrder.js?v=202610242127';
+import { launchEd } from '../config.js?v=202610242127';
 
 const DEFAULT_CAPTION = {
   [SOLVED]: 'SOLVED',

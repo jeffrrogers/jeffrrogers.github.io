@@ -1,12 +1,12 @@
 // The Stats tab: a card per game; and each game's detail page. Badges have
 // their own tab (badgesView.js).
 
-import { h, ICONS } from '../ui.js?v=202610241359';
-import { badgeTiles } from './badgesView.js?v=202610241359';
-import { streakChip } from './gamesTab.js?v=202610241359';
-import { PROGRESS, isDone } from '../status.js?v=202610241359';
-import { playProps } from './play.js?v=202610241359';
-import { orderedGames } from '../gameOrder.js?v=202610241359';
+import { h, ICONS } from '../ui.js?v=202610242127';
+import { badgeTiles } from './badgesView.js?v=202610242127';
+import { streakChip } from './gamesTab.js?v=202610242127';
+import { PROGRESS, isDone } from '../status.js?v=202610242127';
+import { playProps } from './play.js?v=202610242127';
+import { orderedGames } from '../gameOrder.js?v=202610242127';
 
 function numbers(game, progress) {
   const p = progress;
