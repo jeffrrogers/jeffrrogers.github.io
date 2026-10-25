@@ -25825,8 +25825,8 @@ aO1(a,b,c){var s,r,q,p=new A.cx(""),o=a.c,n=a.b
 if(o!=null){n=n===B.aq?"Draw 1":"Draw 3"
 s=a.d
 s=s==null?"":" \xb7 "+s.glS()
-s="\ud83c\udf41 Canolitaire #"+A.k(o)+" \u2014 "+n+s
-o=s}else o="\ud83c\udf41 Canolitaire \u2014 "+(n===B.aq?"Draw 1":"Draw 3")
+s="\ud83c\udf41\ud83c\udccf Canolitaire "+A.k(o)+" \xb7 "+n+s
+o=s}else o="\ud83c\udf41\ud83c\udccf Canolitaire \xb7 "+(n===B.aq?"Draw 1":"Draw 3")
 p.a=o+"\n"
 o=A.b([],t.s)
 for(n=a.r,r=0;r<4;++r){s=A.aYN(B.ar[r])
@@ -25840,7 +25840,7 @@ n=A.cu(0,0,0,a.ay).a
 n=p.a=o+("\u23f1 "+(""+B.e.bL(n,6e7)+":"+B.c.dl(B.e.k(B.e.aL(B.e.bL(n,1e6),60)),2,"0"))+" \xb7 "+a.Q+" moves")
 o=a.as
 o=p.a=(o>0?p.a=n+(" \xb7 \u267b\ufe0f "+o):n)+"\n"
-o=p.a=(b&&c>1?p.a=o+("\ud83d\udd25 Streak "+c+"\n"):o)+"www.canucklegame.ca/canolitaire"
+o=p.a=(b&&c>1?p.a=o+("\ud83d\udd25 Streak: "+c+"\n"):o)+"www.canucklegame.ca/canolitaire/"
 return o.charCodeAt(0)==0?o:o},
 fL:function fL(a,b){this.a=a
 this.b=b},

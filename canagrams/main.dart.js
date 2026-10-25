@@ -8411,11 +8411,11 @@ for(s=q.length,r=0;r<s;++r){if(r>0&&B.e.aB(s-r,3)===0)p+=","
 p+=q[r]}return p.charCodeAt(0)==0?p:p},
 aAB(a,b){var s,r,q=A.KB(a.c),p=A.h8(a.b),o=a.d
 o=o===0?" \xb7 \ud83d\ude48 no hints":" \xb7 \ud83d\udca1 "+o
-s=A.b(["\ud83d\udd24 "+a.e+" words"],t.s)
+s=A.b(["\u2705 "+a.e+" words"],t.s)
 r=a.f
 if(r>0)s.push("\u2728 "+r+" bonus")
 if(b&&a.r>1)s.push("\ud83d\udd25 "+a.r)
-q="\ud83c\udf41 Canagrams #"+a.a+"\n"+("\u23f1 "+q+" \xb7 \u2b50 "+p+" pts")+o+"\n"+(B.b.az(s," \xb7 ")+"\n")+"www.canucklegame.ca/canagrams"
+q="\ud83c\udf41\ud83d\udd24 Canagrams "+a.a+"\n"+("\u23f1 "+q+" \xb7 \u2b50 "+p+" pts")+o+"\n"+(B.b.az(s," \xb7 ")+"\n")+"www.canucklegame.ca/canagrams/"
 return q.charCodeAt(0)==0?q:q},
 afM:function afM(a,b,c,d,e,f,g,h,i,j,k,l,m,n,o){var _=this
 _.a=a

@@ -8524,12 +8524,12 @@ lb(a){var s,r,q=B.e.k(Math.abs(a)),p=a<0?"-":""
 for(s=q.length,r=0;r<s;++r){if(r>0&&B.e.aA(s-r,3)===0)p+=","
 p+=q[r]}return p.charCodeAt(0)==0?p:p},
 aB1(a,b){var s,r,q=a.b===B.cU?"\ud83e\udde9 Mini ":"\ud83d\udd24 "
-q="\ud83c\udf41 Canoggle #"+a.a+"\n"+q+(""+a.c+"/"+a.d)
+q="\ud83c\udf41\ud83d\udd20 Canoggle "+a.a+"\n"+q+(""+a.c+"/"+a.d)
 s=a.r
 if(!s)q+=" (revealed)"
 r=a.e
 q=(r>0?q+(" \xb7 \u2b50 "+r+" bonus"):q)+"\n"
-q=(b&&s&&a.f>1?q+("\ud83d\udd25 Streak "+a.f+"\n"):q)+"www.canucklegame.ca/canoggle"
+q=(b&&s&&a.f>1?q+("\ud83d\udd25 Streak: "+a.f+"\n"):q)+"www.canucklegame.ca/canoggle/"
 return q.charCodeAt(0)==0?q:q},
 agh:function agh(a,b,c,d,e,f,g,h,i,j,k,l){var _=this
 _.a=a

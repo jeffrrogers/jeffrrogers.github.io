@@ -49692,17 +49692,18 @@ s=""+l+" hint"+r}l=n.a.c
 r=A.BF(m.a)
 q=A.i4(m.b)
 p=m.gv0()?"\n\u2b50 New best":""
-o=a&&n.gD6()?"\n\ud83d\udd25 "+n.a.c.fQ+"-day streak":""
-return"CANOKU #"+l.dM+" \ud83c\udf41\n"+r+" \xb7 "+q+" \xb7 "+s+p+o+"\nhttps://canoku.ca"},
-a9L(a){var s,r,q,p,o,n=this,m=A.a([],t.s)
+o=a&&n.gD6()?"\n\ud83d\udd25 Streak: "+n.a.c.fQ:""
+return"\ud83c\udf41\ud83e\udde9 Canoku "+l.dM+"\n"+r+" \xb7 "+q+" \xb7 "+s+p+o+"\nwww.canucklegame.ca/canoku/"},
+a9L(a){var s,r,q,p,o,n,m=this,l=A.a([],t.s)
 for(s=0;s<3;++s){r=B.bt[s]
 q=""+r
 p=A.iQ(r)
-m.push(q+"\xd7"+q+" "+new A.Z(p,new A.azT(n,r),A.Y(p).i("Z<1,e?>")).n4(0))}q=n.a.c
-p=n.gpX()
-m=B.b.aw(m,"\n")
-o=a&&n.gD6()?"\n\ud83d\udd25 "+n.a.c.fQ+"-day streak":""
-return"CANOKU #"+q.dM+" \xb7 "+p+"/15\n"+m+o+"\nhttps://canoku.ca"},
+l.push(q+"\xd7"+q+" "+new A.Z(p,new A.azT(m,r),A.Y(p).i("Z<1,e?>")).n4(0))}o=a&&m.gD6()?"\n\ud83d\udd25 Streak: "+m.a.c.fQ:""
+q=m.a.c
+p=m.gpX()
+l=B.b.aw(l,"\n")
+n=o.length===0?"":o+"\n"
+return"\ud83c\udf41\ud83e\udde9 Canoku "+q.dM+" \xb7 "+p+"/15\n\n"+l+"\n"+n+"\nwww.canucklegame.ca/canoku/"},
 xz(){var s=0,r=A.A(t.H),q,p=this,o
 var $async$xz=A.B(function(a,b){if(a===1)return A.x(b,r)
 for(;;)switch(s){case 0:s=3

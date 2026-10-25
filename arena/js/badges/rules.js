@@ -12,9 +12,9 @@
 // the count survives history scrolling out of the recent window. parts() is
 // the checklist behind a badge that needs several things at once.
 
-import { SOLVED, minEd, finishOn, num } from '../status.js?v=202610242238';
-import { todayEpochDay, weekdayName, shortDate } from '../dates.js?v=202610242238';
-import { LAUNCH_DATE } from '../config.js?v=202610242238';
+import { SOLVED, minEd, finishOn, num } from '../status.js?v=202610250011';
+import { todayEpochDay, weekdayName, shortDate } from '../dates.js?v=202610250011';
+import { LAUNCH_DATE } from '../config.js?v=202610250011';
 
 function finishDays(game, p) {
   return [...p.doneIdx].map((i) => finishOn(game, p, i));
@@ -96,13 +96,16 @@ const STREAK_LADDER = [
   { n: 1000, name: 'Immortal', tag: '#CanuckleImmortal', tier: 'platinum' },
 ];
 const LADDER_GAMES = new Set(['canuckle', 'duo']);
+/** Duo's shares carry the ladder's hashtags with Duo in them: #CanuckleDuoStar. */
+const ladderTag = (game, tag) => (game.id === 'duo' ? tag.replace('#Canuckle', '#CanuckleDuo') : tag);
 /** On a Roll (7 days) before the ladder: kept for those who earned it, earned by no one new. */
 const RETIRED_STREAK = { n: 7, name: 'On a Roll', tier: 'bronze' };
 
+/** Canuckle+'s streak badges, with the hashtags its share text tags a streak with. */
 const WEEKLY_STREAKS = [
-  { n: 4, name: 'Monthly Regular', tier: 'bronze' },
-  { n: 12, name: 'Season Pass', tier: 'silver' },
-  { n: 52, name: 'Full Year', tier: 'gold' },
+  { n: 4, name: 'Monthly Regular', tag: '#CanucklePlusMonthlyRegular', tier: 'bronze' },
+  { n: 12, name: 'Season Pass', tag: '#CanucklePlusSeasonPass', tier: 'silver' },
+  { n: 52, name: 'Full Year', tag: '#CanucklePlusFullYear', tier: 'gold' },
 ];
 const DAILY_TOTALS = [
   { n: 10, name: 'Getting Going', tier: 'bronze' },
@@ -254,7 +257,7 @@ function gameBadges(game) {
   const streak = (s, extra = {}) => ({
     id: `${game.id}.streak${s.n}`, game: game.id, name: s.name, glyph: 'flame', tier: s.tier,
     ...tierFamily(`${game.id}.streak`, 'Streak', [unit, `${unit}s`]),
-    desc: `Reach a ${s.n}-${unit} ${game.name} streak.`,
+    desc: `Reach a ${s.n}-${unit} ${game.name} streak.${s.tag ? ` Your shares now carry ${s.tag}.` : ''}`,
     check: (p) => [Math.min(p.maxStreak, s.n), s.n],
     since: (p) => streakReachedOn(game, p, s.n),
     // Each separate streak that reaches the length counts once.
@@ -268,9 +271,7 @@ function gameBadges(game) {
         list.push(streak(s, { retired: true, family: null }));
         continue;
       }
-      list.push(streak(s, {
-        ...(s.tag ? { desc: `Reach a ${s.n}-day ${game.name} streak. Your shares now carry ${s.tag}.` } : {}),
-      }));
+      list.push(streak(s.tag ? { ...s, tag: ladderTag(game, s.tag) } : s));
     }
   } else {
     for (const s of weekly ? WEEKLY_STREAKS : DAILY_STREAKS) list.push(streak(s));

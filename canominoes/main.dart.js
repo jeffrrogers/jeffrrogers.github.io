@@ -48362,8 +48362,8 @@ A.akc.prototype={
 BO(a){var s=this,r=s.e,q=s.f,p=A.d4(0,0,0,s.c).a,o=B.e.bL(p,6e7)
 p=B.c.da(B.e.k(B.e.aD(B.e.bL(p,1e6),60)),2,"0")
 q=q>0?" \xb7 \ud83d\udca1 "+q:""
-q="\ud83c\udf41 Canominoes #"+s.a+" \xb7 "+s.b.d+"\n"+("\u23f1 "+(""+o+":"+p)+" \xb7 "+s.d+" moves")+q+"\n"
-r=(a&&r>1?q+("\ud83d\udd25 Streak "+r+"\n"):q)+"www.canucklegame.ca/canominoes"
+q="\ud83c\udf41\ud83c\udfb2 Canominoes "+s.a+" \xb7 "+s.b.d+"\n"+("\u23f1 "+(""+o+":"+p)+" \xb7 "+s.d+" moves")+q+"\n"
+r=(a&&r>1?q+("\ud83d\udd25 Streak: "+r+"\n"):q)+"www.canucklegame.ca/canominoes/"
 return r.charCodeAt(0)==0?r:r}}
 A.xl.prototype={
 I(a){var s=null,r="ClearSans",q=a.X(t.h).f.a?B.u:B.t
