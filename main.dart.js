@@ -10282,12 +10282,13 @@ _.d=b
 _.e=c
 _.f=d
 _.a=e},
-ud:function ud(a,b,c,d,e){var _=this
+ud:function ud(a,b,c,d,e,f){var _=this
 _.c=a
 _.d=b
 _.e=c
 _.f=d
-_.a=e},
+_.r=e
+_.a=f},
 apQ:function apQ(){},
 Bv:function Bv(a,b){this.c=a
 this.a=b},
@@ -54445,8 +54446,8 @@ q=n.c
 q=q==null?o:q.a.toUpperCase()
 if(q==null)q=""
 return A.aS7(q,!1,o,r,n.b,n.a===B.dW,o)},
-V2(){var s=null,r=this.a.c
-return A.bk(A.a([A.jv(16,48,B.oH,"Share",s,r.as==null?s:new A.aGX(this),B.L1,"Share result",B.c6,s),B.c8,A.d_(new A.ud(r.gqn(),this.glW(),r.a===B.ht,!0,s),1)],t.p),B.o,B.m,B.n)},
+V2(){var s=this,r=null,q=s.a.c
+return A.bk(A.a([A.jv(16,48,B.oH,"Share",r,q.as==null?r:new A.aGX(s),B.L1,"Share result",B.c6,r),B.c8,A.d_(new A.ud(q.gqn(),s.glW(),q.a===B.ht,s.a.c.b,!0,r),1)],t.p),B.o,B.m,B.n)},
 yn(){return new A.vN(new A.aGS(),!0,0,null)},
 gPv(){var s,r=this.a.c
 if(r.d)r=Math.max(0,A.Nt(null)-120001+1)
@@ -54502,7 +54503,7 @@ n+=l*r[m]}q=B.d.a9(n/Math.max(1,B.b.mr(r,0,new A.aGY())),2)}k=B.b.mr(r,0,new A.a
 j=B.e.lR((k-r[6])*100,Math.max(1,k))
 i=e.glW().gvU()
 d=A.a([],t.p)
-if(e.a.c.gpL())d.push(new A.ud(e.a.c.gqn(),e.glW(),!1,!0,null))
+if(e.a.c.gpL())d.push(new A.ud(e.a.c.gqn(),e.glW(),!1,e.a.c.b,!0,null))
 h=A.MF(k)
 g=e.a.c
 d.push(new A.GM(A.a([new A.kB(h,"Played",!1),new A.kB(""+j,"Win %",!1),new A.kB(""+g.y,"Streak",!0),new A.kB(""+g.z,"Best streak",!1),new A.kB(q,"Avg guesses",!1)],t.Zi),null))
@@ -54535,7 +54536,7 @@ n.push(j.yn())
 n.push(B.iT)
 return n},
 ajO(){var s=this,r=null,q=A.a([s.Fy()],t.p)
-if(s.a.c.gpL())q.push(new A.ud(s.a.c.gqn(),s.glW(),!0,!1,r))
+if(s.a.c.gpL())q.push(new A.ud(s.a.c.gqn(),s.glW(),!0,!1,!1,r))
 q.push(A.jv(16,48,B.G6,"Play another",r,s.a.c.ay==null?r:new A.aGV(s),B.ev,"Play another practice game",B.c6,r))
 q.push(s.yn())
 q.push(B.iT)
@@ -54554,7 +54555,7 @@ case 1:s=m.gMu()
 r=k.$1(m.a8S())
 q=t.p
 p=A.a([],q)
-if(m.a.c.gpL())p.push(new A.ud(m.a.c.gqn(),m.glW(),!0,!0,l))
+if(m.a.c.gpL())p.push(new A.ud(m.a.c.gqn(),m.glW(),!0,!1,!0,l))
 p.push(m.Pu(!0))
 p.push(m.Pt())
 s=new A.H7(s,A.a([r,k.$1(p)],q),l)
@@ -55046,13 +55047,13 @@ m=p.e
 if(m==null)m="Finish "+p.c+" to reveal the word and a fun fact about it."
 return A.az(o,A.ba(A.a([q,B.bF,r,B.f0,A.aj(m,o,o,o,A.da(A.T($.I?4289242270:4284373847),1.45,14.5),B.aI,o)],t.p),B.o,B.m,B.n),B.k,o,o,new A.au(o,o,s,n,o,o,B.r),o,o,o,B.pG,o,o,1/0)}}
 A.ud.prototype={
-K(a){var s,r=this,q=null,p=A.da(A.T($.I?4289242270:4284373847),1.4,13),o=p.Jr($.I?B.f:B.q,B.a6),n=r.f?r.d.O5(r.c):"",m=r.c,l=m>0&&m!==r.d.ga_T(),k=r.d,j=B.b.mr(k.gvU(),0,new A.apQ())
+K(a){var s,r=this,q=null,p=A.da(A.T($.I?4289242270:4284373847),1.4,13),o=p.Jr($.I?B.f:B.q,B.a6),n=r.r?r.d.O5(r.c):"",m=r.c,l=m>0&&m!==r.d.ga_T(),k=r.d,j=B.b.mr(k.gvU(),0,new A.apQ())
 if(l)m=(k instanceof A.hq?"Solved both":"Solved")+" in "+m
 else m="Not solved this time"
 s=t.VO
 m=A.a([A.c3(q,q,q,q,q,q,q,q,q,o,m)],s)
 if(n.length!==0)m.push(A.c3(q,q,q,q,q,q,q,q,q,q," \xb7 "+n))
-if(j>0)B.b.C(m,A.a([A.c3(q,q,q,q,q,q,q,q,q,q,r.e?"\nPuzzle average: ":"\nToday's average: "),A.c3(q,q,q,q,q,q,q,q,q,o,k.gAu()+" guesses")],s))
+if(j>0)B.b.C(m,A.a([A.c3(q,q,q,q,q,q,q,q,q,q,r.e||r.f?"\nPuzzle average: ":"\nToday's average: "),A.c3(q,q,q,q,q,q,q,q,q,o,k.gAu()+" guesses")],s))
 return A.yB(A.c3(m,q,q,q,q,q,q,q,q,p,q),q,q,q,q)}}
 A.apQ.prototype={
 $2(a,b){return a+b},
