@@ -5,18 +5,17 @@
 // something inside Canuckle, plus the Ko-fi and social links Canuckle keeps in
 // its menu.
 
-import { h, ICONS, openSheet, sheetHead, toast } from '../ui.js?v=202610242127';
+import { h, ICONS, openSheet, sheetHead, toast } from '../ui.js?v=202610242238';
 import {
   ARENA_VERSION, IS_SANDBOX, sandboxOffsetWeeks, setSandboxOffsetWeeks, parseOffsetWeeks, offsetBannerText,
-} from '../config.js?v=202610242127';
-import { readPref, prefKeys, arenaSet } from '../local.js?v=202610242127';
-import { getDocData, setMerge } from '../firebase.js?v=202610242127';
-import { currentTheme, currentContrast, setTheme, setContrast } from '../theme.js?v=202610242127';
-import { ID_DOCS, isValidUserId, planIdSwitch, applyIdSwitch } from '../idSwitch.js?v=202610242127';
-import { track } from '../analytics.js?v=202610242127';
-import { openPrivacy } from '../privacy.js?v=202610242127';
-import { sortsByPlay, setSortByPlay } from '../gameOrder.js?v=202610242127';
-import { openGameOrder } from './gameOrderSheet.js?v=202610242127';
+} from '../config.js?v=202610242238';
+import { readPref, prefKeys, arenaSet } from '../local.js?v=202610242238';
+import { getDocData, setMerge } from '../firebase.js?v=202610242238';
+import { currentTheme, currentContrast, setTheme, setContrast } from '../theme.js?v=202610242238';
+import { ID_DOCS, isValidUserId, planIdSwitch, applyIdSwitch } from '../idSwitch.js?v=202610242238';
+import { track } from '../analytics.js?v=202610242238';
+import { openPrivacy } from '../privacy.js?v=202610242238';
+import { openGameOrder } from './gameOrderSheet.js?v=202610242238';
 
 const SUPPORT_EMAIL = 'info@canucklegame.ca';
 const KOFI_URL = 'https://ko-fi.com/canuckle';
@@ -416,10 +415,6 @@ function build(app, onTheme) {
         onTheme();
       }),
       toggleRow('High Contrast Mode', 'For improved colour vision', currentContrast(), (on) => setContrast(on)),
-      toggleRow('Sort by most played', 'Games you played most in the last 30 days come first', sortsByPlay(), (on) => {
-        setSortByPlay(on, app.order);
-        app.reorder();
-      }),
       h('button', { class: 'set-row link-row', type: 'button', onClick: () => openGameOrder(app, () => openSettings(app)) },
         h('span', { class: 'set-text' },
           h('span', { class: 'set-label', text: 'Game order' }),

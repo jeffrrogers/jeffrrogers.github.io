@@ -772,6 +772,8 @@ a.set-row:hover, button.set-row:hover { color: var(--text); background: rgba(127
 /* Settings › Game order */
 .order-note { margin: 0 4px; font-size: 14px; }
 .order-list { list-style: none; margin: 0; padding: 0; }
+.order-reset { align-self: center; }
+.order-reset[hidden] { display: none; }
 .order-row { gap: 10px; }
 .order-row .grow { flex: 1; min-width: 0; }
 .order-logo { width: 32px; height: 32px; flex: none; }
