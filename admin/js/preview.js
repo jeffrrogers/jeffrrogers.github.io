@@ -7,7 +7,7 @@
 //   colours         lib/colors.dart, styles lib/ui/text_styles.dart
 // Sizes and colours live in css/admin.css under .pv.
 
-import { h, safeHref } from './ui.js?v=202610252240';
+import { h, safeHref } from './ui.js?v=202610261618';
 
 const LEAF = 'M50 5L57 19L64 15L61 38L72 27L75 34L86 32L82 45L90 49L70 64L73 73L53 70L53 92L47 92L47 70L27 73L30 64L10 49L18 45L14 32L25 34L28 27L39 38L36 15L43 19Z';
 const SVG_NS = 'http://www.w3.org/2000/svg';
@@ -72,13 +72,33 @@ export function factSpans(fact = [], factUrls = []) {
  * kind: 'canuckle' | 'plus' | 'duo'. trailing: optional element at the right
  * of the header (Duo's answer switch).
  */
-export function factCard({ kind, answer, fact, factUrls, trailing = null }) {
+export function factCard({ kind, answer, fact, factUrls, trailing = null, footer = null }) {
   return h('div', { class: `pv-fact pv-${kind}` },
     h('div', { class: 'pv-fact-head' },
       h('span', { class: 'pv-leaf' }, mapleLeaf()),
       h('span', { class: 'pv-label' }, `FUN FACT ABOUT ${answer || '?????'}`),
       trailing),
-    h('div', { class: 'pv-body' }, fact?.length ? factSpans(fact, factUrls) : h('em', { class: 'pv-none' }, 'No fun fact — the game shows no card.')));
+    h('div', { class: 'pv-body' }, fact?.length ? factSpans(fact, factUrls) : h('em', { class: 'pv-none' }, 'No fun fact — the game shows no card.')),
+    footer);
+}
+
+/**
+ * The poll under the fact (lib/ui/fact_poll.dart), as a player sees it
+ * before voting. [poll] is the editor shape from polls.js.
+ */
+export function pollBlock(poll) {
+  if (!poll) return null;
+  const marker = poll.multi ? 'pv-mark pv-mark-multi' : 'pv-mark';
+  const hint = !poll.multi ? '' : poll.maxPicks ? `Pick up to ${poll.maxPicks}` : 'Pick all that apply';
+  return h('div', { class: 'pv-poll' },
+    h('div', { class: 'pv-poll-q' }, poll.question.trim() || h('em', { class: 'pv-none' }, 'Question')),
+    hint ? h('div', { class: 'pv-poll-hint' }, hint) : null,
+    poll.options.map((text) => h('div', { class: 'pv-poll-opt' },
+      h('span', { class: marker }),
+      h('span', {}, text.trim() || h('em', { class: 'pv-none' }, 'Answer')))),
+    h('div', { class: 'pv-poll-foot' },
+      h('span', {}, 'Vote to see how everyone answered'),
+      h('span', { class: 'pv-poll-submit' }, 'Submit')));
 }
 
 /** Duo's mini switch between the two answers. */

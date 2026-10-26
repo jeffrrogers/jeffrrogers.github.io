@@ -9,19 +9,19 @@
 // wrong on Canagrams. Giving a day its own fact writes canagramsGameData/{day};
 // the game shows that instead, and the Canuckle fact otherwise.
 
-import { h, clear, modal, toast, issues, safeHref } from '../ui.js?v=202610252240';
-import { GAME_SITES } from '../config.js?v=202610252240';
-import { longDate, todayEpochDay } from '../dates.js?v=202610252240';
-import { sdk } from '../firebase.js?v=202610252240';
-import { launchEd } from '../launch.js?v=202610252240';
+import { h, clear, modal, toast, issues, safeHref } from '../ui.js?v=202610261618';
+import { GAME_SITES } from '../config.js?v=202610261618';
+import { longDate, todayEpochDay } from '../dates.js?v=202610261618';
+import { sdk } from '../firebase.js?v=202610261618';
+import { launchEd } from '../launch.js?v=202610261618';
 import {
   RUNGS, unpackCanagrams, gridRows, rungOf, summarizePlayers,
-} from '../canagrams.js?v=202610252240';
+} from '../canagrams.js?v=202610261618';
 import {
   segmentsToText, textToSegments, canagramsFactOf, canagramsFactToSave, looksDateBound,
-} from '../facts.js?v=202610252240';
-import { loadCanagramsFacts, saveCanagramsFact } from '../store.js?v=202610252240';
-import { factCard, previewFrame } from '../preview.js?v=202610252240';
+} from '../facts.js?v=202610261618';
+import { loadCanagramsFacts, saveCanagramsFact } from '../store.js?v=202610261618';
+import { factCard, previewFrame } from '../preview.js?v=202610261618';
 
 const START_ED = launchEd('canagrams');
 const DATA = 'canagrams/assets/assets/data/';

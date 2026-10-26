@@ -2,10 +2,10 @@
 // against the builds this site is actually serving, then publish them all in
 // one logged write. The rules are in ../versions.js.
 
-import { h, clear, modal, toast, issues } from '../ui.js?v=202610252240';
-import { VERSION_DOCS, normalizeVersion, servedVersion, planVersionChanges } from '../versions.js?v=202610252240';
-import { loadGameVersions, publishGameVersions } from '../store.js?v=202610252240';
-import { IS_LOCAL, IS_SANDBOX, SITE_LABEL } from '../config.js?v=202610252240';
+import { h, clear, modal, toast, issues } from '../ui.js?v=202610261618';
+import { VERSION_DOCS, normalizeVersion, servedVersion, planVersionChanges } from '../versions.js?v=202610261618';
+import { loadGameVersions, publishGameVersions } from '../store.js?v=202610261618';
+import { IS_LOCAL, IS_SANDBOX, SITE_LABEL } from '../config.js?v=202610261618';
 
 // Each game's version.json on THIS site: production checks production and the
 // sandbox checks the sandbox. Local dev has no builds, so it reads the sandbox

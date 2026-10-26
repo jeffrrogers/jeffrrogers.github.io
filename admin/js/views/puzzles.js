@@ -1,17 +1,20 @@
 // Canuckle and Canuckle+ tabs: the puzzle table, the editor (edit or add) and
 // swapping two puzzles.
 
-import { h, clear, modal, toast, issues, availabilityGate } from '../ui.js?v=202610252240';
+import { h, clear, modal, toast, issues, availabilityGate } from '../ui.js?v=202610261618';
 import {
   GAMES, longDate, todayIndex, isAvailable, puzzlesAfterToday, nextIndex, missingIndices, parseIndex,
-} from '../dates.js?v=202610252240';
-import { encodeAnswer } from '../codec.js?v=202610252240';
-import { segmentsToText, textToSegments, plainFact, duoFactOf } from '../facts.js?v=202610252240';
-import { validatePuzzle, puzzleFlags } from '../validate.js?v=202610252240';
-import { swapPayload } from '../swap.js?v=202610252240';
-import { savePuzzle, swapPuzzles } from '../store.js?v=202610252240';
-import { ctx, loadGame, answerUses, duoUses, wordsFor, maxIndex, availabilityMessages } from '../context.js?v=202610252240';
-import { factCard, previewFrame } from '../preview.js?v=202610252240';
+} from '../dates.js?v=202610261618';
+import { encodeAnswer } from '../codec.js?v=202610261618';
+import { segmentsToText, textToSegments, plainFact, duoFactOf } from '../facts.js?v=202610261618';
+import { validatePuzzle, puzzleFlags } from '../validate.js?v=202610261618';
+import { swapPayload } from '../swap.js?v=202610261618';
+import { savePuzzle, swapPuzzles, loadPollVotes } from '../store.js?v=202610261618';
+import { ctx, loadGame, answerUses, duoUses, wordsFor, maxIndex, availabilityMessages } from '../context.js?v=202610261618';
+import { factCard, previewFrame, pollBlock } from '../preview.js?v=202610261618';
+import {
+  pollOf, votesOf, resultsLine, pollToSave, validatePoll, POLL_KEYS, MIN_ANSWERS, MAX_ANSWERS,
+} from '../polls.js?v=202610261618';
 
 const PAGE = 150;
 const RUNWAY_WARN_DAYS = 30;
@@ -34,6 +37,7 @@ export function renderPuzzles(root, gameId, rerender) {
     if (st.filter === 'future' && isAvailable(gameId, p.index)) return false;
     if (st.filter === 'available' && !isAvailable(gameId, p.index)) return false;
     if (st.filter === 'flagged' && !flagsOf(p).length) return false;
+    if (st.filter === 'poll' && !p.data.poll) return false;
     if (!q) return true;
     return String(p.index) === q
       || g.label(p.index).toLowerCase() === q
@@ -62,7 +66,7 @@ export function renderPuzzles(root, gameId, rerender) {
     oninput: (e) => { st.q = e.target.value; st.shown = PAGE; st.refocus = true; rerender(); },
   });
   const filter = h('select', { onchange: (e) => { st.filter = e.target.value; st.shown = PAGE; rerender(); } },
-    [['all', 'All'], ['future', 'Future only'], ['available', 'Available to players'], ['flagged', 'Flagged']]
+    [['all', 'All'], ['future', 'Future only'], ['available', 'Available to players'], ['flagged', 'Flagged'], ['poll', 'With a poll']]
       .map(([v, l]) => h('option', { value: v, selected: st.filter === v }, l)));
 
   clear(root,
@@ -94,7 +98,7 @@ export function renderPuzzles(root, gameId, rerender) {
           h('td', { class: 'num' }, g.label(p.index)),
           h('td', { class: 'nowrap' }, longDate(p.ed), p.index === today ? h('span', { class: 'pill' }, 'Today') : null),
           h('td', { class: 'answer' }, p.answer || '—'),
-          h('td', { class: 'fact' }, plainFact(p.fact)),
+          h('td', { class: 'fact' }, p.data.poll ? h('span', { class: 'pill' }, 'Poll') : null, plainFact(p.fact)),
           h('td', { class: 'num' }, plays || ''),
           h('td', {}, flags.map((f) => h('span', { class: 'flag' }, f))));
         })))),
@@ -134,9 +138,105 @@ export async function openEditor(gameId, index, rerender, { add = index == null 
       const segs = text === originalText ? { fact: original.fact, factUrls: original.factUrls } : textToSegments(text);
       return { answer: answer.value.trim().toUpperCase(), ...segs };
     };
+
+    // ---- Fun fact poll ----
+    // Votes decide what may change: until they've been checked, and once
+    // anyone has voted, only the wording can be edited.
+    const originalPoll = pollOf(existing?.data);
+    let poll = originalPoll ? structuredClone(originalPoll) : null;
+    let votes = null;
+    let votesState = originalPoll ? 'loading' : 'none';
+    const pollSlot = h('div');
+    const locked = () => votesState === 'loading' || votesState === 'error' || (votes?.voters || 0) > 0;
+    const lockVoters = () => (locked() ? Math.max(1, votes?.voters || 0) : 0);
+    if (originalPoll) {
+      loadPollVotes(gameId, target)
+        .then((d) => { votes = votesOf(d); votesState = 'ok'; })
+        .catch(() => { votesState = 'error'; })
+        .finally(() => { renderPoll(); update(); });
+    }
+
+    function renderPoll() {
+      if (!poll) {
+        clear(pollSlot, h('div', { class: 'poll-editor' },
+          h('p', { class: 'muted small' }, 'A poll shows under the fun fact once a player finishes the puzzle.'),
+          h('button', {
+            class: 'btn',
+            onclick: () => {
+              poll = { question: '', multi: false, maxPicks: null, options: ['', ''] };
+              renderPoll();
+              update();
+            },
+          }, 'Add a poll')));
+        return;
+      }
+      const isLocked = locked();
+      const restructure = (fn) => () => { fn(); renderPoll(); update(); };
+      const question = h('input', {
+        type: 'text', value: poll.question, maxLength: 200, placeholder: 'Question',
+        oninput: (e) => { poll.question = e.target.value; update(); },
+      });
+      const type = h('select', {
+        disabled: isLocked,
+        onchange: restructure(() => {
+          poll.multi = type.value === 'multi';
+          if (!poll.multi) poll.maxPicks = null;
+        }),
+      }, [['single', 'Single choice'], ['multi', 'Multi-select']]
+        .map(([v, l]) => h('option', { value: v, selected: (poll.multi ? 'multi' : 'single') === v }, l)));
+      const n = poll.options.length;
+      const maxPicks = poll.multi ? h('select', {
+        disabled: isLocked,
+        onchange: restructure(() => { poll.maxPicks = maxPicks.value === 'any' ? null : Number(maxPicks.value); }),
+      }, [['any', 'Any number'], ...Array.from({ length: Math.max(0, n - 1) }, (_, i) => [String(i + 1), `Up to ${i + 1}`])]
+        .map(([v, l]) => h('option', { value: v, selected: String(poll.maxPicks ?? 'any') === v }, l))) : null;
+
+      const move = (i, d) => restructure(() => {
+        const [o] = poll.options.splice(i, 1);
+        poll.options.splice(i + d, 0, o);
+      });
+      const answers = poll.options.map((text, i) => h('div', { class: 'poll-row' },
+        h('span', { class: 'muted small' }, POLL_KEYS[i].toUpperCase()),
+        h('input', {
+          type: 'text', value: text, maxLength: 80, placeholder: `Answer ${i + 1}`,
+          oninput: (e) => { poll.options[i] = e.target.value; update(); },
+        }),
+        isLocked ? null : [
+          h('button', { class: 'btn small ghost', title: 'Move up', disabled: i === 0, onclick: move(i, -1) }, '↑'),
+          h('button', { class: 'btn small ghost', title: 'Move down', disabled: i === n - 1, onclick: move(i, 1) }, '↓'),
+          h('button', {
+            class: 'btn small ghost', title: 'Remove this answer', disabled: n <= MIN_ANSWERS,
+            onclick: restructure(() => {
+              poll.options.splice(i, 1);
+              if (poll.maxPicks != null && poll.maxPicks >= poll.options.length) poll.maxPicks = null;
+            }),
+          }, '✕'),
+        ]));
+
+      const status = votesState === 'loading' ? 'Checking for votes…'
+        : votesState === 'error' ? "Couldn't check for votes, so only the wording can be edited. Reopen to try again."
+          : votes?.voters ? [
+            `${votes.voters} ${votes.voters === 1 ? 'player has' : 'players have'} voted, so only the wording can change now. `,
+            h('br'), `Results: ${resultsLine(originalPoll, votes)}`]
+            : originalPoll ? 'No votes yet.' : null;
+
+      clear(pollSlot, h('div', { class: 'poll-editor' },
+        h('label', { class: 'field' }, h('span', {}, 'Poll question'), question),
+        h('div', { class: 'poll-type' },
+          h('label', {}, 'Type ', type),
+          maxPicks ? h('label', {}, 'Players pick ', maxPicks) : null),
+        answers,
+        h('div', { class: 'actions' },
+          !isLocked && n < MAX_ANSWERS
+            ? h('button', { class: 'btn small', onclick: restructure(() => poll.options.push('')) }, 'Add answer') : null,
+          !isLocked
+            ? h('button', { class: 'btn small ghost', onclick: restructure(() => { poll = null; }) }, 'Remove poll') : null),
+        status ? h('p', { class: 'muted small' }, status) : null));
+    }
+
     const pv = previewFrame(() => {
       const c = current();
-      return factCard({ kind: gameId, answer: c.answer, fact: c.fact, factUrls: c.factUrls });
+      return factCard({ kind: gameId, answer: c.answer, fact: c.fact, factUrls: c.factUrls, footer: pollBlock(poll) });
     });
     const gate = availabilityGate(availabilityMessages(gameId, [target]), () => update());
     if (gate.el) gateSlot.append(gate.el);
@@ -144,10 +244,15 @@ export async function openEditor(gameId, index, rerender, { add = index == null 
     let result = { errors: [], warnings: [] };
     function update() {
       const c = current();
-      result = validatePuzzle({ gameId, index: target, docId: String(target), ...c },
+      const puzzle = validatePuzzle({ gameId, index: target, docId: String(target), ...c },
         { words: wordsFor(gameId), answerUses: answerUses(gameId) });
+      const pollCheck = validatePoll(poll, { original: originalPoll, voters: lockVoters() });
+      result = {
+        errors: [...puzzle.errors, ...pollCheck.errors],
+        warnings: [...puzzle.warnings, ...pollCheck.warnings],
+      };
       clear(problems, issues(result));
-      save.disabled = result.errors.length > 0 || !gate.ok();
+      save.disabled = result.errors.length > 0 || !gate.ok() || votesState === 'loading';
       pv.refresh();
     }
     answer.addEventListener('input', update);
@@ -159,6 +264,8 @@ export async function openEditor(gameId, index, rerender, { add = index == null 
         answer: encodeAnswer(c.answer, { upper: ctx.upper[gameId] }),
         fact: c.fact,
         factUrls: c.factUrls,
+        // undefined drops a removed poll from the doc (store.js clean)
+        poll: pollToSave(poll) ?? undefined,
       };
       if (!isNew && c.answer === original.answer) delete changes.answer; // keep the stored encoding
       if (isNew) changes.distribution = Object.fromEntries(g.distKeys.map((k) => [k, 0]));
@@ -172,6 +279,7 @@ export async function openEditor(gameId, index, rerender, { add = index == null 
       }
     });
 
+    renderPoll();
     update();
     const dist = existing?.data.distribution;
     // Duo days showing their own version of this fact won't pick up edits here
@@ -188,6 +296,7 @@ export async function openEditor(gameId, index, rerender, { add = index == null 
           `Duo ${duoOwn.map(GAMES.duo.label).join(', ')} ${duoOwn.length > 1 ? 'have their' : 'has its'} own version of this fact; editing it here won't change ${duoOwn.length > 1 ? 'those' : 'that'}.`) : null,
         dist ? h('p', { class: 'muted small' }, 'Results so far: ',
           g.distKeys.map((k) => `${k} ${dist[k] ?? 0}`).join(' · ')) : null,
+        h('div', { class: 'field' }, h('span', {}, 'Poll'), pollSlot),
         problems,
         gateSlot,
         h('div', { class: 'actions' }, h('button', { class: 'btn', onclick: () => close(false) }, 'Cancel'), save)),
@@ -295,8 +404,16 @@ export async function openSwap(gameId, rerender) {
           if (own.length) warnings.push(`Duo ${own.map(GAMES.duo.label).join(', ')} ${own.length > 1 ? 'have their' : 'has its'} own fact for #${i}, which stays with #${i} and would describe the old word. Reset or rewrite it after swapping.`);
         }
       }
-      notes.append(h('p', { class: 'small' }, 'The answer, fun fact and results move together; the dates stay put.'));
+      notes.append(h('p', { class: 'small' }, 'The answer, fun fact, poll and results move together; the dates stay put.'));
       if (warnings.length) notes.append(issues({ warnings }));
+      // A poll's votes are kept by puzzle number, so they can't move with it
+      const voted = [[a, pa], [b, pb]].filter(([i, p]) => p.data.poll && isAvailable(gameId, i));
+      if (voted.length) {
+        notes.append(issues({
+          errors: voted.map(([i]) => `${g.label(i)} has a poll players can already vote on. Its votes stay with ${g.label(i)}, so it can't be swapped.`),
+        }));
+        return;
+      }
       gate = availabilityGate(availabilityMessages(gameId, [a, b]), () => { go.disabled = !gate.ok(); });
       if (gate.el) notes.append(gate.el);
       go.disabled = !gate.ok();

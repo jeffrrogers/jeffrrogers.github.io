@@ -7,9 +7,9 @@
 //   todayIndex(ed)     today's puzzle index
 //   step               days per puzzle (1 daily, 7 weekly)
 
-import { readPref } from '../local.js?v=202610250011';
-import { epochDay } from '../dates.js?v=202610250011';
-import { launchEd } from '../config.js?v=202610250011';
+import { readPref } from '../local.js?v=202610261618';
+import { epochDay } from '../dates.js?v=202610261618';
+import { launchEd } from '../config.js?v=202610261618';
 
 /** A game whose puzzle #1 is on [start] (y, m, d) and changes each day. */
 export function daily(y, m, d) {

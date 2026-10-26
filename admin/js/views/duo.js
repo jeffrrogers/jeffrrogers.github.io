@@ -3,13 +3,13 @@
 // facts) and importing a schedule JSON
 // (canuckleSourceCode/tool/duo_schedule_year1.json).
 
-import { h, clear, modal, toast, issues, availabilityGate } from '../ui.js?v=202610252240';
-import { segmentsToText, textToSegments, sameFact, duoFactOf, duoFactsToSave } from '../facts.js?v=202610252240';
-import { GAMES, longDate, todayIndex, isAvailable, puzzlesAfterToday, nextIndex } from '../dates.js?v=202610252240';
-import { validateDuo } from '../validate.js?v=202610252240';
-import { savePuzzle, importDuo } from '../store.js?v=202610252240';
-import { ctx, loadGame, duoUses, maxIndex, availabilityMessages } from '../context.js?v=202610252240';
-import { factCard, badgeChip, miniSwitch, previewFrame } from '../preview.js?v=202610252240';
+import { h, clear, modal, toast, issues, availabilityGate } from '../ui.js?v=202610261618';
+import { segmentsToText, textToSegments, sameFact, duoFactOf, duoFactsToSave } from '../facts.js?v=202610261618';
+import { GAMES, longDate, todayIndex, isAvailable, puzzlesAfterToday, nextIndex } from '../dates.js?v=202610261618';
+import { validateDuo } from '../validate.js?v=202610261618';
+import { savePuzzle, importDuo } from '../store.js?v=202610261618';
+import { ctx, loadGame, duoUses, maxIndex, availabilityMessages } from '../context.js?v=202610261618';
+import { factCard, badgeChip, miniSwitch, previewFrame } from '../preview.js?v=202610261618';
 
 const PAGE = 150;
 const st = { q: '', filter: 'all', shown: PAGE, refocus: false };

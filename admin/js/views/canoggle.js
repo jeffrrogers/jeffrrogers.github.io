@@ -11,16 +11,16 @@
 // canoggleGameData/{day}'s `facts` map under the board's key (d or m); the game
 // shows that instead, and the Canuckle fact otherwise.
 
-import { h, clear, modal, toast, issues, safeHref } from '../ui.js?v=202610252240';
-import { GAME_SITES } from '../config.js?v=202610252240';
-import { longDate, todayEpochDay } from '../dates.js?v=202610252240';
-import { launchEd } from '../launch.js?v=202610252240';
-import { unpackCanoggle, boardRows } from '../canoggle.js?v=202610252240';
+import { h, clear, modal, toast, issues, safeHref } from '../ui.js?v=202610261618';
+import { GAME_SITES } from '../config.js?v=202610261618';
+import { longDate, todayEpochDay } from '../dates.js?v=202610261618';
+import { launchEd } from '../launch.js?v=202610261618';
+import { unpackCanoggle, boardRows } from '../canoggle.js?v=202610261618';
 import {
   segmentsToText, textToSegments, canoggleFactOf, canagramsFactToSave, looksDateBound,
-} from '../facts.js?v=202610252240';
-import { loadCanoggleFacts, saveCanoggleFact, CANOGGLE_BOARDS } from '../store.js?v=202610252240';
-import { factCard, previewFrame } from '../preview.js?v=202610252240';
+} from '../facts.js?v=202610261618';
+import { loadCanoggleFacts, saveCanoggleFact, CANOGGLE_BOARDS } from '../store.js?v=202610261618';
+import { factCard, previewFrame } from '../preview.js?v=202610261618';
 
 const START_ED = launchEd('canoggle');
 const DATA = 'canoggle/assets/assets/data/';

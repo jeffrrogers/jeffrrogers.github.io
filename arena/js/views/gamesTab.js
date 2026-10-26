@@ -3,14 +3,14 @@
 // previous seven, and a way into the archive at the end. Streaks and stats
 // live on the Stats tab, not here.
 
-import { h, ICONS, gameColours } from '../ui.js?v=202610250011';
-import { longDate, weekdayName, shortDate, ymd } from '../dates.js?v=202610250011';
-import { recentIndices } from '../games/common.js?v=202610250011';
-import { SOLVED, FAILED, PLAYED, PROGRESS, isDone } from '../status.js?v=202610250011';
-import { LEAF_PATH } from '../badges/icons.js?v=202610250011';
-import { playProps } from './play.js?v=202610250011';
-import { orderedGames } from '../gameOrder.js?v=202610250011';
-import { launchEd } from '../config.js?v=202610250011';
+import { h, ICONS, gameColours } from '../ui.js?v=202610261618';
+import { longDate, weekdayName, shortDate, ymd } from '../dates.js?v=202610261618';
+import { recentIndices } from '../games/common.js?v=202610261618';
+import { SOLVED, FAILED, PLAYED, PROGRESS, isDone } from '../status.js?v=202610261618';
+import { LEAF_PATH } from '../badges/icons.js?v=202610261618';
+import { playProps } from './play.js?v=202610261618';
+import { orderedGames } from '../gameOrder.js?v=202610261618';
+import { launchEd } from '../config.js?v=202610261618';
 
 const DEFAULT_CAPTION = {
   [SOLVED]: 'SOLVED',
@@ -174,7 +174,7 @@ if (typeof window !== 'undefined') {
   });
 }
 
-/** "Launches Thu Nov 12" for a game not out yet, or null if it is. */
+/** "Launches Thu Nov 5" for a game not out yet, or null if it is. */
 export function launchLabel(game, todayEd) {
   const ed = launchEd(game.id);
   return ed != null && todayEd < ed ? `Launches ${weekdayName(ed)} ${shortDate(ed)}` : null;
