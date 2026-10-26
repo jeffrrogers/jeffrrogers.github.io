@@ -29,9 +29,9 @@ export function clear(el, ...children) {
   return el;
 }
 
-/** Only web links become hrefs; anything else (javascript:, data:) does not. */
+/** Only web and mailto: links become hrefs; anything else (javascript:, data:) does not. */
 export function safeHref(url) {
-  return /^https?:\/\//i.test(url || '') ? url : null;
+  return /^(https?:\/\/|mailto:)/i.test(url || '') ? url : null;
 }
 
 /**

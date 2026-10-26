@@ -1,14 +1,17 @@
 // Checks before a puzzle is saved, and the flags shown in the tables.
 // Errors block saving; warnings are shown and can be saved past.
 
-import { GAMES } from './dates.js?v=202610222250';
-import { duoFactOf } from './facts.js?v=202610222250';
+import { GAMES } from './dates.js?v=202610252240';
+import { duoFactOf } from './facts.js?v=202610252240';
 
 // How recent a Canuckle puzzle may be and still be reused in Duo
 // (canuckleSourceCode/tool/generate_duo_schedule.dart excludeRecent).
 export const DUO_RECENT_GAP = 60;
 
 const WORD = /^[A-Za-z]+$/;
+// A fact link Canuckle can open: a web address, or mailto: and an email address
+// (words.dart hands the link to the browser as is).
+const FACT_LINK = /^(https?:\/\/\S+|mailto:[^\s@]+@[^\s@]+\.[^\s@]+)$/i;
 
 /**
  * @param p {gameId, index, docId, answer (plain), fact[], factUrls[]}
@@ -35,7 +38,7 @@ export function validatePuzzle(p, ctx = {}) {
   if (fact.length === 0 || !fact.join('').trim()) warnings.push('No fun fact; the game will show none.');
   if (fact.length !== urls.length) errors.push('Fact text and links are out of step.');
   for (const u of urls) {
-    if (u && !/^https?:\/\/\S+$/i.test(u)) errors.push(`Link is not a web address: ${u}`);
+    if (u && !FACT_LINK.test(u)) errors.push(`Link is not a web or mailto: address: ${u}`);
   }
 
   const uses = (ctx.answerUses?.get(answer) || []).filter((i) => i !== p.index);
@@ -77,7 +80,7 @@ export function validateDuo(d, ctx = {}) {
     if (own) {
       if (own.fact.length !== own.factUrls.length) errors.push(`The Duo fact for #${i} has text and links out of step.`);
       for (const u of own.factUrls) {
-        if (u && !/^https?:\/\/\S+$/i.test(u)) errors.push(`Link in the Duo fact for #${i} is not a web address: ${u}`);
+        if (u && !FACT_LINK.test(u)) errors.push(`Link in the Duo fact for #${i} is not a web or mailto: address: ${u}`);
       }
     } else if (p.answer && !(p.fact || []).join('').trim()) warnings.push(`Canuckle #${i} has no fun fact.`);
   }
