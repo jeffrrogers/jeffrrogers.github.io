@@ -8,7 +8,7 @@
 // (index 60001). Duo is daily from its launch date (index 120001; see launch.js,
 // moved earlier on the sandbox).
 
-import { launchEd } from './launch.js?v=202610261618';
+import { launchEd } from './launch.js?v=202610262044';
 
 const MS_PER_DAY = 86400000;
 
@@ -103,6 +103,35 @@ export function todayIndex(gameId, todayEd = todayEpochDay()) {
  */
 export function isAvailable(gameId, index, todayEd = todayEpochDay()) {
   return GAMES[gameId].edForIndex(index) <= todayEd + 1;
+}
+
+// The furthest-ahead time zone (Kiribati, UTC+14).
+const AHEAD_MS = 14 * 3600000;
+
+/** The calendar day it already is somewhere on Earth (UTC+14), as an epoch day. */
+export function aheadEpochDay(now = new Date()) {
+  return Math.floor((now.getTime() + AHEAD_MS) / MS_PER_DAY);
+}
+
+/**
+ * The highest day number whose featured word may no longer be swapped: every
+ * day that has been played or could be in play anywhere, on production's
+ * dates. Null before the game's launch, when every day may be swapped.
+ * [gameId] is 'duo' (numbered from 120001) or a daily game from launch.js
+ * (numbered from 1). The sandbox offset is ignored on purpose: testers' days
+ * don't lock anything.
+ */
+export function swapLockedThrough(gameId, now = new Date()) {
+  const start = launchEd(gameId, 0);
+  const ahead = aheadEpochDay(now);
+  if (ahead < start) return null;
+  const first = gameId === 'duo' ? GAMES.duo.firstIndex : 1;
+  return first + ahead - start;
+}
+
+export function isSwapLocked(gameId, index, now = new Date()) {
+  const through = swapLockedThrough(gameId, now);
+  return through != null && index <= through;
 }
 
 /**

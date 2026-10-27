@@ -2,25 +2,32 @@
 // files, and each board's fun fact.
 //
 // Canoggle's puzzles are built offline and shipped inside the game
-// (squaredleSourceCode/tools/generate_dailies.dart): to change or extend the
-// calendar, regenerate it in the game project. What CAN be edited here is the
-// fun fact. Every day has two boards, the Daily and the Mini, each built around
+// (squaredleSourceCode/tools/generate_dailies.dart): to extend the calendar,
+// regenerate it in the game project. A board's featured Canuckle word can be
+// swapped here (views/boardSwap.js), which rebuilds the boards involved in
+// the browser and rewrites their shards in the Arena folder. The fun fact
+// can be edited too. Every day has two boards, the Daily and the Mini, each built around
 // its own Canuckle word, and each shows the Canuckle fact for that word, copied
 // from the recap without the date it ran -- so a fact like "Today is Election
 // Day!" is wrong on Canoggle. Giving a board its own fact writes it into
 // canoggleGameData/{day}'s `facts` map under the board's key (d or m); the game
 // shows that instead, and the Canuckle fact otherwise.
 
-import { h, clear, modal, toast, issues, safeHref } from '../ui.js?v=202610261618';
-import { GAME_SITES } from '../config.js?v=202610261618';
-import { longDate, todayEpochDay } from '../dates.js?v=202610261618';
-import { launchEd } from '../launch.js?v=202610261618';
-import { unpackCanoggle, boardRows } from '../canoggle.js?v=202610261618';
+import { h, clear, modal, toast, issues, safeHref } from '../ui.js?v=202610262044';
+import { GAME_SITES } from '../config.js?v=202610262044';
+import { longDate, todayEpochDay, isSwapLocked } from '../dates.js?v=202610262044';
+import { launchEd } from '../launch.js?v=202610262044';
+import { unpackCanoggle, boardRows } from '../canoggle.js?v=202610262044';
 import {
   segmentsToText, textToSegments, canoggleFactOf, canagramsFactToSave, looksDateBound,
-} from '../facts.js?v=202610261618';
-import { loadCanoggleFacts, saveCanoggleFact, CANOGGLE_BOARDS } from '../store.js?v=202610261618';
-import { factCard, previewFrame } from '../preview.js?v=202610261618';
+} from '../facts.js?v=202610262044';
+import {
+  loadCanoggleFacts, saveCanoggleFact, CANOGGLE_BOARDS, CANOGGLE_FACTS, withCanoggleFact,
+} from '../store.js?v=202610262044';
+import { factCard, previewFrame } from '../preview.js?v=202610262044';
+import { arenaFolder } from '../localFiles.js?v=202610262044';
+import { loadLocal } from '../swapFlow.js?v=202610262044';
+import { swapCard, openBoardSwap } from './boardSwap.js?v=202610262044';
 
 const START_ED = launchEd('canoggle');
 const DATA = 'canoggle/assets/assets/data/';
@@ -46,7 +53,45 @@ async function fetchJson(site, path) {
   return res.json();
 }
 
+// The board list the tab shows, from the index and shards.
+function boardsOf(shards) {
+  const boards = [];
+  for (const shard of shards) {
+    for (let k = 0; k < shard.days; k++) {
+      for (const board of Object.keys(CANOGGLE_BOARDS)) {
+        const line = shard[board]?.[k];
+        boards.push({ day: shard.start + k, board, p: line == null ? null : unpackCanoggle(line) });
+      }
+    }
+  }
+  return boards;
+}
+
+async function loadOwn() {
+  try {
+    return { own: await loadCanoggleFacts(), ownError: null };
+  } catch (e) {
+    return { own: new Map(), ownError: e.message };
+  }
+}
+
 async function load() {
+  // With the Arena folder connected, the game project's own files: what the
+  // next swap edits, and swaps not pushed to any site yet.
+  if (await arenaFolder()) {
+    try {
+      const local = await loadLocal('canoggle', unpackCanoggle);
+      return {
+        site: 'local',
+        days: local.files.index.days,
+        boards: boardsOf([...local.files.shards.values()]),
+        facts: local.files.facts || {},
+        ...(await loadOwn()),
+      };
+    } catch (e) {
+      return { error: `Couldn't read squaredleSourceCode/assets/data: ${e.message}` };
+    }
+  }
   let lastError = null;
   for (const site of GAME_SITES) {
     try {
@@ -54,29 +99,14 @@ async function load() {
       const shardCount = Math.ceil(index.days / index.shard);
       const shards = await Promise.all(Array.from({ length: shardCount }, (_, s) =>
         fetchJson(site, `dailies_${String(s).padStart(3, '0')}.json`)));
-      const boards = [];
-      for (const shard of shards) {
-        for (let k = 0; k < shard.days; k++) {
-          for (const board of Object.keys(CANOGGLE_BOARDS)) {
-            const line = shard[board]?.[k];
-            boards.push({ day: shard.start + k, board, p: line == null ? null : unpackCanoggle(line) });
-          }
-        }
-      }
+      const boards = boardsOf(shards);
       let facts = {};
       try {
         facts = await fetchJson(site, 'canuckle_facts.json');
       } catch {
         // Facts are a nicety here.
       }
-      let own = new Map();
-      let ownError = null;
-      try {
-        own = await loadCanoggleFacts();
-      } catch (e) {
-        ownError = e.message;
-      }
-      return { site, days: index.days, boards, facts, own, ownError };
+      return { site, days: index.days, boards, facts, ...(await loadOwn()) };
     } catch (e) {
       lastError = e;
     }
@@ -98,7 +128,7 @@ function summary() {
       left < WARN_DAYS ? [' ', h('span', { class: 'flag err' }, 'Regenerate soon')] : null),
     h('p', { class: 'muted small' }, `${used.size} distinct Canuckle words · ${own} board${own === 1 ? '' : 's'} with a Canoggle fact.`),
     broken.length ? h('p', { class: 'err' }, `Unreadable boards: ${broken.join(', ')}`) : null,
-    h('p', { class: 'muted small' }, `Read from ${data.site === '/' ? 'this site' : data.site}. `,
+    h('p', { class: 'muted small' }, `Read from ${data.site === 'local' ? 'squaredleSourceCode in your Arena folder' : data.site === '/' ? 'this site' : data.site}. `,
       'Extend with tools/generate_dailies.dart in squaredleSourceCode, then deploy the game.'));
 }
 
@@ -136,6 +166,15 @@ function factIssues(text) {
   }
   if (text.trim() && looksDateBound(text)) warnings.push('This still reads as tied to a date ("today", "happy …").');
   return { errors, warnings };
+}
+
+/** A board's letters and word lists. */
+function boardPreview(p) {
+  return [
+    h('pre', { class: 'mono', style: 'line-height:1.25;font-size:15px' }, boardRows(p).join('\n')),
+    h('p', {}, h('b', {}, `Required (${p.required.length}): `), p.required.join(', ')),
+    h('p', { class: 'muted small' }, h('b', {}, `Bonus (${p.bonus.length}): `), p.bonus.join(', ')),
+  ];
 }
 
 async function openBoard(b, rerender) {
@@ -198,15 +237,37 @@ async function openBoard(b, rerender) {
             + 'Links are written [link text](https://…). Saving a blank box, or the Canuckle text, goes back to the Canuckle fact.'),
           data.ownError ? h('p', { class: 'err' }, `Couldn't read saved Canoggle facts: ${data.ownError}`) : null,
           problems,
-          h('div', { class: 'actions' }, h('button', { class: 'btn', onclick: () => close(false) }, 'Cancel'), save)),
+          h('div', { class: 'actions' },
+            h('button', {
+              class: 'btn',
+              disabled: isSwapLocked('canoggle', b.day),
+              title: isSwapLocked('canoggle', b.day) ? 'This day has been played or may be in play.' : 'Feature a different Canuckle word on this board',
+              onclick: () => close('swap'),
+            }, 'Change featured word\u2026'),
+            h('span', { class: 'spacer' }),
+            h('button', { class: 'btn', onclick: () => close(false) }, 'Cancel'), save)),
         pv.el),
-      h('pre', { class: 'mono', style: 'line-height:1.25;font-size:15px' }, boardRows(p).join('\n')),
-      h('p', {}, h('b', {}, `Required (${p.required.length}): `), p.required.join(', ')),
-      h('p', { class: 'muted small' }, h('b', {}, `Bonus (${p.bonus.length}): `), p.bonus.join(', ')),
+      boardPreview(p),
       canuckleText ? h('p', { class: 'muted small' }, h('b', {}, 'Canuckle fact: '), factNodes(canuckleText)) : null,
     ];
   }, { wide: true });
 
+  if (saved === 'swap') {
+    const swapped = await openBoardSwap('canoggle', { day: b.day, kind: b.board, word: p.canuckle }, {
+      unpack: unpackCanoggle,
+      preview: boardPreview,
+      factsOf: {
+        collection: CANOGGLE_FACTS,
+        read: (doc, kind) => canoggleFactOf(doc, kind),
+        write: (doc, day, kind, f) => withCanoggleFact(doc, day, kind, f),
+      },
+    });
+    if (swapped) {
+      data = null;
+      rerender();
+    }
+    return;
+  }
   if (saved) {
     toast(`Canoggle #${b.day} ${label} fact saved.`);
     try {
@@ -283,6 +344,7 @@ export function renderCanoggle(root, rerender) {
   const dated = data.boards.filter(datedUnfixed).length;
   clear(root,
     summary(),
+    swapCard('canoggle', () => { data = null; rerender(); }),
     dated ? h('div', { class: 'banner warn' },
       `${dated} board${dated === 1 ? '' : 's'} still show a Canuckle fact that reads as tied to the day it first ran. `,
       h('a', { href: '#canoggle', onclick: (e) => { e.preventDefault(); filter = 'dated'; rerender(); } }, 'Show them')) : null,

@@ -2,15 +2,15 @@
 // transaction that also writes an adminLog entry with the docs before and
 // after, so any edit, swap or import can be restored from the Log tab.
 
-import { sdk, currentEmail } from './firebase.js?v=202610261618';
-import { GAMES } from './dates.js?v=202610261618';
-import { decodeAnswer } from './codec.js?v=202610261618';
+import { sdk, currentEmail } from './firebase.js?v=202610262044';
+import { GAMES } from './dates.js?v=202610262044';
+import { decodeAnswer } from './codec.js?v=202610262044';
 import {
   PLAYER_COLLECTIONS, GAMES_SUBCOLLECTION_PARENTS, MAX_GAMES, queryCutoff, accountVerdict, quickVerdict,
-} from './cleanup.js?v=202610261618';
-import { pool } from './pool.js?v=202610261618';
-import { repairAccount } from './repair.js?v=202610261618';
-import { VOTES_COLLECTION } from './polls.js?v=202610261618';
+} from './cleanup.js?v=202610262044';
+import { pool } from './pool.js?v=202610262044';
+import { repairAccount } from './repair.js?v=202610262044';
+import { VOTES_COLLECTION } from './polls.js?v=202610262044';
 
 // ---- Puzzles --------------------------------------------------------------
 
@@ -161,6 +161,28 @@ export function restoreLogEntry(entry) {
   }, { action: 'restore', note: entry.id });
 }
 
+/**
+ * Writes a planned Duo word change (duoSwap.js planDuoSwap) in one
+ * transaction, logged as 'featured-swap' so the Log tab can restore it. Stops
+ * if any of the days changed since the plan was made.
+ */
+export function applyDuoSwap(changes, docFor, note = '') {
+  const ids = changes.map((c) => String(c.index));
+  return writeWithLog(GAMES.duo.collection, ids, (before) => {
+    const out = {};
+    for (const c of changes) {
+      const id = String(c.index);
+      const stored = before[id];
+      const now = Array.isArray(stored?.puzzles) ? stored.puzzles.join() : null;
+      if (now !== (c.before ? c.before.puzzles.join() : null)) {
+        throw new Error(`Duo ${GAMES.duo.label(c.index)} changed since this was planned. Reload and try again.`);
+      }
+      out[id] = docFor(c, stored);
+    }
+    return out;
+  }, { action: 'featured-swap', note });
+}
+
 /** Adds Duo days that don't exist yet. [docs] is {id: data}. */
 export async function importDuo(docs, onProgress) {
   const ids = Object.keys(docs);
@@ -248,6 +270,31 @@ export function saveCanoggleFact(day, board, segments) {
     if (Object.keys(next).length) return { [id]: { ...rest, day, facts: next } };
     return { [id]: Object.keys(rest).length ? { ...rest, day } : null };
   }, { action: segments ? 'edit' : 'clear', note: `Canoggle #${day} ${CANOGGLE_BOARDS[board]} fact` });
+}
+
+// ---- Facts that follow a swapped featured word (views/boardSwap.js) ---------
+
+/**
+ * Canoggle day doc [doc] with board [board]'s own fact set to [segments], or
+ * removed when null -- shaped as saveCanoggleFact stores it. Null when the
+ * doc would hold nothing.
+ */
+export function withCanoggleFact(doc, day, board, segments) {
+  const { facts, ...rest } = doc || {};
+  const next = { ...(facts && typeof facts === 'object' ? facts : {}) };
+  if (segments) next[board] = { fact: segments.fact, factUrls: segments.factUrls };
+  else delete next[board];
+  delete rest.day;
+  if (Object.keys(next).length) return { ...rest, day, facts: next };
+  return Object.keys(rest).length ? { ...rest, day } : null;
+}
+
+/** The same for a Canagrams day doc, which has one fact (saveCanagramsFact). */
+export function withCanagramsFact(doc, day, segments) {
+  const { fact, factUrls, ...rest } = doc || {};
+  delete rest.day;
+  if (segments) return { ...rest, day, fact: segments.fact, factUrls: segments.factUrls };
+  return Object.keys(rest).length ? { ...rest, day } : null;
 }
 
 // ---- Game versions ----------------------------------------------------------

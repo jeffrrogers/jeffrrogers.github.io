@@ -2,26 +2,33 @@
 // files, each day's fun fact, and an optional summary of every player's stats.
 //
 // Canagrams' puzzles are built offline and shipped inside the game
-// (canagramsSourceCode/tools/generate_dailies.dart): to change or extend the
-// calendar, regenerate it in the game project. What CAN be edited here is the
-// fun fact. Each day shows the Canuckle fact for its Canuckle word, copied from
+// (canagramsSourceCode/tools/generate_dailies.dart): to extend the calendar,
+// regenerate it in the game project. A day's featured Canuckle word can be
+// swapped here (views/boardSwap.js), which rebuilds the days involved in the
+// browser and rewrites their shards in the Arena folder. The fun fact can be
+// edited too. Each day shows the Canuckle fact for its Canuckle word, copied from
 // the recap without the date it ran, so a fact like "Today is Election Day!" is
 // wrong on Canagrams. Giving a day its own fact writes canagramsGameData/{day};
 // the game shows that instead, and the Canuckle fact otherwise.
 
-import { h, clear, modal, toast, issues, safeHref } from '../ui.js?v=202610261618';
-import { GAME_SITES } from '../config.js?v=202610261618';
-import { longDate, todayEpochDay } from '../dates.js?v=202610261618';
-import { sdk } from '../firebase.js?v=202610261618';
-import { launchEd } from '../launch.js?v=202610261618';
+import { h, clear, modal, toast, issues, safeHref } from '../ui.js?v=202610262044';
+import { GAME_SITES } from '../config.js?v=202610262044';
+import { longDate, todayEpochDay, isSwapLocked } from '../dates.js?v=202610262044';
+import { sdk } from '../firebase.js?v=202610262044';
+import { launchEd } from '../launch.js?v=202610262044';
 import {
   RUNGS, unpackCanagrams, gridRows, rungOf, summarizePlayers,
-} from '../canagrams.js?v=202610261618';
+} from '../canagrams.js?v=202610262044';
 import {
   segmentsToText, textToSegments, canagramsFactOf, canagramsFactToSave, looksDateBound,
-} from '../facts.js?v=202610261618';
-import { loadCanagramsFacts, saveCanagramsFact } from '../store.js?v=202610261618';
-import { factCard, previewFrame } from '../preview.js?v=202610261618';
+} from '../facts.js?v=202610262044';
+import {
+  loadCanagramsFacts, saveCanagramsFact, CANAGRAMS_FACTS, withCanagramsFact,
+} from '../store.js?v=202610262044';
+import { factCard, previewFrame } from '../preview.js?v=202610262044';
+import { arenaFolder } from '../localFiles.js?v=202610262044';
+import { loadLocal } from '../swapFlow.js?v=202610262044';
+import { swapCard, openBoardSwap } from './boardSwap.js?v=202610262044';
 
 const START_ED = launchEd('canagrams');
 const DATA = 'canagrams/assets/assets/data/';
@@ -49,7 +56,39 @@ async function fetchJson(site, path) {
   return res.json();
 }
 
+// The day list the tab shows, from the shards.
+function daysOf(shards) {
+  const days = [];
+  for (const shard of shards) {
+    (shard.d || []).forEach((line, k) => days.push({ day: shard.start + k, p: unpackCanagrams(line) }));
+  }
+  return days;
+}
+
+async function loadOwn() {
+  try {
+    return { own: await loadCanagramsFacts(), ownError: null };
+  } catch (e) {
+    return { own: new Map(), ownError: e.message };
+  }
+}
+
 async function load() {
+  // With the Arena folder connected, the game project's own files: what the
+  // next swap edits, and swaps not pushed to any site yet.
+  if (await arenaFolder()) {
+    try {
+      const local = await loadLocal('canagrams', unpackCanagrams);
+      return {
+        site: 'local',
+        days: daysOf([...local.files.shards.values()]),
+        facts: local.files.facts || {},
+        ...(await loadOwn()),
+      };
+    } catch (e) {
+      return { error: `Couldn't read canagramsSourceCode/assets/data: ${e.message}` };
+    }
+  }
   let lastError = null;
   for (const site of GAME_SITES) {
     try {
@@ -57,24 +96,14 @@ async function load() {
       const shardCount = Math.ceil(index.days / index.shard);
       const shards = await Promise.all(Array.from({ length: shardCount }, (_, s) =>
         fetchJson(site, `dailies_${String(s).padStart(3, '0')}.json`)));
-      const days = [];
-      for (const shard of shards) {
-        (shard.d || []).forEach((line, k) => days.push({ day: shard.start + k, p: unpackCanagrams(line) }));
-      }
+      const days = daysOf(shards);
       let facts = {};
       try {
         facts = await fetchJson(site, 'canuckle_facts.json');
       } catch {
         // Facts are a nicety here.
       }
-      let own = new Map();
-      let ownError = null;
-      try {
-        own = await loadCanagramsFacts();
-      } catch (e) {
-        ownError = e.message;
-      }
-      return { site, days, facts, own, ownError };
+      return { site, days, facts, ...(await loadOwn()) };
     } catch (e) {
       lastError = e;
     }
@@ -115,7 +144,7 @@ function summary(root) {
       h('p', { class: 'muted small' }, `${used.size} distinct Canuckle words. Saturdays: `,
         Object.entries(shapes).map(([k, v]) => `${k} ${v}`).join(' · '), '.'),
       broken.length ? h('p', { class: 'err' }, `Unreadable days: ${broken.join(', ')}`) : null,
-      h('p', { class: 'muted small' }, `Read from ${data.site === '/' ? 'this site' : data.site}. `,
+      h('p', { class: 'muted small' }, `Read from ${data.site === 'local' ? 'canagramsSourceCode in your Arena folder' : data.site === '/' ? 'this site' : data.site}. `,
         'Extend with tools/generate_dailies.dart in canagramsSourceCode, then deploy the game.')),
     h('div', { class: 'card' },
       h('h3', {}, 'Players'),
@@ -182,6 +211,16 @@ function factIssues(text) {
   return { errors, warnings };
 }
 
+/** A day's crossword, wheel words and bonus words. */
+function dayPreview(p) {
+  return [
+    h('p', { class: 'muted small' }, `${p.shape} · wheel `, h('b', { class: 'mono' }, p.letters.split('').join(' '))),
+    h('pre', { class: 'mono', style: 'line-height:1.25;font-size:15px' }, gridRows(p).join('\n')),
+    h('p', {}, h('b', {}, `Grid (${p.slots.length}): `), p.slots.map((s) => s.word).join(', ')),
+    h('p', { class: 'muted small' }, h('b', {}, `Bonus (${p.bonus.length}): `), p.bonus.join(', ')),
+  ];
+}
+
 async function openDay(d, rerender) {
   const p = d.p;
   const canuckleText = data.facts[p.canuckle] || '';
@@ -242,15 +281,37 @@ async function openDay(d, rerender) {
             + 'Saving a blank box, or the Canuckle text, goes back to the Canuckle fact.'),
           data.ownError ? h('p', { class: 'err' }, `Couldn't read saved Canagrams facts: ${data.ownError}`) : null,
           problems,
-          h('div', { class: 'actions' }, h('button', { class: 'btn', onclick: () => close(false) }, 'Cancel'), save)),
+          h('div', { class: 'actions' },
+            h('button', {
+              class: 'btn',
+              disabled: isSwapLocked('canagrams', d.day),
+              title: isSwapLocked('canagrams', d.day) ? 'This day has been played or may be in play.' : 'Feature a different Canuckle word on this day',
+              onclick: () => close('swap'),
+            }, 'Change featured word\u2026'),
+            h('span', { class: 'spacer' }),
+            h('button', { class: 'btn', onclick: () => close(false) }, 'Cancel'), save)),
         pv.el),
-      h('pre', { class: 'mono', style: 'line-height:1.25;font-size:15px' }, gridRows(p).join('\n')),
-      h('p', {}, h('b', {}, `Grid (${p.slots.length}): `), p.slots.map((s) => s.word).join(', ')),
-      h('p', { class: 'muted small' }, h('b', {}, `Bonus (${p.bonus.length}): `), p.bonus.join(', ')),
+      dayPreview(p),
       canuckleText ? h('p', { class: 'muted small' }, h('b', {}, 'Canuckle fact: '), factNodes(canuckleText)) : null,
     ];
   }, { wide: true });
 
+  if (saved === 'swap') {
+    const swapped = await openBoardSwap('canagrams', { day: d.day, kind: 'd', word: p.canuckle }, {
+      unpack: unpackCanagrams,
+      preview: dayPreview,
+      factsOf: {
+        collection: CANAGRAMS_FACTS,
+        read: (doc) => canagramsFactOf(doc),
+        write: (doc, day, kind, f) => withCanagramsFact(doc, day, f),
+      },
+    });
+    if (swapped) {
+      data = null;
+      rerender();
+    }
+    return;
+  }
   if (saved) {
     toast(`Canagrams #${d.day} fact saved.`);
     try {
@@ -329,6 +390,7 @@ export function renderCanagrams(root, rerender) {
   const dated = data.days.filter(datedUnfixed).length;
   clear(root,
     summary(root),
+    swapCard('canagrams', () => { data = null; rerender(); }),
     dated ? h('div', { class: 'banner warn' },
       `${dated} day${dated === 1 ? '' : 's'} still show a Canuckle fact that reads as tied to the day it first ran. `,
       h('a', { href: '#canagrams', onclick: (e) => { e.preventDefault(); filter = 'dated'; rerender(); } }, 'Show them')) : null,

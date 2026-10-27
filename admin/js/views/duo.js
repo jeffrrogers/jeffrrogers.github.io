@@ -3,13 +3,14 @@
 // facts) and importing a schedule JSON
 // (canuckleSourceCode/tool/duo_schedule_year1.json).
 
-import { h, clear, modal, toast, issues, availabilityGate } from '../ui.js?v=202610261618';
-import { segmentsToText, textToSegments, sameFact, duoFactOf, duoFactsToSave } from '../facts.js?v=202610261618';
-import { GAMES, longDate, todayIndex, isAvailable, puzzlesAfterToday, nextIndex } from '../dates.js?v=202610261618';
-import { validateDuo } from '../validate.js?v=202610261618';
-import { savePuzzle, importDuo } from '../store.js?v=202610261618';
-import { ctx, loadGame, duoUses, maxIndex, availabilityMessages } from '../context.js?v=202610261618';
-import { factCard, badgeChip, miniSwitch, previewFrame } from '../preview.js?v=202610261618';
+import { h, clear, modal, toast, issues, availabilityGate } from '../ui.js?v=202610262044';
+import { segmentsToText, textToSegments, sameFact, duoFactOf, duoFactsToSave } from '../facts.js?v=202610262044';
+import { GAMES, longDate, todayIndex, isAvailable, puzzlesAfterToday, nextIndex, isSwapLocked } from '../dates.js?v=202610262044';
+import { validateDuo } from '../validate.js?v=202610262044';
+import { savePuzzle, importDuo, applyDuoSwap } from '../store.js?v=202610262044';
+import { planDuoSwap, duoDocFor } from '../duoSwap.js?v=202610262044';
+import { ctx, loadGame, duoUses, maxIndex, availabilityMessages } from '../context.js?v=202610262044';
+import { factCard, badgeChip, miniSwitch, previewFrame } from '../preview.js?v=202610262044';
 
 const PAGE = 150;
 const st = { q: '', filter: 'all', shown: PAGE, refocus: false };
@@ -262,12 +263,89 @@ export async function openDuoEditor(index, rerender) {
         factBoxes.map((box) => box.el),
         problems,
         gateSlot,
-        h('div', { class: 'actions' }, h('button', { class: 'btn', onclick: () => close(false) }, 'Cancel'), save)),
+        h('div', { class: 'actions' },
+          isNew ? null : h('button', {
+            class: 'btn',
+            disabled: isSwapLocked('duo', target),
+            title: isSwapLocked('duo', target) ? 'This day has been played or may be in play.' : 'Swap words with the days they were going to be used on',
+            onclick: () => close('swap'),
+          }, 'Change words…'),
+          h('span', { class: 'spacer' }),
+          h('button', { class: 'btn', onclick: () => close(false) }, 'Cancel'), save)),
       pv.el);
   }, { wide: true });
 
+  if (saved === 'swap') {
+    await openDuoSwap(target, rerender);
+    return;
+  }
   if (saved) {
     toast(`Duo ${g.label(target)} saved.`);
+    await loadGame('duo');
+    rerender();
+  }
+}
+
+// One planned day as "WORD (#i) + WORD (#j)"
+function wordsOf(d) {
+  return d ? d.puzzles.map((i) => `${answerOf(i) || '?'} (#${i})`).join(' + ') : '(new day)';
+}
+
+/**
+ * Changes a day's words. Each word taken off goes to the later day the
+ * incoming word was going to be used on, or to a new day at the end (see
+ * duoSwap.js). Shows every day it touches before writing any.
+ */
+export async function openDuoSwap(index, rerender) {
+  const cur = ctx.puzzles.duo.get(index);
+  if (!cur) return;
+  const done = await modal(`Change words · Duo ${g.label(index)} · ${longDate(g.edForIndex(index))}`, (close) => {
+    const a = puzzlePicker('First word', cur.puzzles[0], () => update());
+    const b = puzzlePicker('Second word', cur.puzzles[1], () => update());
+    const report = h('div');
+    const apply = h('button', { class: 'btn primary', disabled: true }, 'Apply');
+    let plan = null;
+    // Fixed per dialog, so the fresh word for a new day doesn't jump about as you type
+    const seed = Math.random();
+    const rng = () => seed;
+
+    function update() {
+      plan = planDuoSwap(ctx.puzzles.duo, ctx.puzzles.canuckle, index, [a.value(), b.value()], { rng });
+      clear(report,
+        plan.changes.length ? h('div', { class: 'table-wrap' },
+          h('table', { class: 'grid' },
+            h('thead', {}, h('tr', {}, ['Day', 'Date', 'Before', 'After', ''].map((t) => h('th', {}, t)))),
+            h('tbody', {}, plan.changes.map((c) => h('tr', {},
+              h('td', { class: 'num' }, g.label(c.index)),
+              h('td', { class: 'nowrap' }, longDate(g.edForIndex(c.index))),
+              h('td', { class: 'answer' }, wordsOf(c.before)),
+              h('td', { class: 'answer' }, wordsOf(c.after)),
+              h('td', { class: 'small muted' }, c.why)))))) : null,
+        issues(plan));
+      apply.disabled = plan.errors.length > 0 || !plan.changes.length;
+    }
+
+    apply.addEventListener('click', async () => {
+      apply.disabled = true;
+      try {
+        await applyDuoSwap(plan.changes, duoDocFor, `Duo ${g.label(index)}: ${wordsOf(cur)} → ${wordsOf(plan.changes.find((c) => c.index === index)?.after)}`);
+        close(plan.changes.length);
+      } catch (e) {
+        toast(`Not changed: ${e.message}`, { error: true });
+        update();
+      }
+    });
+
+    update();
+    return h('div', {},
+      h('p', {}, 'Pick the new word(s) for this day. Each word taken off moves to the later day its replacement was going to be used on. If its replacement wasn’t on a later day, it gets a new day at the end of the schedule (paired with a fresh word if it’s alone).'),
+      h('div', { class: 'pickers' }, a.el, b.el),
+      report,
+      h('div', { class: 'actions' }, h('button', { class: 'btn', onclick: () => close() }, 'Cancel'), apply));
+  }, { wide: true });
+
+  if (done) {
+    toast(`Changed ${done} Duo day${done === 1 ? '' : 's'}.`);
     await loadGame('duo');
     rerender();
   }
