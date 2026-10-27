@@ -27409,13 +27409,13 @@ aYl(a,b){var s,r,q,p,o,n,m,l,k=new A.ql()
 k.ti((a^21511)>>>0)
 s=new A.akK(k)
 r=b.length
-q=r>1?6.15/(r-1):0
+q=r>1?6.05/(r-1):0
 r=A.b([],t.xa)
 for(p=0;p<b.length;++p){o=b[p]
 n=o.b
 m=s.$0()
 l=s.$0()<0.5?-1:1
-r.push(new A.wQ(o.a,n,3.25+p*q+(m-0.5)*q*0.6,l*(0.25+0.75*s.$0()),0.9+s.$0()*0.29999999999999993,s.$0()*2-1,s.$0(),B.mn,n,B.h,B.h))}return new A.akI(r)},
+r.push(new A.wQ(o.a,n,3.25+p*q+(m-0.5)*q*0.6,l*(0.25+0.75*s.$0()),1.05/(0.8+s.$0()*0.7),s.$0()*2-1,s.$0(),B.mn,n,B.h,B.h))}return new A.akI(r)},
 aNv(a,b,c,d,e){var s,r,q,p,o,n,m,l,k=a.a
 J.ah(k.save())
 a.zd(b)
