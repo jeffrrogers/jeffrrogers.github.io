@@ -111,6 +111,32 @@ export function availabilityGate(messages, onChange) {
   return { el, ok: () => box.checked };
 }
 
+/**
+ * A table header row whose columns sort when clicked (sort.js). [columns] is
+ * [{label, key}]; a column without a key doesn't sort. [sort] is the current
+ * {key, dir} or null; [onSort](key) is called on a click or Enter/Space.
+ */
+export function sortHead(columns, sort, onSort) {
+  return h('thead', {}, h('tr', {}, columns.map(({ label, key }) => {
+    if (!key) return h('th', {}, label);
+    const on = sort?.key === key;
+    const go = () => onSort(key);
+    return h('th', {
+      class: `sortable${on ? ' sorted' : ''}`,
+      tabIndex: 0,
+      'aria-sort': on ? (sort.dir === 'asc' ? 'ascending' : 'descending') : 'none',
+      title: on && sort.dir === 'asc' ? 'Sorted ascending; click for descending' : on ? 'Sorted descending; click for ascending' : 'Sort by this column',
+      onclick: go,
+      onkeydown: (e) => {
+        if (e.key === 'Enter' || e.key === ' ') {
+          e.preventDefault();
+          go();
+        }
+      },
+    }, label, h('span', { class: 'sort-mark', 'aria-hidden': 'true' }, on ? (sort.dir === 'asc' ? ' ▲' : ' ▼') : ''));
+  })));
+}
+
 export function fmtTime(ts) {
   const ms = typeof ts?.toMillis === 'function' ? ts.toMillis() : ts;
   if (!ms) return '…';

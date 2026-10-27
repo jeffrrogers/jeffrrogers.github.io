@@ -1,19 +1,19 @@
 // Canuckle Admin: sign-in gate, header and tabs.
 
-import { h, clear, toast } from './ui.js?v=202610262044';
-import { ADMIN_EMAILS, SITE_LABEL, IS_SANDBOX } from './config.js?v=202610262044';
-import { OFFSET_WEEKS } from './launch.js?v=202610262044';
-import { onUser, signIn, signOut } from './firebase.js?v=202610262044';
-import { ctx, loadAll, loadWords } from './context.js?v=202610262044';
-import { renderPuzzles } from './views/puzzles.js?v=202610262044';
-import { renderDuo } from './views/duo.js?v=202610262044';
-import { renderRunway } from './views/runway.js?v=202610262044';
-import { renderCleanup } from './views/cleanup.js?v=202610262044';
-import { renderLog } from './views/log.js?v=202610262044';
-import { renderRepair } from './views/repair.js?v=202610262044';
-import { renderCanagrams } from './views/canagrams.js?v=202610262044';
-import { renderCanoggle } from './views/canoggle.js?v=202610262044';
-import { renderVersions } from './views/versions.js?v=202610262044';
+import { h, clear, toast } from './ui.js?v=202610262100';
+import { ADMIN_EMAILS, SITE_LABEL, IS_SANDBOX } from './config.js?v=202610262100';
+import { OFFSET_WEEKS } from './launch.js?v=202610262100';
+import { onUser, signIn, signOut } from './firebase.js?v=202610262100';
+import { ctx, loadAll, loadWords } from './context.js?v=202610262100';
+import { renderPuzzles } from './views/puzzles.js?v=202610262100';
+import { renderDuo } from './views/duo.js?v=202610262100';
+import { renderRunway } from './views/runway.js?v=202610262100';
+import { renderCleanup } from './views/cleanup.js?v=202610262100';
+import { renderLog } from './views/log.js?v=202610262100';
+import { renderRepair } from './views/repair.js?v=202610262100';
+import { renderCanagrams } from './views/canagrams.js?v=202610262100';
+import { renderCanoggle } from './views/canoggle.js?v=202610262100';
+import { renderVersions } from './views/versions.js?v=202610262100';
 
 const TABS = [
   ['canuckle', 'Canuckle'],

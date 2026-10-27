@@ -11,24 +11,25 @@
 // wrong on Canagrams. Giving a day its own fact writes canagramsGameData/{day};
 // the game shows that instead, and the Canuckle fact otherwise.
 
-import { h, clear, modal, toast, issues, safeHref } from '../ui.js?v=202610262044';
-import { GAME_SITES } from '../config.js?v=202610262044';
-import { longDate, todayEpochDay, isSwapLocked } from '../dates.js?v=202610262044';
-import { sdk } from '../firebase.js?v=202610262044';
-import { launchEd } from '../launch.js?v=202610262044';
+import { h, clear, modal, toast, issues, safeHref, sortHead } from '../ui.js?v=202610262100';
+import { nextSort, sortRows } from '../sort.js?v=202610262100';
+import { GAME_SITES } from '../config.js?v=202610262100';
+import { longDate, todayEpochDay, isSwapLocked } from '../dates.js?v=202610262100';
+import { sdk } from '../firebase.js?v=202610262100';
+import { launchEd } from '../launch.js?v=202610262100';
 import {
   RUNGS, unpackCanagrams, gridRows, rungOf, summarizePlayers,
-} from '../canagrams.js?v=202610262044';
+} from '../canagrams.js?v=202610262100';
 import {
   segmentsToText, textToSegments, canagramsFactOf, canagramsFactToSave, looksDateBound,
-} from '../facts.js?v=202610262044';
+} from '../facts.js?v=202610262100';
 import {
   loadCanagramsFacts, saveCanagramsFact, CANAGRAMS_FACTS, withCanagramsFact,
-} from '../store.js?v=202610262044';
-import { factCard, previewFrame } from '../preview.js?v=202610262044';
-import { arenaFolder } from '../localFiles.js?v=202610262044';
-import { loadLocal } from '../swapFlow.js?v=202610262044';
-import { swapCard, openBoardSwap } from './boardSwap.js?v=202610262044';
+} from '../store.js?v=202610262100';
+import { factCard, previewFrame } from '../preview.js?v=202610262100';
+import { arenaFolder } from '../localFiles.js?v=202610262100';
+import { loadLocal } from '../swapFlow.js?v=202610262100';
+import { swapCard, openBoardSwap } from './boardSwap.js?v=202610262100';
 
 const START_ED = launchEd('canagrams');
 const DATA = 'canagrams/assets/assets/data/';
@@ -47,6 +48,9 @@ let playersLoading = false;
 let from = null; // first day shown
 let query = '';
 let filter = 'all';
+// A clicked column ({key, dir}, sort.js), or null for calendar order. While
+// sorted, every matching day is listed, not just the page around today.
+let sort = null;
 
 const todayIdx = () => todayEpochDay() - START_ED + 1;
 
@@ -327,14 +331,33 @@ function table(rerender) {
   const t = todayIdx();
   const q = query.trim().toUpperCase();
   const keep = (d) => (filter === 'own' ? !!ownFact(d.day) : filter === 'dated' ? datedUnfixed(d) : true);
-  const rows = q || filter !== 'all'
-    ? data.days.filter((d) => d.p && keep(d)
+  const matching = q || filter !== 'all' || sort
+    ? data.days.filter((d) => (d.p || !(q || filter !== 'all')) && keep(d)
       && (!q || d.p.canuckle.includes(q) || d.p.slots.some((s) => s.word === q) || String(d.day) === q))
     : data.days.slice(Math.max(0, from - 1), from - 1 + PAGE);
+  const rows = sortRows(matching, (d, key) => {
+    switch (key) {
+      case 'day':
+      case 'date': return d.day;
+      case 'rung': return rungOf(d.day);
+      case 'shape': return d.p?.shape;
+      case 'word': return d.p?.canuckle;
+      case 'wheel': return d.p?.letters;
+      case 'words': return d.p?.slots.length;
+      case 'bonus': return d.p?.bonus.length;
+      case 'fact': return ownFact(d.day) ? 2 : datedUnfixed(d) ? 1 : 0;
+      case 'solved': return players ? players.byDay.get(d.day) || 0 : null;
+      default: return null;
+    }
+  }, sort);
   return h('div', { class: 'table-wrap' },
     h('table', { class: 'grid' },
-      h('thead', {}, h('tr', {}, ['#', 'Date', 'Day', 'Shape', 'Canuckle word', 'Wheel', 'Words', 'Bonus', 'Fact', players ? 'Solved by' : null]
-        .filter(Boolean).map((x) => h('th', {}, x)))),
+      sortHead([
+        { label: '#', key: 'day' }, { label: 'Date', key: 'date' }, { label: 'Day', key: 'rung' },
+        { label: 'Shape', key: 'shape' }, { label: 'Canuckle word', key: 'word' }, { label: 'Wheel', key: 'wheel' },
+        { label: 'Words', key: 'words' }, { label: 'Bonus', key: 'bonus' }, { label: 'Fact', key: 'fact' },
+        players ? { label: 'Solved by', key: 'solved' } : null,
+      ].filter(Boolean), sort, (key) => { sort = nextSort(sort, key); rerender(); }),
       h('tbody', {}, rows.map((d) => h('tr', {
         class: d.day === t ? 'today' : d.day > t ? 'future' : '',
         tabIndex: 0,
@@ -386,7 +409,7 @@ export function renderCanagrams(root, rerender) {
       el?.setSelectionRange(query.length, query.length);
     },
   });
-  const paged = !query && filter === 'all';
+  const paged = !query && filter === 'all' && !sort;
   const dated = data.days.filter(datedUnfixed).length;
   clear(root,
     summary(root),
@@ -402,7 +425,8 @@ export function renderCanagrams(root, rerender) {
       h('button', { class: 'btn small', disabled: !paged || from <= 1, onclick: () => { from = Math.max(1, from - PAGE); rerender(); } }, '‹ Earlier'),
       h('button', { class: 'btn small', disabled: !paged, onclick: () => { from = Math.max(1, todayIdx() - 7); rerender(); } }, 'Today'),
       h('button', { class: 'btn small', disabled: !paged || from + PAGE > data.days.length, onclick: () => { from += PAGE; rerender(); } }, 'Later ›'),
+      sort ? h('button', { class: 'btn small', onclick: () => { sort = null; rerender(); } }, 'Default order') : null,
       h('button', { class: 'btn small', onclick: () => { data = null; players = null; rerender(); } }, 'Refresh')),
     table(rerender),
-    h('p', { class: 'muted small' }, 'Tap a day to see its board and edit its fun fact. Future days are greyed. Answers here are spoilers for players, not for you.'));
+    h('p', { class: 'muted small' }, 'Tap a day to see its board and edit its fun fact. Future days are greyed. Click a column heading to sort by it, again to reverse. Answers here are spoilers for players, not for you.'));
 }

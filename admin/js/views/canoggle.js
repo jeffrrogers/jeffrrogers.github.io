@@ -13,21 +13,22 @@
 // canoggleGameData/{day}'s `facts` map under the board's key (d or m); the game
 // shows that instead, and the Canuckle fact otherwise.
 
-import { h, clear, modal, toast, issues, safeHref } from '../ui.js?v=202610262044';
-import { GAME_SITES } from '../config.js?v=202610262044';
-import { longDate, todayEpochDay, isSwapLocked } from '../dates.js?v=202610262044';
-import { launchEd } from '../launch.js?v=202610262044';
-import { unpackCanoggle, boardRows } from '../canoggle.js?v=202610262044';
+import { h, clear, modal, toast, issues, safeHref, sortHead } from '../ui.js?v=202610262100';
+import { nextSort, sortRows } from '../sort.js?v=202610262100';
+import { GAME_SITES } from '../config.js?v=202610262100';
+import { longDate, todayEpochDay, isSwapLocked } from '../dates.js?v=202610262100';
+import { launchEd } from '../launch.js?v=202610262100';
+import { unpackCanoggle, boardRows } from '../canoggle.js?v=202610262100';
 import {
   segmentsToText, textToSegments, canoggleFactOf, canagramsFactToSave, looksDateBound,
-} from '../facts.js?v=202610262044';
+} from '../facts.js?v=202610262100';
 import {
   loadCanoggleFacts, saveCanoggleFact, CANOGGLE_BOARDS, CANOGGLE_FACTS, withCanoggleFact,
-} from '../store.js?v=202610262044';
-import { factCard, previewFrame } from '../preview.js?v=202610262044';
-import { arenaFolder } from '../localFiles.js?v=202610262044';
-import { loadLocal } from '../swapFlow.js?v=202610262044';
-import { swapCard, openBoardSwap } from './boardSwap.js?v=202610262044';
+} from '../store.js?v=202610262100';
+import { factCard, previewFrame } from '../preview.js?v=202610262100';
+import { arenaFolder } from '../localFiles.js?v=202610262100';
+import { loadLocal } from '../swapFlow.js?v=202610262100';
+import { swapCard, openBoardSwap } from './boardSwap.js?v=202610262100';
 
 const START_ED = launchEd('canoggle');
 const DATA = 'canoggle/assets/assets/data/';
@@ -44,6 +45,9 @@ let loading = false;
 let from = null; // first day shown
 let query = '';
 let filter = 'all';
+// A clicked column ({key, dir}, sort.js), or null for calendar order. While
+// sorted, every matching day is listed, not just the page around today.
+let sort = null;
 
 const todayIdx = () => todayEpochDay() - START_ED + 1;
 
@@ -283,15 +287,31 @@ function table(rerender) {
   const t = todayIdx();
   const q = query.trim().toUpperCase();
   const keep = (b) => (filter === 'own' ? !!ownFact(b) : filter === 'dated' ? datedUnfixed(b) : true);
-  const rows = q || filter !== 'all'
-    ? data.boards.filter((b) => b.p && keep(b)
+  const matching = q || filter !== 'all' || sort
+    ? data.boards.filter((b) => (b.p || !(q || filter !== 'all')) && keep(b)
       && (!q || b.p.canuckle?.includes(q) || b.p.required.includes(q) || String(b.day) === q))
     : data.boards.filter((b) => b.day >= from && b.day < from + PAGE);
+  const rows = sortRows(matching, (b, key) => {
+    switch (key) {
+      case 'day':
+      case 'date': return b.day + (b.board === 'm' ? 0.5 : 0);
+      case 'board': return CANOGGLE_BOARDS[b.board];
+      case 'size': return b.p ? b.p.width * b.p.height : null;
+      case 'word': return b.p?.canuckle;
+      case 'required': return b.p?.required.length;
+      case 'bonus': return b.p?.bonus.length;
+      case 'fact': return ownFact(b) ? 2 : datedUnfixed(b) ? 1 : 0;
+      default: return null;
+    }
+  }, sort);
   const usable = (b) => !!b.p?.canuckle;
   return h('div', { class: 'table-wrap' },
     h('table', { class: 'grid' },
-      h('thead', {}, h('tr', {}, ['#', 'Date', 'Board', 'Size', 'Canuckle word', 'Required', 'Bonus', 'Fact']
-        .map((x) => h('th', {}, x)))),
+      sortHead([
+        { label: '#', key: 'day' }, { label: 'Date', key: 'date' }, { label: 'Board', key: 'board' },
+        { label: 'Size', key: 'size' }, { label: 'Canuckle word', key: 'word' }, { label: 'Required', key: 'required' },
+        { label: 'Bonus', key: 'bonus' }, { label: 'Fact', key: 'fact' },
+      ], sort, (key) => { sort = nextSort(sort, key); rerender(); }),
       h('tbody', {}, rows.map((b) => h('tr', {
         class: b.day === t ? 'today' : b.day > t ? 'future' : '',
         tabIndex: 0,
@@ -340,7 +360,7 @@ export function renderCanoggle(root, rerender) {
       el?.setSelectionRange(query.length, query.length);
     },
   });
-  const paged = !query && filter === 'all';
+  const paged = !query && filter === 'all' && !sort;
   const dated = data.boards.filter(datedUnfixed).length;
   clear(root,
     summary(),
@@ -356,7 +376,8 @@ export function renderCanoggle(root, rerender) {
       h('button', { class: 'btn small', disabled: !paged || from <= 1, onclick: () => { from = Math.max(1, from - PAGE); rerender(); } }, '‹ Earlier'),
       h('button', { class: 'btn small', disabled: !paged, onclick: () => { from = Math.max(1, todayIdx() - 3); rerender(); } }, 'Today'),
       h('button', { class: 'btn small', disabled: !paged || from + PAGE > data.days, onclick: () => { from += PAGE; rerender(); } }, 'Later ›'),
+      sort ? h('button', { class: 'btn small', onclick: () => { sort = null; rerender(); } }, 'Default order') : null,
       h('button', { class: 'btn small', onclick: () => { data = null; rerender(); } }, 'Refresh')),
     table(rerender),
-    h('p', { class: 'muted small' }, 'Tap a board to see it and edit its fun fact. Future days are greyed. Answers here are spoilers for players, not for you.'));
+    h('p', { class: 'muted small' }, 'Tap a board to see it and edit its fun fact. Future days are greyed. Click a column heading to sort by it, again to reverse. Answers here are spoilers for players, not for you.'));
 }

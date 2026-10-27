@@ -3,17 +3,19 @@
 // facts) and importing a schedule JSON
 // (canuckleSourceCode/tool/duo_schedule_year1.json).
 
-import { h, clear, modal, toast, issues, availabilityGate } from '../ui.js?v=202610262044';
-import { segmentsToText, textToSegments, sameFact, duoFactOf, duoFactsToSave } from '../facts.js?v=202610262044';
-import { GAMES, longDate, todayIndex, isAvailable, puzzlesAfterToday, nextIndex, isSwapLocked } from '../dates.js?v=202610262044';
-import { validateDuo } from '../validate.js?v=202610262044';
-import { savePuzzle, importDuo, applyDuoSwap } from '../store.js?v=202610262044';
-import { planDuoSwap, duoDocFor } from '../duoSwap.js?v=202610262044';
-import { ctx, loadGame, duoUses, maxIndex, availabilityMessages } from '../context.js?v=202610262044';
-import { factCard, badgeChip, miniSwitch, previewFrame } from '../preview.js?v=202610262044';
+import { h, clear, modal, toast, issues, availabilityGate, sortHead } from '../ui.js?v=202610262100';
+import { nextSort, sortRows } from '../sort.js?v=202610262100';
+import { segmentsToText, textToSegments, sameFact, duoFactOf, duoFactsToSave } from '../facts.js?v=202610262100';
+import { GAMES, longDate, todayIndex, isAvailable, puzzlesAfterToday, nextIndex, isSwapLocked } from '../dates.js?v=202610262100';
+import { validateDuo } from '../validate.js?v=202610262100';
+import { savePuzzle, importDuo, applyDuoSwap } from '../store.js?v=202610262100';
+import { planDuoSwap, duoDocFor } from '../duoSwap.js?v=202610262100';
+import { ctx, loadGame, duoUses, maxIndex, availabilityMessages } from '../context.js?v=202610262100';
+import { factCard, badgeChip, miniSwitch, previewFrame } from '../preview.js?v=202610262100';
 
 const PAGE = 150;
-const st = { q: '', filter: 'all', shown: PAGE, refocus: false };
+// sort: a clicked column ({key, dir}, sort.js), or null for newest first
+const st = { q: '', filter: 'all', shown: PAGE, refocus: false, sort: null };
 const g = GAMES.duo;
 
 function answerOf(i) {
@@ -59,6 +61,23 @@ export function renderDuo(root, rerender) {
       || String(d.badge?.label || '').toLowerCase().includes(q);
   });
   const ahead = max == null ? null : puzzlesAfterToday('duo', max);
+  const plays = (d) => g.distKeys.reduce((n, k) => n + (Number(d.data.distribution?.[k]) || 0), 0);
+  const problems = new Map(rows.map((d) => [d.index, duoProblems(d, uses)]));
+  const sorted = sortRows(rows, (d, key) => {
+    switch (key) {
+      case 'index':
+      case 'date': return d.index;
+      case 'words': return d.puzzles.map((i) => answerOf(i) || '?').join(' + ');
+      case 'badge': return d.badge ? `${d.badge.type === 'linked' ? 'Linked by' : 'Theme'}: ${d.badge.label}` : '';
+      case 'plays': return plays(d);
+      case 'flags': {
+        // Errors outrank warnings; Duo facts count a little
+        const r = problems.get(d.index);
+        return r.errors.length * 100 + r.warnings.length * 10 + ownFacts(d).length;
+      }
+      default: return null;
+    }
+  }, st.sort);
 
   const search = h('input', {
     type: 'search', placeholder: 'Search answer, #, date or badge', value: st.q,
@@ -78,13 +97,16 @@ export function renderDuo(root, rerender) {
       h('span', { class: 'spacer' }),
       h('button', { class: 'btn', onclick: () => openImport(rerender) }, 'Import schedule…'),
       h('button', { class: 'btn primary', onclick: () => openDuoEditor(null, rerender) }, `Add ${g.label(nextIndex('duo', max))}`)),
-    h('p', { class: 'muted small' }, `${rows.length} of ${all.length} days`),
+    h('p', { class: 'muted small' }, `${rows.length} of ${all.length} days`,
+      st.sort ? [' · ', h('a', { href: '#duo', onclick: (e) => { e.preventDefault(); st.sort = null; rerender(); } }, 'Newest first')] : null),
     h('div', { class: 'table-wrap' },
       h('table', { class: 'grid' },
-        h('thead', {}, h('tr', {}, ['#', 'Date', 'Words', 'Badge', 'Plays', 'Flags'].map((t) => h('th', {}, t)))),
-        h('tbody', {}, rows.slice(0, st.shown).map((d) => {
-          const r = duoProblems(d, uses);
-          const plays = g.distKeys.reduce((n, k) => n + (Number(d.data.distribution?.[k]) || 0), 0);
+        sortHead([
+          { label: '#', key: 'index' }, { label: 'Date', key: 'date' }, { label: 'Words', key: 'words' },
+          { label: 'Badge', key: 'badge' }, { label: 'Plays', key: 'plays' }, { label: 'Flags', key: 'flags' },
+        ], st.sort, (key) => { st.sort = nextSort(st.sort, key); st.shown = PAGE; rerender(); }),
+        h('tbody', {}, sorted.slice(0, st.shown).map((d) => {
+          const r = problems.get(d.index);
           const own = ownFacts(d);
           return h('tr', {
             class: [d.index === today ? 'today' : '', isAvailable('duo', d.index) ? '' : 'future'].join(' '),
@@ -96,7 +118,7 @@ export function renderDuo(root, rerender) {
           h('td', { class: 'nowrap' }, longDate(d.ed), d.index === today ? h('span', { class: 'pill' }, 'Today') : null),
           h('td', { class: 'answer' }, d.puzzles.map((i) => `${answerOf(i) || '?'} (#${i})`).join(' + ') || '—'),
           h('td', {}, d.badge ? `${d.badge.type === 'linked' ? 'Linked by' : 'Theme'}: ${d.badge.label}` : ''),
-          h('td', { class: 'num' }, plays || ''),
+          h('td', { class: 'num' }, plays(d) || ''),
           h('td', {},
             own.length ? h('span', { class: 'pill', title: own.map((i) => `${answerOf(i) || '?'} (#${i})`).join(', ') }, own.length > 1 ? '2 Duo facts' : 'Duo fact') : null,
             r.errors.map((e) => h('span', { class: 'flag err' }, e)), r.warnings.length ? h('span', { class: 'flag' }, `${r.warnings.length} warning${r.warnings.length > 1 ? 's' : ''}`) : null));
