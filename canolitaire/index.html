@@ -349,6 +349,11 @@
        seconds after runApp(), and only when CANUCKLE_PROD is true, so its
        WebGL contexts cannot starve CanvasKit's during startup and the sandbox
        never serves live ads. -->
-  <script src="flutter_bootstrap.js?version=202610292241" async></script>
+  <!-- The arena's "next up" pick for the end panel (lib/ui/widgets/next_up.dart).
+       Root-relative: /arena/ is a sibling on both sites. arenaEmbedded tells it
+       this page handles ?sandboxOffsetWeeks itself. -->
+  <script>window.arenaEmbedded = true;</script>
+  <script type="module" src="/arena/js/nextUp.js"></script>
+  <script src="flutter_bootstrap.js?version=202610300002" async></script>
 </body>
 </html>

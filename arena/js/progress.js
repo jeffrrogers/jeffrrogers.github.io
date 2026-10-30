@@ -6,10 +6,10 @@
 // is cheap and also folds in this browser's in-progress saves, which change
 // between visits.
 
-import { createReader } from './firebase.js?v=202610292241';
-import { arenaGet, arenaSet } from './local.js?v=202610292241';
-import { recentIndices } from './games/common.js?v=202610292241';
-import { emptyProgress } from './status.js?v=202610292241';
+import { createReader } from './firebase.js?v=202610300000';
+import { arenaGet, arenaSet } from './local.js?v=202610300000';
+import { recentIndices } from './games/common.js?v=202610300000';
+import { emptyProgress } from './status.js?v=202610300000';
 
 const CACHE_VERSION = 1;
 
@@ -21,7 +21,13 @@ export function deriveCtx(game, todayEd) {
   };
 }
 
-function derive(game, raw, todayEd) {
+/** The last Firestore snapshot cached for [uid], by game id ({} when none). */
+export function cachedRaw(uid) {
+  const cache = uid ? arenaGet(`cache.${uid}`, null) : null;
+  return cache && cache.v === CACHE_VERSION ? cache.games || {} : {};
+}
+
+export function derive(game, raw, todayEd) {
   try {
     return game.derive(raw, deriveCtx(game, todayEd));
   } catch (e) {
@@ -49,16 +55,14 @@ export async function loadProgress(games, { uid, todayEd, onUpdate, demo = null 
     return state;
   }
 
-  const cacheKey = `cache.${uid}`;
-  const cache = arenaGet(cacheKey, null);
-  const cachedRaw = cache && cache.v === CACHE_VERSION ? cache.games || {} : {};
+  const cached = cachedRaw(uid);
   for (const g of games) {
-    state[g.id] = { progress: derive(g, cachedRaw[g.id] ?? null, todayEd), status: 'cached' };
+    state[g.id] = { progress: derive(g, cached[g.id] ?? null, todayEd), status: 'cached' };
   }
   onUpdate({ ...state });
 
   const reader = createReader();
-  const fresh = { ...cachedRaw };
+  const fresh = { ...cached };
   await Promise.all(games.map(async (g) => {
     try {
       const raw = await g.fetch({ uid, reader, recent: recentIndices(g, todayEd) });
@@ -71,7 +75,7 @@ export async function loadProgress(games, { uid, todayEd, onUpdate, demo = null 
     onUpdate({ ...state });
   }));
 
-  arenaSet(cacheKey, { v: CACHE_VERSION, at: Date.now(), games: fresh });
+  arenaSet(`cache.${uid}`, { v: CACHE_VERSION, at: Date.now(), games: fresh });
   return state;
 }
 

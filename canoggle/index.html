@@ -396,6 +396,11 @@
        The ad tag is NOT loaded here. flutter_bootstrap.js injects it two
        seconds after the first frame, so its WebGL contexts cannot starve
        CanvasKit's during startup. -->
-  <script src="flutter_bootstrap.js?version=202610292239" async></script>
+  <!-- The arena's "next up" pick for the end panel (lib/ui/widgets/next_up.dart).
+       Root-relative: /arena/ is a sibling on both sites. arenaEmbedded tells it
+       this page handles ?sandboxOffsetWeeks itself. -->
+  <script>window.arenaEmbedded = true;</script>
+  <script type="module" src="/arena/js/nextUp.js"></script>
+  <script src="flutter_bootstrap.js?version=202610300001" async></script>
 </body>
 </html>

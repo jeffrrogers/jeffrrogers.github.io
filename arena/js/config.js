@@ -4,8 +4,8 @@
 // production (canucklegame.ca). All game links are root-relative, so the only
 // thing that differs is which games are visible and whether analytics runs.
 
-import { readPref, writePref } from './local.js?v=202610292241';
-import { epochDay, todayEpochDay } from './dates.js?v=202610292241';
+import { readPref, writePref } from './local.js?v=202610300000';
+import { epochDay, todayEpochDay } from './dates.js?v=202610300000';
 
 const host = typeof location === 'undefined' ? '' : location.hostname;
 
@@ -77,9 +77,14 @@ export function parseOffsetWeeks(v) {
   return /^-?\d+$/.test(s) ? Number(s) : null;
 }
 
+// Set by a game page that loads js/nextUp.js. The game handles
+// ?sandboxOffsetWeeks itself, so here the address is left alone and only the
+// saved value is read.
+const EMBEDDED = typeof window !== 'undefined' && window.arenaEmbedded === true;
+
 function initialOffsetWeeks() {
   if (!IS_SANDBOX) return 0;
-  if (typeof location !== 'undefined') {
+  if (typeof location !== 'undefined' && !EMBEDDED) {
     const param = parseOffsetWeeks(new URLSearchParams(location.search).get(OFFSET_PREF));
     if (param != null) {
       try {

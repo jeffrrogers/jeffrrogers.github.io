@@ -638,7 +638,12 @@
           }, true);
         })();
       </script>
-        <script src="flutter_bootstrap.js?version=202610292236" async></script>
+        <!-- The arena's "next up" pick for the stats sheet (lib/ui/next_up.dart).
+             Root-relative: /arena/ is a sibling on both sites. arenaEmbedded tells it
+             this page handles ?sandboxOffsetWeeks itself. -->
+        <script>window.arenaEmbedded = true;</script>
+        <script type="module" src="/arena/js/nextUp.js"></script>
+        <script src="flutter_bootstrap.js?version=202610300005" async></script>
     </div>
   </div>
 </body>
