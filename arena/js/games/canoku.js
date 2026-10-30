@@ -4,17 +4,20 @@
 // and user.dart. canokuUserData/{id} holds completedIndices (days with any
 // mode solved), completedAt {day: millis first solved} (newer solves only),
 // streaks, per-mode {totalTime,totalGames,totalHints} and completedModes
-// {day: {MODE: [seconds, hints]}} for every solved board. Unfinished boards
-// live only in the browser (canokuGame_{day}_{MODE}). Players not yet
+// {day: {MODE: [seconds, hints]}} for every solved board. Boards touched
+// today live in the browser (canokuGame_{day}_{MODE}); at the next day's
+// launch Canoku moves any left unfinished to canokuUserData/{id}/games/
+// {day}.{MODE} as {day, mode, done: false, save, sec, hints}, and a solve
+// rewrites that document with done: true. Players not yet
 // migrated (savesVersion < 2) still have per-day subcollections
 // canokuUserData/{id}/{dayIndex}, one document per mode, {gameData: <JSON>}.
 
-import { daily } from './common.js?v=202610261618';
-import { readPref, prefKeys } from '../local.js?v=202610261618';
-import { duration } from '../dates.js?v=202610261618';
+import { daily, historyStart } from './common.js?v=202610292241';
+import { readPref, prefKeys } from '../local.js?v=202610292241';
+import { duration } from '../dates.js?v=202610292241';
 import {
   SOLVED, PROGRESS, emptyProgress, mark, currentStreak, longestStreak, intList, num, minEd, noteFinish,
-} from '../status.js?v=202610261618';
+} from '../status.js?v=202610292241';
 
 const SIZES = [
   { suffix: '', label: '9×9', stat: '' },
@@ -103,16 +106,35 @@ export const canoku = {
     return `/canoku/${q ? '?' + q : ''}`;
   },
 
-  async fetch({ uid, reader, recent }) {
+  async fetch({ uid, reader, recent, full = false }) {
     const doc = await reader.getDoc(['canokuUserData', uid]);
     if (!doc) return null;
+    // Boards from earlier days that were left unfinished, by day.
+    const saved = {};
+    if (recent.length) {
+      try {
+        const docs = await reader.queryAtLeast(['canokuUserData', uid, 'games'], 'day', historyStart(recent, full));
+        for (const { data } of docs) {
+          const day = num(data.day);
+          if (!day || !data.mode) continue;
+          (saved[day] ||= []).push({ mode: String(data.mode), complete: data.done !== false, time: num(data.sec) });
+        }
+      } catch {
+        // Fall back to solves and this browser's boards.
+      }
+    }
     const solvedModes = doc.completedModes && typeof doc.completedModes === 'object'
       ? doc.completedModes : {};
     // Players not yet moved to completedModes still have per-puzzle documents
     const legacy = num(doc.savesVersion) < 2;
     const local = localCanokuGames();
     const days = {};
-    await Promise.all(recent.map(async (i) => {
+    // Every day with a solve, not just the recent window: completedModes holds
+    // the whole history in this one document, so Clean Sweeps from long ago
+    // count without any extra reads. Per-day reads stay on the recent window.
+    const recentSet = new Set(recent);
+    const allDays = new Set([...recent, ...Object.keys(solvedModes).map(Number).filter(Number.isInteger)]);
+    await Promise.all([...allDays].map(async (i) => {
       const modes = [];
       const solved = solvedModes[i];
       if (solved && typeof solved === 'object') {
@@ -120,7 +142,7 @@ export const canoku = {
           modes.push({ mode, complete: true, time: num(Array.isArray(rec) ? rec[0] : 0) });
         }
       }
-      if (legacy) {
+      if (legacy && recentSet.has(i)) {
         try {
           const docs = await reader.listDocs(['canokuUserData', uid, String(i)]);
           for (const { id, data } of docs) {
@@ -134,8 +156,15 @@ export const canoku = {
           // A day we can't read just shows its day-level status.
         }
       }
-      for (const g of local[i] || []) {
+      for (const g of [...(local[i] || []), ...(saved[i] || [])]) {
         if (!modes.some((m) => m.mode === g.mode)) modes.push(g);
+      }
+      if (!recentSet.has(i)) {
+        // Older days only matter for Clean Sweeps; the rest would just grow
+        // the cached progress (it shares localStorage with the games).
+        const sizes = new Set(modes.filter((m) => m.complete)
+          .map((m) => TIERS.find((t) => t.key === m.mode)?.group));
+        if (!SIZES.every((s) => sizes.has(s.label))) return;
       }
       if (modes.length) days[i] = modes;
     }));

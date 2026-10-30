@@ -8,12 +8,12 @@
 // isFromArchive}. Each guess is played on both boards; the puzzle is won once
 // both answers have been guessed and lost after seven guesses without both.
 
-import { edOfMillis } from '../dates.js?v=202610261618';
-import { launchEd } from '../config.js?v=202610261618';
-import { parseJsonList, readJsonPref, pct } from './common.js?v=202610261618';
+import { edOfMillis } from '../dates.js?v=202610292241';
+import { launchEd } from '../config.js?v=202610292241';
+import { parseJsonList, readJsonPref, pct } from './common.js?v=202610292241';
 import {
   SOLVED, FAILED, PROGRESS, emptyProgress, mark, currentStreak, longestStreak, num, minEd, noteFinish,
-} from '../status.js?v=202610261618';
+} from '../status.js?v=202610292241';
 
 const BASE = 120001;
 export const DUO_MAX_GUESSES = 7;
@@ -144,7 +144,7 @@ export const canuckleDuo = {
       if (g.archive) archive++;
       if (g.status === SOLVED) {
         p.solved++;
-        if (!g.archive) winDays.add(g.index);
+        winDays.add(g.index); // archive wins fill gaps, as Duo counts them
         const on = dayOf(g);
         if (g.finishedOn <= 4) {
           perfects++;

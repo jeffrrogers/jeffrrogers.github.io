@@ -20,7 +20,7 @@
 // planIdSwitch is pure (data in, operations out) so the order and the encoding
 // are unit-tested; applyIdSwitch performs the operations.
 
-import { writePref, removePref } from './local.js?v=202610261618';
+import { writePref, removePref } from './local.js?v=202610292241';
 
 /** Collections read for the new id, by game. */
 export const ID_DOCS = {
@@ -61,6 +61,10 @@ export function planIdSwitch({ oldId, newId, docs, keys = [], oldIds = [] }) {
   // strings, which it would upload. Seed them as its own sync does.
   remove('pendingGameJson');
   remove('pendingDuoGameJson');
+  // Unfinished games pushed out of the pending slot, not yet uploaded: they
+  // belong to the old account and would merge into the new one.
+  remove('unsyncedGames');
+  remove('unsyncedDuoGames');
   remove('duoArchiveIndex');
   const cu = docs.canuckle;
   if (cu) {
@@ -99,27 +103,47 @@ export function planIdSwitch({ oldId, newId, docs, keys = [], oldIds = [] }) {
   remove('solPendingUpload');
   remove('solCountedGames');
   remove('solFreeGame');
+  remove('solTouched');
+  remove('solStartedOver');
+  remove('solWonGames');
+  remove('solStatsDirty');
   removePrefixed('solDailyGame_');
 
   // Canominoes, Canoggle and Canagrams merge local stats into the server's, so an empty
-  // local copy simply takes the new account's.
+  // local copy simply takes the new account's. Their *Touched maps date the
+  // boards played today and their *Results maps record the old account's
+  // finishes; *ProgressUploaded is from builds before boards moved to the server.
   remove('domStats');
   remove('domPendingUpload');
   remove('domPlayedGames');
+  remove('domTouched');
+  remove('domResults');
+  remove('domProgressUploaded');
+  remove('domStatsDirty');
+  remove('domStartedOver');
   removePrefixed('domGame_');
   remove('chnStats');
   remove('chnPendingUpload');
   remove('chnPlayedGames');
+  remove('chnTouched');
+  remove('chnResults');
+  remove('chnProgressUploaded');
+  remove('chnStatsDirty');
   removePrefixed('chnGame_');
   remove('cgmStats');
   remove('cgmPendingUpload');
   remove('cgmPlayedGames');
+  remove('cgmTouched');
+  remove('cgmResults');
   remove('cgmProgressUploaded');
+  remove('cgmStatsDirty');
   removePrefixed('cgmGame_');
   // Canoku's unfinished boards belong to the old account
   removePrefixed('canokuGame_');
   // The old account's recent solves, or they would show as this one's.
   remove('canokuLastSolves');
+  // Solves queued offline under the old id.
+  remove('canokuPendingSolves');
 
   // Keep the old id on record, as the feedback email reports them.
   if (oldId && oldId !== newId && !oldIds.includes(oldId)) {

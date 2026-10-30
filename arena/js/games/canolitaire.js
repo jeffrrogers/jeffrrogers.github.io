@@ -5,16 +5,17 @@
 // cd}; cd lists days ATTEMPTED (the streak counts playing, not winning).
 // Game documents in games/ carry {day, dm (draw index), df (tier index),
 // st (0 playing, 1 won, 2 abandoned), sec, updatedAt}; updatedAt is the last
-// write, which for a finished deal is when it finished.
+// write, which for a finished deal is when it finished. A deal left unfinished
+// is uploaded at the next day's launch with st: 0 and a board snapshot.
 
-import { launchDaily, pct, historyStart, readJsonPref } from './common.js?v=202610261618';
-import { duration, edOfMillis } from '../dates.js?v=202610261618';
-import { toMillis } from '../firebase.js?v=202610261618';
-import { launchEd } from '../config.js?v=202610261618';
-import { readPref } from '../local.js?v=202610261618';
+import { launchDaily, pct, historyStart, readJsonPref, readPendingList } from './common.js?v=202610292241';
+import { duration, edOfMillis } from '../dates.js?v=202610292241';
+import { toMillis } from '../firebase.js?v=202610292241';
+import { launchEd } from '../config.js?v=202610292241';
+import { readPref, prefKeys } from '../local.js?v=202610292241';
 import {
-  SOLVED, PLAYED, PROGRESS, emptyProgress, mark, storedStreak, intList, num, minEd, maxEd, noteFinish,
-} from '../status.js?v=202610261618';
+  SOLVED, PLAYED, PROGRESS, emptyProgress, mark, currentStreak, longestStreak, intList, num, minEd, maxEd, noteFinish,
+} from '../status.js?v=202610292241';
 
 const DRAWS = ['1', '3'];
 const LEVELS = ['e', 'm', 'h'];
@@ -27,11 +28,13 @@ const TIERS = DRAWS.flatMap((d) => LEVELS.map((l) => ({
 const tierKey = (drawIndex, levelIndex) => `${DRAWS[drawIndex] ?? '1'}${LEVELS[levelIndex] ?? 'e'}`;
 
 /**
- * Daily deals as this browser last saved them: one slot per draw and level
- * (solDailyGame_<draw>_<level>, a JSON string with the deal's day and st: 0
- * playing, 1 won, 2 abandoned), plus a finished deal still waiting to upload.
- * The game writes both before its Firestore write, so a deal won a moment ago
- * shows as won before the server has it.
+ * Daily deals saved in this browser: one slot per deal played today
+ * (solDailyGame_<day>_<draw>_<level>, a JSON string with the deal's day and
+ * st: 0 playing, 1 won, 2 abandoned), plus a finished deal still waiting to
+ * upload. The game writes both before its Firestore write, so a deal won a
+ * moment ago shows as won before the server has it. Older builds kept one
+ * slot per draw and level (solDailyGame_<draw>_<level>), read until the game
+ * migrates them.
  */
 function localDeals() {
   const deals = [];
@@ -39,10 +42,10 @@ function localDeals() {
     if (!o || !Number.isInteger(o.day) || o.day <= 0) return;
     deals.push({ day: o.day, dm: num(o.dm), df: num(o.df), st: num(o.st), sec: num(o.sec), at: null });
   };
-  for (let dm = 0; dm < DRAWS.length; dm++) {
-    for (let df = 0; df < LEVELS.length; df++) add(readJsonPref(`solDailyGame_${dm}_${df}`));
+  for (const key of prefKeys()) {
+    if (/^solDailyGame_(\d+_)?\d+_\d+$/.test(key)) add(readJsonPref(key));
   }
-  add(readJsonPref('solPendingUpload'));
+  for (const pending of readPendingList('solPendingUpload')) add(pending);
   return deals;
 }
 
@@ -109,6 +112,11 @@ export const canolitaire = {
   derive(raw, { todayIdx }) {
     const p = emptyProgress();
     raw = { d1: {}, d3: {}, cd: [], games: [], ...(raw || {}) };
+    // This browser's own record: Canolitaire saves its attempted days and best
+    // run locally before its Firestore write, so today's deal counts at once.
+    const storedCd = readPref('solCompletedDailies');
+    const localCd = (Array.isArray(storedCd) ? storedCd : []).map(Number).filter(Number.isInteger);
+    raw = { ...raw, cd: [...new Set([...intList(raw.cd), ...localCd])], ms: Math.max(num(raw.ms), num(readPref('solMaxStreak'))) };
     for (const i of raw.cd) {
       mark(p, i, PLAYED);
       p.doneIdx.add(i);
@@ -119,8 +127,10 @@ export const canolitaire = {
       const key = tierKey(g.dm, g.df);
       const status = g.st === 1 ? SOLVED : g.st === 2 ? PLAYED : PROGRESS;
       mark(p, g.day, status, key);
-      // The streak counts attempts, so a day counts from its first deal.
-      noteFinish(p, g.day, g.at);
+      // The streak counts attempts, so a day counts from its first deal. An
+      // unfinished deal's updatedAt is when the next day's launch uploaded
+      // it, not when it was played, so it dates nothing.
+      if (g.st !== 0) noteFinish(p, g.day, g.at);
       if (status === SOLVED) {
         mark(p, g.day, SOLVED);
         if (!won.has(g.day)) won.set(g.day, new Map());
@@ -149,8 +159,10 @@ export const canolitaire = {
     const daily3 = raw.d3.dl || {};
     p.played = raw.cd.length;
     p.solved = num(daily1.w) + num(daily3.w);
-    p.streak = storedStreak(num(raw.st), num(raw.ld), todayIdx);
-    p.maxStreak = Math.max(num(raw.ms), p.streak);
+    // Attempted days in a row, archive plays filling gaps, as the game counts them.
+    const attempted = new Set(raw.cd);
+    p.streak = currentStreak(attempted, todayIdx);
+    p.maxStreak = Math.max(num(raw.ms), longestStreak(attempted), p.streak);
     p.flags = {
       sweep,
       draw3Win: num(raw.d3.dl?.w) + num(raw.d3.rd?.w) > 0,

@@ -21,8 +21,8 @@
 // holds after the earnings scroll out of the window the arena reads. Growing
 // it never announces anything: only a badge's first earning is announced.
 
-import { getDocData, setMerge, SERVER_TIME, toMillis } from '../firebase.js?v=202610261618';
-import { millisOfEd, todayEpochDay } from '../dates.js?v=202610261618';
+import { getDocData, setMerge, SERVER_TIME, toMillis } from '../firebase.js?v=202610292241';
+import { millisOfEd, todayEpochDay, edOfMillis } from '../dates.js?v=202610292241';
 
 function normalize(doc) {
   const out = {};
@@ -42,7 +42,10 @@ function normalize(doc) {
 
 export async function loadStoredBadges(uid) {
   const doc = await getDocData(['arenaUserData', uid]);
-  return { exists: doc != null, badges: normalize(doc) };
+  // The day badges were last written: a badge not stored then was earned on
+  // or after it, which bounds a date worked out from history.
+  const lastEd = edOfMillis(toMillis(doc?.updatedAt));
+  return { exists: doc != null, badges: normalize(doc), lastEd };
 }
 
 /** True when the stored badges include backfilled ones that were never dated. */
@@ -80,10 +83,17 @@ export function planSync(results, stored, todayEd = todayEpochDay()) {
     // A badge first seen on a later visit was earned since the last one, so
     // without an exact day "today" is right; history only predates it.
     const quiet = backfill || !isNew;
-    const ed = b.earnedOn ?? (quiet ? b.earnedBy : null);
+    let ed = b.earnedOn ?? (quiet ? b.earnedBy : null);
+    let dated = b.earnedOn != null || !quiet;
+    // Not stored at the last visit, so not earned before it: an archive solve
+    // that completes an old run must not date the badge months back.
+    if (isNew && !backfill && ed != null && stored.lastEd != null && ed < stored.lastEd) {
+      ed = stored.lastEd;
+      dated = false;
+    }
     dates[b.id] = {
       ed: ed != null && ed < todayEd ? ed : null,
-      dated: b.earnedOn != null || !quiet,
+      dated,
     };
   }
 

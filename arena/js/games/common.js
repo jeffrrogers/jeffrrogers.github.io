@@ -7,9 +7,9 @@
 //   todayIndex(ed)     today's puzzle index
 //   step               days per puzzle (1 daily, 7 weekly)
 
-import { readPref } from '../local.js?v=202610261618';
-import { epochDay } from '../dates.js?v=202610261618';
-import { launchEd } from '../config.js?v=202610261618';
+import { readPref } from '../local.js?v=202610292241';
+import { epochDay } from '../dates.js?v=202610292241';
+import { launchEd } from '../config.js?v=202610292241';
 
 /** A game whose puzzle #1 is on [start] (y, m, d) and changes each day. */
 export function daily(y, m, d) {
@@ -81,6 +81,17 @@ export function readJsonPref(key) {
     return null;
   }
   return v && typeof v === 'object' ? v : null;
+}
+
+/**
+ * A game's finishes still waiting to upload (<prefix>PendingUpload), as a
+ * list. Newer builds keep a JSON list so a second offline finish does not
+ * overwrite the first; older ones kept a single object.
+ */
+export function readPendingList(key) {
+  const v = readJsonPref(key);
+  const list = Array.isArray(v) ? v : v ? [v] : [];
+  return list.filter((o) => o && typeof o === 'object' && !Array.isArray(o));
 }
 
 export function parseJsonList(list) {

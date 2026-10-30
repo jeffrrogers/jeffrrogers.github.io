@@ -10,14 +10,14 @@
 // Today's in-progress boards come from this browser's domGame_{day}_{tier}
 // saves.
 
-import { launchDaily, pct, historyStart, readJsonPref } from './common.js?v=202610261618';
-import { duration, edOfMillis } from '../dates.js?v=202610261618';
-import { toMillis } from '../firebase.js?v=202610261618';
-import { launchEd } from '../config.js?v=202610261618';
-import { readPref } from '../local.js?v=202610261618';
+import { launchDaily, pct, historyStart, readJsonPref, readPendingList } from './common.js?v=202610292241';
+import { duration, edOfMillis } from '../dates.js?v=202610292241';
+import { toMillis } from '../firebase.js?v=202610292241';
+import { launchEd } from '../config.js?v=202610292241';
+import { readPref } from '../local.js?v=202610292241';
 import {
-  SOLVED, PROGRESS, emptyProgress, mark, storedStreak, intList, num, minEd, maxEd, noteFinish,
-} from '../status.js?v=202610261618';
+  SOLVED, PROGRESS, emptyProgress, mark, currentStreak, longestStreak, intList, num, minEd, maxEd, noteFinish,
+} from '../status.js?v=202610292241';
 
 const LEVELS = [
   { key: 'e', label: 'Easy' },
@@ -37,10 +37,22 @@ function withLocal(raw) {
   const local = readJsonPref('domStats');
   if (local) {
     r.sd = [...new Set([...r.sd, ...intList(local.sd)])];
+    // Field by field, as the game's PlayerStats.merge does: counts take the
+    // larger, records the smaller non-zero (0 means never set).
+    const best = (x, y) => (!x ? y : !y ? x : Math.min(x, y));
     const tiers = { ...r.tiers };
     for (const l of LEVELS) {
       const mine = local[l.key];
-      if (mine && num(mine.p) > num(tiers[l.key]?.p)) tiers[l.key] = mine;
+      if (!mine) continue;
+      const theirs = tiers[l.key] || {};
+      tiers[l.key] = {
+        ...theirs,
+        p: Math.max(num(mine.p), num(theirs.p)),
+        w: Math.max(num(mine.w), num(theirs.w)),
+        bs: best(num(mine.bs), num(theirs.bs)),
+        fm: best(num(mine.fm), num(theirs.fm)),
+        ts: Math.max(num(mine.ts), num(theirs.ts)),
+      };
     }
     r.tiers = tiers;
     if (num(local.ld) >= num(r.ld)) {
@@ -49,9 +61,10 @@ function withLocal(raw) {
     }
     r.ms = Math.max(num(r.ms), num(local.ms));
   }
-  const pending = readJsonPref('domPendingUpload');
-  if (pending && pending.solved === true && Number.isInteger(pending.day)) {
-    r.games = [...r.games, { day: pending.day, tier: pending.tier, solved: true, at: null }];
+  for (const pending of readPendingList('domPendingUpload')) {
+    if (pending.solved === true && Number.isInteger(pending.day)) {
+      r.games = [...r.games, { day: pending.day, tier: pending.tier, solved: true, at: null }];
+    }
   }
   return r;
 }
@@ -160,8 +173,11 @@ export const canominoes = {
     }
     p.played = played;
     p.solved = solved;
-    p.streak = storedStreak(num(raw.st), num(raw.ld), todayIdx);
-    p.maxStreak = Math.max(num(raw.ms), p.streak);
+    // A run of consecutive solved days, however they were played: archive
+    // solves fill gaps, as the game counts them.
+    const solvedDays = new Set([...raw.sd, ...solvedTiers.keys()]);
+    p.streak = currentStreak(solvedDays, todayIdx);
+    p.maxStreak = Math.max(num(raw.ms), longestStreak(solvedDays), p.streak);
     p.flags = {
       sweep: [...solvedTiers.values()].some((s) => LEVELS.every((l) => s.has(l.key))),
       hardSolved: num(raw.tiers.h?.w) > 0,

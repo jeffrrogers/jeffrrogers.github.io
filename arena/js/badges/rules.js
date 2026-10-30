@@ -12,9 +12,9 @@
 // the count survives history scrolling out of the recent window. parts() is
 // the checklist behind a badge that needs several things at once.
 
-import { SOLVED, minEd, finishOn, num } from '../status.js?v=202610261618';
-import { todayEpochDay, weekdayName, shortDate } from '../dates.js?v=202610261618';
-import { LAUNCH_DATE } from '../config.js?v=202610261618';
+import { SOLVED, minEd, finishOn, num } from '../status.js?v=202610292241';
+import { todayEpochDay, weekdayName, shortDate } from '../dates.js?v=202610292241';
+import { LAUNCH_DATE } from '../config.js?v=202610292241';
 
 function finishDays(game, p) {
   return [...p.doneIdx].map((i) => finishOn(game, p, i));
@@ -51,6 +51,13 @@ function runKeys(set, n) {
     if (k - start + 1 === n) keys.push(idx[k]);
   }
   return keys;
+}
+
+/** True when every index from [a] to [b] is in [set]: the two lie in one run. */
+function inOneRun(set, a, b) {
+  const s = set instanceof Set ? set : new Set(set);
+  for (let i = Math.min(a, b); i <= Math.max(a, b); i++) if (!s.has(i)) return false;
+  return true;
 }
 
 function streakReachedOn(game, p, n) {
@@ -260,8 +267,11 @@ function gameBadges(game) {
     desc: `Reach a ${s.n}-${unit} ${game.name} streak.${s.tag ? ` Your shares now carry ${s.tag}.` : ''}`,
     check: (p) => [Math.min(p.maxStreak, s.n), s.n],
     since: (p) => streakReachedOn(game, p, s.n),
-    // Each separate streak that reaches the length counts once.
+    // Each separate streak that reaches the length counts once. An archive
+    // solve that extends a run backwards moves its key, so a stored key in
+    // the same run is the same occurrence (see evaluateBadges).
     occurrences: (p) => runKeys(p.streakIdx || p.doneIdx, s.n),
+    sameRun: (p, a, b) => inOneRun(p.streakIdx || p.doneIdx, a, b),
     ...extra,
   });
   if (LADDER_GAMES.has(game.id)) {
@@ -429,6 +439,7 @@ function familyBadges(games, allLaunched) {
           return runReachedOn(days, 7, (ed) => nthEarliest(byDate.get(ed), 3));
         },
         occurrences: ({ byDate }) => runKeys(sameDayKeys(byDate, 3), 7),
+        sameRun: ({ byDate }, a, b) => inOneRun(sameDayKeys(byDate, 3), a, b),
         parts: ({ byDate }, todayEd) => {
           const hat = new Set(sameDayKeys(byDate, 3));
           // The run still alive: through today, or through yesterday while
@@ -577,12 +588,18 @@ export function evaluateBadges(games, state, alreadyEarned = new Set(),
     const reached = have >= need && !def.retired;
     const on = reached && def.since ? def.since(arg) : null;
     const earned = reached || alreadyEarned.has(def.id);
-    const keys = def.occurrences ? [...new Set(def.occurrences(arg))] : [];
+    const storedOn = stored[def.id]?.on || [];
+    // A run's key is where it reached the length, which moves when the run
+    // grows backwards; keep the stored key for a run already counted.
+    const keys = def.occurrences
+      ? [...new Set(def.occurrences(arg).map((k) => (def.sameRun
+        ? storedOn.find((s) => def.sameRun(arg, s, k)) ?? k : k)))]
+      : [];
     let times = earned ? 1 : 0;
     if (earned && def.times) times = Math.max(1, def.times(arg));
     // Counted from the keys seen now plus the ones stored on earlier visits,
     // which may have scrolled out of the recent window since.
-    if (earned && def.occurrences) times = Math.max(1, new Set([...keys, ...(stored[def.id]?.on || [])]).size);
+    if (earned && def.occurrences) times = Math.max(1, new Set([...keys, ...storedOn]).size);
     results.push({
       ...def,
       have,

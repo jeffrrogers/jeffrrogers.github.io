@@ -4,12 +4,12 @@
 // 2025-03-31, index = weeks + 60001, shown to players as index - 60000.
 // Progress is `plusGames` in the same newUserData/{id} document as Canuckle.
 
-import { epochDay } from '../dates.js?v=202610261618';
-import { pct } from './common.js?v=202610261618';
-import { readGame, distribution, guessLabel, gamesWithPending } from './canuckle.js?v=202610261618';
+import { epochDay } from '../dates.js?v=202610292241';
+import { pct } from './common.js?v=202610292241';
+import { readGame, distribution, guessLabel, gamesWithPending } from './canuckle.js?v=202610292241';
 import {
   SOLVED, PROGRESS, emptyProgress, mark, currentStreak, longestStreak, num, noteFinish,
-} from '../status.js?v=202610261618';
+} from '../status.js?v=202610292241';
 
 const START = epochDay(2025, 3, 31);
 const BASE = 60001;
@@ -70,7 +70,7 @@ export const canucklePlus = {
       }
       if (g.status === SOLVED) {
         p.solved++;
-        if (!g.archive) winWeeks.add(g.index);
+        winWeeks.add(g.index); // archive wins fill gaps, as Canuckle+ counts them
       }
     }
     const { dist, losses } = distribution(raw.plusStats);

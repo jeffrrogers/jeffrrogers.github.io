@@ -10,13 +10,13 @@
 // uploaded on the next launch with done: false and reads as in progress;
 // today's in-progress board is local.
 
-import { launchDaily, historyStart, readJsonPref } from './common.js?v=202610261618';
-import { toMillis } from '../firebase.js?v=202610261618';
-import { launchEd } from '../config.js?v=202610261618';
-import { readPref } from '../local.js?v=202610261618';
+import { launchDaily, historyStart, readJsonPref, readPendingList } from './common.js?v=202610292241';
+import { toMillis } from '../firebase.js?v=202610292241';
+import { launchEd } from '../config.js?v=202610292241';
+import { readPref } from '../local.js?v=202610292241';
 import {
-  SOLVED, PROGRESS, emptyProgress, mark, storedStreak, intList, num, noteFinish,
-} from '../status.js?v=202610261618';
+  SOLVED, PROGRESS, emptyProgress, mark, currentStreak, longestStreak, intList, num, noteFinish,
+} from '../status.js?v=202610292241';
 
 const COUNTS = ['ds', 'nh', 'pt', 'bp', 'wf', 'bf', 'cw', 'sn', 'mx'];
 
@@ -48,12 +48,13 @@ function withLocal(raw, recent) {
     }
   }
   const extra = [];
-  const pending = readJsonPref('cgmPendingUpload');
-  if (pending && Number.isInteger(pending.day) && pending.solved === true) {
-    extra.push({
-      day: pending.day, pts: num(pending.pts), ms: num(pending.ms), hints: num(pending.hints),
-      cw: pending.cw === true, done: true, at: null,
-    });
+  for (const pending of readPendingList('cgmPendingUpload')) {
+    if (Number.isInteger(pending.day) && pending.solved === true) {
+      extra.push({
+        day: pending.day, pts: num(pending.pts), ms: num(pending.ms), hints: num(pending.hints),
+        cw: pending.cw === true, done: true, at: null,
+      });
+    }
   }
   for (const i of recent) {
     const board = readPref(`cgmGame_${i}`);
@@ -169,11 +170,12 @@ export const canagrams = {
     p.fullWeekIdx = weeks;
     p.flagOn.fullWeekDays = weeks.map((i) => this.edForIndex(i));
 
-    p.streakIdx = new Set(raw.sd);
+    p.streakIdx = solvedDays;
     p.played = solvedDays.size;
     p.solved = solvedDays.size;
-    p.streak = storedStreak(num(raw.st), num(raw.ld), todayIdx);
-    p.maxStreak = Math.max(num(raw.mx), p.streak);
+    // Archive solves fill gaps, as the game counts them.
+    p.streak = currentStreak(p.streakIdx, todayIdx);
+    p.maxStreak = Math.max(num(raw.mx), longestStreak(p.streakIdx), p.streak);
     p.flags = {
       canuckleWords: num(raw.cw),
       noHint: num(raw.nh),

@@ -9,14 +9,14 @@
 // launch with done: false (absent on a finished record) and reads as in
 // progress; today's in-progress boards are local.
 
-import { launchDaily, pct, historyStart, readJsonPref } from './common.js?v=202610261618';
-import { edOfMillis } from '../dates.js?v=202610261618';
-import { toMillis } from '../firebase.js?v=202610261618';
-import { launchEd } from '../config.js?v=202610261618';
-import { readPref } from '../local.js?v=202610261618';
+import { launchDaily, pct, historyStart, readJsonPref, readPendingList } from './common.js?v=202610292241';
+import { edOfMillis } from '../dates.js?v=202610292241';
+import { toMillis } from '../firebase.js?v=202610292241';
+import { launchEd } from '../config.js?v=202610292241';
+import { readPref } from '../local.js?v=202610292241';
 import {
-  SOLVED, FAILED, PROGRESS, emptyProgress, mark, storedStreak, intList, num, minEd, maxEd, noteFinish,
-} from '../status.js?v=202610261618';
+  SOLVED, FAILED, PROGRESS, emptyProgress, mark, currentStreak, longestStreak, intList, num, minEd, maxEd, noteFinish,
+} from '../status.js?v=202610292241';
 
 const KINDS = [
   { key: 'd', label: 'Daily' },
@@ -24,6 +24,23 @@ const KINDS = [
 ];
 
 const COUNTS = ['ms', 'mn', 'mr', 'wf', 'bf', 'cw', 'bc', 'mx'];
+
+/**
+ * A board given up (answers revealed) after finding at least this many words
+ * still counts as a finished day for the family badges (First Finish, Hat
+ * Trick and the like), as a Canuckle loss does. Revealing doesn't add the
+ * answers to the words found, so `req + bonus` is what the player found.
+ */
+export const GIVE_UP_MIN_WORDS = 10;
+
+/** Words found on a result: its required and bonus counts. */
+const wordsFound = (g) => num(g.req) + num(g.bonus);
+
+/** Words in a saved board, `v|checksum|revealed|elapsedMs|letterHints|HINTED|WORDS`. */
+const savedWords = (board) => {
+  const words = board.split('|')[6];
+  return words ? words.split(',').filter(Boolean).length : 0;
+};
 
 /**
  * [raw] with this browser's own records folded in, so a board finished a
@@ -44,15 +61,19 @@ function withLocal(raw, recent) {
     }
   }
   const extra = [];
-  const pending = readJsonPref('chnPendingUpload');
-  if (pending && Number.isInteger(pending.day) && pending.kind) {
-    extra.push({ day: pending.day, kind: pending.kind, solved: pending.solved === true, at: null });
+  for (const pending of readPendingList('chnPendingUpload')) {
+    if (Number.isInteger(pending.day) && pending.kind) {
+      extra.push({
+        day: pending.day, kind: pending.kind, solved: pending.solved === true,
+        req: num(pending.req), bonus: num(pending.bonus), at: null,
+      });
+    }
   }
   for (const i of recent) {
     for (const k of KINDS) {
       const board = readPref(`chnGame_${i}_${k.key}`);
       if (typeof board === 'string' && board.split('|')[2] === '1') {
-        extra.push({ day: i, kind: k.key, solved: false, at: null });
+        extra.push({ day: i, kind: k.key, solved: false, req: savedWords(board), bonus: 0, at: null });
       }
     }
   }
@@ -112,7 +133,7 @@ export const canoggle = {
         const docs = await reader.queryAtLeast(['chainUserData', uid, 'games'], 'day', historyStart(recent, full));
         games = docs.map(({ data }) => ({
           day: num(data.day), kind: data.kind, solved: data.solved === true, done: data.done !== false,
-          at: toMillis(data.updatedAt),
+          req: num(data.req), bonus: num(data.bonus), at: toMillis(data.updatedAt),
         }));
       } catch {
         // Fall back to day-level status.
@@ -153,9 +174,12 @@ export const canoggle = {
       // still played Canoggle today. mark keeps the better status, so a
       // revealed Daily with a solved Mini reads as solved.
       mark(p, g.day, status);
-      if (g.solved) {
+      // A solve finishes the day; so does a give-up after real play.
+      if (g.solved || wordsFound(g) >= GIVE_UP_MIN_WORDS) {
         p.doneIdx.add(g.day);
         noteFinish(p, g.day, g.at);
+      }
+      if (g.solved) {
         if (!fullDays.has(g.day)) fullDays.set(g.day, new Map());
         fullDays.get(g.day).set(g.kind, edOfMillis(g.at) ?? this.edForIndex(g.day));
       }
@@ -170,10 +194,14 @@ export const canoggle = {
     // Streaks still run over main-board solves only, as Canoggle's own does;
     // doneIdx now includes Mini-only days.
     p.streakIdx = new Set(raw.sd);
+    for (const g of raw.games || []) {
+      if (g.day && g.kind === 'd' && g.solved) p.streakIdx.add(g.day);
+    }
     p.played = num(raw.ms) + num(raw.mr);
     p.solved = num(raw.ms);
-    p.streak = storedStreak(num(raw.st), num(raw.ld), todayIdx);
-    p.maxStreak = Math.max(num(raw.mx), p.streak);
+    // Archive solves fill gaps, as the game counts them.
+    p.streak = currentStreak(p.streakIdx, todayIdx);
+    p.maxStreak = Math.max(num(raw.mx), longestStreak(p.streakIdx), p.streak);
     p.flags = {
       sweep: [...fullDays.values()].some((s) => s.has('d') && s.has('m')),
       canuckleWords: num(raw.cw),
