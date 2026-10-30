@@ -16,7 +16,7 @@
  */
 export const VERSION_DOCS = [
   { doc: 'canuckle', name: 'Canuckle, Canuckle+ and Duo', path: 'version.json', checks: true, latch: false },
-  { doc: 'canoku', name: 'Canoku', path: 'canoku/version.json', checks: false, latch: false },
+  { doc: 'canoku', name: 'Canoku', path: 'canoku/version.json', checks: true, latch: true },
   { doc: 'solitaire', name: 'Canolitaire', path: 'canolitaire/version.json', checks: false, latch: false },
   { doc: 'canominoes', name: 'Canominoes', path: 'canominoes/version.json', checks: true, latch: true },
   { doc: 'canoggle', name: 'Canoggle', path: 'canoggle/version.json', checks: true, latch: true },

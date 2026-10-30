@@ -2,9 +2,10 @@
 // unreadable; see ../repair.js) and remove them. Accounts with more than 4 in
 // one list are marked stuck: Canuckle can't save those at all until fixed.
 
-import { h, clear, toast, downloadJson } from '../ui.js?v=202610262100';
-import { analyzeAccount, repairCutoff, MAX_DROP, REPAIR_LATEST } from '../repair.js?v=202610262100';
-import { scanAccounts, repairOneAccount } from '../store.js?v=202610262100';
+import { h, clear, toast, downloadJson } from '../ui.js?v=202610292219';
+import { analyzeAccount, repairCutoff, MAX_DROP, REPAIR_LATEST } from '../repair.js?v=202610292219';
+import { scanAccounts, repairOneAccount, scanCollection } from '../store.js?v=202610292219';
+import { idProblems, ID_CHECK_COLLECTIONS, MAX_EMAIL } from '../idCheck.js?v=202610292219';
 
 const state = {
   phase: 'idle', // idle | scanning | scanned | repairing | done
@@ -74,7 +75,67 @@ export function renderRepair(root, rerender) {
       : null,
     state.phase === 'repairing' ? h('progress', { max: state.found.length, value: state.repaired + state.unchanged }) : null);
 
-  clear(root, intro, table, fix);
+  clear(root, intro, table, fix, renderIdCheck(rerender));
+}
+
+// ---- Check IDs: player docs the rules would lock out ------------------------
+
+const ids = {
+  phase: 'idle', // idle | scanning | done
+  scanned: {}, // collection -> docs read
+  found: [], // {collection, id, problems}
+  stop: false,
+  error: '',
+};
+
+function renderIdCheck(rerender) {
+  const busy = ids.phase === 'scanning';
+  const total = Object.values(ids.scanned).reduce((a, n) => a + n, 0);
+  return h('div', { class: 'card' },
+    h('h3', {}, 'Check IDs'),
+    h('p', {}, `Finds player docs the Firestore rules would lock out: an ID outside A–Z, a–z, 0–9, _ and - (1 to 64 characters), or an email that isn't text or is over ${MAX_EMAIL} characters. Run it before publishing the rules: a doc like that can't be read or saved once they're live, and Canoku 2.1.0 hangs on load for it. Read only; one Firestore read per doc in ${ID_CHECK_COLLECTIONS.join(', ')}.`),
+    h('div', { class: 'actions left' },
+      h('button', { class: 'btn primary', disabled: busy, onclick: () => checkIds(rerender) }, ids.phase === 'idle' ? 'Check IDs' : 'Check again'),
+      busy ? h('button', { class: 'btn', onclick: () => { ids.stop = true; } }, 'Stop') : null,
+      ids.found.length ? h('button', { class: 'btn', onclick: () => downloadJson('player-id-check.json', ids.found) }, 'Download list') : null),
+    ids.error ? h('p', { class: 'err' }, ids.error) : null,
+    ids.phase !== 'idle' ? h('p', {},
+      `Checked ${total} docs (${Object.entries(ids.scanned).map(([c, n]) => `${c} ${n}`).join(', ')}). `,
+      h('b', {}, ids.found.length ? `${ids.found.length} would be locked out.` : 'None would be locked out.'),
+      busy ? ' Still checking…' : '') : null,
+    ids.found.length ? h('div', { class: 'table-wrap' },
+      h('table', { class: 'grid compact' },
+        h('thead', {}, h('tr', {}, ['Collection', 'ID', 'Problem'].map((t) => h('th', {}, t)))),
+        h('tbody', {}, ids.found.slice(0, 500).map((f) => h('tr', {},
+          h('td', {}, f.collection),
+          h('td', { class: 'mono' }, JSON.stringify(f.id)),
+          h('td', {}, f.problems.join('; '))))))) : null);
+}
+
+async function checkIds(rerender) {
+  Object.assign(ids, { phase: 'scanning', scanned: {}, found: [], stop: false, error: '' });
+  rerender();
+  try {
+    for (const collection of ID_CHECK_COLLECTIONS) {
+      if (ids.stop) break;
+      ids.scanned[collection] = 0;
+      await scanCollection(collection, {
+        shouldStop: () => ids.stop,
+        onPage: (page) => {
+          for (const { id, data } of page) {
+            const problems = idProblems(id, data);
+            if (problems.length) ids.found.push({ collection, id, problems });
+          }
+          ids.scanned[collection] += page.length;
+          rerender();
+        },
+      });
+    }
+  } catch (e) {
+    ids.error = `Check failed: ${e.message}`;
+  }
+  ids.phase = 'done';
+  rerender();
 }
 
 async function scan(rerender) {

@@ -2,15 +2,15 @@
 // transaction that also writes an adminLog entry with the docs before and
 // after, so any edit, swap or import can be restored from the Log tab.
 
-import { sdk, currentEmail } from './firebase.js?v=202610262100';
-import { GAMES } from './dates.js?v=202610262100';
-import { decodeAnswer } from './codec.js?v=202610262100';
+import { sdk, currentEmail } from './firebase.js?v=202610292219';
+import { GAMES } from './dates.js?v=202610292219';
+import { decodeAnswer } from './codec.js?v=202610292219';
 import {
   PLAYER_COLLECTIONS, GAMES_SUBCOLLECTION_PARENTS, MAX_GAMES, queryCutoff, accountVerdict, quickVerdict,
-} from './cleanup.js?v=202610262100';
-import { pool } from './pool.js?v=202610262100';
-import { repairAccount } from './repair.js?v=202610262100';
-import { VOTES_COLLECTION } from './polls.js?v=202610262100';
+} from './cleanup.js?v=202610292219';
+import { pool } from './pool.js?v=202610292219';
+import { repairAccount } from './repair.js?v=202610292219';
+import { VOTES_COLLECTION } from './polls.js?v=202610292219';
 
 // ---- Puzzles --------------------------------------------------------------
 
@@ -495,6 +495,25 @@ export async function scanAccounts({ beforeMs = null, onPage, shouldStop } = {})
   const base = beforeMs
     ? [coll, fs.where('lastUpdated', '<', beforeMs), fs.orderBy('lastUpdated'), fs.limit(300)]
     : [coll, fs.orderBy(fs.documentId()), fs.limit(300)];
+  let last = null;
+  for (;;) {
+    if (shouldStop?.()) return;
+    const q = last ? fs.query(...base, fs.startAfter(last)) : fs.query(...base);
+    const snap = await fs.getDocs(q);
+    if (snap.empty) return;
+    await onPage(snap.docs.map((d) => ({ id: d.id, data: d.data() })));
+    last = snap.docs[snap.docs.length - 1];
+    if (snap.size < 300) return;
+  }
+}
+
+/**
+ * Pages through every doc of a player [collection], 300 at a time, in ID
+ * order. A full read: one read per doc.
+ */
+export async function scanCollection(collection, { onPage, shouldStop } = {}) {
+  const { fs, db } = await sdk();
+  const base = [fs.collection(db, collection), fs.orderBy(fs.documentId()), fs.limit(300)];
   let last = null;
   for (;;) {
     if (shouldStop?.()) return;
