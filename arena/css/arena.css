@@ -416,6 +416,51 @@ main { padding: 20px 0 64px; }
 /* ---- Game strips: a row of tinted cards per game -------------------------- */
 
 .strip-row { position: relative; margin-bottom: 22px; --fade: 64px; }
+
+/* Favourites: a label over each group, and a hint until they star a game. */
+.group-label {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin: 4px 0 12px;
+  font: 700 12px/1 var(--display);
+  letter-spacing: .1em;
+  text-transform: uppercase;
+  color: var(--muted);
+}
+.group-label::after { content: ''; flex: 1; height: 1px; background: var(--border); }
+.fav-hint { margin: 0 0 16px; font-size: 14px; color: var(--muted); }
+.fav-hint-star { display: inline-block; color: var(--accent-text); vertical-align: -3px; }
+.fav-hint-star .icon { width: 17px; height: 17px; }
+
+/* The star sits in the today card's top-left corner, and the name's first
+   line starts after it, so it never covers the name. It is a sibling of the
+   card's link, so the wrapper carries the card's lift on hover. */
+.today-wrap { position: relative; }
+.today-wrap:hover .fav-star { transform: translateY(-2px); }
+.fav-star {
+  position: absolute;
+  top: 15px;
+  left: 15px;
+  width: 32px;
+  height: 32px;
+  padding: 0;
+  border-radius: 50%;
+  border: 1px solid var(--border);
+  background: var(--surface);
+  color: var(--muted);
+  box-shadow: 0 1px 4px rgba(23, 23, 26, .12);
+  display: grid;
+  place-items: center;
+  cursor: pointer;
+  transition: transform .12s ease;
+}
+.fav-star .icon { width: 18px; height: 18px; }
+.fav-star[aria-pressed="true"] { color: var(--accent-text); }
+.today-wrap .tc-name { text-indent: 38px; }
+@media (prefers-reduced-motion: reduce) {
+  .fav-star { transition: none; }
+}
 @media (max-width: 600px) {
   /* Phones show only a sliver of the next card; a long fade would hide it. */
   .strip-row { --fade: 24px; }

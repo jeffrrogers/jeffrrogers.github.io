@@ -1,16 +1,18 @@
 // The Games tab: each game is a swipeable strip of cards on a tint of its
 // colour. A wide card for today (or this week), a square card for each of the
-// previous seven, and a way into the archive at the end. Streaks and stats
-// live on the Stats tab, not here.
+// previous seven, and a way into the archive at the end. A star on each today
+// card makes the game a favourite, and favourites are listed first. Streaks
+// and stats live on the Stats tab, not here.
 
-import { h, ICONS, gameColours } from '../ui.js?v=202610301436';
-import { longDate, weekdayName, shortDate, ymd } from '../dates.js?v=202610301436';
-import { recentIndices } from '../games/common.js?v=202610301436';
-import { SOLVED, FAILED, PLAYED, PROGRESS, isDone } from '../status.js?v=202610301436';
-import { LEAF_PATH } from '../badges/icons.js?v=202610301436';
-import { playProps } from './play.js?v=202610301436';
-import { orderedGames } from '../gameOrder.js?v=202610301436';
-import { launchEd } from '../config.js?v=202610301436';
+import { h, ICONS, gameColours } from '../ui.js?v=202610311653';
+import { longDate, weekdayName, shortDate, ymd } from '../dates.js?v=202610311653';
+import { recentIndices } from '../games/common.js?v=202610311653';
+import { SOLVED, FAILED, PLAYED, PROGRESS, isDone } from '../status.js?v=202610311653';
+import { LEAF_PATH } from '../badges/icons.js?v=202610311653';
+import { playProps } from './play.js?v=202610311653';
+import { orderedGames } from '../gameOrder.js?v=202610311653';
+import { favouritesFirst } from '../favourites.js?v=202610311653';
+import { launchEd } from '../config.js?v=202610311653';
 
 const DEFAULT_CAPTION = {
   [SOLVED]: 'SOLVED',
@@ -201,13 +203,35 @@ function comingSoonStrip(game, todayEd) {
     h('div', { class: 'strip' }, card));
 }
 
-function gameStrip(game, progress, todayEd) {
+/** The star on a today card: a sibling of the card's link, since a link can't hold a button. */
+function starButton(game, app) {
+  const on = app.favourites.includes(game.id);
+  return h('button', {
+    class: 'fav-star',
+    type: 'button',
+    'aria-pressed': on ? 'true' : 'false',
+    'aria-label': on ? `Remove ${game.name} from favourites` : `Add ${game.name} to favourites`,
+    title: on ? 'Remove from favourites' : 'Add to favourites',
+    html: on ? ICONS.starFilled : ICONS.star,
+    onClick: () => {
+      app.setFavourite(game.id, !on);
+      // The row has moved: keep focus on its star.
+      const star = document.querySelector(`.strip-row[data-game="${game.id}"] .fav-star`);
+      if (star) star.focus({ preventScroll: true });
+    },
+  });
+}
+
+function gameStrip(game, progress, app) {
+  const { todayEd } = app;
   const todayIdx = game.todayIndex(todayEd);
   // Never "#null": a game whose first puzzle is still to come.
   if (todayIdx == null) return comingSoonStrip(game, todayEd);
   const [today, ...past] = recentIndices(game, todayEd);
   const strip = h('div', { class: 'strip' },
-    todayCard(game, progress?.days.get(today), todayIdx),
+    h('div', { class: 'today-wrap' },
+      todayCard(game, progress?.days.get(today), todayIdx),
+      starButton(game, app)),
     past.map((i) => pastCard(game, i, progress?.days.get(i), todayIdx)),
     seeAllCard(game));
   const row = h('section', { class: 'strip-row', ...cardVars(game), 'aria-label': game.name },
@@ -241,21 +265,43 @@ export function streakChip(game, progress) {
   }, h('span', { html: ICONS.flame }), String(n));
 }
 
-export function renderGames(app) {
-  const { games, todayEd, progress, uid } = app;
-  const daily = games.filter((g) => g.cadence === 'daily');
-  const doneToday = daily.filter((g) => {
+/** The line beside the date: their favourites done today, else every daily game. */
+function todayCount(app, favs) {
+  const { games, todayEd, progress } = app;
+  const done = (g) => {
     const p = progress[g.id]?.progress;
-    return p && isDone(p.days.get(g.todayIndex(todayEd))?.status);
-  }).length;
+    const i = g.todayIndex(todayEd);
+    return !!p && i != null && isDone(p.days.get(i)?.status);
+  };
+  const live = favs.filter((g) => g.todayIndex(todayEd) != null);
+  if (live.length) {
+    const n = live.filter(done).length;
+    if (live.length === 1) return n ? 'Your favourite is done today' : 'Your favourite is still to play today';
+    return `${n} of your ${live.length} favourites done today`;
+  }
+  const daily = games.filter((g) => g.cadence === 'daily');
+  return `${daily.filter(done).length} of ${daily.length} daily games finished today`;
+}
+
+const groupLabel = (text) => h('p', { class: 'group-label', text });
+
+export function renderGames(app) {
+  const { todayEd, progress, uid } = app;
+  const listed = favouritesFirst(orderedGames(app), app.favourites);
+  const favs = listed.filter((g) => app.favourites.includes(g.id));
+  const rest = listed.slice(favs.length);
+  const strip = (g) => gameStrip(g, progress[g.id]?.progress, app);
 
   return h('div', { class: 'wrap' },
     h('div', { class: 'today-line' },
       h('h1', { text: `${weekdayName(todayEd)}, ${longDate(todayEd)}` }),
-      h('span', { class: 'muted', text: uid ? `${doneToday} of ${daily.length} daily games finished today` : '' })),
+      h('span', { class: 'muted', text: uid || favs.length ? todayCount(app, favs) : '' })),
     uid ? null : h('div', { class: 'notice' },
       'Welcome! Pick any game to start. Your streaks, archive and badges show up here once you have played.'),
-    orderedGames(app).map((g) => gameStrip(g, progress[g.id]?.progress, todayEd)),
+    favs.length ? null : h('p', { class: 'fav-hint' },
+      'Tap a ', h('span', { class: 'fav-hint-star', html: ICONS.star }), ' to keep the games you play at the top.'),
+    favs.length ? [groupLabel('Your favourites'), ...favs.map(strip)] : null,
+    rest.length ? [groupLabel(favs.length ? 'More games' : 'All games'), ...rest.map(strip)] : null,
     // Sandbox only (production hides them): games still to launch at this offset.
     (app.upcoming || []).map((g) => comingSoonStrip(g, todayEd)));
 }

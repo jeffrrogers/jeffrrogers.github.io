@@ -1,6 +1,6 @@
 // Small DOM helpers, icons, sheets and toasts.
 
-import { SOLVED, FAILED, PLAYED, PROGRESS, STATUS_LABEL } from './status.js?v=202610301436';
+import { SOLVED, FAILED, PLAYED, PROGRESS, STATUS_LABEL } from './status.js?v=202610311653';
 
 /**
  * Creates an element. props: class, text, html (trusted constant markup
@@ -49,6 +49,9 @@ export const ICONS = {
   chevronDown: SVG('<path d="M2 1.5l8 8 8-8" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"/>', 'icon', '0 0 20 11'),
   // Canoku's share icon, the same in every game of the family
   share: SVG('<path d="M4.5 12.5V19a2 2 0 0 0 2 2h11a2 2 0 0 0 2-2v-6.5M16 6.5l-4-4-4 4M12 2.5v13" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/>'),
+  // A favourite on the Games tab: outlined, and filled once starred.
+  star: SVG('<path d="M12 3.2l2.6 5.5 6 .8-4.4 4.2 1.1 6-5.3-2.9-5.3 2.9 1.1-6L3.4 9.5l6-.8z" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round"/>'),
+  starFilled: SVG('<path d="M12 3.2l2.6 5.5 6 .8-4.4 4.2 1.1 6-5.3-2.9-5.3 2.9 1.1-6L3.4 9.5l6-.8z" fill="currentColor" stroke="currentColor" stroke-width="2" stroke-linejoin="round"/>'),
 };
 
 /**

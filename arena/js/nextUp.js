@@ -7,15 +7,18 @@
 // snapshot plus this browser's saves, and the games tell it what they finish
 // (markPlayed) so a finish shows here before the arena has refreshed.
 
-import { liveGames } from './games/registry.js?v=202610301436';
-import { cachedRaw, derive } from './progress.js?v=202610301436';
-import { arenaGet, arenaSet, playerId } from './local.js?v=202610301436';
-import { todayEpochDay } from './dates.js?v=202610301436';
-import { recentIndices } from './games/common.js?v=202610301436';
-import { isDone, PROGRESS } from './status.js?v=202610301436';
+import { liveGames } from './games/registry.js?v=202610311653';
+import { cachedRaw, derive } from './progress.js?v=202610311653';
+import { arenaGet, arenaSet, playerId } from './local.js?v=202610311653';
+import { todayEpochDay } from './dates.js?v=202610311653';
+import { recentIndices } from './games/common.js?v=202610311653';
+import { isDone, PROGRESS } from './status.js?v=202610311653';
+import { readFavourites } from './favourites.js?v=202610311653';
+import { computeOrder } from './gameOrder.js?v=202610311653';
 
-// Discovery order: the games to try first after each kind of game. Canolitaire
-// leads both lists because its long sessions earn the most per player.
+// Discovery order: the games to try first after each kind of game, once their
+// favourites are done. Canolitaire leads both lists because its long sessions
+// earn the most per player.
 const AFTER_WORDS = ['canolitaire', 'canoku', 'canagrams', 'duo', 'canoggle', 'canominoes', 'canuckle', 'plus'];
 const AFTER_PUZZLES = ['canolitaire', 'canominoes', 'canoku', 'canagrams', 'canoggle', 'duo', 'canuckle', 'plus'];
 const PUZZLE_GAMES = new Set(['canoku', 'canominoes', 'canolitaire']);
@@ -28,10 +31,6 @@ const START_TIERS = {
 };
 
 const PLAYED_KEY = 'playedToday';
-
-// Days out of the last 7 a daily game must be played on to be one of their
-// favourites: more days than not, a real habit rather than a try.
-const MIN_REGULAR_DAYS = 4;
 
 /** Game ids this browser finished today, as reported by the games. */
 export function playedToday(todayEd) {
@@ -82,28 +81,53 @@ function pickTier(game, entry, p, todayEd) {
   return [...usualTiers(game, p, todayEd), ...order, ...tiers].find((t) => !isDone(status(t))) || tiers[0];
 }
 
-/** Day index of the most recent puzzle played before today, or null. */
-function lastPlayed(game, p, todayEd) {
-  const today = game.todayIndex(todayEd);
-  for (const i of recentIndices(game, todayEd)) {
-    if (i !== today && p.days.get(i)?.status) return i;
-  }
-  return null;
-}
-
 function everPlayed(p) {
   return p.played > 0 || p.days.size > 0;
 }
 
 /**
- * Picks the game to suggest after [currentId]. Pure: [progress] maps each
- * game id to its derived progress. Returns null when there is nothing to
- * say, else either {allDone, ...counts} or a suggestion:
- * {id, name, reason, eyebrow, detail, cta, url, hc, celebrate, ...counts}, where
- * counts = {doneCount, totalCount, yours, tally, headline, subline}: the arena
- * row's progress, title and the line under the title.
+ * The arena row's progress for [counted] games, [done] of them finished:
+ * {tally, tallyShort, headline}. [mine] when they are the player's favourites.
+ * The short tally is for phones, where the card is narrow.
  */
-export function pickNext({ games: given, progress, currentId, todayEd, played = [], skipped = {} }) {
+function progressLines(counted, done, mine) {
+  const total = counted.length;
+  const all = done === total;
+  if (!mine) {
+    const tally = `${done} of ${total} games done today`;
+    return { tally, tallyShort: tally, headline: `Nice! All ${total} daily games are done` };
+  }
+  if (total === 1) {
+    const name = counted[0].name;
+    return all
+      ? { tally: `Your favourite, ${name}, is done today`, tallyShort: `${name} is done today`, headline: 'Nice! Your favourite is done' }
+      : { tally: `${name}, your favourite, is still to play today`, tallyShort: `${name} still to play today`, headline: '' };
+  }
+  const both = total === 2;
+  return {
+    tally: all
+      ? (both ? 'Both your favourite Canuckle games done today' : `All ${total} of your favourite Canuckle games done today`)
+      : `${done} of your ${total} favourite Canuckle games done today`,
+    tallyShort: all
+      ? (both ? 'Both favourites done today' : `All ${total} favourites done today`)
+      : `${done} of ${total} favourites done today`,
+    headline: both ? 'Nice! Both your favourites are done' : `Nice! All ${total} of your favourites are done`,
+  };
+}
+
+/**
+ * Picks the game to suggest after [currentId]. Pure: [progress] maps each
+ * game id to its derived progress, [favourites] are the game ids they starred
+ * on the arena's Games tab and [order] is the arena's game order. Returns null
+ * when there is nothing to say, else either {allDone, ...counts} or a
+ * suggestion: {id, name, reason, eyebrow, eyebrowShort, detail, cta, url, hc,
+ * celebrate, ...counts}, where counts = {doneCount, totalCount, yours, tally,
+ * headline, subline, sublineShort}: the arena row's progress, title and the
+ * line under the title (the short ones are for phones).
+ */
+export function pickNext({
+  games: given, progress, currentId, todayEd, played = [], skipped = {}, favourites = [], order = [],
+}) {
   // Only games with a puzzle today: during a rollout, a game before its launch
   // day is neither suggested nor counted (suggest() also passes only live games).
   const games = given.filter((g) => g.todayIndex(todayEd) != null);
@@ -113,45 +137,32 @@ export function pickNext({ games: given, progress, currentId, todayEd, played = 
     return !!p && isDone(p.days.get(g.todayIndex(todayEd))?.status);
   };
   const daily = games.filter((g) => g.cadence === 'daily');
-  // The tally counts their favourites (the dailies played on 4+ of the last 7
-  // days) when there are at least two and they aren't every daily game, else
-  // every daily game.
-  const regular = (g) => {
-    const p = progress[g.id];
-    const today = g.todayIndex(todayEd);
-    let days = 0;
-    for (const i of recentIndices(g, todayEd).slice(0, 7)) {
-      if (p?.days.get(i)?.status || (i === today && doneToday(g))) days++;
-    }
-    return days >= MIN_REGULAR_DAYS;
-  };
-  const yours = daily.filter(regular);
-  const mine = yours.length >= 2 && yours.length < daily.length;
-  const counted = mine ? yours : daily;
+  // The tally counts the games they starred, else every daily game.
+  const isFav = (g) => favourites.includes(g.id);
+  const favs = games.filter(isFav);
+  const mine = favs.length > 0;
+  const counted = mine ? favs : daily;
   const doneCount = counted.filter(doneToday).length;
   const totalCount = counted.length;
-  const allCounted = doneCount === totalCount;
-  const favs = totalCount === 2 ? 'Both your favourite Canuckle games' : `All ${totalCount} of your favourite Canuckle games`;
-  const tally = mine
-    ? (allCounted ? `${favs} done today` : `${doneCount} of your ${totalCount} favourite Canuckle games done today`)
-    : `${doneCount} of ${totalCount} games done today`;
+  const lines = progressLines(counted, doneCount, mine);
   // The arena row at the top of the card: its title, and the line under it.
-  const celebrate = allCounted && totalCount > 0;
+  const celebrate = doneCount === totalCount && totalCount > 0;
+  const seeBadges = 'See your streaks and badges';
   const counts = {
-    doneCount, totalCount, yours: mine, tally,
-    headline: !celebrate ? 'Canuckle Games Arena'
-      : mine ? `Nice! ${totalCount === 2 ? 'Both your favourites are' : `All ${totalCount} of your favourites are`} done`
-        : `Nice! All ${totalCount} daily games are done`,
-    subline: celebrate ? 'See your streaks and badges' : tally,
+    doneCount, totalCount, yours: mine, tally: lines.tally,
+    headline: celebrate ? lines.headline : 'Canuckle Games Arena',
+    subline: celebrate ? seeBadges : lines.tally,
+    sublineShort: celebrate ? seeBadges : lines.tallyShort,
   };
 
-  const open = games.filter((g) => g.todayIndex(todayEd) != null && !doneToday(g));
+  const open = games.filter((g) => !doneToday(g));
   if (!open.length) {
     if (!daily.length) return null;
     const all = `All ${daily.length} games done today`;
+    const sub = `All ${daily.length} games · see your badges`;
     return {
       allDone: true, ...counts, doneCount: daily.length, totalCount: daily.length, tally: all,
-      headline: "Today's slate is done", subline: `All ${daily.length} games · see your badges`,
+      headline: "Today's slate is done", subline: sub, sublineShort: sub,
     };
   }
 
@@ -163,19 +174,21 @@ export function pickNext({ games: given, progress, currentId, todayEd, played = 
     const r = prefs.indexOf(g.id);
     return skips(g) * 100 + (r < 0 ? prefs.length : r);
   };
+  // Where the game sits in the arena's own order (theirs, else release order).
+  const place = (g) => {
+    const i = order.indexOf(g.id);
+    return i < 0 ? order.length : i;
+  };
   const entry = (g) => progress[g.id]?.days.get(g.todayIndex(todayEd));
+  const started = (g) => entry(g)?.status === PROGRESS;
 
-  let reason = 'progress';
-  let pick = open.filter((g) => entry(g)?.status === PROGRESS).sort((a, b) => rank(a) - rank(b))[0];
+  // Their favourites first: one in progress, then the next in their order.
+  let pick = open.filter(isFav)
+    .sort((a, b) => (started(b) - started(a)) || (skips(a) - skips(b)) || (place(a) - place(b)))[0];
+  let reason = pick && (started(pick) ? 'progress' : 'favourite');
   if (!pick) {
-    reason = 'habit';
-    // Most recently played first (by calendar day, as indices differ per game).
-    const habits = open
-      .map((g) => ({ g, i: progress[g.id] ? lastPlayed(g, progress[g.id], todayEd) : null }))
-      .filter((x) => x.i != null)
-      .sort((a, b) => (skips(a.g) - skips(b.g))
-        || (b.g.edForIndex(b.i) - a.g.edForIndex(a.i)) || (rank(a.g) - rank(b.g)));
-    pick = habits[0]?.g;
+    reason = 'progress';
+    pick = open.filter(started).sort((a, b) => rank(a) - rank(b))[0];
   }
   if (!pick) {
     reason = 'discovery';
@@ -183,8 +196,7 @@ export function pickNext({ games: given, progress, currentId, todayEd, played = 
       .sort((a, b) => rank(a) - rank(b))[0];
   }
   if (!pick) {
-    // Played before, but not in the last week: still worth a nudge.
-    reason = 'habit';
+    reason = 'next';
     pick = [...open].sort((a, b) => rank(a) - rank(b))[0];
   }
 
@@ -193,22 +205,29 @@ export function pickNext({ games: given, progress, currentId, todayEd, played = 
   const streak = progress[pick.id]?.streak || 0;
   const unit = pick.cadence === 'weekly' ? 'week' : 'day';
   let eyebrow;
+  let eyebrowShort;
   let detail;
   let cta;
   if (reason === 'progress') {
     eyebrow = 'Pick up where you left off';
+    eyebrowShort = 'Continue';
     detail = tier ? `Your ${tierText(tier)} game is in progress` : "Today's puzzle is in progress";
     cta = 'Finish';
-  } else if (reason === 'habit') {
+  } else if (reason === 'discovery') {
+    eyebrow = 'New for you';
+    detail = pick.blurb;
+    cta = 'Try it';
+  } else {
     eyebrow = 'Next up';
     detail = streak > 0
       ? `Keep your ${streak}-${unit} streak going`
       : (tier ? `Today's ${tierText(tier)} is ready` : `This ${unit}'s puzzle is ready`);
     cta = 'Play';
-  } else {
-    eyebrow = 'New for you';
-    detail = pick.blurb;
-    cta = 'Try it';
+  }
+  eyebrowShort = eyebrowShort || eyebrow;
+  if (isFav(pick)) {
+    eyebrow += ' · favourite';
+    eyebrowShort += ' · favourite';
   }
   // When every one of their favourites is done, the arena row says well
   // done (headline above) and this still offers one more.
@@ -218,6 +237,7 @@ export function pickNext({ games: given, progress, currentId, todayEd, played = 
     name: pick.name,
     reason,
     eyebrow,
+    eyebrowShort,
     detail,
     cta,
     url: pick.link(todayIdx, tier?.key ?? null, true),
@@ -277,7 +297,10 @@ export function suggest(currentId) {
     const skipped = Object.fromEntries(Object.entries(skips).map(([id, s]) =>
       // Today's own showing doesn't count yet: the day isn't over.
       [id, s.ed === todayEd ? s.days - 1 : s.days]));
-    const pick = pickNext({ games, progress, currentId, todayEd, played, skipped });
+    const pick = pickNext({
+      games, progress, currentId, todayEd, played, skipped,
+      favourites: readFavourites(), order: computeOrder(games),
+    });
     skips = noteSuggested(skips, pick && !pick.allDone ? pick.id : null, doneIds, todayEd);
     arenaSet(SKIP_KEY, skips);
     return pick ? JSON.stringify(pick) : null;

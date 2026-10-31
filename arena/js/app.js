@@ -1,26 +1,27 @@
 // Boot, routing and the shared app state.
 
-import { IS_SANDBOX, IS_DEMO, isLive } from './config.js?v=202610301436';
-import { demoRaw } from './demo.js?v=202610301436';
-import { initAnalytics, track } from './analytics.js?v=202610301436';
-import { loadAds } from './ads.js?v=202610301436';
-import { todayEpochDay } from './dates.js?v=202610301436';
-import { playerId } from './local.js?v=202610301436';
-import { initialTheme, initialContrast, applyTheme, applyContrast } from './theme.js?v=202610301436';
-import { ALL_GAMES, liveGames, gameById } from './games/registry.js?v=202610301436';
-import { computeOrder } from './gameOrder.js?v=202610301436';
-import { loadProgress, loadFullHistory } from './progress.js?v=202610301436';
-import { evaluateBadges } from './badges/rules.js?v=202610301436';
+import { IS_SANDBOX, IS_DEMO, isLive } from './config.js?v=202610311653';
+import { demoRaw } from './demo.js?v=202610311653';
+import { initAnalytics, track } from './analytics.js?v=202610311653';
+import { loadAds } from './ads.js?v=202610311653';
+import { todayEpochDay } from './dates.js?v=202610311653';
+import { playerId } from './local.js?v=202610311653';
+import { initialTheme, initialContrast, applyTheme, applyContrast } from './theme.js?v=202610311653';
+import { ALL_GAMES, liveGames, gameById } from './games/registry.js?v=202610311653';
+import { computeOrder } from './gameOrder.js?v=202610311653';
+import { readFavourites, setFavourite } from './favourites.js?v=202610311653';
+import { loadProgress, loadFullHistory } from './progress.js?v=202610311653';
+import { evaluateBadges } from './badges/rules.js?v=202610311653';
 import {
   loadStoredBadges, needsDating, planSync, applySync, markAnnounced, markAnnouncedMany, markShared,
-} from './badges/store.js?v=202610301436';
-import { h, ICONS, closeSheet } from './ui.js?v=202610301436';
-import { renderGames } from './views/gamesTab.js?v=202610301436';
-import { renderArchive } from './views/archive.js?v=202610301436';
-import { renderStats, renderStatsDetail } from './views/statsTab.js?v=202610301436';
-import { renderBadgesPage, announce, announceMany, unlockStyle } from './views/badgesView.js?v=202610301436';
-import { openSettings, openSync, safeReturnPath } from './views/settings.js?v=202610301436';
-import { takeLeftForGame } from './views/play.js?v=202610301436';
+} from './badges/store.js?v=202610311653';
+import { h, ICONS, closeSheet } from './ui.js?v=202610311653';
+import { renderGames } from './views/gamesTab.js?v=202610311653';
+import { renderArchive } from './views/archive.js?v=202610311653';
+import { renderStats, renderStatsDetail } from './views/statsTab.js?v=202610311653';
+import { renderBadgesPage, announce, announceMany, unlockStyle } from './views/badgesView.js?v=202610311653';
+import { openSettings, openSync, safeReturnPath } from './views/settings.js?v=202610311653';
+import { takeLeftForGame } from './views/play.js?v=202610311653';
 
 const app = {
   uid: IS_DEMO ? 'DEMO' : playerId(),
@@ -41,9 +42,17 @@ const app = {
     app.order = computeOrder(app.games);
     refresh();
   },
+  // The Games tab's stars.
+  setFavourite(id, on) {
+    app.favourites = setFavourite(id, on);
+    track(on ? 'favourite_add' : 'favourite_remove', { target_game: id });
+    refresh();
+  },
 };
 // Game ids in the order they're listed; see gameOrder.js.
 app.order = computeOrder(app.games);
+// Game ids they starred as favourites; see favourites.js.
+app.favourites = readFavourites();
 
 // ---- Theme ----------------------------------------------------------------
 // Light/dark and high contrast are set from Settings; see theme.js.
