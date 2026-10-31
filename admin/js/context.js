@@ -1,9 +1,9 @@
 // The loaded data the views share, and lookups derived from it.
 
-import { loadPuzzles } from './store.js?v=202610292219';
-import { storedUpperCase } from './codec.js?v=202610292219';
-import { GAMES, isAvailable } from './dates.js?v=202610292219';
-import { WORD_LIST_URLS } from './config.js?v=202610292219';
+import { loadPuzzles } from './store.js?v=202610311117';
+import { storedUpperCase } from './codec.js?v=202610311117';
+import { GAMES, isAvailable } from './dates.js?v=202610311117';
+import { WORD_LIST_URLS } from './config.js?v=202610311117';
 
 export const ctx = {
   puzzles: { canuckle: new Map(), plus: new Map(), duo: new Map() },

@@ -1,10 +1,10 @@
 // Log tab: recent admin changes with what they changed, and Restore.
 
-import { h, clear, modal, toast, fmtTime, availabilityGate } from '../ui.js?v=202610292219';
-import { loadLog, restoreLogEntry } from '../store.js?v=202610292219';
-import { decodeAnswer } from '../codec.js?v=202610292219';
-import { loadAll, availabilityMessages } from '../context.js?v=202610292219';
-import { GAMES } from '../dates.js?v=202610292219';
+import { h, clear, modal, toast, fmtTime, availabilityGate } from '../ui.js?v=202610311117';
+import { loadLog, restoreLogEntry } from '../store.js?v=202610311117';
+import { decodeAnswer } from '../codec.js?v=202610311117';
+import { loadAll, availabilityMessages } from '../context.js?v=202610311117';
+import { GAMES } from '../dates.js?v=202610311117';
 
 const RESTORABLE = new Set(['add', 'edit', 'swap', 'import', 'restore', 'versions', 'featured-swap']);
 
@@ -43,6 +43,8 @@ export async function renderLog(root, rerender) {
         e.note ? h('p', { class: 'small muted' }, e.action === 'restore' ? `Restored entry ${e.note}` : e.note) : null,
         e.action === 'cleanup'
           ? h('p', { class: 'small' }, `${e.ids.length} IDs deleted. The full docs are in the backup file from that run.`)
+          : e.action === 'qa-seed' || e.action === 'qa-delete'
+            ? h('p', { class: 'small mono' }, (e.ids || []).join(', '))
           : h('details', {},
             h('summary', {}, `${changed.length} doc${changed.length === 1 ? '' : 's'}: ${changed.slice(0, 6).join(', ')}${changed.length > 6 ? '…' : ''}`),
             changed.slice(0, 40).map((id) => h('div', { class: 'diff' },

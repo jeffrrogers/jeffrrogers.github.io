@@ -2,15 +2,17 @@
 // transaction that also writes an adminLog entry with the docs before and
 // after, so any edit, swap or import can be restored from the Log tab.
 
-import { sdk, currentEmail } from './firebase.js?v=202610292219';
-import { GAMES } from './dates.js?v=202610292219';
-import { decodeAnswer } from './codec.js?v=202610292219';
+import { sdk, currentEmail } from './firebase.js?v=202610311117';
+import { GAMES } from './dates.js?v=202610311117';
+import { decodeAnswer } from './codec.js?v=202610311117';
 import {
   PLAYER_COLLECTIONS, GAMES_SUBCOLLECTION_PARENTS, MAX_GAMES, queryCutoff, accountVerdict, quickVerdict,
-} from './cleanup.js?v=202610292219';
-import { pool } from './pool.js?v=202610292219';
-import { repairAccount } from './repair.js?v=202610292219';
-import { VOTES_COLLECTION } from './polls.js?v=202610292219';
+} from './cleanup.js?v=202610311117';
+import { pool } from './pool.js?v=202610311117';
+import { repairAccount } from './repair.js?v=202610311117';
+import { VOTES_COLLECTION } from './polls.js?v=202610311117';
+import { isSeedId } from './seed/accounts.js?v=202610311117';
+import { isTs } from './seed/shapes.js?v=202610311117';
 
 // ---- Puzzles --------------------------------------------------------------
 
@@ -556,4 +558,103 @@ export async function repairOneAccount(id) {
     });
     return { repaired: true, removed };
   });
+}
+
+// ---- QA seed accounts (sandbox Seed tab) ----------------------------------------
+
+/** Collections whose player docs keep finished puzzles in a `games` subcollection. */
+const SEED_GAMES_PARENTS = ['canokuUserData', ...GAMES_SUBCOLLECTION_PARENTS];
+
+function refuseNonSeed(ids) {
+  const bad = ids.filter((id) => !isSeedId(id));
+  if (bad.length) throw new Error(`Not a QA account: ${bad.join(', ')}`);
+}
+
+/** Seed data with its Timestamp placeholders made real. */
+function withTimestamps(fs, v) {
+  if (isTs(v)) return fs.Timestamp.fromMillis(v.__qaTs);
+  if (Array.isArray(v)) return v.map((x) => withTimestamps(fs, x));
+  if (v && typeof v === 'object') return Object.fromEntries(Object.entries(v).map(([k, x]) => [k, withTimestamps(fs, x)]));
+  return v;
+}
+
+/**
+ * Every doc path one QA account has: its player docs, everything in their
+ * games/ subcollections, and Canoku 2.1.0's per-day board subcollections for
+ * [canokuDays] (a client can't list subcollections, so the days are named).
+ * Only L04 is seeded with those, so only L04 pays for reading them.
+ */
+async function seedAccountPaths(fs, db, id, canokuDays = []) {
+  const paths = PLAYER_COLLECTIONS.map((c) => [c, id]);
+  if (!id.endsWith('-L04')) canokuDays = [];
+  const lists = await Promise.all([
+    ...SEED_GAMES_PARENTS.map((c) => fs.getDocs(fs.collection(db, c, id, 'games'))
+      .then((snap) => snap.docs.map((d) => [c, id, 'games', d.id]))),
+    ...canokuDays.map((day) => fs.getDocs(fs.collection(db, 'canokuUserData', id, String(day)))
+      .then((snap) => snap.docs.map((d) => ['canokuUserData', id, String(day), d.id]))),
+  ]);
+  return paths.concat(...lists);
+}
+
+/** Commits [ops] ({type: 'delete'|'set', path, data}) in batches of at most DELETE_BATCH_WRITES. */
+async function commitOps(fs, db, ops) {
+  for (let i = 0; i < ops.length; i += DELETE_BATCH_WRITES) {
+    const batch = fs.writeBatch(db);
+    for (const op of ops.slice(i, i + DELETE_BATCH_WRITES)) {
+      const ref = fs.doc(db, ...op.path);
+      if (op.type === 'delete') batch.delete(ref);
+      else batch.set(ref, withTimestamps(fs, op.data));
+    }
+    await batch.commit();
+  }
+}
+
+async function logSeed(fs, db, action, ids, note) {
+  await fs.addDoc(fs.collection(db, 'adminLog'), {
+    at: fs.serverTimestamp(), email: await currentEmail(), action, note, collection: 'newUserData', ids, before: null, after: null,
+  });
+}
+
+/**
+ * Replaces each QA account (accounts.js buildAccounts) with a fresh copy:
+ * everything it holds now is deleted, including what testers played on it,
+ * then its seed docs are written. Only QA IDs are ever touched.
+ * onAccount(account) after each.
+ */
+export async function seedAccounts(accounts, { canokuDays = [], onAccount } = {}) {
+  refuseNonSeed(accounts.map((a) => a.id));
+  const { fs, db } = await sdk();
+  await pool(accounts, 4, async (a) => {
+    const old = await seedAccountPaths(fs, db, a.id, canokuDays);
+    await commitOps(fs, db, old.map((path) => ({ type: 'delete', path })));
+    await commitOps(fs, db, a.docs.map((d) => ({ type: 'set', path: d.path, data: d.data })));
+    onAccount?.(a);
+  });
+  const ids = accounts.map((a) => a.id);
+  await logSeed(fs, db, 'qa-seed', ids, `${ids.length} QA accounts seeded`);
+}
+
+/** Deletes every doc of the QA accounts [ids]. onAccount(id) after each. */
+export async function deleteSeedAccounts(ids, { canokuDays = [], onAccount } = {}) {
+  refuseNonSeed(ids);
+  const { fs, db } = await sdk();
+  let docs = 0;
+  await pool(ids, 4, async (id) => {
+    const paths = await seedAccountPaths(fs, db, id, canokuDays);
+    docs += paths.length;
+    await commitOps(fs, db, paths.map((path) => ({ type: 'delete', path })));
+    onAccount?.(id);
+  });
+  await logSeed(fs, db, 'qa-delete', ids, `${ids.length} QA accounts deleted (up to ${docs} docs)`);
+}
+
+/** Which player collections hold a doc for each QA ID: Map<id, collection[]>. */
+export async function seedStatus(ids) {
+  refuseNonSeed(ids);
+  const out = new Map();
+  await pool(ids, 6, async (id) => {
+    const docs = await readAccount(id);
+    out.set(id, PLAYER_COLLECTIONS.filter((c) => docs[c]));
+  });
+  return out;
 }
