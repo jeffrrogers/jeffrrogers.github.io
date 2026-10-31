@@ -1,7 +1,7 @@
 // QA seed accounts for the sandbox: realistic player records, built relative
 // to today, for testing the Arena before launch.
 //
-// Phase 1 (L01-L09) are legacy players: Canuckle (in Canuckle 3.0.2's
+// Phase 1 (L01-L10) are legacy players: Canuckle (in Canuckle 3.0.2's
 // newUserData shape), Canuckle+ and Canoku only, with no arenaUserData, so
 // the Arena's first visit backfills their badges. Phase 2 (N01-N11) are each
 // one play away from a new-game or family badge.
@@ -12,12 +12,12 @@
 // which runs both versions of each account (as seeded, and with the step
 // played: build(true)) through the Arena's own adapters and badge rules.
 
-import { GAMES, epochDay } from '../dates.js?v=202610311117';
-import { launchEd } from '../launch.js?v=202610311117';
+import { GAMES, epochDay } from '../dates.js?v=202610311155';
+import { launchEd } from '../launch.js?v=202610311155';
 import {
   ts, midnightOf, timeOn, weekdayOf, canuckleGame, duoGame, canuckleStats, duoStats, newUserStub,
   canokuStats, canokuSettings, canokuBoard, canokuSize,
-} from './shapes.js?v=202610311117';
+} from './shapes.js?v=202610311155';
 
 export const TESTERS = { JR: 'Jeff', MR: 'Mark' };
 
@@ -631,6 +631,28 @@ function definitions(env) {
         ...canoku(env, id, { days: canokuDays(env, range(-10, -1)) }),
         doc(['arenaUserData', id], arena),
       ];
+    },
+  });
+
+  add({
+    code: 'L10', phase: 1, title: 'Canuckle Immortal',
+    story: 'A 1,000-day Canuckle streak running up to yesterday: every day since early 2024.',
+    before: ['The backfill summary lists the whole streak ladder, from Star to Immortal (1,000).', 'Canuckle: current streak 1,000, best 1,000, 1,000 played.', 'Getting Going, Regular, Devoted, Badge Collector.'],
+    steps: ['Play and win today\'s Canuckle.'],
+    after: ['Current streak 1,001. No new badges.'],
+    streaks: { canuckle: [1000, 1000] },
+    expect: {
+      before: ['canuckle.first',
+        ...[5, 10, 20, 25, 30, 40, 50, 75, 100, 125, 150, 200, 250, 300, 350, 365, 400, 500, 600, 700, 750, 800, 900, 1000]
+          .map((n) => `canuckle.streak${n}`),
+        'canuckle.total10', 'canuckle.total50', 'canuckle.total250', 'family.collector'],
+      after: [],
+    },
+    build(id, played) {
+      const daily = [];
+      for (let k = 1000; k >= 1; k--) daily.push({ index: T(-k), win: true, guesses: 3 + (k % 4) });
+      if (played) daily.push({ index: T(0), win: true, guesses: 4 });
+      return [doc(['newUserData', id], newUser(env, { daily, shape: '302' }))];
     },
   });
 

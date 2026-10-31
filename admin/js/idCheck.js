@@ -6,7 +6,7 @@
 // Neither can happen under the open console rules, so this finds them before
 // the rules are published.
 
-import { PLAYER_COLLECTIONS } from './cleanup.js?v=202610311117';
+import { PLAYER_COLLECTIONS } from './cleanup.js?v=202610311155';
 
 /** The rules' validId(id): `id.matches('^[A-Za-z0-9_-]{1,64}$')`. Keep in step. */
 export const VALID_ID = /^[A-Za-z0-9_-]{1,64}$/;
