@@ -223,6 +223,52 @@ export function factFromRuns(fact, factUrls) {
   return out.trim() ? out : null;
 }
 
+/**
+ * What to do about featuring [word], given the generator's wordStatus for it
+ * ({inDictionary, required, stoplisted, bonusOnly}):
+ *   {block: why}         it can't be featured;
+ *   {ask: question, add} featuring it needs a yes; add: it goes on
+ *                        allowlist.txt (the always-required words) if so;
+ *   {}                   nothing to ask.
+ * "Required" is a word players are asked to find: Canoggle's required list,
+ * or a word Canagrams may put on that day's grid. The allowlist never beats
+ * the stoplist, so a stoplisted word can't be added.
+ */
+export function requiredCheck(game, word, s) {
+  const g = SWAP_GAMES[game];
+  if (!s.inDictionary) {
+    return { block: `${word} isn't in ${g.name}'s dictionary, so it can't be featured. New Canuckle answers reach it when the dictionary is rebuilt (tools/extract_canuckle_words.dart, then tools/build_dictionary.dart).` };
+  }
+  if (s.bonusOnly) return { block: `${word} is blocklisted (kept only as a bonus word), so it can't be featured.` };
+  if (s.required) return {};
+  if (s.stoplisted) {
+    const why = `${word} is on ${g.name}'s stoplist (tools/data/stoplist.txt), the words players are never asked to find`;
+    // Canoggle won't build around a word that isn't required; Canagrams will.
+    if (game === 'canoggle') return { block: `${why}, so it can't be featured. Take it off the stoplist first if that was a mistake.` };
+    return { ask: `${why}, so it can't be added to the required words. Feature it anyway?`, add: false };
+  }
+  const rare = game === 'canoggle'
+    ? `${word} isn't one of Canoggle's required words: the dictionary rates it too rare to ask players to find`
+    : `${word} isn't one of Canagrams' required words for this day: the dictionary rates it too rare for this day's grid`;
+  return {
+    ask: `${rare}.\n\nFeature it anyway and add ${word} to the required words (tools/data/allowlist.txt)? The next full regeneration then also treats ${word} as required on any other board it turns up on.`,
+    add: true,
+  };
+}
+
+const ADDED_SECTION = '# --- featured words added in the Arena admin ---';
+
+/** allowlist.txt's [text] with [word] added, under the admin's own section at the end. Unchanged if it's already there. */
+export function withAllowed(text, word) {
+  const w = String(word).trim().toLowerCase();
+  const lines = String(text ?? '').replace(/\r\n/g, '\n').split('\n');
+  if (lines.some((l) => l.trim().toLowerCase() === w)) return text;
+  while (lines.length && lines[lines.length - 1].trim() === '') lines.pop();
+  if (!lines.includes(ADDED_SECTION)) lines.push('', ADDED_SECTION);
+  lines.push(w);
+  return `${lines.join('\n')}\n`;
+}
+
 const shardName = (s) => `dailies_${String(s).padStart(3, '0')}.json`;
 
 /**

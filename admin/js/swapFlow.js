@@ -13,13 +13,17 @@
 //                                          generate_dailies.dart keeps them
 //   <source>/tools/data/swap_backups/<stamp>/     every file a swap replaced
 //   <source>/tools/data/pending_promotion.json    swaps not yet in production
+//   <source>/tools/data/allowlist.txt      the always-required words, when a
+//                                          featured word is added to them; and
+//   gamesHub/admin/gen/<slug>/allowlist.txt  the admin's copy, so the next
+//                                          admin deploy builds the same boards
 //
 // No rebuild is needed anywhere: the game fetches its shards over HTTP when it
 // needs them, and the deployed service worker caches nothing.
 
-import { SWAP_GAMES, calendarOf, patchFiles, overridesText, moveOwnFacts } from './featuredSwap.js?v=202610312300';
-import { readText, writeText, sha256, folderExists, SANDBOX_SITE, PROD_SITE } from './localFiles.js?v=202610312300';
-import { writeWithLog } from './store.js?v=202610312300';
+import { SWAP_GAMES, calendarOf, patchFiles, overridesText, moveOwnFacts, withAllowed } from './featuredSwap.js?v=202611011209';
+import { readText, writeText, sha256, folderExists, SANDBOX_SITE, PROD_SITE } from './localFiles.js?v=202611011209';
+import { writeWithLog } from './store.js?v=202611011209';
 
 const paths = (game) => {
   const g = SWAP_GAMES[game];
@@ -31,10 +35,38 @@ const paths = (game) => {
     overrides: `${g.source}/tools/data/featured_overrides.json`,
     backups: `${g.source}/tools/data/swap_backups`,
     pending: `${g.source}/tools/data/pending_promotion.json`,
+    allowlist: `${g.source}/tools/data/allowlist.txt`,
+    adminAllowlist: `gamesHub/admin/gen/${g.slug}/allowlist.txt`,
   };
 };
 
 export const swapPaths = paths;
+
+/** The game project's allowlist.txt: what the command line builds with, so the admin builds with it too. */
+export async function readAllowlist(game) {
+  const p = paths(game).allowlist;
+  const text = await readText(p);
+  if (text == null) throw new Error(`Missing ${p}`);
+  return text;
+}
+
+/**
+ * Adds [word] to the game's allowlist.txt and the admin's copy, after
+ * checking the game's is still [expected] (what the boards were built with).
+ * @returns undo(): puts both files back
+ */
+export async function addToAllowlist(game, word, expected) {
+  const p = paths(game);
+  const was = await readText(p.allowlist);
+  if (was !== expected) throw new Error(`${p.allowlist} changed since the boards were built. Build them again.`);
+  const adminWas = await readText(p.adminAllowlist);
+  await writeText(p.allowlist, withAllowed(was, word));
+  if (adminWas != null) await writeText(p.adminAllowlist, withAllowed(adminWas, word));
+  return async () => {
+    await writeText(p.allowlist, was);
+    if (adminWas != null) await writeText(p.adminAllowlist, adminWas);
+  };
+}
 
 const shardName = (s) => `dailies_${String(s).padStart(3, '0')}.json`;
 

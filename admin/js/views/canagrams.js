@@ -11,25 +11,25 @@
 // wrong on Canagrams. Giving a day its own fact writes canagramsGameData/{day};
 // the game shows that instead, and the Canuckle fact otherwise.
 
-import { h, clear, modal, toast, issues, safeHref, sortHead } from '../ui.js?v=202610312300';
-import { nextSort, sortRows } from '../sort.js?v=202610312300';
-import { GAME_SITES } from '../config.js?v=202610312300';
-import { longDate, todayEpochDay, isSwapLocked } from '../dates.js?v=202610312300';
-import { sdk } from '../firebase.js?v=202610312300';
-import { launchEd } from '../launch.js?v=202610312300';
+import { h, clear, modal, toast, issues, safeHref, sortHead } from '../ui.js?v=202611011209';
+import { nextSort, sortRows } from '../sort.js?v=202611011209';
+import { GAME_SITES } from '../config.js?v=202611011209';
+import { longDate, todayEpochDay, isSwapLocked } from '../dates.js?v=202611011209';
+import { sdk } from '../firebase.js?v=202611011209';
+import { launchEd } from '../launch.js?v=202611011209';
 import {
   RUNGS, unpackCanagrams, gridRows, rungOf, summarizePlayers,
-} from '../canagrams.js?v=202610312300';
+} from '../canagrams.js?v=202611011209';
 import {
   segmentsToText, textToSegments, canagramsFactOf, canagramsFactToSave, looksDateBound,
-} from '../facts.js?v=202610312300';
+} from '../facts.js?v=202611011209';
 import {
   loadCanagramsFacts, saveCanagramsFact, CANAGRAMS_FACTS, withCanagramsFact,
-} from '../store.js?v=202610312300';
-import { factCard, previewFrame } from '../preview.js?v=202610312300';
-import { arenaFolder } from '../localFiles.js?v=202610312300';
-import { loadLocal } from '../swapFlow.js?v=202610312300';
-import { swapCard, openBoardSwap } from './boardSwap.js?v=202610312300';
+} from '../store.js?v=202611011209';
+import { factCard, previewFrame } from '../preview.js?v=202611011209';
+import { arenaFolder } from '../localFiles.js?v=202611011209';
+import { loadLocal } from '../swapFlow.js?v=202611011209';
+import { swapCard, openBoardSwap } from './boardSwap.js?v=202611011209';
 
 const START_ED = launchEd('canagrams');
 const DATA = 'canagrams/assets/assets/data/';

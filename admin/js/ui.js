@@ -36,7 +36,11 @@ export function safeHref(url) {
 
 /**
  * Opens a dialog. [build] gets a close(result) function and returns the body.
- * Resolves with whatever close() was given (undefined on Esc / backdrop).
+ * Resolves with whatever close() was given (undefined on Esc or ✕).
+ *
+ * A click outside the dialog doesn't close it: every dialog has Save (or
+ * Apply) and Cancel, and a stray click -- or a text selection dragged past
+ * the edge -- shouldn't throw away what was typed.
  */
 export function modal(title, build, { wide = false } = {}) {
   return new Promise((resolve) => {
@@ -49,9 +53,6 @@ export function modal(title, build, { wide = false } = {}) {
     dlg.addEventListener('cancel', (e) => {
       e.preventDefault();
       close(undefined);
-    });
-    dlg.addEventListener('click', (e) => {
-      if (e.target === dlg) close(undefined);
     });
     dlg.append(
       h('div', { class: 'modal-head' },

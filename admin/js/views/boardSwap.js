@@ -3,16 +3,18 @@
 // folder and promotes swaps to production. See featuredSwap.js for what a swap
 // does and swapFlow.js for the files it writes.
 
-import { h, clear, modal, toast, issues } from '../ui.js?v=202610312300';
-import { longDate, swapLockedThrough } from '../dates.js?v=202610312300';
-import { launchEd } from '../launch.js?v=202610312300';
-import { ctx } from '../context.js?v=202610312300';
+import { h, clear, modal, toast, issues } from '../ui.js?v=202611011209';
+import { longDate, swapLockedThrough } from '../dates.js?v=202611011209';
+import { launchEd } from '../launch.js?v=202611011209';
+import { ctx } from '../context.js?v=202611011209';
 import {
-  SWAP_GAMES, boardLabel, planBoardSwap, buildChanges, factFromRuns,
-} from '../featuredSwap.js?v=202610312300';
-import { buildBoard } from '../gen.js?v=202610312300';
-import { hasFolderAccess, arenaFolder, connectArenaFolder } from '../localFiles.js?v=202610312300';
-import { loadLocal, applySwap, pendingSwaps, promote, swapPaths } from '../swapFlow.js?v=202610312300';
+  SWAP_GAMES, boardLabel, planBoardSwap, buildChanges, factFromRuns, requiredCheck, withAllowed,
+} from '../featuredSwap.js?v=202611011209';
+import { buildBoard, wordStatus } from '../gen.js?v=202611011209';
+import { hasFolderAccess, arenaFolder, connectArenaFolder } from '../localFiles.js?v=202611011209';
+import {
+  loadLocal, applySwap, pendingSwaps, promote, swapPaths, readAllowlist, addToAllowlist,
+} from '../swapFlow.js?v=202611011209';
 
 // Production's dates: the lock and the spoiler check are about real players.
 const startEd = (game) => launchEd(game, 0);
@@ -144,9 +146,12 @@ export async function openBoardSwap(game, b, { unpack, preview, factsOf }) {
     const apply = h('button', { class: 'btn primary', disabled: true }, 'Apply');
     let plan = null;
     let built = null;
+    // The allowlist the boards were built with, and the word to add to it on Apply (or null).
+    let allow = null;
 
     function replan() {
       built = null;
+      allow = null;
       apply.disabled = true;
       clear(previewBox);
       const W = word.value.trim().toUpperCase();
@@ -186,18 +191,41 @@ export async function openBoardSwap(game, b, { unpack, preview, factsOf }) {
       word.disabled = true;
       clear(previewBox, h('p', { class: 'muted' }, 'Building boards… (the first takes a few seconds to load the dictionary)'));
       try {
-        const r = await buildChanges(local.cal, plan.changes, (req) => buildBoard(game, req));
+        // Built with the Arena folder's allowlist, as the command line builds,
+        // plus the new word if it has to be made required first.
+        const W = plan.changes[0].forced;
+        const text = await readAllowlist(game);
+        let files = { 'allowlist.txt': text };
+        const status = await wordStatus(game, { word: W, day: b.day }, files);
+        if (status.error) throw new Error(status.error);
+        const check = requiredCheck(game, W, status);
+        if (check.block) {
+          clear(previewBox, issues({ errors: [check.block] }));
+          return;
+        }
+        if (check.ask && !confirm(check.ask)) {
+          clear(previewBox);
+          return;
+        }
+        if (check.add) files = { 'allowlist.txt': withAllowed(text, W) };
+        allow = { text, word: check.add ? W : null };
+        if (check.add) {
+          clear(previewBox, h('p', { class: 'muted' }, `Building boards with ${W} as a required word…`));
+        }
+        const r = await buildChanges(local.cal, plan.changes, (req) => buildBoard(game, req, files));
         if (r.errors.length) {
           clear(previewBox, issues({ errors: r.errors }));
           return;
         }
         built = r.built;
-        clear(previewBox, [...built.values()].map((x) => {
-          const p = unpack(x.line);
-          return h('div', { class: 'card' },
-            h('h3', {}, `${boardLabel(game, x.day, x.kind)}: ${x.word}`),
-            p ? preview(p) : h('p', { class: 'err' }, 'Unreadable board'));
-        }));
+        clear(previewBox,
+          allow.word ? h('p', { class: 'warn small' }, `Apply also adds ${allow.word} to the required words (tools/data/allowlist.txt and the admin's copy).`) : null,
+          [...built.values()].map((x) => {
+            const p = unpack(x.line);
+            return h('div', { class: 'card' },
+              h('h3', {}, `${boardLabel(game, x.day, x.kind)}: ${x.word}`),
+              p ? preview(p) : h('p', { class: 'err' }, 'Unreadable board'));
+          }));
         apply.disabled = false;
       } catch (e) {
         clear(previewBox, issues({ errors: [`The generator didn't run: ${e.message}`] }));
@@ -211,16 +239,22 @@ export async function openBoardSwap(game, b, { unpack, preview, factsOf }) {
       apply.disabled = true;
       build.disabled = true;
       const t = plan.changes[0];
-      const note = `${g.name} ${here}: ${local.cal.boards.get(`${t.day}${t.kind}`)?.word} → ${t.forced}`;
+      const note = `${g.name} ${here}: ${local.cal.boards.get(`${t.day}${t.kind}`)?.word} → ${t.forced}`
+        + (allow?.word ? ` (${allow.word} added to allowlist.txt)` : '');
+      let undoAllow = null;
       try {
+        // The allowlist first: a recorded override the command line can't build is worse than a spare allowlist word.
+        if (allow?.word) undoAllow = await addToAllowlist(game, allow.word, allow.text);
+        else if ((await readAllowlist(game)) !== allow?.text) throw new Error(`${swapPaths(game).allowlist} changed since the boards were built. Build them again.`);
         const r = await applySwap(game, local, plan, built, {
           factFor: canuckleFactFor,
           factsOf,
           note,
         });
-        toast(`Swapped. Wrote ${r.written.join(', ')} to the game and the sandbox; push CanuckleIO to publish on the sandbox.`);
+        toast(`Swapped. Wrote ${[...r.written, ...(allow?.word ? ['allowlist.txt'] : [])].join(', ')} to the game and the sandbox; push CanuckleIO to publish on the sandbox.`);
         close(true);
       } catch (e) {
+        if (undoAllow) await undoAllow().catch(() => {});
         toast(`Not swapped: ${e.message}`, { error: true });
         apply.disabled = false;
         build.disabled = false;

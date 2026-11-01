@@ -1,9 +1,11 @@
 // Changing the words on a Duo day without losing any. Pure functions,
 // unit-tested in admin/tests/run.mjs.
 //
-// Each word taken off the day goes where the word replacing it was going to
-// be used: if the incoming Canuckle puzzle is on a later Duo day, the
-// outgoing one takes its place there. An outgoing word with no such day is
+// Each word taken off the day trades places with the word replacing it: if the
+// incoming Canuckle puzzle is on another Duo day that hasn't been played, the
+// outgoing one takes its place there -- the next later such day, else the
+// nearest earlier one -- so no word is lost and none is used twice. An
+// outgoing word with no such day is
 // "displaced" and gets a new day at the end of the schedule: two displaced
 // words make one day, and a lone one is paired with a fresh Canuckle puzzle
 // (never on any Duo day, at least DUO_RECENT_GAP days old -- the rule
@@ -12,8 +14,8 @@
 // A word's Duo version of its fact (facts[<index>]) moves with it. Badges
 // stay on their day but are flagged, since they were written for the pair.
 
-import { GAMES, isSwapLocked } from './dates.js?v=202610312300';
-import { validateDuo, DUO_RECENT_GAP } from './validate.js?v=202610312300';
+import { GAMES, isSwapLocked } from './dates.js?v=202611011209';
+import { validateDuo, DUO_RECENT_GAP } from './validate.js?v=202611011209';
 
 const g = GAMES.duo;
 
@@ -103,17 +105,13 @@ export function planDuoSwap(duo, canuckle, day, next, { now = new Date(), rng = 
     const fact = cur.facts?.[String(o)];
     delete target.facts[String(o)];
     const others = (uses.get(n) || []).filter((x) => x !== day);
-    const past = others.filter((x) => x < day);
-    const future = others.filter((x) => x > day);
-    if (past.length) warnings.push(`Canuckle #${n} was already used on Duo ${past.map(g.label).join(', ')}.`);
-    if (future.length > 1) warnings.push(`Canuckle #${n} is on several later days (${future.map(g.label).join(', ')}); only ${g.label(future[0])} takes the word it replaces.`);
-    if (!future.length) {
+    const played = others.filter((x) => isSwapLocked('duo', x, now));
+    const open = others.filter((x) => !isSwapLocked('duo', x, now));
+    if (played.length) warnings.push(`Canuckle #${n} was already used on Duo ${played.map(g.label).join(', ')}, which has been played, so it stays there too.`);
+    const f = open.find((x) => x > day) ?? [...open].reverse().find((x) => x < day);
+    if (open.length > 1) warnings.push(`Canuckle #${n} is on several days (${open.map(g.label).join(', ')}); only ${g.label(f)} takes the word it replaces.`);
+    if (f == null) {
       displaced.push({ o, fact });
-      return;
-    }
-    const f = future[0];
-    if (isSwapLocked('duo', f, now)) {
-      errors.push(`Canuckle #${n} is on Duo ${g.label(f)}, which has been played or may be in play, so it can't take #${o} instead.`);
       return;
     }
     const src = edit(f);
@@ -161,6 +159,24 @@ export function planDuoSwap(duo, canuckle, day, next, { now = new Date(), rng = 
     return { index: after.index, before, after, why: why.get(after.index) || '' };
   });
   return { changes, errors: [...new Set(errors)], warnings: [...new Set(warnings)] };
+}
+
+/** Every Canuckle index -> the Duo days using it once [changes] are made. */
+export function plannedUses(duo, changes) {
+  const plan = new Map(duo);
+  for (const c of changes) plan.set(c.index, c.after);
+  return usesOf(plan);
+}
+
+/**
+ * [changes] with day [day]'s badge and facts replaced by what the day editor
+ * holds ([facts] undefined when no word has its own Duo fact). The words stay
+ * the plan's.
+ */
+export function withEditorFields(changes, day, badge, facts) {
+  return changes.map((c) => (c.index === day
+    ? { ...c, after: { ...c.after, badge: badge || null, facts: { ...(facts || {}) } } }
+    : c));
 }
 
 /**
