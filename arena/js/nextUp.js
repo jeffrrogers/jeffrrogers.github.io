@@ -7,14 +7,14 @@
 // snapshot plus this browser's saves, and the games tell it what they finish
 // (markPlayed) so a finish shows here before the arena has refreshed.
 
-import { liveGames } from './games/registry.js?v=202610312330';
-import { cachedRaw, derive } from './progress.js?v=202610312330';
-import { arenaGet, arenaSet, playerId } from './local.js?v=202610312330';
-import { todayEpochDay } from './dates.js?v=202610312330';
-import { recentIndices } from './games/common.js?v=202610312330';
-import { isDone, PROGRESS } from './status.js?v=202610312330';
-import { readFavourites } from './favourites.js?v=202610312330';
-import { computeOrder } from './gameOrder.js?v=202610312330';
+import { liveGames } from './games/registry.js?v=202611010011';
+import { cachedRaw, derive } from './progress.js?v=202611010011';
+import { arenaGet, arenaSet, playerId } from './local.js?v=202611010011';
+import { todayEpochDay } from './dates.js?v=202611010011';
+import { recentIndices } from './games/common.js?v=202611010011';
+import { isDone, PROGRESS } from './status.js?v=202611010011';
+import { readFavourites } from './favourites.js?v=202611010011';
+import { computeOrder } from './gameOrder.js?v=202611010011';
 
 // Discovery order: the games to try first after each kind of game, once their
 // favourites are done. Canolitaire leads both lists because its long sessions
@@ -119,7 +119,7 @@ function progressLines(counted, done, mine) {
  * Picks the game to suggest after [currentId]. Pure: [progress] maps each
  * game id to its derived progress, [favourites] are the game ids they starred
  * on the arena's Games tab and [order] is the arena's game order. Returns null
- * when there is nothing to say, else either {allDone, ...counts} or a
+ * when there is nothing to say, else either {allDone, arenaUrl, ...counts} or a
  * suggestion: {id, name, reason, eyebrow, eyebrowShort, detail, cta, url, hc,
  * celebrate, ...counts}, where counts = {doneCount, totalCount, yours, tally,
  * headline, subline, sublineShort}: the arena row's progress, title and the
@@ -163,6 +163,8 @@ export function pickNext({
     return {
       allDone: true, ...counts, doneCount: daily.length, totalCount: daily.length, tally: all,
       headline: "Today's slate is done", subline: sub, sublineShort: sub,
+      // The arena row says "see your badges", so it opens the Badges tab.
+      arenaUrl: '/arena/#badges',
     };
   }
 

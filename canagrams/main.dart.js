@@ -8600,7 +8600,7 @@ q=A.b(["\u2705 "+a.e+" words"],q)
 r=a.f
 if(r>0)q.push("\u2728 "+r+" bonus")
 if(b&&a.r>1)q.push("\ud83d\udd25 "+a.r)
-q="\ud83c\udf41\ud83d\udd24 Canagrams "+a.a+"\n"+(p+"\n")+(B.b.av(q," \xb7 ")+"\n")+"www.canucklegame.ca/canagrams/"
+q="\ud83c\udf41\ud83d\udd24 Canagrams "+a.a+"\n"+(p+"\n")+(B.b.av(q," \xb7 ")+"\n")+"canagrams.canucklegame.ca"
 return q.charCodeAt(0)==0?q:q},
 aNy(a){var s,r,q,p,o,n=a.en(),m=a.ax,l=A.q(m).i("az<1>"),k=A.S(new A.az(m,l),l.i("z.E"))
 B.b.eq(k)
@@ -10151,7 +10151,7 @@ Ai:function Ai(){},
 v5:function v5(a,b){this.c=a
 this.a=b},
 a4Y:function a4Y(){},
-aKE(a,b,c,d,e,f,g,h,i,j,k,l,m,n,o,p){return new A.afJ(h,m,n,g,e,o,a,i,f,k,d,b,p,l,j,c)},
+aKE(a,b,c,d,e,f,g,h,i,j,k,l,m,n,o,p,q){return new A.afJ(i,n,o,h,f,p,a,j,g,l,e,c,q,b,m,k,d)},
 aX7(a3){var s,r,q,p,o,n,m,l,k,j,i,h,g,f,e,d,c,b,a,a0,a1,a2=null
 if(a3==null)return a2
 try{s=t.a.a(B.al.lE(a3,a2))
@@ -10163,7 +10163,7 @@ k=A.cs(J.b8(s,"doneCount"))
 o=k==null?0:k
 j=A.cs(J.b8(s,"totalCount"))
 n=j==null?0:j
-if(J.d(J.b8(s,"allDone"),!0)){i=A.aKE(!0,"",B.o6,"",o,"",a2,r,"arena",B.d9,"","done",q,p,n,a2)
+if(J.d(J.b8(s,"allDone"),!0)){i=A.aKE(!0,A.b7(J.b8(s,"arenaUrl")),"",B.o6,"",o,"",a2,r,"arena",B.d9,"","done",q,p,n,a2)
 return i}i=t.kc.a(J.b8(s,"hc"))
 h=i==null?a2:J.fB(i,t.N)
 m=h==null?B.by:h
@@ -10178,11 +10178,11 @@ b=A.aW(J.b8(s,"url"))
 a=A.b7(J.b8(s,"reason"))
 if(a==null)a=""
 a0=A.aKF(J.zI(m)?J.b8(m,0):a2)
-i=A.aKE(!1,c,A.aKF(J.bP(m)>1?J.b8(m,1):a2),d,o,g,f,r,i,a0,e,a,q,p,n,b)
+i=A.aKE(!1,a2,c,A.aKF(J.bP(m)>1?J.b8(m,1):a2),d,o,g,f,r,i,a0,e,a,q,p,n,b)
 return i}catch(a1){return a2}},
 aKF(a){var s=A.cL(B.c.hr(a==null?"":a,"#",""),16)
 return s==null?B.HX:A.bc((s|4278190080)>>>0)},
-afJ:function afJ(a,b,c,d,e,f,g,h,i,j,k,l,m,n,o,p){var _=this
+afJ:function afJ(a,b,c,d,e,f,g,h,i,j,k,l,m,n,o,p,q){var _=this
 _.a=a
 _.b=b
 _.c=c
@@ -10198,7 +10198,8 @@ _.Q=l
 _.as=m
 _.at=n
 _.ax=o
-_.ay=p},
+_.ay=p
+_.ch=q},
 Dt:function Dt(a){this.a=a},
 Is:function Is(){this.d=$
 this.c=this.a=null},
@@ -49811,7 +49812,7 @@ s=A.dH(r)
 r=this.a
 s.a_d(A.mr(new A.ayh(s,r.c,r.d),t.H))},
 J(a){var s=this,r=null,q=s.a.c,p=a.Y(t.q).f.gbf(),o=t.p
-return A.oq(A.b([new A.l7("Display",A.b([new A.p3("Dark mode","A dark board, easier on the eyes at night",q.a,new A.aym(s,q),r),new A.p3("High contrast","Orange and blue in place of red and yellow, for colour-blind players",q.b,new A.ayn(s,q),r),new A.p3("Celebrate a solve","The shower of maple leaves when a puzzle comes out",q.c,new A.ayo(s,q),r),new A.p3("Show timer","The clock above the board. Hidden or not, a quick solve still earns the time bonus",q.d,new A.ayp(s,q),r)],o),r),B.fV,new A.LH(s.a.d,new A.ayq(),r),B.fV,new A.l7("Support",A.b([new A.w9("Buy Canuckle a coffee","Tips on Ko-fi keep the games free",A.l8("assets/icons/kofi.svg",28,new A.ayr(),28),new A.ays(),r,r)],o),r),B.fV,new A.l7("Feedback",A.b([new A.w9("Email","info@canucklegame.ca",A.cW(r,r,r,new A.Pw(p.dx,r),B.Z_),new A.ayt(s),"Email info@canucklegame.ca",r)],o),r),B.fV,new A.uN(new A.ayu(),r),B.fV,new A.WG(p,s.gagh(),r)],o),r,r,r,!0,!1,"Settings")}}
+return A.oq(A.b([new A.l7("Display",A.b([new A.p3("Dark Theme",r,q.a,new A.aym(s,q),r),new A.p3("High Contrast Mode","For improved colour vision",q.b,new A.ayn(s,q),r),new A.p3("Celebrate a solve","The shower of maple leaves when a puzzle comes out",q.c,new A.ayo(s,q),r),new A.p3("Show timer","The clock above the board. Hidden or not, a quick solve still earns the time bonus",q.d,new A.ayp(s,q),r)],o),r),B.fV,new A.LH(s.a.d,new A.ayq(),r),B.fV,new A.l7("Support",A.b([new A.w9("Buy Canuckle a coffee","Tips on Ko-fi keep the games free",A.l8("assets/icons/kofi.svg",28,new A.ayr(),28),new A.ays(),r,r)],o),r),B.fV,new A.l7("Feedback",A.b([new A.w9("Email","info@canucklegame.ca",A.cW(r,r,r,new A.Pw(p.dx,r),B.Z_),new A.ayt(s),"Email info@canucklegame.ca",r)],o),r),B.fV,new A.uN(new A.ayu(),r),B.fV,new A.WG(p,s.gagh(),r)],o),r,r,r,!0,!1,"Settings")}}
 A.ayh.prototype={
 $1(a){return new A.t6(new A.ayg(this.a,this.b,this.c),null)},
 $S:501}
@@ -50997,10 +50998,13 @@ r.d=s
 q=s}return q},
 aB(){this.aO()
 var s=this.gFL()
-if(s!=null)A.uz("next_up_shown",A.ak(["target_game",s.w,"reason",s.at],t.N,t.K))},
-a76(){var s=this.gFL()
-if(s!=null)A.uz("next_up_click",A.ak(["target_game","arena","reason",s.at],t.N,t.K))
-this.a.ZK("/arena/")},
+if(s!=null)A.uz("next_up_shown",A.ak(["target_game",s.w,"reason",s.ax],t.N,t.K))},
+a76(){var s,r=this.gFL(),q=r==null
+if(!q)A.uz("next_up_click",A.ak(["target_game","arena","reason",r.ax],t.N,t.K))
+s=this.a
+s.toString
+q=q?null:r.at
+s.ZK(q==null?"/arena/":q)},
 J(a){var s,r=this.gFL()
 if(r==null)return new A.uN(this.gOe(),null)
 s=a.Y(t.q).f.gbf()
@@ -51013,7 +51017,7 @@ return A.bU(r,A.bE(q,B.ao,B.l,B.t),B.bG,r,r,new A.bm(o.fy,r,m,l,r,r,B.F),r,r,r,r
 $S:588}
 A.avc.prototype={
 $0(){var s,r=this.b
-A.uz("next_up_click",A.ak(["target_game",r.w,"reason",r.at],t.N,t.K))
+A.uz("next_up_click",A.ak(["target_game",r.w,"reason",r.ax],t.N,t.K))
 s=this.a.a
 s.toString
 r=r.as
@@ -51054,13 +51058,13 @@ if(n.e){s=j.d
 if(s==null)s=i}else s=i
 r=k.CW
 q=A.ai(m,m,r,m,m,m,m,m,l,m,m,11,m,m,B.v,m,m,!0,m,m,m,m,m,m,m,m)
-s=A.ah(s.toUpperCase(),1,B.aC,m,!1,q.Wy(n.d?j.ay:j.ax,0.8),m,m)
+s=A.ah(s.toUpperCase(),1,B.aC,m,!1,q.Wy(n.d?j.ch:j.ay,0.8),m,m)
 q=t.p
 p=A.b([A.ah(h,1,B.aC,m,m,A.ai(m,m,r,m,m,m,m,m,l,m,m,18,m,m,B.v,m,m,!0,m,m,m,m,m,m,m,m),m,m)],q)
 if(g.length!==0)p.push(A.ah(g,m,m,m,m,A.ai(m,m,k.cx,m,m,m,m,m,l,m,m,13,m,m,m,m,1.3,!0,m,m,m,m,m,m,m,m),m,m))
 p=A.dd(A.bE(p,B.as,B.l,B.t))
 o=A.cq(20)
-return A.eY(new A.eE(!0,new A.by(B.Ki,A.ce(A.b([e,B.ct,A.dd(A.bE(A.b([s,B.j6,A.ce(A.b([p,B.bo,A.bU(B.z,A.ah(f,m,m,m,m,A.ai(m,m,r,m,m,m,m,m,l,m,m,15,m,m,B.v,m,m,!0,m,m,m,m,m,m,m,m).cq(B.j),m,m),B.n,m,m,new A.bm(j.ax,m,m,o,m,m,B.F),m,40,m,B.oZ,m,m,m)],q),B.r,B.l,B.t)],q),B.as,B.l,B.t))],q),B.r,B.l,B.t),m),m),m,n.f,B.aa,i+". "+h+". "+g+". "+f,!1,m)}}
+return A.eY(new A.eE(!0,new A.by(B.Ki,A.ce(A.b([e,B.ct,A.dd(A.bE(A.b([s,B.j6,A.ce(A.b([p,B.bo,A.bU(B.z,A.ah(f,m,m,m,m,A.ai(m,m,r,m,m,m,m,m,l,m,m,15,m,m,B.v,m,m,!0,m,m,m,m,m,m,m,m).cq(B.j),m,m),B.n,m,m,new A.bm(j.ay,m,m,o,m,m,B.F),m,40,m,B.oZ,m,m,m)],q),B.r,B.l,B.t)],q),B.as,B.l,B.t))],q),B.r,B.l,B.t),m),m),m,n.f,B.aa,i+". "+h+". "+g+". "+f,!1,m)}}
 A.avy.prototype={
 $1(a){return B.Bm},
 $S:36}

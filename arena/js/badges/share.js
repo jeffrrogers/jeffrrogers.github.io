@@ -1,7 +1,7 @@
 // Sharing badges through the device share sheet, with a clipboard fallback.
 
-import { medalSvgStandalone } from './icons.js?v=202610312330';
-import { ARENA_URL } from '../config.js?v=202610312330';
+import { medalSvgStandalone } from './icons.js?v=202611010011';
+import { ARENA_URL } from '../config.js?v=202611010011';
 
 function shareText(badge, gameName) {
   const where = gameName ? ` in ${gameName}` : '';
