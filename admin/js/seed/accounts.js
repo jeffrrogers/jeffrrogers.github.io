@@ -12,12 +12,12 @@
 // which runs both versions of each account (as seeded, and with the step
 // played: build(true)) through the Arena's own adapters and badge rules.
 
-import { GAMES, epochDay } from '../dates.js?v=202610311155';
-import { launchEd } from '../launch.js?v=202610311155';
+import { GAMES, epochDay } from '../dates.js?v=202610312300';
+import { launchEd } from '../launch.js?v=202610312300';
 import {
   ts, midnightOf, timeOn, weekdayOf, canuckleGame, duoGame, canuckleStats, duoStats, newUserStub,
   canokuStats, canokuSettings, canokuBoard, canokuSize,
-} from './shapes.js?v=202610311155';
+} from './shapes.js?v=202610312300';
 
 export const TESTERS = { JR: 'Jeff', MR: 'Mark' };
 
@@ -75,6 +75,8 @@ const range = (from, to) => Array.from({ length: to - from + 1 }, (_, i) => from
 
 function makeEnv({ todayEd, offsetWeeks, nowMs, words }) {
   const problems = [];
+  // Puzzles the caller must load before these accounts can be seeded.
+  const needs = { canoku: new Set() };
   const fromLaunch = (gameId) => ({
     first: gameId === 'duo' ? DUO_BASE : 1,
     idx: (ed) => ed - launchEd(gameId, offsetWeeks) + (gameId === 'duo' ? DUO_BASE : 1),
@@ -119,6 +121,16 @@ function makeEnv({ todayEd, offsetWeeks, nowMs, words }) {
       problems.push(`no ${game} answer for #${i}`);
       return game === 'plus' ? 'BEAVER' : 'MAPLE';
     },
+    /** Canoku day [day]'s real {starting, answer} for [mode], for an unfinished board. */
+    canokuPuzzle(day, mode) {
+      const p = words.canoku?.(day, mode) ?? null;
+      if (!p) {
+        needs.canoku.add(day);
+        problems.push(`Canoku puzzle for day ${day} (${mode}) isn't loaded yet`);
+      }
+      return p;
+    },
+    needs,
   };
 }
 
@@ -236,7 +248,12 @@ function canoku(env, id, { days, legacy = false, unfinished = [] }) {
     for (const u of unfinished) {
       out.push({
         path: ['canokuUserData', id, String(u.index), u.mode],
-        data: { gameData: canokuBoard({ mode: u.mode, day: u.index, dateMs: at(u.index), solved: false, time: 140 }) },
+        data: {
+          gameData: canokuBoard({
+            mode: u.mode, day: u.index, dateMs: at(u.index), solved: false, time: 140,
+            puzzle: env.canokuPuzzle(u.index, u.mode),
+          }),
+        },
       });
     }
     return out;
@@ -741,7 +758,7 @@ function definitions(env) {
     code: 'N05', phase: 2, title: 'Canolitaire: play, sweep, Draw 3',
     story: 'Canolitaire Draw 1 Easy won on each of the last 6 days. Never won a Draw 3 deal.',
     before: ['Canolitaire: streak 6 (days played). First Finish only.'],
-    steps: ['Play any deal today (win or lose): On a Roll.', 'Win any Draw 3 deal: Three\'s Company.', 'If you can, win all three Draw 1 deals today: Clean Sweep.'],
+    steps: ['Make a move in any deal today: On a Roll. Then try Give up in Today\'s games: the deal shows as played, with Replay on the board.', 'Win any Draw 3 deal: Three\'s Company.', 'If you can, win all three Draw 1 deals today: Clean Sweep.'],
     after: ['New: On a Roll, Three\'s Company, and Clean Sweep if you won all three Draw 1 deals.'],
     streaks: { canolitaire: [6, 6] },
     expect: { before: ['canolitaire.first'], after: ['canolitaire.streak7', 'canolitaire.draw3', 'canolitaire.sweep'] },
@@ -881,9 +898,11 @@ function definitions(env) {
 
 /**
  * Every account for [testers] (keys of TESTERS) and [phases], with today's
- * dates. [words]: {canuckle(i), plus(i), duo(i) -> [a, b]} give the real
- * answers (null when unknown). Returns {accounts, problems}; seed nothing
- * while problems lists anything (a puzzle missing or not yet launched).
+ * dates. [words]: {canuckle(i), plus(i), duo(i) -> [a, b], canoku(day, mode)
+ * -> {starting, answer}} give the real answers (null when unknown). Returns
+ * {accounts, problems, needs}; seed nothing while problems lists anything (a
+ * puzzle missing or not yet launched). [needs].canoku lists the Canoku days
+ * whose puzzles the caller still has to load.
  * Each account's docs are {path: [collection, id, ...], data}.
  */
 export function buildAccounts({ todayEd, offsetWeeks, nowMs, words, testers = Object.keys(TESTERS), phases = [1, 2], played = false }) {
@@ -895,7 +914,7 @@ export function buildAccounts({ todayEd, offsetWeeks, nowMs, words, testers = Ob
       accounts.push({ ...def, id, tester, docs: def.build(id, played) });
     }
   }
-  return { accounts, problems: [...new Set(env.problems)] };
+  return { accounts, problems: [...new Set(env.problems)], needs: { canoku: [...env.needs.canoku] } };
 }
 
 /** Every QA account ID there can be, for deleting. */

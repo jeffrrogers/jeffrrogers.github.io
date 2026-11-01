@@ -3,11 +3,12 @@
 // the production Firestore project, so these are real docs; only IDs of the
 // form QA-JR-L01 are ever written or deleted (store.js refuses any other).
 
-import { h, clear, toast, modal } from '../ui.js?v=202610311155';
-import { ctx } from '../context.js?v=202610311155';
-import { todayEpochDay, longDate, epochDay } from '../dates.js?v=202610311155';
-import { buildAccounts, allSeedIds, TESTERS } from '../seed/accounts.js?v=202610311155';
-import { seedAccounts, deleteSeedAccounts, seedStatus } from '../store.js?v=202610311155';
+import { h, clear, toast, modal } from '../ui.js?v=202610312300';
+import { ctx } from '../context.js?v=202610312300';
+import { todayEpochDay, longDate, epochDay } from '../dates.js?v=202610312300';
+import { buildAccounts, allSeedIds, TESTERS } from '../seed/accounts.js?v=202610312300';
+import { canokuPuzzleBoards } from '../seed/shapes.js?v=202610312300';
+import { seedAccounts, deleteSeedAccounts, seedStatus, loadCanokuPuzzle } from '../store.js?v=202610312300';
 
 // The Arena and games default to this offset on the sandbox (js/config.js
 // DEFAULT_OFFSET_WEEKS); seeds must use the one testers' browsers use.
@@ -23,6 +24,9 @@ const state = {
   total: 0,
   status: null, // Map<id, collections[]>
   error: '',
+  // Canoku puzzle docs by day, for the unfinished boards: a doc, null while
+  // loading, or missing until asked for.
+  canoku: new Map(),
 };
 
 /** The real answers, from the puzzles the admin page has loaded. */
@@ -34,7 +38,25 @@ const words = {
     const list = d?.puzzles.map((c) => ctx.puzzles.canuckle.get(c)?.answer || null) || [];
     return list.length === 2 && list.every(Boolean) ? list : null;
   },
+  canoku: (day, mode) => canokuPuzzleBoards(state.canoku.get(day), mode),
 };
+
+/** Loads the Canoku puzzles [days] not yet asked for, then redraws. */
+function loadCanoku(days, rerender) {
+  const todo = days.filter((d) => !state.canoku.has(d));
+  if (!todo.length) return;
+  for (const d of todo) state.canoku.set(d, null);
+  Promise.all(todo.map(async (d) => {
+    const doc = await loadCanokuPuzzle(d);
+    if (!doc) state.error = `Canoku has no puzzle for day ${d} in canokuNewData.`;
+    state.canoku.set(d, doc);
+  }))
+    .catch((e) => {
+      for (const d of todo) state.canoku.delete(d);
+      state.error = `Couldn't load the Canoku puzzles: ${e.message}`;
+    })
+    .then(rerender);
+}
 
 function plan() {
   const todayEd = todayEpochDay();
@@ -56,7 +78,8 @@ function canokuDays() {
 
 export function renderSeed(root, rerender) {
   const busy = !!state.busy;
-  const { accounts, problems } = plan();
+  const { accounts, problems, needs } = plan();
+  loadCanoku(needs.canoku, rerender);
 
   const select = (value, options, onchange) => {
     const el = h('select', { disabled: busy }, options.map(([v, label]) => h('option', { value: v, selected: v === value }, label)));

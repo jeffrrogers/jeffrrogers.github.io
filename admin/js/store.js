@@ -2,17 +2,17 @@
 // transaction that also writes an adminLog entry with the docs before and
 // after, so any edit, swap or import can be restored from the Log tab.
 
-import { sdk, currentEmail } from './firebase.js?v=202610311155';
-import { GAMES } from './dates.js?v=202610311155';
-import { decodeAnswer } from './codec.js?v=202610311155';
+import { sdk, currentEmail } from './firebase.js?v=202610312300';
+import { GAMES } from './dates.js?v=202610312300';
+import { decodeAnswer } from './codec.js?v=202610312300';
 import {
   PLAYER_COLLECTIONS, GAMES_SUBCOLLECTION_PARENTS, MAX_GAMES, queryCutoff, accountVerdict, quickVerdict,
-} from './cleanup.js?v=202610311155';
-import { pool } from './pool.js?v=202610311155';
-import { repairAccount } from './repair.js?v=202610311155';
-import { VOTES_COLLECTION } from './polls.js?v=202610311155';
-import { isSeedId } from './seed/accounts.js?v=202610311155';
-import { isTs } from './seed/shapes.js?v=202610311155';
+} from './cleanup.js?v=202610312300';
+import { pool } from './pool.js?v=202610312300';
+import { repairAccount } from './repair.js?v=202610312300';
+import { VOTES_COLLECTION } from './polls.js?v=202610312300';
+import { isSeedId } from './seed/accounts.js?v=202610312300';
+import { isTs } from './seed/shapes.js?v=202610312300';
 
 // ---- Puzzles --------------------------------------------------------------
 
@@ -59,6 +59,20 @@ export async function loadCanokuCount() {
   const [last, next] = await Promise.all([count, count + 1]
     .map((i) => fs.getDoc(fs.doc(db, 'canokuNewData', String(i)))));
   return { count, lastExists: last.exists(), nextExists: next.exists() };
+}
+
+/**
+ * Canoku day [day]'s puzzle doc (canokuNewData), found as Canoku finds it
+ * (user.dart initializeGameData): past puzzleCount the puzzles loop through
+ * the last 200. Null when it doesn't exist.
+ */
+export async function loadCanokuPuzzle(day) {
+  const { fs, db } = await sdk();
+  const countSnap = await fs.getDoc(fs.doc(db, 'canokuNewData', 'puzzleCount'));
+  const count = countSnap.exists() && Number.isInteger(countSnap.data().count) ? countSnap.data().count : Infinity;
+  const docId = day <= count ? day : ((day - 336) % 200) + 336;
+  const snap = await fs.getDoc(fs.doc(db, 'canokuNewData', String(docId)));
+  return snap.exists() ? snap.data() : null;
 }
 
 // Firestore rejects undefined anywhere in a document.

@@ -169,23 +169,72 @@ export function canokuSettings(nowMs) {
   };
 }
 
+const CANOKU_SIZE_KEY = { 9: 'original', 6: 'sixBySix', 4: 'fourByFour' };
+
+/** The level key of a canokuNewData board for a mode key, as Canoku's CanokuGame reads it. */
+function canokuLevelKey(mode) {
+  if (mode.startsWith('VEASY')) return 'veryEasy';
+  if (mode.startsWith('EASY')) return 'easy';
+  if (mode.startsWith('VHARD')) return 'veryHard';
+  if (mode.startsWith('HARD')) return 'hard';
+  return 'medium';
+}
+
+/**
+ * One mode's boards from a canokuNewData/{n} puzzle doc: {starting, answer},
+ * each rows of numbers, -1 for an empty starting cell (CanokuGameBoards).
+ * Null when the doc doesn't hold them.
+ */
+export function canokuPuzzleBoards(puzzleDoc, mode) {
+  const boards = puzzleDoc?.[CANOKU_SIZE_KEY[canokuSize(mode)]]?.[canokuLevelKey(mode)];
+  try {
+    const starting = JSON.parse(boards.startingBoard);
+    const answer = JSON.parse(boards.answerBoard);
+    const n = canokuSize(mode);
+    const square = (b) => b.length === n && b.every((row) => row.length === n);
+    return square(starting) && square(answer) ? { starting, answer } : null;
+  } catch {
+    return null;
+  }
+}
+
 /**
  * A 2.1.0 board (the {gameData} JSON of canokuUserData/{id}/{day}/{MODE}).
  * Solved: every cell holds a valid sudoku (Game.isValidSolution). Unfinished:
  * the givens and a few placed values, with undo history so it counts as
  * started (Game.hasMoves).
+ *
+ * With [puzzle] (that day's {starting, answer} for [mode], see
+ * canokuPuzzleBoards) the givens are the real ones and every placed value is
+ * right: Canoku checks each tile against the day's answer, and shows a wrong
+ * one in red. Without it the board is a made-up valid sudoku, which is fine
+ * only for a solved board (Canoku rebuilds those from the real answer).
  */
-export function canokuBoard({ mode, day, dateMs, solved, time = 300, hints = 0 }) {
+export function canokuBoard({ mode, day, dateMs, solved, time = 300, hints = 0, puzzle = null }) {
   const n = canokuSize(mode);
   const br = n === 9 ? 3 : 2;
   const bc = n === 4 ? 2 : 3;
-  const value = (r, c) => ((r * bc + Math.floor(r / br) + c) % n) + 1;
+  const value = puzzle
+    ? (r, c) => puzzle.answer[r][c]
+    : (r, c) => ((r * bc + Math.floor(r / br) + c) % n) + 1;
+  const given = puzzle
+    ? (r, c) => puzzle.starting[r][c] !== -1
+    : (r, c) => (r + 2 * c) % 3 === 0;
+  // The tiles the player has filled in on an unfinished board: the first three
+  // that aren't given.
+  const played = [];
+  for (let r = 0; r < n && played.length < 3; r++) {
+    for (let c = 0; c < n && played.length < 3; c++) {
+      if (!given(r, c)) played.push({ row: r, column: c });
+    }
+  }
+  const isPlayed = (r, c) => played.some((p) => p.row === r && p.column === c);
   const gameBoard = [];
   for (let r = 0; r < n; r++) {
     const row = [];
     for (let c = 0; c < n; c++) {
-      const locked = (r + 2 * c) % 3 === 0;
-      const placed = solved || locked || (r === 0 && c < 3);
+      const locked = given(r, c);
+      const placed = solved || locked || isPlayed(r, c);
       row.push({
         row: r, column: c, undoValue: null, values: placed ? [value(r, c)] : [],
         noteChanges: [], isNote: false, isLocked: locked, usedHint: false,
@@ -194,7 +243,7 @@ export function canokuBoard({ mode, day, dateMs, solved, time = 300, hints = 0 }
     gameBoard.push(row);
   }
   return JSON.stringify({
-    date: dateMs, index: day, gameBoard, mode, undoItems: [{ row: 0, column: 1 }], redoItems: [],
+    date: dateMs, index: day, gameBoard, mode, undoItems: played.slice(0, 1), redoItems: [],
     time, isPaused: false, hintCount: hints,
   });
 }
