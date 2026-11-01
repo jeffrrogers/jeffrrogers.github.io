@@ -3,19 +3,19 @@
 // folder and promotes swaps to production. See featuredSwap.js for what a swap
 // does and swapFlow.js for the files it writes.
 
-import { h, clear, modal, toast, issues } from '../ui.js?v=202611011416';
-import { longDate, swapLockedThrough } from '../dates.js?v=202611011416';
-import { launchEd } from '../launch.js?v=202611011416';
-import { ctx } from '../context.js?v=202611011416';
+import { h, clear, modal, toast, issues } from '../ui.js?v=202611011430';
+import { longDate, swapLockedThrough } from '../dates.js?v=202611011430';
+import { launchEd } from '../launch.js?v=202611011430';
+import { ctx } from '../context.js?v=202611011430';
 import {
   SWAP_GAMES, boardLabel, planBoardSwap, buildChanges, factFromRuns, requiredCheck, withAllowed,
   planDayTrade, dayTradeCandidates,
-} from '../featuredSwap.js?v=202611011416';
-import { buildBoard, wordStatus } from '../gen.js?v=202611011416';
-import { hasFolderAccess, arenaFolder, connectArenaFolder } from '../localFiles.js?v=202611011416';
+} from '../featuredSwap.js?v=202611011430';
+import { buildBoard, wordStatus } from '../gen.js?v=202611011430';
+import { hasFolderAccess, arenaFolder, connectArenaFolder } from '../localFiles.js?v=202611011430';
 import {
   loadLocal, applySwap, pendingSwaps, promote, swapPaths, readAllowlist, addToAllowlist,
-} from '../swapFlow.js?v=202611011416';
+} from '../swapFlow.js?v=202611011430';
 
 // Production's dates: the lock and the spoiler check are about real players.
 const startEd = (game) => launchEd(game, 0);
@@ -134,18 +134,12 @@ export async function openBoardSwap(game, b, { unpack, preview, factsOf }) {
   const here = boardLabel(game, b.day, b.kind);
   // Trading whole puzzles with another day rebuilds nothing (featuredSwap.js
   // planDayTrade). Canagrams' puzzle and Canoggle's Daily are built for their
-  // weekday, so they trade with the same weekday; Canoggle's Saturday layout
-  // also changes by week, so its boards must also be the same size. The Mini
-  // is the same 3x3 every day, so it trades with any day.
+  // weekday, so they trade with the same weekday (any Saturday, whatever its
+  // board size). The Mini is the same 3x3 every day, so it trades with any day.
   const canTrade = true;
   const anyDay = b.kind === 'm';
   const weekdayOf = anyDay ? () => 0 : (day) => new Date(edOf(game, day) * 86400000).getUTCDay();
-  const size = (line) => {
-    const p = unpack(line);
-    return p ? `${p.width}x${p.height}-${(p.letters.match(/\./g) || []).length}` : null;
-  };
-  const fits = game === 'canoggle' ? (x, y) => size(x) != null && size(x) === size(y) : () => true;
-  const tradeOpts = { weekdayOf, fits, lockedThrough, playedBefore };
+  const tradeOpts = { weekdayOf, lockedThrough, playedBefore };
   const weekdayName = new Date(edOf(game, b.day) * 86400000).toLocaleDateString('en-CA', { weekday: 'long', timeZone: 'UTC' });
   const tradeWith = anyDay ? 'another day' : `another ${weekdayName}`;
 

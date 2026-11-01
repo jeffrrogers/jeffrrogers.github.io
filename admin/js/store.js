@@ -2,17 +2,17 @@
 // transaction that also writes an adminLog entry with the docs before and
 // after, so any edit, swap or import can be restored from the Log tab.
 
-import { sdk, currentEmail } from './firebase.js?v=202611011416';
-import { GAMES } from './dates.js?v=202611011416';
-import { decodeAnswer } from './codec.js?v=202611011416';
+import { sdk, currentEmail } from './firebase.js?v=202611011430';
+import { GAMES } from './dates.js?v=202611011430';
+import { decodeAnswer } from './codec.js?v=202611011430';
 import {
   PLAYER_COLLECTIONS, GAMES_SUBCOLLECTION_PARENTS, MAX_GAMES, queryCutoff, accountVerdict, quickVerdict,
-} from './cleanup.js?v=202611011416';
-import { pool } from './pool.js?v=202611011416';
-import { repairAccount } from './repair.js?v=202611011416';
-import { VOTES_COLLECTION } from './polls.js?v=202611011416';
-import { isSeedId } from './seed/accounts.js?v=202611011416';
-import { isTs } from './seed/shapes.js?v=202611011416';
+} from './cleanup.js?v=202611011430';
+import { pool } from './pool.js?v=202611011430';
+import { repairAccount } from './repair.js?v=202611011430';
+import { VOTES_COLLECTION } from './polls.js?v=202611011430';
+import { isSeedId } from './seed/accounts.js?v=202611011430';
+import { isTs } from './seed/shapes.js?v=202611011430';
 
 // ---- Puzzles --------------------------------------------------------------
 

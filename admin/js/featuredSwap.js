@@ -182,15 +182,17 @@ function ruleErrors(cal, changes) {
 /**
  * What trading board [target]'s whole puzzle with the same kind of board on
  * [day] would do. Nothing is rebuilt -- each puzzle just moves to the other
- * day -- so the two must be the same weekday (the ladder is by weekday) and
- * [opts.fits] the same board (Canoggle's Saturday layout changes by week).
- * @param opts.weekdayOf  day -> weekday
- * @param opts.fits  (lineA, lineB) -> whether each puzzle fits the other's day
+ * day -- so the two must be the same weekday: the ladder is by weekday.
+ * (Canoggle's Saturday boards differ in size week to week, but every Saturday
+ * layout carries the same band and the game's checks accept any of them on
+ * any Saturday -- lib/model/difficulty.dart shippedSpecFor.)
+ * @param opts.weekdayOf  day -> weekday; the admin gives every Mini the same
+ *   one, as the Mini is the same 3x3 every day
  * @param opts.lockedThrough, opts.playedBefore  as planBoardSwap
  * @returns {changes, built: Map<key, {day, kind, line, word}>, errors[], warnings[]}
  *   -- changes and built in the shape applySwap takes from a rebuild
  */
-export function planDayTrade(cal, target, day, { weekdayOf, fits = () => true, lockedThrough = null, playedBefore = () => true } = {}) {
+export function planDayTrade(cal, target, day, { weekdayOf, lockedThrough = null, playedBefore = () => true } = {}) {
   const g = SWAP_GAMES[cal.game];
   const errors = [];
   const warnings = [];
@@ -210,7 +212,6 @@ export function planDayTrade(cal, target, day, { weekdayOf, fits = () => true, l
     if (locked(x.day)) errors.push(`${g.name} ${boardLabel(cal.game, x.day, x.kind)} has been played or may be in play, so it can't move.`);
   }
   if (weekdayOf(a.day) !== weekdayOf(b.day)) errors.push('Only days of the same weekday can trade: the puzzle is built for its weekday.');
-  else if (!fits(a.line, b.line)) errors.push('That Saturday has a different board size, so the puzzles can\'t trade.');
   for (const [x, y] of [[a, b], [b, a]]) {
     if (!playedBefore(x.word, y.day)) {
       errors.push(`Canuckle hasn't run ${x.word} before ${g.name} ${boardLabel(cal.game, y.day, y.kind)}, so moving it there would spoil Canuckle.`);
