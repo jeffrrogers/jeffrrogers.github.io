@@ -3,18 +3,19 @@
 // folder and promotes swaps to production. See featuredSwap.js for what a swap
 // does and swapFlow.js for the files it writes.
 
-import { h, clear, modal, toast, issues } from '../ui.js?v=202611011335';
-import { longDate, swapLockedThrough } from '../dates.js?v=202611011335';
-import { launchEd } from '../launch.js?v=202611011335';
-import { ctx } from '../context.js?v=202611011335';
+import { h, clear, modal, toast, issues } from '../ui.js?v=202611011416';
+import { longDate, swapLockedThrough } from '../dates.js?v=202611011416';
+import { launchEd } from '../launch.js?v=202611011416';
+import { ctx } from '../context.js?v=202611011416';
 import {
   SWAP_GAMES, boardLabel, planBoardSwap, buildChanges, factFromRuns, requiredCheck, withAllowed,
-} from '../featuredSwap.js?v=202611011335';
-import { buildBoard, wordStatus } from '../gen.js?v=202611011335';
-import { hasFolderAccess, arenaFolder, connectArenaFolder } from '../localFiles.js?v=202611011335';
+  planDayTrade, dayTradeCandidates,
+} from '../featuredSwap.js?v=202611011416';
+import { buildBoard, wordStatus } from '../gen.js?v=202611011416';
+import { hasFolderAccess, arenaFolder, connectArenaFolder } from '../localFiles.js?v=202611011416';
 import {
   loadLocal, applySwap, pendingSwaps, promote, swapPaths, readAllowlist, addToAllowlist,
-} from '../swapFlow.js?v=202611011335';
+} from '../swapFlow.js?v=202611011416';
 
 // Production's dates: the lock and the spoiler check are about real players.
 const startEd = (game) => launchEd(game, 0);
@@ -131,6 +132,22 @@ export async function openBoardSwap(game, b, { unpack, preview, factsOf }) {
   const playedBefore = (word, day) => (runs.get(word) ?? Infinity) < edOf(game, day);
   const lockedThrough = swapLockedThrough(game);
   const here = boardLabel(game, b.day, b.kind);
+  // Trading whole puzzles with another day rebuilds nothing (featuredSwap.js
+  // planDayTrade). Canagrams' puzzle and Canoggle's Daily are built for their
+  // weekday, so they trade with the same weekday; Canoggle's Saturday layout
+  // also changes by week, so its boards must also be the same size. The Mini
+  // is the same 3x3 every day, so it trades with any day.
+  const canTrade = true;
+  const anyDay = b.kind === 'm';
+  const weekdayOf = anyDay ? () => 0 : (day) => new Date(edOf(game, day) * 86400000).getUTCDay();
+  const size = (line) => {
+    const p = unpack(line);
+    return p ? `${p.width}x${p.height}-${(p.letters.match(/\./g) || []).length}` : null;
+  };
+  const fits = game === 'canoggle' ? (x, y) => size(x) != null && size(x) === size(y) : () => true;
+  const tradeOpts = { weekdayOf, fits, lockedThrough, playedBefore };
+  const weekdayName = new Date(edOf(game, b.day) * 86400000).toLocaleDateString('en-CA', { weekday: 'long', timeZone: 'UTC' });
+  const tradeWith = anyDay ? 'another day' : `another ${weekdayName}`;
 
   return modal(`Change featured word · ${g.name} ${here} · ${longDate(edOf(game, b.day))}`, (close) => {
     // Canuckle answers already run before this day, for the word box.
@@ -148,12 +165,55 @@ export async function openBoardSwap(game, b, { unpack, preview, factsOf }) {
     let built = null;
     // The allowlist the boards were built with, and the word to add to it on Apply (or null).
     let allow = null;
+    // 'trade': swap whole puzzles with another day of the same weekday, nothing
+    // rebuilt; 'word': feature any word, rebuilding the boards involved.
+    let mode = canTrade ? 'trade' : 'word';
+    let tradeDay = null;
+
+    function showPlan(p, { after = (c) => c.forced || 'drawn as usual' } = {}) {
+      clear(planBox,
+        p.changes.length ? h('div', { class: 'table-wrap' },
+          h('table', { class: 'grid' },
+            h('thead', {}, h('tr', {}, ['Board', 'Date', 'Now', 'After', ''].map((x) => h('th', {}, x)))),
+            h('tbody', {}, p.changes.map((c) => h('tr', {},
+              h('td', { class: 'num' }, boardLabel(game, c.day, c.kind)),
+              h('td', { class: 'nowrap' }, longDate(edOf(game, c.day))),
+              h('td', { class: 'answer' }, c.isNew ? '(new day)' : local.cal.boards.get(`${c.day}${c.kind}`)?.word || '?'),
+              h('td', { class: 'answer' }, after(c)),
+              h('td', { class: 'small muted' }, c.why)))))) : null,
+        issues(p));
+    }
+
+    function previews(list) {
+      return list.map((x) => {
+        const p = unpack(x.line);
+        return h('div', { class: 'card' },
+          h('h3', {}, `${boardLabel(game, x.day, x.kind)}: ${x.word}`),
+          p ? preview(p) : h('p', { class: 'err' }, 'Unreadable board'));
+      });
+    }
 
     function replan() {
       built = null;
       allow = null;
       apply.disabled = true;
       clear(previewBox);
+      if (mode === 'trade') {
+        build.hidden = true;
+        if (tradeDay == null) {
+          clear(planBox);
+          return;
+        }
+        plan = planDayTrade(local.cal, b, tradeDay, tradeOpts);
+        showPlan(plan);
+        if (!plan.errors.length) {
+          built = plan.built;
+          clear(previewBox, previews([...built.values()]));
+          apply.disabled = false;
+        }
+        return;
+      }
+      build.hidden = false;
       const W = word.value.trim().toUpperCase();
       if (!W) {
         clear(planBox);
@@ -170,21 +230,47 @@ export async function openBoardSwap(game, b, { unpack, preview, factsOf }) {
           open.map((o) => h('option', { value: o.key, selected: o.key === plan.source }, `${boardLabel(game, o.day, o.kind)} · ${longDate(edOf(game, o.day))}`)),
           h('option', { value: 'append', selected: plan.source === 'append' }, 'Nowhere: give the old word a new day at the end'));
       }
-      clear(planBox,
-        plan.changes.length ? h('div', { class: 'table-wrap' },
-          h('table', { class: 'grid' },
-            h('thead', {}, h('tr', {}, ['Board', 'Date', 'Now', 'After', ''].map((x) => h('th', {}, x)))),
-            h('tbody', {}, plan.changes.map((c) => h('tr', {},
-              h('td', { class: 'num' }, boardLabel(game, c.day, c.kind)),
-              h('td', { class: 'nowrap' }, longDate(edOf(game, c.day))),
-              h('td', { class: 'answer' }, c.isNew ? '(new day)' : local.cal.boards.get(`${c.day}${c.kind}`)?.word || '?'),
-              h('td', { class: 'answer' }, c.forced || 'drawn as usual'),
-              h('td', { class: 'small muted' }, c.why)))))) : null,
-        issues(plan));
+      showPlan(plan);
       build.disabled = plan.errors.length > 0 || !plan.changes.length;
     }
     word.addEventListener('input', () => { sourceSel.dataset.word = ''; sourceSel.value = ''; replan(); });
     sourceSel.addEventListener('change', replan);
+
+    // The same-weekday days to trade with: every unplayed one, and why a day can't, if it can't.
+    const tradeList = canTrade ? h('div', { class: 'table-wrap' },
+      h('table', { class: 'grid' },
+        h('thead', {}, h('tr', {}, ['', 'Board', 'Date', 'Features', ''].map((x) => h('th', {}, x)))),
+        h('tbody', {}, dayTradeCandidates(local.cal, b, tradeOpts).map((c) => {
+          const radio = h('input', {
+            type: 'radio', name: `trade-${game}`, disabled: !!c.why,
+            onchange: () => { tradeDay = c.day; replan(); },
+          });
+          return h('tr', { class: c.why ? 'muted' : '' },
+            h('td', {}, radio),
+            h('td', { class: 'num' }, boardLabel(game, c.day, c.kind)),
+            h('td', { class: 'nowrap' }, longDate(edOf(game, c.day))),
+            h('td', { class: 'answer' }, c.word || '?'),
+            h('td', { class: 'small muted' }, c.why || ''));
+        })))) : null;
+    const tradeSection = h('div', {},
+      h('p', {}, anyDay
+        ? `Trade ${here}'s whole puzzle with another day's Mini. Each moves to the other's day as it is: every Mini is the same size, so nothing is rebuilt.`
+        : `Trade ${here}'s whole puzzle with another ${weekdayName}'s. Each puzzle moves to the other's day as it is: same difficulty, nothing rebuilt.`),
+      tradeList);
+    const wordSection = h('div', { hidden: mode !== 'word' });
+    const modeSwitch = canTrade ? h('div', { class: 'row' }, [
+      ['trade', `Trade with ${tradeWith}`],
+      ['word', 'Feature a different word'],
+    ].map(([v, l]) => h('label', {},
+      h('input', {
+        type: 'radio', name: `swap-mode-${game}`, checked: mode === v,
+        onchange: () => {
+          mode = v;
+          tradeSection.hidden = v !== 'trade';
+          wordSection.hidden = v !== 'word';
+          replan();
+        },
+      }), ` ${l}`))) : null;
 
     build.addEventListener('click', async () => {
       build.disabled = true;
@@ -220,12 +306,7 @@ export async function openBoardSwap(game, b, { unpack, preview, factsOf }) {
         built = r.built;
         clear(previewBox,
           allow.word ? h('p', { class: 'warn small' }, `Apply also adds ${allow.word} to the required words (tools/data/allowlist.txt and the admin's copy).`) : null,
-          [...built.values()].map((x) => {
-            const p = unpack(x.line);
-            return h('div', { class: 'card' },
-              h('h3', {}, `${boardLabel(game, x.day, x.kind)}: ${x.word}`),
-              p ? preview(p) : h('p', { class: 'err' }, 'Unreadable board'));
-          }));
+          previews([...built.values()]));
         apply.disabled = false;
       } catch (e) {
         clear(previewBox, issues({ errors: [`The generator didn't run: ${e.message}`] }));
@@ -238,13 +319,17 @@ export async function openBoardSwap(game, b, { unpack, preview, factsOf }) {
     apply.addEventListener('click', async () => {
       apply.disabled = true;
       build.disabled = true;
-      const t = plan.changes[0];
-      const note = `${g.name} ${here}: ${local.cal.boards.get(`${t.day}${t.kind}`)?.word} → ${t.forced}`
-        + (allow?.word ? ` (${allow.word} added to allowlist.txt)` : '');
+      const t = plan.changes.find((c) => c.day === b.day && c.kind === b.kind);
+      const note = mode === 'trade'
+        ? `${g.name} ${here} ⇄ ${boardLabel(game, tradeDay, b.kind)}: traded puzzles (${b.word} ⇄ ${t.forced})`
+        : `${g.name} ${here}: ${local.cal.boards.get(`${t.day}${t.kind}`)?.word} → ${t.forced}`
+          + (allow?.word ? ` (${allow.word} added to allowlist.txt)` : '');
       let undoAllow = null;
       try {
         // The allowlist first: a recorded override the command line can't build is worse than a spare allowlist word.
-        if (allow?.word) undoAllow = await addToAllowlist(game, allow.word, allow.text);
+        if (mode === 'trade') {
+          // Nothing built, so no word lists involved.
+        } else if (allow?.word) undoAllow = await addToAllowlist(game, allow.word, allow.text);
         else if ((await readAllowlist(game)) !== allow?.text) throw new Error(`${swapPaths(game).allowlist} changed since the boards were built. Build them again.`);
         const r = await applySwap(game, local, plan, built, {
           factFor: canuckleFactFor,
@@ -261,15 +346,22 @@ export async function openBoardSwap(game, b, { unpack, preview, factsOf }) {
       }
     });
 
-    replan();
-    return h('div', {},
-      h('p', {}, `${here} features `, h('b', {}, b.word || '?'),
-        '. Pick the Canuckle word to feature instead. Its board takes ', h('b', {}, b.word || 'the old word'),
-        ', and both boards are built again for their own day and difficulty. A word featured nowhere sends ',
+    wordSection.append(
+      h('p', {}, 'Pick the Canuckle word to feature instead -- any word, including one scheduled on another weekday. Its board takes ',
+        h('b', {}, b.word || 'the old word'),
+        ', and both boards are built again for their new day and difficulty. A word featured nowhere sends ',
         b.word || 'the old word', ' to a new day at the end of the calendar.'),
       g.kinds.length > 1 ? h('p', { class: 'muted small' }, 'The two boards on a day must feature different words.') : null,
       h('label', { class: 'field' }, h('span', {}, 'New featured word'), word), options,
-      sourceField,
+      sourceField);
+    if (mode !== 'trade') tradeSection.hidden = true;
+
+    replan();
+    return h('div', {},
+      h('p', {}, `${here} features `, h('b', {}, b.word || '?'), '.'),
+      modeSwitch,
+      canTrade ? tradeSection : null,
+      wordSection,
       planBox,
       previewBox,
       h('div', { class: 'actions' }, h('button', { class: 'btn', onclick: () => close(false) }, 'Cancel'), build, apply));

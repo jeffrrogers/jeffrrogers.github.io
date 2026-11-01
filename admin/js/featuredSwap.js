@@ -158,21 +158,93 @@ export function planBoardSwap(cal, target, word, { lockedThrough = null, playedB
     }
   }
 
-  // Every word the plan places must keep the featured-word rules.
+  for (const e of ruleErrors(cal, changes)) if (!errors.includes(e)) errors.push(e);
+  return out(changes);
+}
+
+/** Every way the words [changes] place would break the featured-word rules. */
+function ruleErrors(cal, changes) {
+  const g = SWAP_GAMES[cal.game];
+  const errors = new Set();
   const after = boardsAfter(cal, changes);
   for (const c of changes) {
     if (!c.forced) continue;
     for (const b of after) {
       if (b.word !== c.forced || (b.day === c.day && b.kind === c.kind) || !clash(b, c)) continue;
       const [x, y] = [c, b].sort((p, q) => p.day - q.day || g.kinds.indexOf(p.kind) - g.kinds.indexOf(q.kind));
-      errors.push(`${c.forced} would be featured on ${boardLabel(cal.game, x.day, x.kind)} and ${boardLabel(cal.game, y.day, y.kind)}`
+      errors.add(`${c.forced} would be featured on ${boardLabel(cal.game, x.day, x.kind)} and ${boardLabel(cal.game, y.day, y.kind)}`
         + (x.kind === y.kind ? '; a word is featured once.' : `, ${y.day - x.day} days apart; a Daily and a Mini sharing a word need more than ${FEATURED_GAP}.`));
     }
   }
-  const unique = [...new Set(errors)];
-  errors.length = 0;
-  errors.push(...unique);
-  return out(changes);
+  return [...errors];
+}
+
+/**
+ * What trading board [target]'s whole puzzle with the same kind of board on
+ * [day] would do. Nothing is rebuilt -- each puzzle just moves to the other
+ * day -- so the two must be the same weekday (the ladder is by weekday) and
+ * [opts.fits] the same board (Canoggle's Saturday layout changes by week).
+ * @param opts.weekdayOf  day -> weekday
+ * @param opts.fits  (lineA, lineB) -> whether each puzzle fits the other's day
+ * @param opts.lockedThrough, opts.playedBefore  as planBoardSwap
+ * @returns {changes, built: Map<key, {day, kind, line, word}>, errors[], warnings[]}
+ *   -- changes and built in the shape applySwap takes from a rebuild
+ */
+export function planDayTrade(cal, target, day, { weekdayOf, fits = () => true, lockedThrough = null, playedBefore = () => true } = {}) {
+  const g = SWAP_GAMES[cal.game];
+  const errors = [];
+  const warnings = [];
+  const out = (changes = [], built = new Map()) => ({ changes, built, errors, warnings });
+  const a = cal.boards.get(keyOf(target.day, target.kind));
+  const b = cal.boards.get(keyOf(day, target.kind));
+  if (!a || !b) {
+    errors.push(`There is no board ${boardLabel(cal.game, a ? day : target.day, target.kind)}.`);
+    return out();
+  }
+  if (a.day === b.day) {
+    errors.push('Pick another day.');
+    return out();
+  }
+  const locked = (d) => lockedThrough != null && d <= lockedThrough;
+  for (const x of [a, b]) {
+    if (locked(x.day)) errors.push(`${g.name} ${boardLabel(cal.game, x.day, x.kind)} has been played or may be in play, so it can't move.`);
+  }
+  if (weekdayOf(a.day) !== weekdayOf(b.day)) errors.push('Only days of the same weekday can trade: the puzzle is built for its weekday.');
+  else if (!fits(a.line, b.line)) errors.push('That Saturday has a different board size, so the puzzles can\'t trade.');
+  for (const [x, y] of [[a, b], [b, a]]) {
+    if (!playedBefore(x.word, y.day)) {
+      errors.push(`Canuckle hasn't run ${x.word} before ${g.name} ${boardLabel(cal.game, y.day, y.kind)}, so moving it there would spoil Canuckle.`);
+    }
+  }
+  const changes = [
+    { day: a.day, kind: a.kind, forced: b.word, isNew: false, why: `Takes #${b.day}'s puzzle (${b.word}).` },
+    { day: b.day, kind: b.kind, forced: a.word, isNew: false, why: `Takes #${a.day}'s puzzle (${a.word}).` },
+  ].sort((x, y) => x.day - y.day);
+  for (const e of ruleErrors(cal, changes)) errors.push(e);
+  const built = new Map([
+    [keyOf(a.day, a.kind), { day: a.day, kind: a.kind, line: b.line, word: b.word }],
+    [keyOf(b.day, b.kind), { day: b.day, kind: b.kind, line: a.line, word: a.word }],
+  ]);
+  return out(changes, built);
+}
+
+/**
+ * Every board board [target] could trade puzzles with: the same kind on the
+ * same weekday, not played, other than [target] -- with why it can't, when it
+ * can't. Days in order. Options as planDayTrade.
+ * @returns [{day, kind, word, why: string|null}]
+ */
+export function dayTradeCandidates(cal, target, opts) {
+  const { weekdayOf, lockedThrough = null } = opts;
+  const wd = weekdayOf(target.day);
+  const out = [];
+  for (const b of cal.boards.values()) {
+    if (b.kind !== target.kind || b.day === target.day || weekdayOf(b.day) !== wd) continue;
+    if (lockedThrough != null && b.day <= lockedThrough) continue;
+    const p = planDayTrade(cal, target, b.day, opts);
+    out.push({ day: b.day, kind: b.kind, word: b.word, why: p.errors[0] || null });
+  }
+  return out.sort((x, y) => x.day - y.day);
 }
 
 /** Every board {day, kind, word} once [changes] are made; a new board drawn as usual has word null. */
