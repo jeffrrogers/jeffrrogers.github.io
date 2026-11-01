@@ -40,6 +40,22 @@ export const SWAP_GAMES = {
 
 const keyOf = (day, kind) => `${day}${kind}`;
 
+// THE FEATURED-WORD RULES, as each game's tools/gen/featured_rules.dart (Canoggle)
+// and generate_dailies.dart (Canagrams) apply them -- change them together. A
+// word is featured on at most one board of each kind, and a Canoggle Daily and
+// Mini featuring the same word are more than FEATURED_GAP days apart.
+export const FEATURED_GAP = 30;
+const clash = (a, b) => a.kind === b.kind || Math.abs(a.day - b.day) <= FEATURED_GAP;
+
+/** The words board {day, kind} must not feature, given every other board in [boards] ({day, kind, word}). */
+export function featuredAvoid(boards, day, kind) {
+  const out = new Set();
+  for (const b of boards) {
+    if (b.word && !(b.day === day && b.kind === kind) && clash(b, { day, kind })) out.add(b.word);
+  }
+  return [...out].sort();
+}
+
 /** A board's label: "#30 Daily", or "#30" in a one-board game. */
 export function boardLabel(game, day, kind) {
   const g = SWAP_GAMES[game];
@@ -71,7 +87,10 @@ export function calendarOf(game, index, shards, unpack) {
  * @param opts.playedBefore   (word, day) -> whether Canuckle ran [word] before
  *   [day]'s date, so featuring it there spoils nothing
  * @param opts.source  key of the board to take [word] from, or 'append';
- *   default: the next later board featuring it, else the nearest earlier one
+ *   default: a board of the same kind featuring it (the next later, else the
+ *   nearest earlier), else one of the other kind too close to keep it, else
+ *   'append' -- a Daily and a Mini more than FEATURED_GAP days apart may both
+ *   feature it
  * @returns {changes: [{day, kind, forced, isNew, why}], occurrences:
  *   [{key, day, kind, locked}], source, errors[], warnings[]}
  */
@@ -114,10 +133,12 @@ export function planBoardSwap(cal, target, word, { lockedThrough = null, playedB
     chosen = open.find((o) => o.key === source) || null;
     if (!chosen) errors.push('That board can no longer take the old word.');
   } else if (source !== 'append') {
-    chosen = open.find((o) => o.day > t.day) || [...open].reverse().find((o) => o.day <= t.day) || null;
+    const pick = (list) => list.find((o) => o.day > t.day) || [...list].reverse().find((o) => o.day <= t.day) || null;
+    chosen = pick(open.filter((o) => o.kind === t.kind)) || pick(open.filter((o) => clash(o, t)));
   }
-  if (!chosen && occurrences.length && source !== 'append') {
-    warnings.push(`${W} is also featured on ${occurrences.map((o) => boardLabel(cal.game, o.day, o.kind)).join(', ')}, which has been played, so it stays there too.`);
+  const left = occurrences.filter((o) => o !== chosen);
+  if (left.some((o) => o.locked)) {
+    warnings.push(`${W} is also featured on ${left.filter((o) => o.locked).map((o) => boardLabel(cal.game, o.day, o.kind)).join(', ')}, which has been played, so it stays there too.`);
   }
   if (occurrences.length > 1) {
     const others = occurrences.filter((o) => o !== chosen);
@@ -137,63 +158,63 @@ export function planBoardSwap(cal, target, word, { lockedThrough = null, playedB
     }
   }
 
-  // The other boards on each changed day must keep a different word (Canoggle).
-  const after = (day, kind) => changes.find((c) => c.day === day && c.kind === kind && !c.isNew)?.forced
-    ?? cal.boards.get(keyOf(day, kind))?.word;
+  // Every word the plan places must keep the featured-word rules.
+  const after = boardsAfter(cal, changes);
   for (const c of changes) {
-    if (c.isNew || !c.forced) continue;
-    for (const kind of g.kinds) {
-      if (kind !== c.kind && after(c.day, kind) === c.forced) {
-        errors.push(`${boardLabel(cal.game, c.day, kind)} already features ${c.forced}; a day's two boards need different words.`);
-      }
+    if (!c.forced) continue;
+    for (const b of after) {
+      if (b.word !== c.forced || (b.day === c.day && b.kind === c.kind) || !clash(b, c)) continue;
+      const [x, y] = [c, b].sort((p, q) => p.day - q.day || g.kinds.indexOf(p.kind) - g.kinds.indexOf(q.kind));
+      errors.push(`${c.forced} would be featured on ${boardLabel(cal.game, x.day, x.kind)} and ${boardLabel(cal.game, y.day, y.kind)}`
+        + (x.kind === y.kind ? '; a word is featured once.' : `, ${y.day - x.day} days apart; a Daily and a Mini sharing a word need more than ${FEATURED_GAP}.`));
     }
   }
+  const unique = [...new Set(errors)];
+  errors.length = 0;
+  errors.push(...unique);
   return out(changes);
 }
 
+/** Every board {day, kind, word} once [changes] are made; a new board drawn as usual has word null. */
+function boardsAfter(cal, changes) {
+  const out = new Map([...cal.boards].map(([k, b]) => [k, { day: b.day, kind: b.kind, word: b.word }]));
+  for (const c of changes) out.set(keyOf(c.day, c.kind), { day: c.day, kind: c.kind, word: c.forced });
+  return [...out.values()];
+}
+
 /**
- * Builds the boards a plan changes, in the order and with the avoid lists
- * tools/generate_dailies.dart uses. [build] is genWorker's call:
+ * Builds the boards a plan changes, as tools/generate_dailies.dart builds
+ * them. [build] is genWorker's call:
  * ({day, kind, forced?, avoid?}) -> Promise<{line, word} | {error}>.
+ *   * A board with a forced word depends only on the day and the word; it
+ *     avoids the words the boards before it that day ship.
+ *   * A board drawn as usual (only on a new day) avoids every word the
+ *     featured-word rules keep off it, given the calendar after the swap --
+ *     what the command line's extend run draws for a new last day.
  * @returns {built: Map<key, {day, kind, line, word}>, errors[]}
  */
 export async function buildChanges(cal, changes, build) {
   const g = SWAP_GAMES[cal.game];
   const built = new Map();
   const errors = [];
+  const after = boardsAfter(cal, changes);
   const days = [...new Set(changes.map((c) => c.day))].sort((a, b) => a - b);
   for (const day of days) {
-    const natural = [];
     const shipped = [];
     for (const kind of g.kinds) {
       const c = changes.find((x) => x.day === day && x.kind === kind);
       const label = boardLabel(cal.game, day, kind);
-      let ship = null;
       if (!c) {
-        // Untouched board on an existing day: as shipped, which is also its natural draw.
+        // Untouched board on an existing day: as shipped.
         const b = cal.boards.get(keyOf(day, kind));
-        if (b?.word) natural.push(b.word);
         if (b?.word) shipped.push(b.word);
         continue;
       }
-      if (c.isNew) {
-        // A new day draws every board, forced or not, so later boards can avoid it.
-        const later = g.kinds.slice(g.kinds.indexOf(kind) + 1);
-        const needNatural = !c.forced || later.some((k) => !changes.find((x) => x.day === day && x.kind === k)?.forced);
-        let drawn = null;
-        if (needNatural) {
-          drawn = await build({ day, kind, avoid: [...natural] });
-          if (drawn.error) { errors.push(`${label}: ${drawn.error}`); return { built, errors }; }
-          natural.push(drawn.word);
-        }
-        ship = c.forced ? await build({ day, kind, forced: c.forced, avoid: [...shipped] }) : drawn;
-      } else {
-        // Existing day: the boards before it ship as they will after the swap.
-        ship = await build({ day, kind, forced: c.forced, avoid: [...shipped] });
-        const was = cal.boards.get(keyOf(day, kind));
-        if (was?.word) natural.push(was.word);
-      }
+      const ship = c.forced
+        ? await build({ day, kind, forced: c.forced, avoid: [...shipped] })
+        : await build({ day, kind, avoid: featuredAvoid(after, day, kind) });
       if (ship.error) { errors.push(`${label}: ${ship.error}`); return { built, errors }; }
+      if (!c.forced) after.find((b) => b.day === day && b.kind === kind).word = ship.word;
       if (shipped.includes(ship.word)) {
         errors.push(`${label} drew ${ship.word}, which another board that day features. Try a different word.`);
         return { built, errors };

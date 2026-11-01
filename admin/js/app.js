@@ -1,20 +1,20 @@
 // Canuckle Admin: sign-in gate, header and tabs.
 
-import { h, clear, toast } from './ui.js?v=202611011209';
-import { ADMIN_EMAILS, SITE_LABEL, IS_SANDBOX } from './config.js?v=202611011209';
-import { OFFSET_WEEKS } from './launch.js?v=202611011209';
-import { onUser, signIn, signOut } from './firebase.js?v=202611011209';
-import { ctx, loadAll, loadWords } from './context.js?v=202611011209';
-import { renderPuzzles } from './views/puzzles.js?v=202611011209';
-import { renderDuo } from './views/duo.js?v=202611011209';
-import { renderRunway } from './views/runway.js?v=202611011209';
-import { renderCleanup } from './views/cleanup.js?v=202611011209';
-import { renderLog } from './views/log.js?v=202611011209';
-import { renderRepair } from './views/repair.js?v=202611011209';
-import { renderCanagrams } from './views/canagrams.js?v=202611011209';
-import { renderCanoggle } from './views/canoggle.js?v=202611011209';
-import { renderVersions } from './views/versions.js?v=202611011209';
-import { renderSeed } from './views/seed.js?v=202611011209';
+import { h, clear, toast } from './ui.js?v=202611011335';
+import { ADMIN_EMAILS, SITE_LABEL, IS_SANDBOX } from './config.js?v=202611011335';
+import { OFFSET_WEEKS } from './launch.js?v=202611011335';
+import { onUser, signIn, signOut } from './firebase.js?v=202611011335';
+import { ctx, loadAll, loadWords } from './context.js?v=202611011335';
+import { renderPuzzles } from './views/puzzles.js?v=202611011335';
+import { renderDuo } from './views/duo.js?v=202611011335';
+import { renderRunway } from './views/runway.js?v=202611011335';
+import { renderCleanup } from './views/cleanup.js?v=202611011335';
+import { renderLog } from './views/log.js?v=202611011335';
+import { renderRepair } from './views/repair.js?v=202611011335';
+import { renderCanagrams } from './views/canagrams.js?v=202611011335';
+import { renderCanoggle } from './views/canoggle.js?v=202611011335';
+import { renderVersions } from './views/versions.js?v=202611011335';
+import { renderSeed } from './views/seed.js?v=202611011335';
 
 const TABS = [
   ['canuckle', 'Canuckle'],

@@ -389,3 +389,6 @@ redundancies
 segmented
 sunburn
 vermillion
+
+# --- featured words added in the Arena admin ---
+hoser
