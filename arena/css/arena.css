@@ -433,9 +433,10 @@ main { padding: 20px 0 64px; }
 .fav-hint-star { display: inline-block; color: var(--accent-text); vertical-align: -3px; }
 .fav-hint-star .icon { width: 17px; height: 17px; }
 
-/* The star sits in the today card's top-left corner, and the name's first
-   line starts after it, so it never covers the name. It is a sibling of the
-   card's link, so the wrapper carries the card's lift on hover. */
+/* The star sits in the today card's top-left corner, and the name starts
+   after it, every line of a long one ("Canuckle Duo") lined up, so it never
+   covers the name. It is a sibling of the card's link, so the wrapper
+   carries the card's lift on hover. */
 .today-wrap { position: relative; }
 .today-wrap:hover .fav-star { transform: translateY(-2px); }
 .fav-star {
@@ -457,7 +458,7 @@ main { padding: 20px 0 64px; }
 }
 .fav-star .icon { width: 18px; height: 18px; }
 .fav-star[aria-pressed="true"] { color: var(--accent-text); }
-.today-wrap .tc-name { text-indent: 38px; }
+.today-wrap .tc-name { padding-left: 38px; }
 @media (prefers-reduced-motion: reduce) {
   .fav-star { transition: none; }
 }
