@@ -14,8 +14,8 @@
 // A word's Duo version of its fact (facts[<index>]) moves with it. Badges
 // stay on their day but are flagged, since they were written for the pair.
 
-import { GAMES, isSwapLocked } from './dates.js?v=202611011430';
-import { validateDuo, DUO_RECENT_GAP } from './validate.js?v=202611011430';
+import { GAMES, isSwapLocked } from './dates.js?v=202611011503';
+import { validateDuo, DUO_RECENT_GAP } from './validate.js?v=202611011503';
 
 const g = GAMES.duo;
 

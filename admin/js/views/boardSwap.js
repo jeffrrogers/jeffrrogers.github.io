@@ -3,28 +3,32 @@
 // folder and promotes swaps to production. See featuredSwap.js for what a swap
 // does and swapFlow.js for the files it writes.
 
-import { h, clear, modal, toast, issues } from '../ui.js?v=202611011430';
-import { longDate, swapLockedThrough } from '../dates.js?v=202611011430';
-import { launchEd } from '../launch.js?v=202611011430';
-import { ctx } from '../context.js?v=202611011430';
+import { h, clear, modal, toast, issues } from '../ui.js?v=202611011503';
+import { longDate, swapLockedThrough } from '../dates.js?v=202611011503';
+import { launchEd } from '../launch.js?v=202611011503';
+import { ctx } from '../context.js?v=202611011503';
 import {
   SWAP_GAMES, boardLabel, planBoardSwap, buildChanges, factFromRuns, requiredCheck, withAllowed,
   planDayTrade, dayTradeCandidates,
-} from '../featuredSwap.js?v=202611011430';
-import { buildBoard, wordStatus } from '../gen.js?v=202611011430';
-import { hasFolderAccess, arenaFolder, connectArenaFolder } from '../localFiles.js?v=202611011430';
+} from '../featuredSwap.js?v=202611011503';
+import { buildBoard, wordStatus } from '../gen.js?v=202611011503';
+import { hasFolderAccess, arenaFolder, connectArenaFolder } from '../localFiles.js?v=202611011503';
 import {
   loadLocal, applySwap, pendingSwaps, promote, swapPaths, readAllowlist, addToAllowlist,
-} from '../swapFlow.js?v=202611011430';
+} from '../swapFlow.js?v=202611011503';
 
 // Production's dates: the lock and the spoiler check are about real players.
 const startEd = (game) => launchEd(game, 0);
 const edOf = (game, day) => startEd(game) + day - 1;
 
-/** WORD -> the earliest epoch day Canuckle ran it, from the loaded Canuckle puzzles. */
+// Canuckle and Canuckle+ answers alike can be featured: a Canuckle+ word
+// (six or seven letters, weekly) has run, and has a fact, just as a daily one.
+const answerPuzzles = () => [...ctx.puzzles.canuckle.values(), ...ctx.puzzles.plus.values()];
+
+/** WORD -> the earliest epoch day Canuckle or Canuckle+ ran it, from the loaded puzzles. */
 function canuckleRuns() {
   const out = new Map();
-  for (const p of ctx.puzzles.canuckle.values()) {
+  for (const p of answerPuzzles()) {
     if (!p.answer) continue;
     const prev = out.get(p.answer);
     if (prev == null || p.ed < prev) out.set(p.answer, p.ed);
@@ -32,11 +36,11 @@ function canuckleRuns() {
   return out;
 }
 
-/** Canuckle's fact for WORD in the game's shipped form, from its latest run with one. */
+/** The fact for WORD in the game's shipped form, from its latest run (Canuckle or Canuckle+) with one. */
 function canuckleFactFor(word) {
-  const runs = [...ctx.puzzles.canuckle.values()]
+  const runs = answerPuzzles()
     .filter((p) => p.answer === word && (p.fact || []).join('').trim())
-    .sort((a, b) => b.index - a.index);
+    .sort((a, b) => b.ed - a.ed);
   return runs.length ? factFromRuns(runs[0].fact, runs[0].factUrls) : null;
 }
 
