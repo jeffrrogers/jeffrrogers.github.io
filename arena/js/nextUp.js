@@ -7,14 +7,14 @@
 // snapshot plus this browser's saves, and the games tell it what they finish
 // (markPlayed) so a finish shows here before the arena has refreshed.
 
-import { liveGames } from './games/registry.js?v=202611010011';
-import { cachedRaw, derive } from './progress.js?v=202611010011';
-import { arenaGet, arenaSet, playerId } from './local.js?v=202611010011';
-import { todayEpochDay } from './dates.js?v=202611010011';
-import { recentIndices } from './games/common.js?v=202611010011';
-import { isDone, PROGRESS } from './status.js?v=202611010011';
-import { readFavourites } from './favourites.js?v=202611010011';
-import { computeOrder } from './gameOrder.js?v=202611010011';
+import { liveGames } from './games/registry.js?v=202611012233';
+import { cachedRaw, derive } from './progress.js?v=202611012233';
+import { arenaGet, arenaSet, playerId } from './local.js?v=202611012233';
+import { todayEpochDay } from './dates.js?v=202611012233';
+import { recentIndices } from './games/common.js?v=202611012233';
+import { isDone, PROGRESS } from './status.js?v=202611012233';
+import { readFavourites } from './favourites.js?v=202611012233';
+import { computeOrder } from './gameOrder.js?v=202611012233';
 
 // Discovery order: the games to try first after each kind of game, once their
 // favourites are done. Canolitaire leads both lists because its long sessions
