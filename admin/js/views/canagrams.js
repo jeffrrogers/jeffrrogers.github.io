@@ -11,25 +11,26 @@
 // wrong on Canagrams. Giving a day its own fact writes canagramsGameData/{day};
 // the game shows that instead, and the Canuckle fact otherwise.
 
-import { h, clear, modal, toast, issues, safeHref, sortHead } from '../ui.js?v=202611012103';
-import { nextSort, sortRows } from '../sort.js?v=202611012103';
-import { GAME_SITES } from '../config.js?v=202611012103';
-import { longDate, todayEpochDay, isSwapLocked } from '../dates.js?v=202611012103';
-import { sdk } from '../firebase.js?v=202611012103';
-import { launchEd } from '../launch.js?v=202611012103';
+import { h, clear, modal, toast, issues, safeHref, sortHead } from '../ui.js?v=202611012211';
+import { nextSort, sortRows } from '../sort.js?v=202611012211';
+import { GAME_SITES } from '../config.js?v=202611012211';
+import { longDate, todayEpochDay, isSwapLocked } from '../dates.js?v=202611012211';
+import { sdk } from '../firebase.js?v=202611012211';
+import { launchEd } from '../launch.js?v=202611012211';
 import {
   RUNGS, unpackCanagrams, gridRows, rungOf, summarizePlayers,
-} from '../canagrams.js?v=202611012103';
+} from '../canagrams.js?v=202611012211';
 import {
   segmentsToText, textToSegments, canagramsFactOf, canagramsFactToSave, looksDateBound,
-} from '../facts.js?v=202611012103';
+} from '../facts.js?v=202611012211';
 import {
   loadCanagramsFacts, saveCanagramsFact, CANAGRAMS_FACTS, withCanagramsFact,
-} from '../store.js?v=202611012103';
-import { factCard, previewFrame } from '../preview.js?v=202611012103';
-import { arenaFolder } from '../localFiles.js?v=202611012103';
-import { loadLocal } from '../swapFlow.js?v=202611012103';
-import { swapCard, openBoardSwap } from './boardSwap.js?v=202611012103';
+  loadPlayCounts, CANAGRAMS_STATS,
+} from '../store.js?v=202611012211';
+import { factCard, previewFrame } from '../preview.js?v=202611012211';
+import { arenaFolder } from '../localFiles.js?v=202611012211';
+import { loadLocal } from '../swapFlow.js?v=202611012211';
+import { swapCard, openBoardSwap } from './boardSwap.js?v=202611012211';
 
 const START_ED = launchEd('canagrams');
 const DATA = 'canagrams/assets/assets/data/';
@@ -37,9 +38,10 @@ const PAGE = 28;
 const WARN_DAYS = 30;
 
 /**
- * {site, days: [{day, p}], facts, own, ownError} once loaded, or {error}.
- * facts: word -> the Canuckle fact shipped in the game. own: day -> its
- * canagramsGameData doc.
+ * {site, days: [{day, p}], facts, own, ownError, plays, playsError} once
+ * loaded, or {error}. facts: word -> the Canuckle fact shipped in the game.
+ * own: day -> its canagramsGameData doc. plays: day id -> players who
+ * finished it on its day (canagramsDailyStats).
  */
 let data = null;
 let loading = false;
@@ -70,11 +72,16 @@ function daysOf(shards) {
 }
 
 async function loadOwn() {
-  try {
-    return { own: await loadCanagramsFacts(), ownError: null };
-  } catch (e) {
-    return { own: new Map(), ownError: e.message };
-  }
+  const [own, plays] = await Promise.allSettled([loadCanagramsFacts(), loadPlayCounts(CANAGRAMS_STATS)]);
+  return {
+    own: own.value || new Map(), ownError: own.reason?.message || null,
+    plays: plays.value || new Map(), playsError: plays.reason?.message || null,
+  };
+}
+
+/** Players who finished day [day] on its day, or null for a day not yet played. */
+function playsOf(day) {
+  return day > todayIdx() ? null : data.plays.get(String(day)) || 0;
 }
 
 async function load() {
@@ -346,6 +353,7 @@ function table(rerender) {
       case 'words': return d.p?.slots.length;
       case 'bonus': return d.p?.bonus.length;
       case 'fact': return ownFact(d.day) ? 2 : datedUnfixed(d) ? 1 : 0;
+      case 'plays': return playsOf(d.day);
       case 'solved': return players ? players.byDay.get(d.day) || 0 : null;
       default: return null;
     }
@@ -356,6 +364,7 @@ function table(rerender) {
         { label: '#', key: 'day' }, { label: 'Date', key: 'date' }, { label: 'Day', key: 'rung' },
         { label: 'Shape', key: 'shape' }, { label: 'Canuckle word', key: 'word' }, { label: 'Wheel', key: 'wheel' },
         { label: 'Words', key: 'words' }, { label: 'Bonus', key: 'bonus' }, { label: 'Fact', key: 'fact' },
+        { label: 'Plays', key: 'plays' },
         players ? { label: 'Solved by', key: 'solved' } : null,
       ].filter(Boolean), sort, (key) => { sort = nextSort(sort, key); rerender(); }),
       h('tbody', {}, rows.map((d) => h('tr', {
@@ -375,6 +384,7 @@ function table(rerender) {
       h('td', { class: 'nowrap' },
         ownFact(d.day) ? h('span', { class: 'pill' }, 'Canagrams fact') : null,
         datedUnfixed(d) ? h('span', { class: 'flag', title: data.facts[d.p.canuckle] }, 'Date-bound?') : null),
+      h('td', { class: 'num' }, playsOf(d.day) == null ? '' : String(playsOf(d.day))),
       players ? h('td', { class: 'num' }, String(players.byDay.get(d.day) || 0)) : null)))));
 }
 
@@ -427,6 +437,8 @@ export function renderCanagrams(root, rerender) {
       h('button', { class: 'btn small', disabled: !paged || from + PAGE > data.days.length, onclick: () => { from += PAGE; rerender(); } }, 'Later ›'),
       sort ? h('button', { class: 'btn small', onclick: () => { sort = null; rerender(); } }, 'Default order') : null,
       h('button', { class: 'btn small', onclick: () => { data = null; players = null; rerender(); } }, 'Refresh')),
+    data.playsError ? h('p', { class: 'err' }, `Couldn't read the play counts: ${data.playsError}`) : null,
     table(rerender),
-    h('p', { class: 'muted small' }, 'Tap a day to see its board and edit its fun fact. Future days are greyed. Click a column heading to sort by it, again to reverse. Answers here are spoilers for players, not for you.'));
+    h('p', { class: 'muted small' }, 'Tap a day to see its board and edit its fun fact. Future days are greyed. Click a column heading to sort by it, again to reverse. Answers here are spoilers for players, not for you.'),
+    h('p', { class: 'muted small' }, 'Plays: players who finished the day on its day, from canagramsDailyStats (archive plays aren\'t counted). Refresh to update.'));
 }

@@ -13,22 +13,23 @@
 // canoggleGameData/{day}'s `facts` map under the board's key (d or m); the game
 // shows that instead, and the Canuckle fact otherwise.
 
-import { h, clear, modal, toast, issues, safeHref, sortHead } from '../ui.js?v=202611012103';
-import { nextSort, sortRows } from '../sort.js?v=202611012103';
-import { GAME_SITES } from '../config.js?v=202611012103';
-import { longDate, todayEpochDay, isSwapLocked } from '../dates.js?v=202611012103';
-import { launchEd } from '../launch.js?v=202611012103';
-import { unpackCanoggle, boardRows } from '../canoggle.js?v=202611012103';
+import { h, clear, modal, toast, issues, safeHref, sortHead } from '../ui.js?v=202611012211';
+import { nextSort, sortRows } from '../sort.js?v=202611012211';
+import { GAME_SITES } from '../config.js?v=202611012211';
+import { longDate, todayEpochDay, isSwapLocked } from '../dates.js?v=202611012211';
+import { launchEd } from '../launch.js?v=202611012211';
+import { unpackCanoggle, boardRows } from '../canoggle.js?v=202611012211';
 import {
   segmentsToText, textToSegments, canoggleFactOf, canagramsFactToSave, looksDateBound,
-} from '../facts.js?v=202611012103';
+} from '../facts.js?v=202611012211';
 import {
   loadCanoggleFacts, saveCanoggleFact, CANOGGLE_BOARDS, CANOGGLE_FACTS, withCanoggleFact,
-} from '../store.js?v=202611012103';
-import { factCard, previewFrame } from '../preview.js?v=202611012103';
-import { arenaFolder } from '../localFiles.js?v=202611012103';
-import { loadLocal } from '../swapFlow.js?v=202611012103';
-import { swapCard, openBoardSwap } from './boardSwap.js?v=202611012103';
+  loadPlayCounts, CANOGGLE_STATS,
+} from '../store.js?v=202611012211';
+import { factCard, previewFrame } from '../preview.js?v=202611012211';
+import { arenaFolder } from '../localFiles.js?v=202611012211';
+import { loadLocal } from '../swapFlow.js?v=202611012211';
+import { swapCard, openBoardSwap } from './boardSwap.js?v=202611012211';
 
 const START_ED = launchEd('canoggle');
 const DATA = 'canoggle/assets/assets/data/';
@@ -36,9 +37,11 @@ const PAGE = 14; // days, so 28 rows
 const WARN_DAYS = 30;
 
 /**
- * {site, days, boards: [{day, board, p}], facts, own, ownError} once loaded,
- * or {error}. facts: word -> the Canuckle fact shipped in the game. own: day
- * -> its canoggleGameData doc.
+ * {site, days, boards: [{day, board, p}], facts, own, ownError, plays,
+ * playsError} once loaded, or {error}. facts: word -> the Canuckle fact
+ * shipped in the game. own: day -> its canoggleGameData doc. plays:
+ * `{day}-{board}` -> players who solved that board on its day
+ * (canoggleDailyStats).
  */
 let data = null;
 let loading = false;
@@ -72,11 +75,16 @@ function boardsOf(shards) {
 }
 
 async function loadOwn() {
-  try {
-    return { own: await loadCanoggleFacts(), ownError: null };
-  } catch (e) {
-    return { own: new Map(), ownError: e.message };
-  }
+  const [own, plays] = await Promise.allSettled([loadCanoggleFacts(), loadPlayCounts(CANOGGLE_STATS)]);
+  return {
+    own: own.value || new Map(), ownError: own.reason?.message || null,
+    plays: plays.value || new Map(), playsError: plays.reason?.message || null,
+  };
+}
+
+/** Players who solved board [b] on its day, or null for a day not yet played. */
+function playsOf(b) {
+  return b.day > todayIdx() ? null : data.plays.get(`${b.day}-${b.board}`) || 0;
 }
 
 async function load() {
@@ -301,6 +309,7 @@ function table(rerender) {
       case 'required': return b.p?.required.length;
       case 'bonus': return b.p?.bonus.length;
       case 'fact': return ownFact(b) ? 2 : datedUnfixed(b) ? 1 : 0;
+      case 'plays': return playsOf(b);
       default: return null;
     }
   }, sort);
@@ -310,7 +319,7 @@ function table(rerender) {
       sortHead([
         { label: '#', key: 'day' }, { label: 'Date', key: 'date' }, { label: 'Board', key: 'board' },
         { label: 'Size', key: 'size' }, { label: 'Canuckle word', key: 'word' }, { label: 'Required', key: 'required' },
-        { label: 'Bonus', key: 'bonus' }, { label: 'Fact', key: 'fact' },
+        { label: 'Bonus', key: 'bonus' }, { label: 'Fact', key: 'fact' }, { label: 'Plays', key: 'plays' },
       ], sort, (key) => { sort = nextSort(sort, key); rerender(); }),
       h('tbody', {}, rows.map((b) => h('tr', {
         class: b.day === t ? 'today' : b.day > t ? 'future' : '',
@@ -327,7 +336,8 @@ function table(rerender) {
       h('td', { class: 'num' }, b.p ? String(b.p.bonus.length) : ''),
       h('td', { class: 'nowrap' },
         ownFact(b) ? h('span', { class: 'pill' }, 'Canoggle fact') : null,
-        datedUnfixed(b) ? h('span', { class: 'flag', title: data.facts[b.p.canuckle] }, 'Date-bound?') : null))))));
+        datedUnfixed(b) ? h('span', { class: 'flag', title: data.facts[b.p.canuckle] }, 'Date-bound?') : null),
+      h('td', { class: 'num' }, playsOf(b) == null ? '' : String(playsOf(b))))))));
 }
 
 export function renderCanoggle(root, rerender) {
@@ -378,6 +388,8 @@ export function renderCanoggle(root, rerender) {
       h('button', { class: 'btn small', disabled: !paged || from + PAGE > data.days, onclick: () => { from += PAGE; rerender(); } }, 'Later ›'),
       sort ? h('button', { class: 'btn small', onclick: () => { sort = null; rerender(); } }, 'Default order') : null,
       h('button', { class: 'btn small', onclick: () => { data = null; rerender(); } }, 'Refresh')),
+    data.playsError ? h('p', { class: 'err' }, `Couldn't read the play counts: ${data.playsError}`) : null,
     table(rerender),
-    h('p', { class: 'muted small' }, 'Tap a board to see it and edit its fun fact. Future days are greyed. Click a column heading to sort by it, again to reverse. Answers here are spoilers for players, not for you.'));
+    h('p', { class: 'muted small' }, 'Tap a board to see it and edit its fun fact. Future days are greyed. Click a column heading to sort by it, again to reverse. Answers here are spoilers for players, not for you.'),
+    h('p', { class: 'muted small' }, 'Plays: players who solved the board on its day, from canoggleDailyStats (archive plays and Reveals aren\'t counted). Refresh to update.'));
 }

@@ -2,18 +2,18 @@
 // transaction that also writes an adminLog entry with the docs before and
 // after, so any edit, swap or import can be restored from the Log tab.
 
-import { sdk, currentEmail } from './firebase.js?v=202611012103';
-import { GAMES } from './dates.js?v=202611012103';
-import { decodeAnswer } from './codec.js?v=202611012103';
+import { sdk, currentEmail } from './firebase.js?v=202611012211';
+import { GAMES } from './dates.js?v=202611012211';
+import { decodeAnswer } from './codec.js?v=202611012211';
 import {
   PLAYER_COLLECTIONS, GAMES_SUBCOLLECTION_PARENTS, MAX_GAMES, queryCutoff, accountVerdict, quickVerdict,
-} from './cleanup.js?v=202611012103';
-import { pool } from './pool.js?v=202611012103';
-import { repairAccount } from './repair.js?v=202611012103';
-import { VOTES_COLLECTION } from './polls.js?v=202611012103';
-import { isSeedId } from './seed/accounts.js?v=202611012103';
-import { isTs } from './seed/shapes.js?v=202611012103';
-import { withZeroCounts } from './duoSwap.js?v=202611012103';
+} from './cleanup.js?v=202611012211';
+import { pool } from './pool.js?v=202611012211';
+import { repairAccount } from './repair.js?v=202611012211';
+import { VOTES_COLLECTION } from './polls.js?v=202611012211';
+import { isSeedId } from './seed/accounts.js?v=202611012211';
+import { isTs } from './seed/shapes.js?v=202611012211';
+import { withZeroCounts } from './duoSwap.js?v=202611012211';
 
 // ---- Puzzles --------------------------------------------------------------
 
@@ -235,6 +235,28 @@ export async function zeroDuoCounts(indexes, onProgress) {
     done += chunk.length;
     onProgress?.(done, ids.length);
   }
+}
+
+// ---- Community play counts --------------------------------------------------
+
+export const CANAGRAMS_STATS = 'canagramsDailyStats';
+export const CANOGGLE_STATS = 'canoggleDailyStats';
+
+/**
+ * The `n` on every doc of a game's community-stats collection, as Map<doc id,
+ * n>: the players who finished that board on its day (archive plays aren't
+ * counted). Canagrams docs are `{day}`, Canoggle's `{day}-{d|m}`. One read
+ * per board anyone has finished, so about one a day (two for Canoggle).
+ */
+export async function loadPlayCounts(collection) {
+  const { fs, db } = await sdk();
+  const snap = await fs.getDocs(fs.collection(db, collection));
+  const out = new Map();
+  for (const d of snap.docs) {
+    const n = Number(d.data().n);
+    if (Number.isFinite(n)) out.set(d.id, n);
+  }
+  return out;
 }
 
 // ---- Canagrams facts ----------------------------------------------------------
