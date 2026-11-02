@@ -1,10 +1,11 @@
 // Log tab: recent admin changes with what they changed, and Restore.
 
-import { h, clear, modal, toast, fmtTime, availabilityGate } from '../ui.js?v=202611011503';
-import { loadLog, restoreLogEntry } from '../store.js?v=202611011503';
-import { decodeAnswer } from '../codec.js?v=202611011503';
-import { loadAll, availabilityMessages } from '../context.js?v=202611011503';
-import { GAMES } from '../dates.js?v=202611011503';
+import { h, clear, modal, toast, fmtTime, availabilityGate } from '../ui.js?v=202611012103';
+import { loadLog, restoreLogEntry } from '../store.js?v=202611012103';
+import { decodeAnswer } from '../codec.js?v=202611012103';
+import { loadAll, availabilityMessages } from '../context.js?v=202611012103';
+import { GAMES } from '../dates.js?v=202611012103';
+import { duoPlays } from '../duoSwap.js?v=202611012103';
 
 const RESTORABLE = new Set(['add', 'edit', 'swap', 'import', 'restore', 'versions', 'featured-swap']);
 
@@ -14,7 +15,8 @@ function describe(doc) {
   if (typeof doc.version === 'string' && !('answer' in doc)) return doc.version;
   if (Array.isArray(doc.puzzles)) {
     const badge = doc.badge ? `, ${doc.badge.type} "${doc.badge.label}"` : '';
-    return `#${doc.puzzles.join(' + #')}${badge}`;
+    const plays = doc.distribution ? ` · ${duoPlays(doc)} plays` : '';
+    return `#${doc.puzzles.join(' + #')}${badge}${plays}`;
   }
   const fact = (doc.fact || []).join('');
   return `${decodeAnswer(doc.answer) || '?'}: ${fact.length > 90 ? `${fact.slice(0, 90)}…` : fact}`;

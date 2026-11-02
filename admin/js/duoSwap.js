@@ -14,10 +14,29 @@
 // A word's Duo version of its fact (facts[<index>]) moves with it. Badges
 // stay on their day but are flagged, since they were written for the pair.
 
-import { GAMES, isSwapLocked } from './dates.js?v=202611011503';
-import { validateDuo, DUO_RECENT_GAP } from './validate.js?v=202611011503';
+import { GAMES, isSwapLocked } from './dates.js?v=202611012103';
+import { validateDuo, DUO_RECENT_GAP } from './validate.js?v=202611012103';
 
 const g = GAMES.duo;
+
+// ---- Play counts ----------------------------------------------------------
+// The distribution players bump as they finish a day. Sandbox play shares the
+// live Firestore, so before launch the counts are zeroed (Duo tab).
+
+/** Every finished game counted on a stored Duo doc. */
+export function duoPlays(data) {
+  return g.distKeys.reduce((n, k) => n + (Number(data?.distribution?.[k]) || 0), 0);
+}
+
+/** The Duo days with any plays counted, oldest first, for a Map<index, {data}>. */
+export function daysWithPlays(days) {
+  return [...days.values()].filter((d) => duoPlays(d.data) > 0).map((d) => d.index).sort((a, b) => a - b);
+}
+
+/** [data] with every count in its distribution back at zero; nothing else changes. */
+export function withZeroCounts(data) {
+  return { ...data, distribution: Object.fromEntries(g.distKeys.map((k) => [k, 0])) };
+}
 
 // Every Canuckle index -> the Duo days using it, for a Map<index, {puzzles}>.
 function usesOf(days) {

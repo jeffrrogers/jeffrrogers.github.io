@@ -2,17 +2,18 @@
 // transaction that also writes an adminLog entry with the docs before and
 // after, so any edit, swap or import can be restored from the Log tab.
 
-import { sdk, currentEmail } from './firebase.js?v=202611011503';
-import { GAMES } from './dates.js?v=202611011503';
-import { decodeAnswer } from './codec.js?v=202611011503';
+import { sdk, currentEmail } from './firebase.js?v=202611012103';
+import { GAMES } from './dates.js?v=202611012103';
+import { decodeAnswer } from './codec.js?v=202611012103';
 import {
   PLAYER_COLLECTIONS, GAMES_SUBCOLLECTION_PARENTS, MAX_GAMES, queryCutoff, accountVerdict, quickVerdict,
-} from './cleanup.js?v=202611011503';
-import { pool } from './pool.js?v=202611011503';
-import { repairAccount } from './repair.js?v=202611011503';
-import { VOTES_COLLECTION } from './polls.js?v=202611011503';
-import { isSeedId } from './seed/accounts.js?v=202611011503';
-import { isTs } from './seed/shapes.js?v=202611011503';
+} from './cleanup.js?v=202611012103';
+import { pool } from './pool.js?v=202611012103';
+import { repairAccount } from './repair.js?v=202611012103';
+import { VOTES_COLLECTION } from './polls.js?v=202611012103';
+import { isSeedId } from './seed/accounts.js?v=202611012103';
+import { isTs } from './seed/shapes.js?v=202611012103';
+import { withZeroCounts } from './duoSwap.js?v=202611012103';
 
 // ---- Puzzles --------------------------------------------------------------
 
@@ -211,6 +212,26 @@ export async function importDuo(docs, onProgress) {
       for (const id of chunk) if (!before[id]) out[id] = docs[id];
       return out;
     }, { action: 'import' });
+    done += chunk.length;
+    onProgress?.(done, ids.length);
+  }
+}
+
+/**
+ * Zeroes the play counts on Duo days [indexes], 200 days per logged
+ * transaction, so a player's result landing mid-reset is never lost silently:
+ * the transaction retries over it. Not restorable from the Log tab.
+ */
+export async function zeroDuoCounts(indexes, onProgress) {
+  const ids = indexes.map(String);
+  let done = 0;
+  for (let i = 0; i < ids.length; i += 200) {
+    const chunk = ids.slice(i, i + 200);
+    await writeWithLog(GAMES.duo.collection, chunk, (before) => {
+      const out = {};
+      for (const id of chunk) if (before[id]) out[id] = withZeroCounts(before[id]);
+      return out;
+    }, { action: 'reset-counts', note: `Zeroed Duo play counts on ${chunk.length} day${chunk.length === 1 ? '' : 's'}` });
     done += chunk.length;
     onProgress?.(done, ids.length);
   }

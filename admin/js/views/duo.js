@@ -3,15 +3,15 @@
 // facts) and importing a schedule JSON
 // (canuckleSourceCode/tool/duo_schedule_year1.json).
 
-import { h, clear, modal, toast, issues, availabilityGate, sortHead } from '../ui.js?v=202611011503';
-import { nextSort, sortRows } from '../sort.js?v=202611011503';
-import { segmentsToText, textToSegments, sameFact, duoFactOf, duoFactsToSave } from '../facts.js?v=202611011503';
-import { GAMES, longDate, todayIndex, isAvailable, puzzlesAfterToday, nextIndex } from '../dates.js?v=202611011503';
-import { validateDuo } from '../validate.js?v=202611011503';
-import { savePuzzle, importDuo, applyDuoSwap } from '../store.js?v=202611011503';
-import { planDuoSwap, duoDocFor, plannedUses, withEditorFields } from '../duoSwap.js?v=202611011503';
-import { ctx, loadGame, duoUses, maxIndex, availabilityMessages } from '../context.js?v=202611011503';
-import { factCard, badgeChip, miniSwitch, previewFrame } from '../preview.js?v=202611011503';
+import { h, clear, modal, toast, issues, availabilityGate, sortHead } from '../ui.js?v=202611012103';
+import { nextSort, sortRows } from '../sort.js?v=202611012103';
+import { segmentsToText, textToSegments, sameFact, duoFactOf, duoFactsToSave } from '../facts.js?v=202611012103';
+import { GAMES, longDate, todayIndex, isAvailable, puzzlesAfterToday, nextIndex } from '../dates.js?v=202611012103';
+import { validateDuo } from '../validate.js?v=202611012103';
+import { savePuzzle, importDuo, applyDuoSwap, zeroDuoCounts } from '../store.js?v=202611012103';
+import { planDuoSwap, duoDocFor, plannedUses, withEditorFields, duoPlays, daysWithPlays } from '../duoSwap.js?v=202611012103';
+import { ctx, loadGame, duoUses, maxIndex, availabilityMessages } from '../context.js?v=202611012103';
+import { factCard, badgeChip, miniSwitch, previewFrame } from '../preview.js?v=202611012103';
 
 const PAGE = 150;
 // sort: a clicked column ({key, dir}, sort.js), or null for newest first
@@ -61,7 +61,7 @@ export function renderDuo(root, rerender) {
       || String(d.badge?.label || '').toLowerCase().includes(q);
   });
   const ahead = max == null ? null : puzzlesAfterToday('duo', max);
-  const plays = (d) => g.distKeys.reduce((n, k) => n + (Number(d.data.distribution?.[k]) || 0), 0);
+  const plays = (d) => duoPlays(d.data);
   const problems = new Map(rows.map((d) => [d.index, duoProblems(d, uses)]));
   const sorted = sortRows(rows, (d, key) => {
     switch (key) {
@@ -95,6 +95,7 @@ export function renderDuo(root, rerender) {
         [['all', 'All'], ['future', 'Future only'], ['available', 'Available to players'], ['flagged', 'Flagged'], ['nobadge', 'No badge'], ['duofact', 'Has a Duo fact']]
           .map(([v, l]) => h('option', { value: v, selected: st.filter === v }, l))),
       h('span', { class: 'spacer' }),
+      h('button', { class: 'btn', onclick: () => openZeroCounts(rerender) }, 'Zero play counts…'),
       h('button', { class: 'btn', onclick: () => openImport(rerender) }, 'Import schedule…'),
       h('button', { class: 'btn primary', onclick: () => openDuoEditor(null, rerender) }, `Add ${g.label(nextIndex('duo', max))}`)),
     h('p', { class: 'muted small' }, `${rows.length} of ${all.length} days`,
@@ -371,6 +372,51 @@ export function parseSchedule(json) {
     out[id] = doc;
   }
   return out;
+}
+
+// Sets every day's play counts back to zero: sandbox play shares the live
+// Firestore, so the testers' results are wiped before launch.
+async function openZeroCounts(rerender) {
+  const indexes = daysWithPlays(ctx.puzzles.duo);
+  if (!indexes.length) {
+    toast('No Duo day has any plays counted.');
+    return;
+  }
+  const total = indexes.reduce((n, i) => n + duoPlays(ctx.puzzles.duo.get(i).data), 0);
+  const open = indexes.filter((i) => isAvailable('duo', i));
+  const phrase = 'ZERO DUO';
+  const zeroed = await modal('Zero the Duo play counts?', (close) => {
+    const input = h('input', { placeholder: phrase, autocomplete: 'off' });
+    const go = h('button', { class: 'btn danger', disabled: true }, `Zero ${indexes.length} day${indexes.length === 1 ? '' : 's'}`);
+    const progress = h('p', { class: 'small' });
+    input.addEventListener('input', () => { go.disabled = input.value.trim() !== phrase; });
+    go.addEventListener('click', async () => {
+      go.disabled = true;
+      input.disabled = true;
+      try {
+        await zeroDuoCounts(indexes, (done, n) => { progress.textContent = `Zeroed ${done} of ${n}…`; });
+        close(indexes.length);
+      } catch (e) {
+        toast(`Stopped: ${e.message}`, { error: true });
+        input.disabled = false;
+        go.disabled = input.value.trim() !== phrase;
+      }
+    });
+    return h('div', {},
+      h('p', {}, `${total} finished game${total === 1 ? '' : 's'} are counted across ${indexes.length} day${indexes.length === 1 ? '' : 's'} (${g.label(indexes[0])}`,
+        indexes.length > 1 ? ` to ${g.label(indexes[indexes.length - 1])}` : '',
+        '). This sets every count on those days to zero, so the guess distribution players see after a game starts fresh. Words, badges and facts are untouched.'),
+      open.length ? h('p', { class: 'warn' }, `${open.length} of these days are already open to players, so any real results on them go too. It can't be undone from the Log tab.`)
+        : h('p', { class: 'muted small' }, 'It can\'t be undone from the Log tab.'),
+      h('p', {}, `Type ${phrase} to confirm.`),
+      progress,
+      h('div', { class: 'actions' }, h('button', { class: 'btn', onclick: () => close(false) }, 'Cancel'), input, go));
+  });
+  if (zeroed) {
+    toast(`Zeroed the play counts on ${zeroed} Duo day${zeroed === 1 ? '' : 's'}.`);
+    await loadGame('duo');
+    rerender();
+  }
 }
 
 async function openImport(rerender) {
