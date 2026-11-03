@@ -51398,7 +51398,7 @@ f.push(A.au(h,A.cD(A.au(h,A.b5(A.a([n,new A.aN(B.pO,A.b5(A.a([m,new A.aN(B.KO,l,
 $S:89}
 A.a8Y.prototype={
 $1(a){var s=this.b,r=s.b
-return this.a>1.1?Math.min((r-80)/a,(s.d*0.7-80)/a):(r-80)/a},
+return this.a>1.1?Math.min((r-80)/a,(s.d*0.7-80)/5):(r-80)/a},
 $S:1}
 A.a8N.prototype={
 $0(){},
@@ -51607,7 +51607,7 @@ g.delete()
 i+=6}}}}
 A.Q7.prototype={
 K(a){var s=null
-return A.d1(A.k9(s,s,s,new A.Z_(A.eH().d4(0.6),4,18,s),B.J),this.d,this.c)}}
+return A.d1(A.k9(s,s,s,new A.Z_(A.eH().d4(0.6),4,9.2,s),B.J),this.d,this.c)}}
 A.Z_.prototype={
 aH(a,b){var s,r,q,p,o,n,m,l,k
 $.a2()
@@ -52300,7 +52300,7 @@ o=this.c
 n=o.a
 m=B.b.ai(o.e,n[0])>=0&&B.b.ai(o.e,n[1])>=0||o.e.length>=7
 l=e?8:16
-k=Math.max(6,Math.min((Math.min((g-32-20)/2,240)-4*p)/5,(f-s-q-l-36-6*p)/7))
+k=Math.max(6,Math.min((Math.min((g-32-20)/2,240)-4*p)/5,(f-s-q-l-18.4-6*p)/7))
 l=t.p
 j=A.a([],l)
 if(!r)j.push(A.d1(A.cD(new A.CQ(c,m,h),h,h),q,h))
@@ -54814,7 +54814,7 @@ return A.au(p,A.e0(B.ae,A.a([A.cD(A.b5(A.a([m,B.e_,A.i7(0,s,!1,k,3,r,B.bC),A.i7(
 $S:89}
 A.aon.prototype={
 $1(a){var s=this.b,r=s.b
-return this.a>1.1?Math.min((r-80)/a,(s.d*0.7-80)/a):(r-80)/a},
+return this.a>1.1?Math.min((r-80)/a,(s.d*0.7-80)/5):(r-80)/a},
 $S:1}
 A.Ko.prototype={
 bQ(){this.cz()
