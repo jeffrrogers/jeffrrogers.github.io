@@ -3,12 +3,12 @@
 // the production Firestore project, so these are real docs; only IDs of the
 // form QA-JR-L01 are ever written or deleted (store.js refuses any other).
 
-import { h, clear, toast, modal } from '../ui.js?v=202611012211';
-import { ctx } from '../context.js?v=202611012211';
-import { todayEpochDay, longDate, epochDay } from '../dates.js?v=202611012211';
-import { buildAccounts, allSeedIds, TESTERS } from '../seed/accounts.js?v=202611012211';
-import { canokuPuzzleBoards } from '../seed/shapes.js?v=202611012211';
-import { seedAccounts, deleteSeedAccounts, seedStatus, loadCanokuPuzzle } from '../store.js?v=202611012211';
+import { h, clear, toast, modal } from '../ui.js?v=202611040021';
+import { ctx } from '../context.js?v=202611040021';
+import { todayEpochDay, longDate, epochDay } from '../dates.js?v=202611040021';
+import { buildAccounts, allSeedIds, TESTERS } from '../seed/accounts.js?v=202611040021';
+import { canokuPuzzleBoards } from '../seed/shapes.js?v=202611040021';
+import { seedAccounts, deleteSeedAccounts, seedStatus, loadCanokuPuzzle } from '../store.js?v=202611040021';
 
 // The Arena and games default to this offset on the sandbox (js/config.js
 // DEFAULT_OFFSET_WEEKS); seeds must use the one testers' browsers use.
@@ -95,7 +95,7 @@ export function renderSeed(root, rerender) {
 
   const intro = h('div', { class: 'card' },
     h('h3', {}, 'QA seed accounts'),
-    h('p', {}, 'Test accounts for the launch: legacy Canuckle, Canuckle+ and Canoku players (phase 1, L01–L10) and accounts one play away from a new-game or family badge (phase 2, N01–N11). Each tester gets their own copy, QA-JR-… for Jeff and QA-MR-… for Mark.'),
+    h('p', {}, 'Test accounts for the launch: legacy Canuckle, Canuckle+ and Canoku players (phase 1, L01–L10) and accounts one play away from a new-game or family badge (phase 2, N01–N12). Each tester gets their own copy, QA-JR-… for Jeff and QA-MR-… for Mark.'),
     h('p', { class: 'small muted' }, `Today is ${longDate(todayEpochDay())}. Phase 2 accounts are built around today's puzzles, so re-seed them each test day. Seeding replaces the whole account: anything played on it is lost. The sandbox shares Firestore with production, so delete them all before launch (Nov 1 runbook, step 1).`),
     h('div', { class: 'actions left' },
       h('label', { class: 'row small' }, 'Tester ', select(state.tester, [['all', 'Both'], ...Object.entries(TESTERS)], (v) => { state.tester = v; state.status = null; rerender(); })),

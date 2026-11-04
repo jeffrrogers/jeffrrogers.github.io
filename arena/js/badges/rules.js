@@ -12,9 +12,9 @@
 // the count survives history scrolling out of the recent window. parts() is
 // the checklist behind a badge that needs several things at once.
 
-import { SOLVED, minEd, finishOn, num } from '../status.js?v=202611022230';
-import { todayEpochDay, weekdayName, shortDate } from '../dates.js?v=202611022230';
-import { LAUNCH_DATE } from '../config.js?v=202611022230';
+import { SOLVED, minEd, finishOn, num } from '../status.js?v=202611040021';
+import { todayEpochDay, weekdayName, shortDate } from '../dates.js?v=202611040021';
+import { LAUNCH_DATE } from '../config.js?v=202611040021';
 
 function finishDays(game, p) {
   return [...p.doneIdx].map((i) => finishOn(game, p, i));
@@ -130,6 +130,7 @@ const SWEEP_DESC = {
   canolitaire: 'Win all three Draw 1 deals, or all three Draw 3 deals, on the same day.',
   canominoes: 'Solve the Easy, Medium and Hard puzzles on the same day.',
   canoggle: 'Solve both the Daily board and the Mini on the same day.',
+  canatiles: 'Solve the Easy, Medium and Hard puzzles on the same day.',
 };
 
 /**
@@ -200,6 +201,23 @@ const SPECIALS = {
       check: (p) => [p.flags.hardSolved ? 1 : 0, 1],
       since: (p) => p.flagOn?.hardSolved,
       times: (p) => num(p.tierStats?.h?.w) },
+  ],
+  canatiles: [
+    { key: 'hard', name: 'Top of the Stack', glyph: 'star', tier: 'silver',
+      desc: 'Solve a Hard Canatiles puzzle.',
+      check: (p) => [p.flags.hardSolved ? 1 : 0, 1],
+      since: (p) => p.flagOn?.hardSolved,
+      times: (p) => num(p.tierStats?.h?.w) },
+    { key: 'nohint', name: 'No Peeking', glyph: 'star', tier: 'gold',
+      desc: 'Solve a Hard Canatiles puzzle without a hint.',
+      check: (p) => [p.flags.noHintHard ? 1 : 0, 1],
+      since: (p) => p.flagOn?.noHintHard,
+      occurrences: (p) => p.noHintHardIdx || [] },
+    { key: 'perfectday', name: 'Perfect Day', glyph: 'star', tier: 'gold',
+      desc: 'Solve the Easy, Medium and Hard Canatiles puzzles of one day with no undos and no hints.',
+      check: (p) => [p.flags.perfectDay ? 1 : 0, 1],
+      since: (p) => p.flagOn?.perfectDay,
+      occurrences: (p) => p.perfectDayIdx || [] },
   ],
   canoggle: [
     { key: 'canuckle', name: 'Canuckle Connection', glyph: 'leaf', tier: 'silver',

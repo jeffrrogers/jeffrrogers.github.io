@@ -2,7 +2,7 @@
 // an illustration of what the badge is for. Built from constants only, so the
 // markup is safe to inject. The artwork for a badge is picked from its id.
 
-import { LOGOS } from './logos.js?v=202611022230';
+import { LOGOS } from './logos.js?v=202611040021';
 
 export const LEAF_PATH = 'M50 5L57 19L64 15L61 38L72 27L75 34L86 32L82 45L90 49L70 64L73 73L53 70L53 92L47 92L47 70L27 73L30 64L10 49L18 45L14 32L25 34L28 27L39 38L36 15L43 19Z';
 
@@ -19,6 +19,7 @@ const PALETTE = {
   canominoes: ['#2A2A33', '#15151B'],
   canoggle: ['#D35F1B', '#9E4512'],
   canagrams: ['#0E7C7B', '#0A5958'],
+  canatiles: ['#B5176E', '#6E0E43'],
   night: ['#2A2050', '#1A1430'],
   aurora: ['#16305A', '#0E1E36'],
   slate: ['#3A3A44', '#2B2B33'],
@@ -27,6 +28,15 @@ const PALETTE = {
 
 const leaf = (x, y, s, fill) =>
   `<path transform="translate(${x} ${y}) scale(${s})" d="${LEAF_PATH}" fill="${fill}"/>`;
+
+/** A Canatiles tile, [w] by [h] with its face's top left at (x, y): a dark side below and left, a cream face. */
+const tile = (x, y, w, h, inner = '') =>
+  `<rect x="${x - 3}" y="${y + 3}" width="${w}" height="${h}" rx="${w / 5}" fill="#6E0E43"/>`
+  + `<rect x="${x}" y="${y}" width="${w}" height="${h}" rx="${w / 5}" fill="#FFFBF2"/>` + inner;
+
+/** A green tick in a circle centred on (x, y). */
+const tick = (x, y, r = 6) => `<circle cx="${x}" cy="${y}" r="${r}" fill="#2FA866" stroke="#fff" stroke-width="1.5"/>`
+  + `<path d="M${x - r / 2} ${y}l${r / 3} ${r / 3} ${r * 2 / 3}-${r * 2 / 3}" fill="none" stroke="#fff" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/>`;
 
 /** A game's logo drawn [size] across with its top left at (x, y). */
 const logo = (id, x, y, size) =>
@@ -247,6 +257,22 @@ const ART = {
   // Bonus Hunter: a burst of stars.
   stars: () => [[60, 40, 1], [42, 64, 0.7], [78, 64, 0.7], [60, 82, 0.55]].map(([x, y, k]) =>
     `<path transform="translate(${x} ${y}) scale(${k})" d="M0-16l4.6 9.4 10.4 1.5-7.5 7.3 1.8 10.3L0 7.6l-9.3 4.9 1.8-10.3-7.5-7.3 10.4-1.5z" fill="#F5C443" stroke="#fff" stroke-width="2" stroke-linejoin="round"/>`).join(''),
+
+  // Canatiles' Top of the Stack: a little pyramid of tiles, a leaf on the top one.
+  tile: () => tile(33, 58, 24, 30, `<circle cx="45" cy="73" r="5" fill="#2E7D4F"/>`)
+    + tile(63, 58, 24, 30, `<circle cx="75" cy="73" r="5" fill="#1F5E96"/>`)
+    + tile(48, 30, 24, 30, leaf(51.5, 36, 0.17, '#D52B1E')),
+
+  // Canatiles' No Peeking: a tile, and a closed eye in a white disc.
+  tileNoHint: () => tile(36, 30, 30, 40, leaf(41, 36, 0.2, '#D52B1E'))
+    + '<circle cx="80" cy="62" r="12" fill="#fff"/>'
+    + '<path d="M72 60c4.5 4.5 11.5 4.5 16 0" fill="none" stroke="#6E0E43" stroke-width="2.6" stroke-linecap="round"/>'
+    + [[74.5, 63, 73, 67], [80, 65, 80, 69], [85.5, 63, 87, 67]]
+      .map(([a, b, c, d]) => `<path d="M${a} ${b}L${c} ${d}" stroke="#6E0E43" stroke-width="2" stroke-linecap="round"/>`).join(''),
+
+  // Canatiles' Perfect Day: the day's three tiles, each ticked.
+  tilesPerfect: () => [31, 51, 71].map((x) => tile(x, 38, 18, 24, leaf(x + 3.5, 42, 0.11, '#D52B1E'))
+    + tick(x + 8, 72)).join(''),
 
   padlock: () => '<rect x="49" y="54" width="22" height="18" rx="4" fill="#8A847B"/><path d="M53 54v-5a7 7 0 0 1 14 0v5" fill="none" stroke="#8A847B" stroke-width="3.5"/><circle cx="60" cy="62" r="2.5" fill="#D9D4CC"/>',
 };
@@ -506,6 +532,14 @@ function design(badge) {
     const face = badge.tier === 'gold' ? RING.gold : '#FFFFFF';
     const text = tiered[1] === 'fullweek' ? (n === '1' ? 'ONE WEEK' : `${n} WEEKS`) : n;
     return { palette: game, art, ribbon: [text, face, PALETTE.canagrams[1], 87] };
+  }
+  if (scope === 'canatiles') {
+    switch (key) {
+      case 'hard': return { palette: game, art: ART.tile() };
+      case 'nohint': return { palette: game, art: ART.tileNoHint(), ribbon: ['HARD', '#FFFFFF', PALETTE.canatiles[1], 87] };
+      case 'perfectday': return { palette: game, art: ART.tilesPerfect(), ribbon: ['PERFECT', RING.gold, '#7A2A12', 87] };
+      default: break;
+    }
   }
   if (scope === 'canagrams') {
     switch (key) {

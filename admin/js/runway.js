@@ -10,12 +10,13 @@
 //   Canominoes   dailies_index.json "days" (pipsSourceCode/lib/model/daily.dart)
 //   Canoggle     dailies_index.json "days", the Mini included
 //                (squaredleSourceCode/lib/model/daily.dart)
+//   Canatiles    dailies_index.json "days" (canatilesSourceCode/lib/model/daily.dart)
 //   Canagrams    dailies_index.json "days"
 //                (canagramsSourceCode/lib/model/daily.dart; extend with
 //                tools/generate_dailies.dart, see tools/PUZZLE_GENERATION.md)
 
-import { epochDay } from './dates.js?v=202611012211';
-import { launchEd } from './launch.js?v=202611012211';
+import { epochDay } from './dates.js?v=202611040021';
+import { launchEd } from './launch.js?v=202611040021';
 
 export const DAILY_GAMES = {
   canoku: {
@@ -47,6 +48,12 @@ export const DAILY_GAMES = {
     startEd: launchEd('canagrams'),
     file: 'canagrams/assets/assets/data/dailies_index.json',
     afterEnd: 'Earlier weeks repeat, weekday for weekday.',
+  },
+  canatiles: {
+    name: 'Canatiles',
+    startEd: launchEd('canatiles'),
+    file: 'canatiles/assets/assets/data/dailies_index.json',
+    afterEnd: 'Puzzles repeat from #1.',
   },
 };
 

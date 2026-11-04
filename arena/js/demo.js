@@ -68,6 +68,20 @@ export function demoRaw(game, todayEd) {
         st: 4, ms: 4, ld: k, sd: range(k - 3, k),
         games: [{ day: k, tier: 'e', solved: true }, { day: k - 1, tier: 'e', solved: true }, { day: k - 1, tier: 'm', solved: true }],
       };
+    case 'canatiles':
+      return {
+        tiers: {
+          e: { p: 6, w: 6, bs: 74, ts: 620, bp: 372, tp: 2010, pf: 3 },
+          m: { p: 4, w: 4, bs: 241, ts: 1210, bp: 798, tp: 2860, pf: 1 },
+          h: { p: 3, w: 2, bs: 655, ts: 1420, bp: 1302, tp: 2350, pf: 0 },
+        },
+        st: 5, ms: 5, ld: k, sd: range(k - 4, k),
+        games: [
+          { day: k, tier: 'e', solved: true, ud: 0, ht: 0 }, { day: k, tier: 'm', solved: true, ud: 1, ht: 0 },
+          { day: k - 1, tier: 'e', solved: true, ud: 0, ht: 0 }, { day: k - 1, tier: 'm', solved: true, ud: 0, ht: 0 },
+          { day: k - 1, tier: 'h', solved: true, ud: 2, ht: 0 },
+        ],
+      };
     case 'canoggle':
       return {
         ms: 12, mn: 9, mr: 1, wf: 640, bf: 88, cw: 7, bc: 14, st: 12, mx: 12, ld: k, sd: range(k - 11, k),

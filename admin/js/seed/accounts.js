@@ -3,7 +3,7 @@
 //
 // Phase 1 (L01-L10) are legacy players: Canuckle (in Canuckle 3.0.2's
 // newUserData shape), Canuckle+ and Canoku only, with no arenaUserData, so
-// the Arena's first visit backfills their badges. Phase 2 (N01-N11) are each
+// the Arena's first visit backfills their badges. Phase 2 (N01-N12) are each
 // one play away from a new-game or family badge.
 //
 // Pure: buildAccounts() returns every document to write. Each account also
@@ -12,12 +12,12 @@
 // which runs both versions of each account (as seeded, and with the step
 // played: build(true)) through the Arena's own adapters and badge rules.
 
-import { GAMES, epochDay } from '../dates.js?v=202611012211';
-import { launchEd } from '../launch.js?v=202611012211';
+import { GAMES, epochDay } from '../dates.js?v=202611040021';
+import { launchEd } from '../launch.js?v=202611040021';
 import {
   ts, midnightOf, timeOn, weekdayOf, canuckleGame, duoGame, canuckleStats, duoStats, newUserStub,
   canokuStats, canokuSettings, canokuBoard, canokuSize,
-} from './shapes.js?v=202611012211';
+} from './shapes.js?v=202611040021';
 
 export const TESTERS = { JR: 'Jeff', MR: 'Mark' };
 
@@ -91,6 +91,7 @@ function makeEnv({ todayEd, offsetWeeks, nowMs, words }) {
     canominoes: fromLaunch('canominoes'),
     canoggle: fromLaunch('canoggle'),
     canolitaire: fromLaunch('canolitaire'),
+    canatiles: fromLaunch('canatiles'),
   };
   return {
     todayEd,
@@ -279,6 +280,39 @@ function canoku(env, id, { days, legacy = false, unfinished = [] }) {
 function dayStreak(set, today) {
   const sorted = [...set].sort((a, b) => a - b);
   return { st: currentRun(set, today), ld: sorted.length ? sorted[sorted.length - 1] : 0 };
+}
+
+/**
+ * tilesUserData (canatilesSourceCode/lib/data/stats.dart, user.dart). [solves]:
+ * {index, tier, ud, ht}; undos and hints default to 0, a perfect solve.
+ */
+function canatiles(env, id, solves) {
+  const sec = { e: 120, m: 400, h: 820 };
+  const pts = { e: 330, m: 760, h: 1290 };
+  const tiers = {};
+  for (const t of ['e', 'm', 'h']) {
+    const mine = solves.filter((s) => s.tier === t);
+    tiers[t] = mine.length
+      ? { p: mine.length, w: mine.length, bs: sec[t], ts: sec[t] * mine.length, bp: pts[t], tp: pts[t] * mine.length,
+        pf: mine.filter((s) => !s.ud && !s.ht).length }
+      : { p: 0, w: 0, bs: 0, ts: 0, bp: 0, tp: 0, pf: 0 };
+  }
+  const sd = new Set(solves.map((s) => s.index));
+  const { st, ld } = dayStreak(sd, env.today('canatiles'));
+  const out = [{
+    path: ['tilesUserData', id],
+    data: { ...tiers, st, ms: longestRun(sd), ld, sd: [...sd].sort((a, b) => a - b), updatedAt: ts(env.nowMs) },
+  }];
+  for (const s of solves) {
+    out.push({
+      path: ['tilesUserData', id, 'games', `${s.index}.${s.tier}`],
+      data: {
+        day: s.index, tier: s.tier, sec: sec[s.tier], pts: pts[s.tier], ud: s.ud || 0, ht: s.ht || 0, solved: true, done: true,
+        updatedAt: ts(timeOn(env.cal.canatiles.ed(s.index), 12)),
+      },
+    });
+  }
+  return out;
 }
 
 /** dominoUserData (pipsSourceCode/lib/data/stats.dart). [solves]: {index, tier}. */
@@ -817,15 +851,15 @@ function definitions(env) {
 
   add({
     code: 'N08', phase: 2, title: 'Explorer and Full Slate',
-    story: 'Has played every game except Canolitaire, and today finished all six other daily games. Canuckle+ played last week.',
-    before: ['Explorer shows 7 of 8. Full Slate shows 6 of 7 today.'],
+    story: 'Has played every game except Canolitaire, and today finished all seven other daily games. Canuckle+ played last week.',
+    before: ['Explorer shows 8 of 9. Full Slate shows 7 of 8 today. Badge Collector already earned (10 badges).'],
     steps: ['Play any Canolitaire deal today (win or lose).'],
-    after: ['New: Canolitaire First Finish, Explorer, Full Slate, and Badge Collector (the 10th badge).'],
+    after: ['New: Canolitaire First Finish, Explorer and Full Slate.'],
     streaks: {},
     expect: {
       before: ['canuckle.first', 'plus.first', 'canoku.first', 'duo.first', 'canagrams.first', 'canoggle.first', 'canominoes.first',
-        'duo.dailydouble', 'family.hattrick'],
-      after: ['canolitaire.first', 'family.explorer', 'family.fullslate', 'family.collector'],
+        'canatiles.first', 'duo.dailydouble', 'family.hattrick', 'family.collector'],
+      after: ['canolitaire.first', 'family.explorer', 'family.fullslate'],
     },
     build(id, played) {
       const plus = [{ index: env.at('plus', -7), win: true, guesses: 4 }];
@@ -835,6 +869,7 @@ function definitions(env) {
         ...canagrams(env, id, [{ index: env.at('canagrams', 0), hints: 1 }]),
         ...canoggle(env, id, [{ index: env.at('canoggle', 0), kind: 'd' }]),
         ...canominoes(env, id, [{ index: env.at('canominoes', 0), tier: 'e' }]),
+        ...canatiles(env, id, [{ index: env.at('canatiles', 0), tier: 'e', ud: 1 }]),
       ];
       if (played) out.push(...canolitaire(env, id, [{ index: env.at('canolitaire', 0), draw: 1, tier: 'e', won: false }]));
       return out;
@@ -890,6 +925,23 @@ function definitions(env) {
       const solves = range(-7, -2).map((k) => ({ index: env.at('canominoes', k), tier: 'e' }));
       if (played) solves.push(...[0, -1].map((k) => ({ index: env.at('canominoes', k), tier: 'e' })));
       return [doc(['newUserData', id], newUserStub(env.nowMs)), ...canominoes(env, id, solves)];
+    },
+  });
+
+  add({
+    code: 'N12', phase: 2, title: 'Canatiles: Perfect Day',
+    story: 'Canatiles Easy solved for the last 2 days, and today\'s Easy and Medium already solved with no undos and no hints. Yesterday\'s Hard was solved with a hint.',
+    before: ['Canatiles: streak 3, 5 solved. First Finish and Top of the Stack.'],
+    steps: ['Solve today\'s Hard with no undos and no hints.'],
+    after: ['New: Clean Sweep, No Peeking and Perfect Day.'],
+    streaks: { canatiles: [3, 3] },
+    expect: { before: ['canatiles.first', 'canatiles.hard'], after: ['canatiles.sweep', 'canatiles.nohint', 'canatiles.perfectday'] },
+    build(id, played) {
+      const solves = [-2, -1].map((k) => ({ index: env.at('canatiles', k), tier: 'e' }));
+      solves.push({ index: env.at('canatiles', -1), tier: 'h', ht: 1 });
+      solves.push({ index: env.at('canatiles', 0), tier: 'e' }, { index: env.at('canatiles', 0), tier: 'm' });
+      if (played) solves.push({ index: env.at('canatiles', 0), tier: 'h' });
+      return [doc(['newUserData', id], newUserStub(env.nowMs)), ...canatiles(env, id, solves)];
     },
   });
 

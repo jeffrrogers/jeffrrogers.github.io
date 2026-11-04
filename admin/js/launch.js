@@ -12,7 +12,7 @@
 // explicit ?sandboxOffsetWeeks=N on the admin URL previews shifted dates for
 // that page load only; it is never read from or saved to localStorage.
 
-import { IS_SANDBOX } from './config.js?v=202611012211';
+import { IS_SANDBOX } from './config.js?v=202611040021';
 
 export const LAUNCH_DATE = {
   duo: [2026, 11, 2],
@@ -20,6 +20,7 @@ export const LAUNCH_DATE = {
   canominoes: [2026, 11, 4],
   canoggle: [2026, 11, 5], // a Thursday
   canolitaire: [2026, 11, 6],
+  canatiles: [2026, 11, 18], // a Wednesday
 };
 
 

@@ -2,18 +2,18 @@
 // transaction that also writes an adminLog entry with the docs before and
 // after, so any edit, swap or import can be restored from the Log tab.
 
-import { sdk, currentEmail } from './firebase.js?v=202611012211';
-import { GAMES } from './dates.js?v=202611012211';
-import { decodeAnswer } from './codec.js?v=202611012211';
+import { sdk, currentEmail } from './firebase.js?v=202611040021';
+import { GAMES } from './dates.js?v=202611040021';
+import { decodeAnswer } from './codec.js?v=202611040021';
 import {
   PLAYER_COLLECTIONS, GAMES_SUBCOLLECTION_PARENTS, MAX_GAMES, queryCutoff, accountVerdict, quickVerdict,
-} from './cleanup.js?v=202611012211';
-import { pool } from './pool.js?v=202611012211';
-import { repairAccount } from './repair.js?v=202611012211';
-import { VOTES_COLLECTION } from './polls.js?v=202611012211';
-import { isSeedId } from './seed/accounts.js?v=202611012211';
-import { isTs } from './seed/shapes.js?v=202611012211';
-import { withZeroCounts } from './duoSwap.js?v=202611012211';
+} from './cleanup.js?v=202611040021';
+import { pool } from './pool.js?v=202611040021';
+import { repairAccount } from './repair.js?v=202611040021';
+import { VOTES_COLLECTION } from './polls.js?v=202611040021';
+import { isSeedId } from './seed/accounts.js?v=202611040021';
+import { isTs } from './seed/shapes.js?v=202611040021';
+import { withZeroCounts } from './duoSwap.js?v=202611040021';
 
 // ---- Puzzles --------------------------------------------------------------
 
@@ -256,6 +256,23 @@ export async function loadPlayCounts(collection) {
     const n = Number(d.data().n);
     if (Number.isFinite(n)) out.set(d.id, n);
   }
+  return out;
+}
+
+export const CANATILES_STATS = 'canatilesDailyStats';
+
+/**
+ * The docs [ids] of a community-stats collection, as Map<doc id, data>; a doc
+ * that doesn't exist (nobody finished that puzzle) is left out. One read per
+ * id, all at once.
+ */
+export async function loadStatsDocs(collection, ids) {
+  const { fs, db } = await sdk();
+  const snaps = await Promise.all(ids.map((id) => fs.getDoc(fs.doc(db, collection, id))));
+  const out = new Map();
+  snaps.forEach((s, i) => {
+    if (s.exists()) out.set(ids[i], s.data());
+  });
   return out;
 }
 
