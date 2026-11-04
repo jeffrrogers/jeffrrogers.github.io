@@ -10,13 +10,13 @@
 // uploaded on the next launch with done: false and reads as in progress;
 // today's in-progress board is local.
 
-import { launchDaily, historyStart, readJsonPref, readPendingList } from './common.js?v=202611041055';
-import { toMillis } from '../firebase.js?v=202611041055';
-import { launchEd } from '../config.js?v=202611041055';
-import { readPref } from '../local.js?v=202611041055';
+import { launchDaily, historyStart, readJsonPref, readPendingList } from './common.js?v=202611041302';
+import { toMillis } from '../firebase.js?v=202611041302';
+import { launchEd } from '../config.js?v=202611041302';
+import { readPref } from '../local.js?v=202611041302';
 import {
   SOLVED, PROGRESS, emptyProgress, mark, currentStreak, longestStreak, intList, num, noteFinish,
-} from '../status.js?v=202611041055';
+} from '../status.js?v=202611041302';
 
 const COUNTS = ['ds', 'nh', 'pt', 'bp', 'wf', 'bf', 'cw', 'sn', 'mx'];
 

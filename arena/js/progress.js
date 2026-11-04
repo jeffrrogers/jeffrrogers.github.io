@@ -6,10 +6,10 @@
 // is cheap and also folds in this browser's in-progress saves, which change
 // between visits.
 
-import { createReader } from './firebase.js?v=202611041055';
-import { arenaGet, arenaSet } from './local.js?v=202611041055';
-import { recentIndices } from './games/common.js?v=202611041055';
-import { emptyProgress } from './status.js?v=202611041055';
+import { createReader } from './firebase.js?v=202611041302';
+import { arenaGet, arenaSet } from './local.js?v=202611041302';
+import { recentIndices } from './games/common.js?v=202611041302';
+import { emptyProgress } from './status.js?v=202611041302';
 
 const CACHE_VERSION = 1;
 

@@ -12,12 +12,12 @@
 // which runs both versions of each account (as seeded, and with the step
 // played: build(true)) through the Arena's own adapters and badge rules.
 
-import { GAMES, epochDay } from '../dates.js?v=202611041055';
-import { launchEd } from '../launch.js?v=202611041055';
+import { GAMES, epochDay } from '../dates.js?v=202611041302';
+import { launchEd } from '../launch.js?v=202611041302';
 import {
   ts, midnightOf, timeOn, weekdayOf, canuckleGame, duoGame, canuckleStats, duoStats, newUserStub,
   canokuStats, canokuSettings, canokuBoard, canokuSize,
-} from './shapes.js?v=202611041055';
+} from './shapes.js?v=202611041302';
 
 export const TESTERS = { JR: 'Jeff', MR: 'Mark' };
 
@@ -364,6 +364,7 @@ const canadrift = (env, id, solves) => parGame('canadrift', 'plowUserData', env,
  * rebusUserData (canundrumSourceCode lib/data/stats.dart, user.dart: Canagrams'
  * shape). [games]: {index, pairs, prize, won}; prize is the tier won
  * (top/high/mid/low/none), won false for a day lost to three wrong guesses.
+ * pts = pp + tb (time bonus, 0-200) + mb (memory bonus, 0-200) + pz, at most 1900.
  */
 function canundrum(env, id, games) {
   const PRIZE = { top: 500, high: 300, mid: 150, low: 50, none: 0 };
@@ -372,7 +373,9 @@ function canundrum(env, id, games) {
     const pairs = g.pairs ?? 4;
     const pp = won ? Math.max(100, 1000 - 20 * (pairs + 2) - 50 * pairs) : 0;
     const pz = won ? PRIZE[g.prize || 'mid'] : 0;
-    return { ...g, won, pairs, pp, pz, pts: pp + pz, pr: won ? (g.prize || 'mid') : 'none' };
+    const tb = won ? 120 : 0;
+    const mb = won ? Math.max(0, 200 - 40 * pairs) : 0;
+    return { ...g, won, pairs, pp, tb, mb, pz, pts: pp + tb + mb + pz, pr: won ? (g.prize || 'mid') : 'none' };
   });
   const solved = scored.filter((g) => g.won);
   const sd = new Set(solved.map((g) => g.index));
@@ -389,7 +392,7 @@ function canundrum(env, id, games) {
     out.push({
       path: ['rebusUserData', id, 'games', String(g.index)],
       data: {
-        day: g.index, sec: 95, pts: g.pts, pp: g.pp, pz: g.pz, pr: g.pr, pairs: g.pairs, turns: g.pairs + 2,
+        day: g.index, sec: 95, pts: g.pts, pp: g.pp, tb: g.tb, mb: g.mb, pz: g.pz, pr: g.pr, pairs: g.pairs, turns: g.pairs + 2,
         wrong: g.won ? 0 : 3, solved: g.won, done: true, updatedAt: ts(timeOn(env.cal.canundrum.ed(g.index), 12)),
       },
     });

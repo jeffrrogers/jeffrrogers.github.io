@@ -84,10 +84,10 @@ export function demoRaw(game, todayEd) {
       };
     case 'canundrum':
       return {
-        ds: 6, pl: 7, pt: 4120, bp: 1250, ft: 74000, st: 3, mx: 4, ld: k, sd: [k - 6, k - 5, k - 4, k - 2, k - 1, k],
+        ds: 6, pl: 7, pt: 5480, bp: 1430, ft: 74000, st: 3, mx: 4, ld: k, sd: [k - 6, k - 5, k - 4, k - 2, k - 1, k],
         games: [
-          { day: k, pts: 1250, pr: 'high', pairs: 2, wrong: 0, solved: true, done: true },
-          { day: k - 1, pts: 980, pr: 'top', pairs: 4, wrong: 1, solved: true, done: true },
+          { day: k, pts: 1430, pp: 860, tb: 150, mb: 120, pz: 300, pr: 'high', pairs: 2, wrong: 0, solved: true, done: true },
+          { day: k - 1, pts: 1280, pp: 620, tb: 90, mb: 70, pz: 500, pr: 'top', pairs: 4, wrong: 1, solved: true, done: true },
           { day: k - 3, pts: 0, pr: 'none', pairs: 9, wrong: 3, solved: false, done: true },
         ],
       };

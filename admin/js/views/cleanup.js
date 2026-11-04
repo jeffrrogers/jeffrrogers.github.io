@@ -1,10 +1,10 @@
 // Cleanup tab: find stale accounts (dry run), download a backup, then delete.
 // The rule itself is in ../cleanup.js.
 
-import { h, clear, toast, downloadJson } from '../ui.js?v=202611041055';
-import { summarize, thresholdDays, clockProblem, PLAYER_COLLECTIONS, MAX_GAMES } from '../cleanup.js?v=202611041055';
-import { findStaleAccounts, deleteAllAccounts, serverNow } from '../store.js?v=202611041055';
-import { USE_EMULATOR } from '../config.js?v=202611041055';
+import { h, clear, toast, downloadJson } from '../ui.js?v=202611041302';
+import { summarize, thresholdDays, clockProblem, PLAYER_COLLECTIONS, MAX_GAMES } from '../cleanup.js?v=202611041302';
+import { findStaleAccounts, deleteAllAccounts, serverNow } from '../store.js?v=202611041302';
+import { USE_EMULATOR } from '../config.js?v=202611041302';
 
 const state = {
   phase: 'idle', // idle | scanning | scanned | deleting | done

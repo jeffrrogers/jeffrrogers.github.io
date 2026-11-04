@@ -1,7 +1,7 @@
 // The order the Games and Stats tabs list the games in: release order (see
 // registry.js), or an order the player arranged themselves in Settings.
 
-import { arenaGet, arenaSet } from './local.js?v=202611041055';
+import { arenaGet, arenaSet } from './local.js?v=202611041302';
 
 /**
  * [games] in the order of [ids]. Games the list doesn't name (a game that

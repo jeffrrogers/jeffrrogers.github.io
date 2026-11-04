@@ -9,22 +9,23 @@
 // st, mx, ld, sd}, where ds counts the days solved, pl the days finished
 // (solved or not), pt the total points, bp the best score, ft the fastest solve
 // in ms, st/mx the current and longest streaks, ld the last day finished and sd
-// every day solved. games/{day} holds {day, pts, pp, pz, pr, pairs, turns,
-// wrong, sec, solved, done, updatedAt}: pts = pp (puzzle points) + pz (the
-// prize's value), pr the prize tier won (top/high/mid/low/none), pairs the
+// every day solved. games/{day} holds {day, pts, pp, tb, mb, pz, pr, pairs,
+// turns, wrong, sec, solved, done, updatedAt}: pts = pp (puzzle points, up to
+// 1000) + tb (time bonus, 0-200) + mb (memory bonus, 0-200) + pz (the prize's
+// value, up to 500), so at most 1900; pr the prize tier won (top/high/mid/low/none), pairs the
 // pairs cleared before the right guess and wrong the wrong guesses. A finish
 // with solved: false is a loss (three wrong guesses). A board left unfinished
 // when its day ended is uploaded on the next launch with done: false and reads
 // as in progress; today's in-progress board is local (cndGame_{day}).
 
-import { launchDaily, pct, historyStart, readJsonPref, readPendingList } from './common.js?v=202611041055';
-import { edOfMillis } from '../dates.js?v=202611041055';
-import { toMillis } from '../firebase.js?v=202611041055';
-import { launchEd } from '../config.js?v=202611041055';
-import { readPref } from '../local.js?v=202611041055';
+import { launchDaily, pct, historyStart, readJsonPref, readPendingList } from './common.js?v=202611041302';
+import { edOfMillis } from '../dates.js?v=202611041302';
+import { toMillis } from '../firebase.js?v=202611041302';
+import { launchEd } from '../config.js?v=202611041302';
+import { readPref } from '../local.js?v=202611041302';
 import {
   SOLVED, FAILED, PROGRESS, emptyProgress, mark, currentStreak, longestStreak, intList, num, minEd, noteFinish,
-} from '../status.js?v=202611041055';
+} from '../status.js?v=202611041302';
 
 const COUNTS = ['ds', 'pl', 'pt', 'bp', 'mx'];
 
@@ -35,7 +36,8 @@ const count = (v) => (Number.isInteger(v) && v >= 0 ? v : null);
 
 function gameOf(data, at) {
   return {
-    day: num(data.day), pts: num(data.pts), pr: typeof data.pr === 'string' ? data.pr : null,
+    day: num(data.day), pts: num(data.pts), pp: count(data.pp), tb: count(data.tb), mb: count(data.mb), pz: count(data.pz),
+    pr: typeof data.pr === 'string' ? data.pr : null,
     pairs: count(data.pairs), wrong: count(data.wrong),
     solved: data.solved !== false, done: data.done !== false, at,
   };
