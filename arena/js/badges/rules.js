@@ -12,9 +12,9 @@
 // the count survives history scrolling out of the recent window. parts() is
 // the checklist behind a badge that needs several things at once.
 
-import { SOLVED, minEd, finishOn, num } from '../status.js?v=202611041401';
-import { todayEpochDay, weekdayName, shortDate } from '../dates.js?v=202611041401';
-import { LAUNCH_DATE } from '../config.js?v=202611041401';
+import { SOLVED, minEd, finishOn, num } from '../status.js?v=202611041832';
+import { todayEpochDay, weekdayName, shortDate } from '../dates.js?v=202611041832';
+import { LAUNCH_DATE } from '../config.js?v=202611041832';
 
 function finishDays(game, p) {
   return [...p.doneIdx].map((i) => finishOn(game, p, i));
@@ -228,7 +228,7 @@ const SPECIALS = {
       since: (p) => p.flagOn?.sharp,
       occurrences: (p) => p.sharpIdx || [] },
     { key: 'topprize', name: 'Grand Prize', glyph: 'star', tier: 'gold',
-      desc: 'Win the top prize in a Canundrum Prize Round.',
+      desc: 'Finish a Canundrum Bonus Round on the top prize.',
       check: (p) => [p.flags.topPrize ? 1 : 0, 1],
       since: (p) => p.flagOn?.topPrize,
       occurrences: (p) => p.topPrizeIdx || [] },

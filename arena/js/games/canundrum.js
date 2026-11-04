@@ -1,5 +1,5 @@
 // Canundrum: the daily Canadian rebus. Match pairs of cards to uncover a picture
-// puzzle, guess it with as little showing as you dare, then play the Prize Round.
+// puzzle, guess it with as little showing as you dare, then play the Bonus Round.
 // One puzzle a day, a little harder towards the weekend. Three wrong guesses
 // end the day unsolved.
 //
@@ -18,14 +18,14 @@
 // when its day ended is uploaded on the next launch with done: false and reads
 // as in progress; today's in-progress board is local (cndGame_{day}).
 
-import { launchDaily, pct, historyStart, readJsonPref, readPendingList } from './common.js?v=202611041401';
-import { edOfMillis } from '../dates.js?v=202611041401';
-import { toMillis } from '../firebase.js?v=202611041401';
-import { launchEd } from '../config.js?v=202611041401';
-import { readPref } from '../local.js?v=202611041401';
+import { launchDaily, pct, historyStart, readJsonPref, readPendingList } from './common.js?v=202611041832';
+import { edOfMillis } from '../dates.js?v=202611041832';
+import { toMillis } from '../firebase.js?v=202611041832';
+import { launchEd } from '../config.js?v=202611041832';
+import { readPref } from '../local.js?v=202611041832';
 import {
   SOLVED, FAILED, PROGRESS, emptyProgress, mark, currentStreak, longestStreak, intList, num, minEd, noteFinish,
-} from '../status.js?v=202611041401';
+} from '../status.js?v=202611041832';
 
 const COUNTS = ['ds', 'pl', 'pt', 'bp', 'mx'];
 
