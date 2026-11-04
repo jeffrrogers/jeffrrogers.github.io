@@ -10,14 +10,14 @@
 // Today's in-progress boards come from this browser's domGame_{day}_{tier}
 // saves.
 
-import { launchDaily, pct, historyStart, readJsonPref, readPendingList } from './common.js?v=202611040021';
-import { duration, edOfMillis } from '../dates.js?v=202611040021';
-import { toMillis } from '../firebase.js?v=202611040021';
-import { launchEd } from '../config.js?v=202611040021';
-import { readPref } from '../local.js?v=202611040021';
+import { launchDaily, pct, historyStart, readJsonPref, readPendingList } from './common.js?v=202611040217';
+import { duration, edOfMillis } from '../dates.js?v=202611040217';
+import { toMillis } from '../firebase.js?v=202611040217';
+import { launchEd } from '../config.js?v=202611040217';
+import { readPref } from '../local.js?v=202611040217';
 import {
   SOLVED, PROGRESS, emptyProgress, mark, currentStreak, longestStreak, intList, num, minEd, maxEd, noteFinish,
-} from '../status.js?v=202611040021';
+} from '../status.js?v=202611040217';
 
 const LEVELS = [
   { key: 'e', label: 'Easy' },

@@ -12,9 +12,9 @@
 // the count survives history scrolling out of the recent window. parts() is
 // the checklist behind a badge that needs several things at once.
 
-import { SOLVED, minEd, finishOn, num } from '../status.js?v=202611040021';
-import { todayEpochDay, weekdayName, shortDate } from '../dates.js?v=202611040021';
-import { LAUNCH_DATE } from '../config.js?v=202611040021';
+import { SOLVED, minEd, finishOn, num } from '../status.js?v=202611040217';
+import { todayEpochDay, weekdayName, shortDate } from '../dates.js?v=202611040217';
+import { LAUNCH_DATE } from '../config.js?v=202611040217';
 
 function finishDays(game, p) {
   return [...p.doneIdx].map((i) => finishOn(game, p, i));
