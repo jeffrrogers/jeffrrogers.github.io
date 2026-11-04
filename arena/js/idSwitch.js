@@ -13,7 +13,10 @@
 //   Canominoes,  replay their pending result and union this device's stats
 //   Canoggle,    into the new account's.
 //   Canagrams,
-//   Canatiles
+//   Canatiles,
+//   Canundrum,
+//   Canamaze,
+//   Canadrift
 //   Canoku       copies this device's streak into a new account's document.
 //
 // So the switch seeds or clears every game's local state first and sets the
@@ -22,7 +25,7 @@
 // planIdSwitch is pure (data in, operations out) so the order and the encoding
 // are unit-tested; applyIdSwitch performs the operations.
 
-import { writePref, removePref } from './local.js?v=202611040217';
+import { writePref, removePref } from './local.js?v=202611041055';
 
 /** Collections read for the new id, by game. */
 export const ID_DOCS = {
@@ -33,6 +36,9 @@ export const ID_DOCS = {
   canoggle: 'chainUserData',
   canagrams: 'anagramUserData',
   canatiles: 'tilesUserData',
+  canundrum: 'rebusUserData',
+  canamaze: 'mazeUserData',
+  canadrift: 'plowUserData',
 };
 
 /** What an id must look like before it is used in a document path. */
@@ -112,7 +118,7 @@ export function planIdSwitch({ oldId, newId, docs, keys = [], oldIds = [] }) {
   remove('solStatsDirty');
   removePrefixed('solDailyGame_');
 
-  // Canominoes, Canoggle, Canagrams and Canatiles merge local stats into the server's, so an empty
+  // Canominoes, Canoggle, Canagrams, Canatiles, Canundrum, Canamaze and Canadrift merge local stats into the server's, so an empty
   // local copy simply takes the new account's. Their *Touched maps date the
   // boards played today and their *Results maps record the old account's
   // finishes; *ProgressUploaded is from builds before boards moved to the server.
@@ -149,6 +155,30 @@ export function planIdSwitch({ oldId, newId, docs, keys = [], oldIds = [] }) {
   remove('ctlStatsDirty');
   remove('ctlStartedOver');
   removePrefixed('ctlGame_');
+  remove('cndStats');
+  remove('cndPendingUpload');
+  remove('cndPlayedGames');
+  remove('cndTouched');
+  remove('cndResults');
+  remove('cndStatsDirty');
+  remove('cndStartedOver');
+  removePrefixed('cndGame_');
+  remove('cmzStats');
+  remove('cmzPendingUpload');
+  remove('cmzPlayedGames');
+  remove('cmzTouched');
+  remove('cmzResults');
+  remove('cmzStatsDirty');
+  remove('cmzStartedOver');
+  removePrefixed('cmzGame_');
+  remove('cdrStats');
+  remove('cdrPendingUpload');
+  remove('cdrPlayedGames');
+  remove('cdrTouched');
+  remove('cdrResults');
+  remove('cdrStatsDirty');
+  remove('cdrStartedOver');
+  removePrefixed('cdrGame_');
   // Canoku's unfinished boards belong to the old account
   removePrefixed('canokuGame_');
   // The old account's recent solves, or they would show as this one's.

@@ -22,6 +22,9 @@ export const VERSION_DOCS = [
   { doc: 'canoggle', name: 'Canoggle', path: 'canoggle/version.json', checks: true, latch: true },
   { doc: 'canagrams', name: 'Canagrams', path: 'canagrams/version.json', checks: true, latch: true },
   { doc: 'canatiles', name: 'Canatiles', path: 'canatiles/version.json', checks: true, latch: true },
+  { doc: 'canundrum', name: 'Canundrum', path: 'canundrum/version.json', checks: true, latch: true },
+  { doc: 'canamaze', name: 'Canamaze', path: 'canamaze/version.json', checks: true, latch: true },
+  { doc: 'canadrift', name: 'Canadrift', path: 'canadrift/version.json', checks: true, latch: true },
 ];
 
 /** What a doc naming a build the site doesn't serve does to open tabs. */

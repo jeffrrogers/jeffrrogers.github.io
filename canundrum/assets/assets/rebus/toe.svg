@@ -1,0 +1,12 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100">
+  <!-- A bare foot seen from above, with a red arrow pointing at the big toe. -->
+  <path d="M34 92 C22 88 20 70 24 56 C28 42 30 34 32 28 C34 20 48 18 56 22 C66 26 70 34 70 46 C70 62 64 70 58 80 C54 88 46 94 34 92 Z" fill="#f1c9a5" stroke="#6b4a2f" stroke-width="2.5"/>
+  <ellipse cx="38" cy="16" rx="8" ry="9" fill="#f1c9a5" stroke="#6b4a2f" stroke-width="2.5"/>
+  <ellipse cx="51" cy="13" rx="5" ry="6" fill="#f1c9a5" stroke="#6b4a2f" stroke-width="2"/>
+  <ellipse cx="60" cy="17" rx="4.5" ry="5.5" fill="#f1c9a5" stroke="#6b4a2f" stroke-width="2"/>
+  <ellipse cx="67" cy="23" rx="4" ry="5" fill="#f1c9a5" stroke="#6b4a2f" stroke-width="2"/>
+  <ellipse cx="72" cy="31" rx="3.5" ry="4.5" fill="#f1c9a5" stroke="#6b4a2f" stroke-width="2"/>
+  <ellipse cx="38" cy="13" rx="4" ry="3" fill="#fbe3d0"/>
+  <path d="M3 5 L20 11" stroke="#d7263d" stroke-width="10" stroke-linecap="round"/>
+  <path d="M31 15 L15 1 L10 24 Z" fill="#d7263d"/>
+</svg>

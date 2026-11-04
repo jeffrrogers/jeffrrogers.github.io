@@ -2,7 +2,7 @@
 // an illustration of what the badge is for. Built from constants only, so the
 // markup is safe to inject. The artwork for a badge is picked from its id.
 
-import { LOGOS } from './logos.js?v=202611040217';
+import { LOGOS } from './logos.js?v=202611041055';
 
 export const LEAF_PATH = 'M50 5L57 19L64 15L61 38L72 27L75 34L86 32L82 45L90 49L70 64L73 73L53 70L53 92L47 92L47 70L27 73L30 64L10 49L18 45L14 32L25 34L28 27L39 38L36 15L43 19Z';
 
@@ -20,6 +20,9 @@ const PALETTE = {
   canoggle: ['#D35F1B', '#9E4512'],
   canagrams: ['#0E7C7B', '#0A5958'],
   canatiles: ['#B5176E', '#6E0E43'],
+  canundrum: ['#7B4A22', '#4E2D12'],
+  canamaze: ['#5C7A14', '#3A4E0B'],
+  canadrift: ['#3949AB', '#26327A'],
   night: ['#2A2050', '#1A1430'],
   aurora: ['#16305A', '#0E1E36'],
   slate: ['#3A3A44', '#2B2B33'],
@@ -37,6 +40,16 @@ const tile = (x, y, w, h, inner = '') =>
 /** A green tick in a circle centred on (x, y). */
 const tick = (x, y, r = 6) => `<circle cx="${x}" cy="${y}" r="${r}" fill="#2FA866" stroke="#fff" stroke-width="1.5"/>`
   + `<path d="M${x - r / 2} ${y}l${r / 3} ${r / 3} ${r * 2 / 3}-${r * 2 / 3}" fill="none" stroke="#fff" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/>`;
+
+/** A Canundrum card, [w] by [h] with its top left at (x, y), cream face up or red back up. */
+const rebusCard = (x, y, w, h, faceUp, inner = '') =>
+  `<rect x="${x + 2}" y="${y + 3}" width="${w}" height="${h}" rx="${w / 6}" fill="#4E2D12" opacity=".45"/>`
+  + `<rect x="${x}" y="${y}" width="${w}" height="${h}" rx="${w / 6}" fill="${faceUp ? '#FFFBF2' : '#D52B1E'}" stroke="${faceUp ? '#C9BBA8' : '#A61F15'}" stroke-width="1"/>` + inner;
+
+/** A question mark centred on x, its top at y, [s] tall-ish, in [fill]. */
+const question = (x, y, s, fill) =>
+  `<path d="M${x - s * 0.3} ${y + s * 0.3}c0-${s * 0.4} ${s * 0.6}-${s * 0.4} ${s * 0.6} 0c0 ${s * 0.28}-${s * 0.3} ${s * 0.32}-${s * 0.3} ${s * 0.62}" fill="none" stroke="${fill}" stroke-width="${s * 0.2}" stroke-linecap="round" stroke-linejoin="round"/>`
+  + `<circle cx="${x}" cy="${y + s * 1.08}" r="${s * 0.12}" fill="${fill}"/>`;
 
 /** A game's logo drawn [size] across with its top left at (x, y). */
 const logo = (id, x, y, size) =>
@@ -273,6 +286,37 @@ const ART = {
   // Canatiles' Perfect Day: the day's three tiles, each ticked.
   tilesPerfect: () => [31, 51, 71].map((x) => tile(x, 38, 18, 24, leaf(x + 3.5, 42, 0.11, '#D52B1E'))
     + tick(x + 8, 72)).join(''),
+
+  // Canundrum's Sharp Eye: two cards turned, the rest still down, and the question already answered.
+  rebusSharp: () => rebusCard(30, 40, 18, 24, false) + rebusCard(72, 40, 18, 24, false)
+    + rebusCard(44, 30, 32, 44, true, question(60, 38, 22, '#7B4A22'))
+    + tick(78, 72),
+
+  // Canundrum's Grand Prize: a gift with a maple-leaf tag.
+  rebusPrize: () => '<rect x="38" y="52" width="44" height="32" rx="4" fill="#D52B1E"/>'
+    + '<rect x="34" y="42" width="52" height="12" rx="3" fill="#E8483A"/>'
+    + '<rect x="56" y="42" width="8" height="42" fill="#F5C443"/>'
+    + '<path d="M60 42c-6-12-18-10-14-2 2 4 8 3 14 2zm0 0c6-12 18-10 14-2-2 4-8 3-14 2z" fill="#F5C443"/>'
+    + leaf(46, 60, 0.16, '#FFFBF2'),
+
+  // Canamaze's Trailblazer (Perfect on Hard): a little maze walled in white, a leaf at its heart.
+  mazePar: () => '<path d="M34 34H86V86H66M54 86H34V34M46 46H74V74H46V58" fill="none" stroke="#FFFBF2" stroke-width="5" stroke-linecap="round" stroke-linejoin="round"/>'
+    + leaf(53, 53, 0.14, '#D52B1E'),
+
+  // Canamaze's Clean Day (all three at or under par): three maple leaves, each ticked.
+  mazePerfect: () => [30, 52, 74].map((x) => leaf(x, 40, 0.16, '#D52B1E') + tick(x + 8, 68)).join(''),
+
+  // Canadrift's Shortest Route (Perfect on Hard): a plow on a cleared road.
+  plowPar: () => '<path d="M28 80H92" stroke="#FFFBF2" stroke-width="6" stroke-linecap="round"/>'
+    + '<rect x="50" y="52" width="30" height="18" rx="3" fill="#F28C1B"/><path d="M64 42h12a3 3 0 0 1 3 3v9H64z" fill="#F28C1B"/>'
+    + '<rect x="67" y="45" width="9" height="7" rx="1" fill="#BFD6F0"/>'
+    + '<path d="M50 58L44 58L36 54L34 72L48 70L50 66Z" fill="#9AA3AF" stroke="#4A5260" stroke-width="1.4" stroke-linejoin="round"/>'
+    + '<circle cx="57" cy="72" r="5" fill="#22252B"/><circle cx="75" cy="72" r="5" fill="#22252B"/>',
+
+  // Canadrift's Good Neighbour: a house with a clear driveway, a heart over it.
+  plowClean: () => '<path d="M40 58L60 42L80 58V82H40Z" fill="#FFFBF2"/><rect x="54" y="66" width="12" height="16" fill="#7B4A22"/>'
+    + '<path d="M56 82h8l4 10h-16z" fill="#9AA3AF"/>'
+    + '<path d="M60 36c-3-5-10-4-10 1 0 4 6 7 10 10 4-3 10-6 10-10 0-5-7-6-10-1z" fill="#D52B1E"/>',
 
   padlock: () => '<rect x="49" y="54" width="22" height="18" rx="4" fill="#8A847B"/><path d="M53 54v-5a7 7 0 0 1 14 0v5" fill="none" stroke="#8A847B" stroke-width="3.5"/><circle cx="60" cy="62" r="2.5" fill="#D9D4CC"/>',
 };
@@ -538,6 +582,27 @@ function design(badge) {
       case 'hard': return { palette: game, art: ART.tile() };
       case 'nohint': return { palette: game, art: ART.tileNoHint(), ribbon: ['HARD', '#FFFFFF', PALETTE.canatiles[1], 87] };
       case 'perfectday': return { palette: game, art: ART.tilesPerfect(), ribbon: ['PERFECT', RING.gold, '#7A2A12', 87] };
+      default: break;
+    }
+  }
+  if (scope === 'canundrum') {
+    switch (key) {
+      case 'sharp': return { palette: game, art: ART.rebusSharp(), ribbon: ['2 PAIRS', '#FFFFFF', PALETTE.canundrum[1], 87] };
+      case 'topprize': return { palette: game, art: ART.rebusPrize(), ribbon: ['TOP PRIZE', RING.gold, '#7A2A12', 87] };
+      default: break;
+    }
+  }
+  if (scope === 'canamaze') {
+    switch (key) {
+      case 'perfecthard': return { palette: game, art: ART.mazePar(), ribbon: ['PERFECT', RING.gold, '#7A2A12', 87] };
+      case 'cleanday': return { palette: game, art: ART.mazePerfect(), ribbon: ['CLEAN DAY', '#FFFFFF', PALETTE.canamaze[1], 87] };
+      default: break;
+    }
+  }
+  if (scope === 'canadrift') {
+    switch (key) {
+      case 'perfecthard': return { palette: game, art: ART.plowPar(), ribbon: ['PERFECT', RING.gold, '#7A2A12', 87] };
+      case 'cleanhard': return { palette: game, art: ART.plowClean(), ribbon: ['HARD', '#FFFFFF', PALETTE.canadrift[1], 87] };
       default: break;
     }
   }

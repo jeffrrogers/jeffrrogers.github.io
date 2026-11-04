@@ -12,12 +12,12 @@
 // which runs both versions of each account (as seeded, and with the step
 // played: build(true)) through the Arena's own adapters and badge rules.
 
-import { GAMES, epochDay } from '../dates.js?v=202611040021';
-import { launchEd } from '../launch.js?v=202611040021';
+import { GAMES, epochDay } from '../dates.js?v=202611041055';
+import { launchEd } from '../launch.js?v=202611041055';
 import {
   ts, midnightOf, timeOn, weekdayOf, canuckleGame, duoGame, canuckleStats, duoStats, newUserStub,
   canokuStats, canokuSettings, canokuBoard, canokuSize,
-} from './shapes.js?v=202611040021';
+} from './shapes.js?v=202611041055';
 
 export const TESTERS = { JR: 'Jeff', MR: 'Mark' };
 
@@ -92,6 +92,9 @@ function makeEnv({ todayEd, offsetWeeks, nowMs, words }) {
     canoggle: fromLaunch('canoggle'),
     canolitaire: fromLaunch('canolitaire'),
     canatiles: fromLaunch('canatiles'),
+    canundrum: fromLaunch('canundrum'),
+    canamaze: fromLaunch('canamaze'),
+    canadrift: fromLaunch('canadrift'),
   };
   return {
     todayEd,
@@ -309,6 +312,85 @@ function canatiles(env, id, solves) {
       data: {
         day: s.index, tier: s.tier, sec: sec[s.tier], pts: pts[s.tier], ud: s.ud || 0, ht: s.ht || 0, solved: true, done: true,
         updatedAt: ts(timeOn(env.cal.canatiles.ed(s.index), 12)),
+      },
+    });
+  }
+  return out;
+}
+
+/**
+ * mazeUserData / plowUserData (canamazeSourceCode and canadriftSourceCode
+ * lib/data/stats.dart, user.dart: Canatiles' shape plus ap in each tier, and
+ * mv, best, par and, for Canadrift, bu in each game). [solves]: {index, tier, over, bu}; over is the moves past
+ * best (default 0, a Perfect solve), bu the driveways buried (Canadrift).
+ * par = best + max(1, round(0.12 * best)), as the games compute it.
+ */
+function parGame(game, collection, env, id, solves) {
+  const sec = { e: 60, m: 150, h: 320 };
+  const best = game === 'canamaze' ? { e: 16, m: 23, h: 40 } : { e: 8, m: 15, h: 20 };
+  const parOf = (b) => b + Math.max(1, Math.round(0.12 * b));
+  const pts = (s) => Math.max(100, 1000 - (game === 'canamaze' ? 40 : 50) * (s.over || 0));
+  const tiers = {};
+  for (const t of ['e', 'm', 'h']) {
+    const mine = solves.filter((s) => s.tier === t);
+    tiers[t] = mine.length
+      ? { p: mine.length, w: mine.length, bs: sec[t], ts: sec[t] * mine.length, bp: Math.max(...mine.map(pts)),
+        tp: mine.reduce((a, s) => a + pts(s), 0), pf: mine.filter((s) => !s.over).length,
+        ap: mine.filter((s) => best[t] + (s.over || 0) <= parOf(best[t])).length }
+      : { p: 0, w: 0, bs: 0, ts: 0, bp: 0, tp: 0, pf: 0, ap: 0 };
+  }
+  const sd = new Set(solves.map((s) => s.index));
+  const { st, ld } = dayStreak(sd, env.today(game));
+  const out = [{
+    path: [collection, id],
+    data: { ...tiers, st, ms: longestRun(sd), ld, sd: [...sd].sort((a, b) => a - b), updatedAt: ts(env.nowMs) },
+  }];
+  for (const s of solves) {
+    out.push({
+      path: [collection, id, 'games', `${s.index}.${s.tier}`],
+      data: {
+        day: s.index, tier: s.tier, sec: sec[s.tier], pts: pts(s), ud: 0, ht: 0, mv: best[s.tier] + (s.over || 0), best: best[s.tier], par: parOf(best[s.tier]),
+        ...(game === 'canadrift' ? { bu: s.bu || 0 } : {}), solved: true, done: true,
+        updatedAt: ts(timeOn(env.cal[game].ed(s.index), 12)),
+      },
+    });
+  }
+  return out;
+}
+const canamaze = (env, id, solves) => parGame('canamaze', 'mazeUserData', env, id, solves);
+const canadrift = (env, id, solves) => parGame('canadrift', 'plowUserData', env, id, solves);
+
+/**
+ * rebusUserData (canundrumSourceCode lib/data/stats.dart, user.dart: Canagrams'
+ * shape). [games]: {index, pairs, prize, won}; prize is the tier won
+ * (top/high/mid/low/none), won false for a day lost to three wrong guesses.
+ */
+function canundrum(env, id, games) {
+  const PRIZE = { top: 500, high: 300, mid: 150, low: 50, none: 0 };
+  const scored = games.map((g) => {
+    const won = g.won !== false;
+    const pairs = g.pairs ?? 4;
+    const pp = won ? Math.max(100, 1000 - 20 * (pairs + 2) - 50 * pairs) : 0;
+    const pz = won ? PRIZE[g.prize || 'mid'] : 0;
+    return { ...g, won, pairs, pp, pz, pts: pp + pz, pr: won ? (g.prize || 'mid') : 'none' };
+  });
+  const solved = scored.filter((g) => g.won);
+  const sd = new Set(solved.map((g) => g.index));
+  const { st, ld } = dayStreak(sd, env.today('canundrum'));
+  const out = [{
+    path: ['rebusUserData', id],
+    data: {
+      ds: solved.length, pl: scored.length, pt: solved.reduce((a, g) => a + g.pts, 0),
+      bp: Math.max(0, ...solved.map((g) => g.pts)), ft: solved.length ? 95000 : 0,
+      st, mx: longestRun(sd), ld, sd: [...sd].sort((a, b) => a - b), updatedAt: ts(env.nowMs),
+    },
+  }];
+  for (const g of scored) {
+    out.push({
+      path: ['rebusUserData', id, 'games', String(g.index)],
+      data: {
+        day: g.index, sec: 95, pts: g.pts, pp: g.pp, pz: g.pz, pr: g.pr, pairs: g.pairs, turns: g.pairs + 2,
+        wrong: g.won ? 0 : 3, solved: g.won, done: true, updatedAt: ts(timeOn(env.cal.canundrum.ed(g.index), 12)),
       },
     });
   }
@@ -851,14 +933,14 @@ function definitions(env) {
 
   add({
     code: 'N08', phase: 2, title: 'Explorer and Full Slate',
-    story: 'Has played every game except Canolitaire, and today finished all seven other daily games. Canuckle+ played last week.',
-    before: ['Explorer shows 8 of 9. Full Slate shows 7 of 8 today. Badge Collector already earned (10 badges).'],
+    story: 'Has played every game except Canolitaire, and today finished all ten other daily games. Canuckle+ played last week.',
+    before: ['Explorer shows 11 of 12. Full Slate shows 10 of 11 today. Badge Collector already earned (10 badges).'],
     steps: ['Play any Canolitaire deal today (win or lose).'],
     after: ['New: Canolitaire First Finish, Explorer and Full Slate.'],
     streaks: {},
     expect: {
       before: ['canuckle.first', 'plus.first', 'canoku.first', 'duo.first', 'canagrams.first', 'canoggle.first', 'canominoes.first',
-        'canatiles.first', 'duo.dailydouble', 'family.hattrick', 'family.collector'],
+        'canatiles.first', 'canundrum.first', 'canamaze.first', 'canadrift.first', 'duo.dailydouble', 'family.hattrick', 'family.collector'],
       after: ['canolitaire.first', 'family.explorer', 'family.fullslate'],
     },
     build(id, played) {
@@ -870,6 +952,9 @@ function definitions(env) {
         ...canoggle(env, id, [{ index: env.at('canoggle', 0), kind: 'd' }]),
         ...canominoes(env, id, [{ index: env.at('canominoes', 0), tier: 'e' }]),
         ...canatiles(env, id, [{ index: env.at('canatiles', 0), tier: 'e', ud: 1 }]),
+        ...canundrum(env, id, [{ index: env.at('canundrum', 0), pairs: 5, prize: 'low' }]),
+        ...canamaze(env, id, [{ index: env.at('canamaze', 0), tier: 'e', over: 2 }]),
+        ...canadrift(env, id, [{ index: env.at('canadrift', 0), tier: 'e', over: 1, bu: 1 }]),
       ];
       if (played) out.push(...canolitaire(env, id, [{ index: env.at('canolitaire', 0), draw: 1, tier: 'e', won: false }]));
       return out;

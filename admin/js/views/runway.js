@@ -1,11 +1,11 @@
 // Days left tab: how far each daily game's puzzles run past today.
 
-import { h, clear } from '../ui.js?v=202611040021';
-import { GAMES, longDate, todayEpochDay, todayIndex } from '../dates.js?v=202611040021';
-import { DAILY_GAMES, dailyIndex, dailyEd, daysInFile } from '../runway.js?v=202611040021';
-import { GAME_SITES } from '../config.js?v=202611040021';
-import { loadCanokuCount } from '../store.js?v=202611040021';
-import { maxIndex } from '../context.js?v=202611040021';
+import { h, clear } from '../ui.js?v=202611041055';
+import { GAMES, longDate, todayEpochDay, todayIndex } from '../dates.js?v=202611041055';
+import { DAILY_GAMES, dailyIndex, dailyEd, daysInFile } from '../runway.js?v=202611041055';
+import { GAME_SITES } from '../config.js?v=202611041055';
+import { loadCanokuCount } from '../store.js?v=202611041055';
+import { maxIndex } from '../context.js?v=202611041055';
 
 const RUNWAY_WARN_DAYS = 30;
 
@@ -136,5 +136,5 @@ export function renderRunway(root, rerender) {
           h('td', {}, status(r))))))),
     h('p', { class: 'muted small' },
       'Canuckle, Canuckle+ and Duo count the puzzles saved in Firestore. Canoku uses canokuNewData/puzzleCount. ',
-      'Canolitaire, Canominoes, Canoggle, Canagrams and Canatiles read the puzzle files built into each game; a new batch counts once that game is deployed.'));
+      'Canolitaire, Canominoes, Canoggle, Canagrams, Canatiles, Canundrum, Canamaze and Canadrift read the puzzle files built into each game; a new batch counts once that game is deployed.'));
 }

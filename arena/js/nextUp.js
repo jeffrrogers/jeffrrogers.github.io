@@ -7,21 +7,21 @@
 // snapshot plus this browser's saves, and the games tell it what they finish
 // (markPlayed) so a finish shows here before the arena has refreshed.
 
-import { liveGames } from './games/registry.js?v=202611040217';
-import { cachedRaw, derive } from './progress.js?v=202611040217';
-import { arenaGet, arenaSet, playerId } from './local.js?v=202611040217';
-import { todayEpochDay } from './dates.js?v=202611040217';
-import { recentIndices } from './games/common.js?v=202611040217';
-import { isDone, PROGRESS } from './status.js?v=202611040217';
-import { readFavourites } from './favourites.js?v=202611040217';
-import { computeOrder } from './gameOrder.js?v=202611040217';
+import { liveGames } from './games/registry.js?v=202611041055';
+import { cachedRaw, derive } from './progress.js?v=202611041055';
+import { arenaGet, arenaSet, playerId } from './local.js?v=202611041055';
+import { todayEpochDay } from './dates.js?v=202611041055';
+import { recentIndices } from './games/common.js?v=202611041055';
+import { isDone, PROGRESS } from './status.js?v=202611041055';
+import { readFavourites } from './favourites.js?v=202611041055';
+import { computeOrder } from './gameOrder.js?v=202611041055';
 
 // Discovery order: the games to try first after each kind of game, once their
 // favourites are done. Canolitaire leads both lists because its long sessions
 // earn the most per player.
-const AFTER_WORDS = ['canolitaire', 'canoku', 'canagrams', 'duo', 'canoggle', 'canominoes', 'canatiles', 'canuckle', 'plus'];
-const AFTER_PUZZLES = ['canolitaire', 'canominoes', 'canatiles', 'canoku', 'canagrams', 'canoggle', 'duo', 'canuckle', 'plus'];
-const PUZZLE_GAMES = new Set(['canoku', 'canominoes', 'canolitaire', 'canatiles']);
+const AFTER_WORDS = ['canolitaire', 'canoku', 'canagrams', 'duo', 'canoggle', 'canominoes', 'canatiles', 'canundrum', 'canamaze', 'canadrift', 'canuckle', 'plus'];
+const AFTER_PUZZLES = ['canolitaire', 'canominoes', 'canatiles', 'canamaze', 'canadrift', 'canoku', 'canagrams', 'canundrum', 'canoggle', 'duo', 'canuckle', 'plus'];
+const PUZZLE_GAMES = new Set(['canoku', 'canominoes', 'canolitaire', 'canatiles', 'canamaze', 'canadrift']);
 
 // The tier a suggestion opens when nothing is in progress: the gentlest board
 // not yet finished today. Games not listed take their first unfinished tier.

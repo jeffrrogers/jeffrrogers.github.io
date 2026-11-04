@@ -1,0 +1,7 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100">
+  <!-- An open hand and forearm, with a red arrow pointing at the wrist. -->
+  <path d="M40 96 L40 62 C34 56 30 48 30 40 L30 22 C30 18 36 18 36 22 L36 38 L38 38 L38 12 C38 8 44 8 44 12 L44 36 L46 36 L46 8 C46 4 52 4 52 8 L52 36 L54 36 L54 12 C54 8 60 8 60 12 L60 42 L62 40 L68 30 C70 26 76 28 74 33 L66 52 C64 58 60 62 58 64 L58 96 Z" fill="#f1c9a5" stroke="#6b4a2f" stroke-width="2.5" stroke-linejoin="round"/>
+  <path d="M40 66 Q49 70 58 66" fill="none" stroke="#6b4a2f" stroke-width="2" stroke-dasharray="3 3"/>
+  <path d="M92 66 L66 66" stroke="#d7263d" stroke-width="6" stroke-linecap="round"/>
+  <path d="M64 66 L74 58 L74 74 Z" fill="#d7263d"/>
+</svg>

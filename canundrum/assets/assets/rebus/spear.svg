@@ -1,0 +1,8 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100">
+  <!-- A straight spear on a diagonal: long wooden shaft, leaf-shaped steel head. -->
+  <line x1="14" y1="88" x2="72" y2="30" stroke="#8b5a2b" stroke-width="7" stroke-linecap="round"/>
+  <line x1="14" y1="88" x2="72" y2="30" stroke="#a9733f" stroke-width="3" stroke-linecap="round"/>
+  <path d="M70 32 L76 14 L92 8 L86 24 L68 34 Z" fill="#c9d1d9" stroke="#4a5560" stroke-width="2.5" stroke-linejoin="round"/>
+  <path d="M71 31 L88 12" stroke="#ffffff" stroke-width="1.5" opacity=".8"/>
+  <rect x="62" y="34" width="10" height="7" rx="2" transform="rotate(-45 67 37)" fill="#6b4a2f"/>
+</svg>

@@ -82,6 +82,41 @@ export function demoRaw(game, todayEd) {
           { day: k - 1, tier: 'h', solved: true, ud: 2, ht: 0 },
         ],
       };
+    case 'canundrum':
+      return {
+        ds: 6, pl: 7, pt: 4120, bp: 1250, ft: 74000, st: 3, mx: 4, ld: k, sd: [k - 6, k - 5, k - 4, k - 2, k - 1, k],
+        games: [
+          { day: k, pts: 1250, pr: 'high', pairs: 2, wrong: 0, solved: true, done: true },
+          { day: k - 1, pts: 980, pr: 'top', pairs: 4, wrong: 1, solved: true, done: true },
+          { day: k - 3, pts: 0, pr: 'none', pairs: 9, wrong: 3, solved: false, done: true },
+        ],
+      };
+    case 'canamaze':
+      return {
+        tiers: {
+          e: { p: 5, w: 5, bs: 41, ts: 380, bp: 1000, tp: 4720, pf: 4, ap: 5 },
+          m: { p: 4, w: 4, bs: 96, ts: 610, bp: 960, tp: 3600, pf: 2, ap: 3 },
+          h: { p: 3, w: 2, bs: 230, ts: 690, bp: 880, tp: 1640, pf: 0, ap: 1 },
+        },
+        st: 4, ms: 4, ld: k, sd: range(k - 3, k),
+        games: [
+          { day: k, tier: 'e', solved: true, mv: 14, best: 14, par: 16 }, { day: k, tier: 'm', solved: true, mv: 25, best: 21, par: 24 },
+          { day: k - 1, tier: 'e', solved: true, mv: 13, best: 12, par: 13 }, { day: k - 1, tier: 'h', solved: true, mv: 45, best: 38, par: 43 },
+        ],
+      };
+    case 'canadrift':
+      return {
+        tiers: {
+          e: { p: 4, w: 4, bs: 22, ts: 140, bp: 1000, tp: 3900, pf: 3, ap: 4 },
+          m: { p: 4, w: 3, bs: 65, ts: 300, bp: 950, tp: 2750, pf: 1, ap: 3 },
+          h: { p: 2, w: 2, bs: 140, ts: 320, bp: 1000, tp: 1900, pf: 1, ap: 2 },
+        },
+        st: 2, ms: 3, ld: k, sd: range(k - 1, k),
+        games: [
+          { day: k, tier: 'e', solved: true, mv: 8, best: 8, par: 9, bu: 0 }, { day: k, tier: 'm', solved: true, mv: 16, best: 15, par: 17, bu: 1 },
+          { day: k - 1, tier: 'h', solved: true, mv: 20, best: 20, par: 22, bu: 0 },
+        ],
+      };
     case 'canoggle':
       return {
         ms: 12, mn: 9, mr: 1, wf: 640, bf: 88, cw: 7, bc: 14, st: 12, mx: 12, ld: k, sd: range(k - 11, k),

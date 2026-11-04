@@ -1,0 +1,15 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100">
+  <!-- A northern bog: dark peat pool, mossy hummocks, cattails and a stunted black spruce. -->
+  <rect x="0" y="0" width="100" height="100" rx="10" fill="#dfeee6"/>
+  <path d="M0 62 C20 56 40 60 60 56 C76 54 90 58 100 56 L100 100 L0 100 Z" fill="#7a8f3a"/>
+  <ellipse cx="50" cy="78" rx="34" ry="11" fill="#3f3524"/>
+  <ellipse cx="44" cy="76" rx="14" ry="3" fill="#6f6247" opacity=".7"/>
+  <ellipse cx="18" cy="66" rx="12" ry="6" fill="#9db24a"/>
+  <ellipse cx="84" cy="68" rx="12" ry="6" fill="#9db24a"/>
+  <g stroke="#4f6b24" stroke-width="2.5" stroke-linecap="round">
+    <line x1="24" y1="70" x2="22" y2="40"/><line x1="30" y1="72" x2="31" y2="44"/><line x1="78" y1="72" x2="80" y2="44"/>
+  </g>
+  <g fill="#7a4b22"><rect x="19.5" y="36" width="5" height="14" rx="2.5"/><rect x="28.5" y="40" width="5" height="13" rx="2.5"/><rect x="77.5" y="40" width="5" height="13" rx="2.5"/></g>
+  <path d="M64 58 L64 18" stroke="#3b2f1e" stroke-width="2.5"/>
+  <path d="M64 18 L58 30 L70 30 Z M64 26 L56 40 L72 40 Z M64 36 L54 52 L74 52 Z" fill="#2f5a3a"/>
+</svg>

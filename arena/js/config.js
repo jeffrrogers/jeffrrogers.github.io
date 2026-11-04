@@ -4,8 +4,8 @@
 // production (canucklegame.ca). All game links are root-relative, so the only
 // thing that differs is which games are visible and whether analytics runs.
 
-import { readPref, writePref } from './local.js?v=202611040217';
-import { epochDay, todayEpochDay } from './dates.js?v=202611040217';
+import { readPref, writePref } from './local.js?v=202611041055';
+import { epochDay, todayEpochDay } from './dates.js?v=202611041055';
 
 const host = typeof location === 'undefined' ? '' : location.hostname;
 
@@ -55,6 +55,9 @@ export const LAUNCH_DATE = {
   canoggle: '2026-11-05', // must be a Thursday (difficulty ladder)
   canolitaire: '2026-11-06',
   canatiles: '2026-11-18', // a Wednesday
+  canundrum: '2026-11-23', // a Monday (easiest early in the week)
+  canamaze: '2026-11-24',
+  canadrift: '2026-11-25',
 };
 
 // ---- Sandbox offset -----------------------------------------------------------

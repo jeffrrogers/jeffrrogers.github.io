@@ -1,0 +1,9 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100">
+  <!-- A red ketchup bottle whose label shows a tomato. -->
+  <rect x="42" y="4" width="16" height="10" rx="3" fill="#f4f1ea" stroke="#5a1a14" stroke-width="2.5"/>
+  <path d="M44 14 L56 14 L58 24 C70 30 74 40 74 52 L74 90 C74 94 70 96 66 96 L34 96 C30 96 26 94 26 90 L26 52 C26 40 30 30 42 24 Z" fill="#c8281e" stroke="#5a1a14" stroke-width="2.5" stroke-linejoin="round"/>
+  <rect x="30" y="50" width="40" height="34" rx="6" fill="#fff7e6" stroke="#5a1a14" stroke-width="2"/>
+  <circle cx="50" cy="69" r="11" fill="#e8402f" stroke="#7a1a12" stroke-width="2"/>
+  <path d="M44 59 L50 62 L56 59 L53 64 L50 61 L47 64 Z" fill="#3d8b37"/>
+  <path d="M36 30 C34 38 32 44 32 48" stroke="#ffffff" stroke-width="3" stroke-linecap="round" opacity=".5" fill="none"/>
+</svg>
