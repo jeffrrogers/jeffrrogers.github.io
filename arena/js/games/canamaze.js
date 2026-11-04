@@ -9,21 +9,24 @@
 // the total points, pf the count of Perfect solves (mv == best) and ap
 // the count at or under par (older records may lack ap).
 // games/{day}.{tier} holds {day, tier, sec, pts, ud, ht: 0, mv, best, par,
-// solved, done, updatedAt}: mv is the moves used, best the solver's optimum and par
-// best + max(1, round(0.12 * best)); pts is 1000 at best, less 40 a move
-// over it (floor 100). A board left unfinished
+// tries, solved, done, updatedAt}: mv is the moves used, best the solver's
+// optimum and par best + max(1, round(0.12 * best)); pts is 1000 at best,
+// less 40 a move over it (floor 100), plus up to 200 time bonus, less 50 for
+// each try after the first (at most 200), never under 100 -- so 0-1200.
+// tries is which try the kept result was (the best one; older docs lack it).
+// A retry that scores higher replaces the solved doc. A board left unfinished
 // when its day ended is uploaded on the next launch with solved: false,
 // done: false and reads as in progress. Today's in-progress boards come from
 // this browser's cmzGame_{day}_{tier} saves.
 
-import { launchDaily, pct, historyStart, readJsonPref, readPendingList } from './common.js?v=202611041302';
-import { duration, edOfMillis } from '../dates.js?v=202611041302';
-import { toMillis } from '../firebase.js?v=202611041302';
-import { launchEd } from '../config.js?v=202611041302';
-import { readPref } from '../local.js?v=202611041302';
+import { launchDaily, pct, historyStart, readJsonPref, readPendingList } from './common.js?v=202611041401';
+import { duration, edOfMillis } from '../dates.js?v=202611041401';
+import { toMillis } from '../firebase.js?v=202611041401';
+import { launchEd } from '../config.js?v=202611041401';
+import { readPref } from '../local.js?v=202611041401';
 import {
   SOLVED, PROGRESS, emptyProgress, mark, currentStreak, longestStreak, intList, num, minEd, maxEd, noteFinish,
-} from '../status.js?v=202611041302';
+} from '../status.js?v=202611041401';
 
 const LEVELS = [
   { key: 'e', label: 'Easy' },
@@ -57,7 +60,8 @@ export function resultFor(mv, best, par) {
  * [raw] with this browser's own records folded in. Canamaze keeps its whole
  * stats record locally (cmzStats, the same shape as mazeUserData), saves a
  * solve to cmzPendingUpload before it uploads, and keeps every solve made here
- * in cmzResults ("day.tier" -> [seconds, points, undos, hints]), so a puzzle
+ * in cmzResults ("day.tier" -> [seconds, points, undos, hints, moves?,
+ * tries?]; only the first four are read here), so a puzzle
  * solved a moment ago shows before Firestore has it. Solved days are unioned;
  * the streak and per-level counts come from whichever copy is further along.
  */

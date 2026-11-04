@@ -9,22 +9,26 @@
 // the total points, pf the count of Perfect solves (mv == best) and ap
 // the count at or under par (older records may lack ap).
 // games/{day}.{tier} holds {day, tier, sec, pts, ud, ht: 0, mv, best, par, bu,
-// solved, done, updatedAt}: mv is the moves used, best the solver's optimum and par
-// best + max(1, round(0.12 * best)); pts is 1000 at best, less 50 a move
-// over it (floor 100);
+// tries?, lastTry?, solved, done, updatedAt}: mv is the moves used, best the
+// solver's optimum and par best + max(1, round(0.12 * best)); pts is up to
+// 1200: 1000 at best, less 50 a move over it (floor 100), plus a time bonus
+// of up to 200 (gone by 1 / 2 / 3 minutes on Easy / Medium / Hard), less 50
+// for each try after the first (at most 200), never below 100. A finished
+// town can be tried again and the BEST try is the record; tries (which try it
+// was) and lastTry (the highest try finished) are written only past 1.
 // bu counts the driveways buried along the way. A board left unfinished
 // when its day ended is uploaded on the next launch with solved: false,
 // done: false and reads as in progress. Today's in-progress boards come from
 // this browser's cdrGame_{day}_{tier} saves.
 
-import { launchDaily, pct, historyStart, readJsonPref, readPendingList } from './common.js?v=202611041302';
-import { duration, edOfMillis } from '../dates.js?v=202611041302';
-import { toMillis } from '../firebase.js?v=202611041302';
-import { launchEd } from '../config.js?v=202611041302';
-import { readPref } from '../local.js?v=202611041302';
+import { launchDaily, pct, historyStart, readJsonPref, readPendingList } from './common.js?v=202611041401';
+import { duration, edOfMillis } from '../dates.js?v=202611041401';
+import { toMillis } from '../firebase.js?v=202611041401';
+import { launchEd } from '../config.js?v=202611041401';
+import { readPref } from '../local.js?v=202611041401';
 import {
   SOLVED, PROGRESS, emptyProgress, mark, currentStreak, longestStreak, intList, num, minEd, maxEd, noteFinish,
-} from '../status.js?v=202611041302';
+} from '../status.js?v=202611041401';
 
 const LEVELS = [
   { key: 'e', label: 'Easy' },
@@ -58,8 +62,9 @@ export function resultFor(mv, best, par) {
  * [raw] with this browser's own records folded in. Canadrift keeps its whole
  * stats record locally (cdrStats, the same shape as plowUserData), saves a
  * solve to cdrPendingUpload before it uploads, and keeps every solve made here
- * in cdrResults ("day.tier" -> [seconds, points, undos, hints]), so a puzzle
- * solved a moment ago shows before Firestore has it. Solved days are unioned;
+ * in cdrResults ("day.tier" -> [seconds, points, undos, moves, buried], plus
+ * [tries, lastTry] after a later try), so a puzzle solved a moment ago shows
+ * before Firestore has it. There are no hints in Canadrift. Solved days are unioned;
  * the streak and per-level counts come from whichever copy is further along.
  */
 function withLocal(raw) {
@@ -108,7 +113,8 @@ function withLocal(raw) {
     for (const [id, v] of Object.entries(results)) {
       const [day, tier] = String(id).split('.');
       if (!/^\d+$/.test(day) || !LEVELS.some((l) => l.key === tier) || !Array.isArray(v)) continue;
-      extra.push({ day: Number(day), tier, solved: true, done: true, ud: count(v[2]), ht: count(v[3]), at: null });
+      // v[3] is the moves, not hints: Canadrift has none.
+      extra.push({ day: Number(day), tier, solved: true, done: true, ud: count(v[2]), ht: 0, at: null });
     }
   }
   // Firestore's copy first (it carries when the puzzle was solved); a local
