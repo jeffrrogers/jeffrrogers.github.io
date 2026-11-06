@@ -1,12 +1,12 @@
 // The Stats tab: a card per game; and each game's detail page. Badges have
 // their own tab (badgesView.js).
 
-import { h, ICONS } from '../ui.js?v=202611041832';
-import { badgeTiles } from './badgesView.js?v=202611041832';
-import { streakChip } from './gamesTab.js?v=202611041832';
-import { PROGRESS, isDone } from '../status.js?v=202611041832';
-import { playProps } from './play.js?v=202611041832';
-import { orderedGames } from '../gameOrder.js?v=202611041832';
+import { h, ICONS } from '../ui.js?v=202611052337';
+import { badgeTiles } from './badgesView.js?v=202611052337';
+import { streakChip } from './gamesTab.js?v=202611052337';
+import { PROGRESS, isDone } from '../status.js?v=202611052337';
+import { playProps } from './play.js?v=202611052337';
+import { listedGames } from '../gameOrder.js?v=202611052337';
 
 function numbers(game, progress) {
   const p = progress;
@@ -36,7 +36,7 @@ export function renderStats(app) {
   return h('div', { class: 'wrap' },
     h('div', { class: 'section-title', style: { marginTop: '0' } }, h('h2', { text: 'Your games' })),
     h('div', { class: 'stat-grid' },
-      orderedGames(app).map((g) => gameCard(g, progress[g.id]?.progress))));
+      listedGames(app).map((g) => gameCard(g, progress[g.id]?.progress))));
 }
 
 function section(sec) {

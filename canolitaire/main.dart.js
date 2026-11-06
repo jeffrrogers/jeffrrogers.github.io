@@ -88778,7 +88778,7 @@ $2(a,b){var s,r=this.a,q=r.c,p=q.b
 if(p)s=B.y
 else s=q.a?B.z:B.w
 p=q.a||p?B.aB:B.ak
-return A.aL8(new A.alQ(r),!1,new A.BN(q,r.d,r.e,r.f,null),A.tX(p,null,"ClearSans",s.a,null),"Canolitaire")},
+return A.aL8(new A.alQ(r),!1,new A.BN(q,r.d,r.e,r.f,null),A.tX(p,null,"ClearSans",s.a,null),"Canolitaire - A daily Canadian card game")},
 $S:213}
 A.alQ.prototype={
 $2(a,b){b.toString
@@ -92117,7 +92117,7 @@ ajz(a){var s,r=this,q=null,p=r.a.c,o=a.a0(t.c).f
 if(o.b)s=B.y
 else s=o.a?B.z:B.w
 o=t.p
-return A.rU("Back",A.b([new A.kb("Gameplay",A.b([new A.ty("Draw",q,B.PW,r.a.d,new A.ayL(r),q,t.Xo),new A.lr("Tap sends cards to foundations","Tapping a card plays it as far as it can go",p.f,new A.ayM(r,p),q),new A.lr("Left-handed layout","Puts the deck on the right",p.e,new A.ayN(r,p),q),new A.lr("Show timer",q,p.d,new A.ayS(r,p),q)],o),q),B.eI,new A.kb("Display",A.b([new A.lr("Dark Theme",q,p.a,new A.ayT(r,p),q),new A.lr("High Contrast Mode","For improved colour vision",p.b,new A.ayU(r,p),q),new A.lr("Traditional suits","Spades, hearts, diamonds and clubs instead of pucks, leaves, toques and inuksuit",p.r,new A.ayV(r,p),q),new A.lr("Animations","Dealing, flips and the winning cascade",p.c,new A.ayW(r,p),q),new A.ty("Goalie shootout","The mini-game after a win",B.N8,p.w,new A.ayX(r,p),q,t.di)],o),q),B.eI,new A.Lz(r.a.f,new A.ayY(),q),B.eI,new A.kb("Support",A.b([A.aFx("Tips on Ko-fi keep the games free",A.iz("assets/icons/kofi.svg",q,B.b8,q,new A.ayZ(),28),"Buy Canuckle a coffee",new A.ayO())],o),q),B.eI,new A.kb("Feedback",A.b([A.aFx("info@canucklegame.ca",A.eV(A.cU(q,q,q,new A.PN(s.cx,q),B.v),22,22),"Email",new A.ayP(r))],o),q),B.eI,new A.uZ(new A.ayQ(),q),B.eI,new A.X0(s,new A.ayR(r),q)],o),q,q,r.gajA(),24,!0,!1,"Settings")}}
+return A.rU("Back",A.b([new A.kb("Gameplay",A.b([new A.ty("Draw",q,B.PW,r.a.d,new A.ayL(r),q,t.Xo),new A.lr("Tap sends cards to foundations","Tapping a card plays it as far as it can go",p.f,new A.ayM(r,p),q),new A.lr("Left-handed layout","Puts the deck on the right",p.e,new A.ayN(r,p),q),new A.lr("Show timer",q,p.d,new A.ayS(r,p),q)],o),q),B.eI,new A.kb("Display",A.b([new A.lr("Dark Theme",q,p.a,new A.ayT(r,p),q),new A.lr("High Contrast Mode","For improved colour vision",p.b,new A.ayU(r,p),q),new A.lr("Traditional suits","Spades, hearts, diamonds and clubs instead of pucks, leaves, toques and inuksuit",p.r,new A.ayV(r,p),q),new A.lr("Animations","Dealing, flips, and the fireworks when you win",p.c,new A.ayW(r,p),q),new A.ty("Goalie shootout","The mini-game after a win",B.N8,p.w,new A.ayX(r,p),q,t.di)],o),q),B.eI,new A.Lz(r.a.f,new A.ayY(),q),B.eI,new A.kb("Support",A.b([A.aFx("Tips on Ko-fi keep the games free",A.iz("assets/icons/kofi.svg",q,B.b8,q,new A.ayZ(),28),"Buy Canuckle a coffee",new A.ayO())],o),q),B.eI,new A.kb("Feedback",A.b([A.aFx("info@canucklegame.ca",A.eV(A.cU(q,q,q,new A.PN(s.cx,q),B.v),22,22),"Email",new A.ayP(r))],o),q),B.eI,new A.uZ(new A.ayQ(),q),B.eI,new A.X0(s,new A.ayR(r),q)],o),q,q,r.gajA(),24,!0,!1,"Settings")}}
 A.az1.prototype={
 $2(a,b){if(!a)this.a.Tt()},
 $S:575}
@@ -93626,7 +93626,7 @@ $2(a,b){var s,r=null,q=this.b
 if(q.b)s=B.y
 else s=q.a?B.z:B.w
 s=A.tX(r,r,"ClearSans",s.a,r)
-return A.aL8(new A.arh(q),!1,new A.MW(this.a.a.d,r),s,"Canolitaire")},
+return A.aL8(new A.arh(q),!1,new A.MW(this.a.a.d,r),s,"Canolitaire - A daily Canadian card game")},
 $S:213}
 A.arh.prototype={
 $2(a,b){b.toString
