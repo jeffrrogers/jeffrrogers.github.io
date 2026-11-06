@@ -46,7 +46,6 @@ pours
 poured
 mows
 mowed
-hoes
 hoed
 vows
 vowed
@@ -193,7 +192,6 @@ limes
 lisp
 litters
 login
-loins
 loiter
 loiters
 loonie
@@ -294,7 +292,6 @@ slaw
 sleet
 slob
 smartphone
-smite
 smith
 snared
 sneer
@@ -315,9 +312,6 @@ suet
 sunlit
 swig
 tablecloth
-tase
-tased
-taser
 taunt
 teeming
 thawed

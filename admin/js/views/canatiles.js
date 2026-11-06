@@ -6,13 +6,13 @@
 // ship inside the game (canatilesSourceCode/assets/data); Days left covers
 // how many remain.
 
-import { h, clear } from '../ui.js?v=202611041302';
-import { longDate, todayEpochDay } from '../dates.js?v=202611041302';
-import { launchEd, OFFSET_WEEKS } from '../launch.js?v=202611041302';
-import { loadStatsDocs, CANATILES_STATS } from '../store.js?v=202611041302';
+import { h, clear } from '../ui.js?v=202611061103';
+import { longDate, todayEpochDay } from '../dates.js?v=202611061103';
+import { launchEd, OFFSET_WEEKS } from '../launch.js?v=202611061103';
+import { loadStatsDocs, CANATILES_STATS } from '../store.js?v=202611061103';
 import {
   TIERS, MAX_SPAN, DEFAULT_SPAN, clampRange, defaultRange, statsDocIds, playsTable,
-} from '../canatiles.js?v=202611041302';
+} from '../canatiles.js?v=202611061103';
 
 const START_ED = launchEd('canatiles');
 const todayIdx = () => todayEpochDay() - START_ED + 1;
