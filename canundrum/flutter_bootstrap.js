@@ -162,7 +162,7 @@ function startFallbackLoad() {
       // happens to work only while both games are on the same engine revision
       // -- and breaks as a blank canvas with no JS error the moment one of
       // them is upgraded and the other is not.
-      config: { canvasKitBaseUrl: 'canvaskit/', renderer: 'canvaskit' },
+      config: { canvasKitBaseUrl: '/flutter-canvaskit/deb287481e3ce9468f3434937ced4240a70539ca/', renderer: 'canvaskit' },
       onEntrypointLoaded: runEntrypoint,
     });
   } catch (err) {

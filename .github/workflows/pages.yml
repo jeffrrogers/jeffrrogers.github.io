@@ -5,9 +5,10 @@
 # 10-minute limit and failed, so nothing new went live. This uploads the
 # files as they are (the site has no Jekyll content to process); the first
 # run on 2026-11-10 deployed in 37 seconds. deploy-pages allows at most 10
-# minutes for the sync either way, so if deploys start timing out again, the
-# fix is a smaller site: each game's canvaskit/ folder is 37 MB, most of it
-# renderers the games never load.
+# minutes for the sync either way, which is why the deploy step below retries
+# once. The site was also shrunk for it (2026-11-10): the games now share one
+# trimmed CanvasKit copy per engine build under /flutter-canvaskit/ instead of
+# a 37 MB canvaskit/ each (see any game's deploy_to_io.ps1).
 name: Deploy sandbox to Pages
 
 on:
@@ -31,12 +32,29 @@ jobs:
     timeout-minutes: 45
     environment:
       name: github-pages
-      url: ${{ steps.deployment.outputs.page_url }}
+      url: ${{ steps.deployment.outputs.page_url || steps.retry.outputs.page_url }}
     steps:
       - uses: actions/checkout@v4
       - uses: actions/configure-pages@v5
+      # One artifact NAME per attempt. A re-run keeps the earlier attempt's
+      # artifact, and deploy-pages refuses a run holding two artifacts with the
+      # same name ("Multiple artifacts named github-pages"), so re-running a
+      # failed deploy used to fail in under a second, every time.
       - uses: actions/upload-pages-artifact@v3
         with:
           path: .
+          name: github-pages-${{ github.run_attempt }}
+      # GitHub's file sync sometimes stalls (sitting in syncing_files, or
+      # reporting no status at all) until deploy-pages' 10-minute cap. When it
+      # does, deploy-pages cancels that deployment; one more try with the same
+      # artifact usually goes straight through. The job fails only if both do.
       - id: deployment
         uses: actions/deploy-pages@v4
+        continue-on-error: true
+        with:
+          artifact_name: github-pages-${{ github.run_attempt }}
+      - id: retry
+        if: steps.deployment.outcome == 'failure'
+        uses: actions/deploy-pages@v4
+        with:
+          artifact_name: github-pages-${{ github.run_attempt }}
