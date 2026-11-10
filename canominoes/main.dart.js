@@ -50379,7 +50379,7 @@ if(n>0)m.push(new A.bY(o,k,k,k))
 m.push(new A.BE(l[n],b,B.k,k))
 B.b.B(q,m)}return q}}}
 A.a_H.prototype={
-I(a){var s=null,r=this.d,q=Math.max(6.5,r*0.58),p=-q*0.32
+I(a){var s=null,r=this.d,q=Math.max(8,r*0.7),p=-q*0.38
 return A.e2(A.fz(B.aS,A.b([A.aVg(this.c,this.e,r),A.mv(s,A.dt(s,s,s,B.a7X,new A.H(q,q)),s,s,s,p,p,s)],t.p),B.m,B.aH,s),r,r)}}
 A.XT.prototype={
 aq(a,b){var s,r,q,p=b.a,o=Math.max(1.1,p*0.14),n=Math.max(0.4,p*0.06),m=p/2,l=new A.e(m,m),k=o/2,j=m-k-n,i=j*0.7071067811865476
