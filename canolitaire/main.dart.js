@@ -92822,8 +92822,8 @@ uU(a){return this.f+a*(this.a+this.c)},
 aqH(a){var s=this,r=a.c,q=r*s.x+Math.max(0,a.b.length-r-1)*s.y,p=s.Q-s.b
 if(q<=p||q<=0)return 1
 return p/q},
-hT(a,b,c,d,e){var s,r,q,p,o,n,m,l=this
-switch(a.a.a){case 0:return new A.h(l.uU(l.as?6:0),l.r)
+hT(a,b,c,d,e){var s,r,q,p,o,n,m=this
+switch(a.a.a){case 0:return new A.h(m.uU(m.as?6:0),m.r)
 case 1:s=d==null
 r=s?null:d.b.length
 if(r==null)r=1
@@ -92831,17 +92831,14 @@ q=Math.min(r,Math.max(1,e))
 s=s?null:d.b.length
 if(s==null)s=1
 p=Math.max(0,q-1-(s-1-b))
-s=l.as
-o=l.z
-if(s)o=-o
-return new A.h(l.uU(s?5:1)+p*o,l.r)
+return new A.h(m.uU(m.as?4:1)+p*m.z,m.r)
 case 2:s=a.b
-return new A.h(l.uU(l.as?s:3+s),l.r)
-case 3:n=l.w
-s=l.y
-if(d!=null){m=Math.min(b,d.c)
-n+=(m*l.x+(b-m)*s)*c}else n+=b*s*c
-return new A.h(l.uU(a.b),n)}},
+return new A.h(m.uU(m.as?s:3+s),m.r)
+case 3:o=m.w
+s=m.y
+if(d!=null){n=Math.min(b,d.c)
+o+=(n*m.x+(b-n)*s)*c}else o+=b*s*c
+return new A.h(m.uU(a.b),o)}},
 awf(a,b,c,d,e){var s=this.hT(a,b,c,d,e),r=s.a
 s=s.b
 return new A.r(r,s,r+this.a,s+this.b)},
@@ -93647,7 +93644,7 @@ f.e=d
 f.w=new A.G(A.I(1/0,a3.a,a0),A.I(1/0,a3.c,b))
 e=e.c
 if(e.b===B.d5&&e.e.b.length===0)b=a?6:0
-else b=a?4:2
+else b=a?5:2
 b=d.uU(b)
 d=b+r
 l=new A.r(b,n,d,c)
