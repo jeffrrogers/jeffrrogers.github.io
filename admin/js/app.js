@@ -1,21 +1,21 @@
 // Canuckle Admin: sign-in gate, header and tabs.
 
-import { h, clear, toast } from './ui.js?v=202611092233';
-import { ADMIN_EMAILS, SITE_LABEL, IS_SANDBOX } from './config.js?v=202611092233';
-import { OFFSET_WEEKS } from './launch.js?v=202611092233';
-import { onUser, signIn, signOut } from './firebase.js?v=202611092233';
-import { ctx, loadAll, loadWords } from './context.js?v=202611092233';
-import { renderPuzzles } from './views/puzzles.js?v=202611092233';
-import { renderDuo } from './views/duo.js?v=202611092233';
-import { renderRunway } from './views/runway.js?v=202611092233';
-import { renderCleanup } from './views/cleanup.js?v=202611092233';
-import { renderLog } from './views/log.js?v=202611092233';
-import { renderRepair } from './views/repair.js?v=202611092233';
-import { renderCanagrams } from './views/canagrams.js?v=202611092233';
-import { renderCanoggle } from './views/canoggle.js?v=202611092233';
-import { renderCanatiles } from './views/canatiles.js?v=202611092233';
-import { renderVersions } from './views/versions.js?v=202611092233';
-import { renderSeed } from './views/seed.js?v=202611092233';
+import { h, clear, toast } from './ui.js?v=202611100036';
+import { ADMIN_EMAILS, SITE_LABEL, IS_SANDBOX } from './config.js?v=202611100036';
+import { OFFSET_WEEKS } from './launch.js?v=202611100036';
+import { onUser, signIn, signOut } from './firebase.js?v=202611100036';
+import { ctx, loadAll, loadWords } from './context.js?v=202611100036';
+import { renderPuzzles } from './views/puzzles.js?v=202611100036';
+import { renderDuo } from './views/duo.js?v=202611100036';
+import { renderRunway } from './views/runway.js?v=202611100036';
+import { renderCleanup } from './views/cleanup.js?v=202611100036';
+import { renderLog } from './views/log.js?v=202611100036';
+import { renderRepair } from './views/repair.js?v=202611100036';
+import { renderCanagrams } from './views/canagrams.js?v=202611100036';
+import { renderCanoggle } from './views/canoggle.js?v=202611100036';
+import { renderCanatiles } from './views/canatiles.js?v=202611100036';
+import { renderVersions } from './views/versions.js?v=202611100036';
+import { renderSeed } from './views/seed.js?v=202611100036';
 
 const TABS = [
   ['canuckle', 'Canuckle'],

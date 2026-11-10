@@ -2,8 +2,8 @@
 // (see registry.js), or an order the player arranged themselves in Settings,
 // with their favourites first.
 
-import { arenaGet, arenaSet } from './local.js?v=202611092233';
-import { favouritesFirst } from './favourites.js?v=202611092233';
+import { arenaGet, arenaSet } from './local.js?v=202611100036';
+import { favouritesFirst } from './favourites.js?v=202611100036';
 
 /**
  * [games] in the order of [ids]. Games the list doesn't name (a game that

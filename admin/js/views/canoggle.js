@@ -13,23 +13,23 @@
 // canoggleGameData/{day}'s `facts` map under the board's key (d or m); the game
 // shows that instead, and the Canuckle fact otherwise.
 
-import { h, clear, modal, toast, issues, safeHref, sortHead } from '../ui.js?v=202611092233';
-import { nextSort, sortRows } from '../sort.js?v=202611092233';
-import { GAME_SITES } from '../config.js?v=202611092233';
-import { longDate, todayEpochDay, isSwapLocked } from '../dates.js?v=202611092233';
-import { launchEd } from '../launch.js?v=202611092233';
-import { unpackCanoggle, boardRows } from '../canoggle.js?v=202611092233';
+import { h, clear, modal, toast, issues, safeHref, sortHead } from '../ui.js?v=202611100036';
+import { nextSort, sortRows } from '../sort.js?v=202611100036';
+import { GAME_SITES } from '../config.js?v=202611100036';
+import { longDate, todayEpochDay, isSwapLocked } from '../dates.js?v=202611100036';
+import { launchEd } from '../launch.js?v=202611100036';
+import { unpackCanoggle, boardRows } from '../canoggle.js?v=202611100036';
 import {
   segmentsToText, textToSegments, canoggleFactOf, canagramsFactToSave, looksDateBound,
-} from '../facts.js?v=202611092233';
+} from '../facts.js?v=202611100036';
 import {
   loadCanoggleFacts, saveCanoggleFact, CANOGGLE_BOARDS, CANOGGLE_FACTS, withCanoggleFact,
   loadPlayCounts, CANOGGLE_STATS,
-} from '../store.js?v=202611092233';
-import { factCard, previewFrame } from '../preview.js?v=202611092233';
-import { arenaFolder } from '../localFiles.js?v=202611092233';
-import { loadLocal } from '../swapFlow.js?v=202611092233';
-import { swapCard, openBoardSwap } from './boardSwap.js?v=202611092233';
+} from '../store.js?v=202611100036';
+import { factCard, previewFrame } from '../preview.js?v=202611100036';
+import { arenaFolder } from '../localFiles.js?v=202611100036';
+import { loadLocal } from '../swapFlow.js?v=202611100036';
+import { swapCard, openBoardSwap } from './boardSwap.js?v=202611100036';
 
 const START_ED = launchEd('canoggle');
 const DATA = 'canoggle/assets/assets/data/';
@@ -82,9 +82,21 @@ async function loadOwn() {
   };
 }
 
-/** Players who solved board [b] on its day, or null for a day not yet played. */
+/**
+ * Doc-id suffixes for each board's time limits: untimed, then the Daily's 3
+ * and 5 minutes or the Mini's 2 and 4 (Canoggle's model/time_limit.dart).
+ */
+const LIMIT_TAGS = { d: ['', '3', '5'], m: ['', '2', '4'] };
+
+/**
+ * Players who finished board [b] on its day, every time limit together, or
+ * null for a day not yet played. Timed boards are counted in their own docs
+ * ({day}-d3 and so on) and joined by running out of time as well as solving.
+ */
 function playsOf(b) {
-  return b.day > todayIdx() ? null : data.plays.get(`${b.day}-${b.board}`) || 0;
+  if (b.day > todayIdx()) return null;
+  return (LIMIT_TAGS[b.board] || ['']).reduce(
+    (n, tag) => n + (data.plays.get(`${b.day}-${b.board}${tag}`) || 0), 0);
 }
 
 async function load() {

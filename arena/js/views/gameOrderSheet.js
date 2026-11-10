@@ -1,9 +1,9 @@
 // Settings › Game order: arrange the games by hand, or go back to the order
 // they were released in.
 
-import { h, ICONS, openSheet, sheetHead } from '../ui.js?v=202611092233';
-import { orderedGames, saveCustomOrder, hasCustomOrder, resetOrder } from '../gameOrder.js?v=202611092233';
-import { track } from '../analytics.js?v=202611092233';
+import { h, ICONS, openSheet, sheetHead } from '../ui.js?v=202611100036';
+import { orderedGames, saveCustomOrder, hasCustomOrder, resetOrder } from '../gameOrder.js?v=202611100036';
+import { track } from '../analytics.js?v=202611100036';
 
 function note() {
   return hasCustomOrder()

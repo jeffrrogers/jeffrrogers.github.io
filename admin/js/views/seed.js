@@ -3,12 +3,12 @@
 // the production Firestore project, so these are real docs; only IDs of the
 // form QA-JR-L01 are ever written or deleted (store.js refuses any other).
 
-import { h, clear, toast, modal } from '../ui.js?v=202611092233';
-import { ctx } from '../context.js?v=202611092233';
-import { todayEpochDay, longDate, epochDay } from '../dates.js?v=202611092233';
-import { buildAccounts, allSeedIds, TESTERS } from '../seed/accounts.js?v=202611092233';
-import { canokuPuzzleBoards } from '../seed/shapes.js?v=202611092233';
-import { seedAccounts, deleteSeedAccounts, seedStatus, loadCanokuPuzzle } from '../store.js?v=202611092233';
+import { h, clear, toast, modal } from '../ui.js?v=202611100036';
+import { ctx } from '../context.js?v=202611100036';
+import { todayEpochDay, longDate, epochDay } from '../dates.js?v=202611100036';
+import { buildAccounts, allSeedIds, TESTERS } from '../seed/accounts.js?v=202611100036';
+import { canokuPuzzleBoards } from '../seed/shapes.js?v=202611100036';
+import { seedAccounts, deleteSeedAccounts, seedStatus, loadCanokuPuzzle } from '../store.js?v=202611100036';
 
 // The Arena and games default to this offset on the sandbox (js/config.js
 // DEFAULT_OFFSET_WEEKS); seeds must use the one testers' browsers use.
