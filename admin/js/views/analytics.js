@@ -2,11 +2,11 @@
 // the Data API (analytics.js). Read-only; needs a Google Analytics token from
 // a "Connect" popup once an hour (firebase.js analyticsToken).
 
-import { h, clear, sortHead } from '../ui.js?v=202611101147';
-import { USE_EMULATOR, GA_PROPERTY_ID } from '../config.js?v=202611101147';
-import { analyticsToken, dropAnalyticsToken } from '../firebase.js?v=202611101147';
-import { PRESETS, customRange, fetchLevelTable } from '../analytics.js?v=202611101147';
-import { nextSort, sortRows } from '../sort.js?v=202611101147';
+import { h, clear, sortHead } from '../ui.js?v=202611101153';
+import { USE_EMULATOR, GA_PROPERTY_ID } from '../config.js?v=202611101153';
+import { analyticsToken, dropAnalyticsToken } from '../firebase.js?v=202611101153';
+import { PRESETS, customRange, fetchLevelTable } from '../analytics.js?v=202611101153';
+import { nextSort, sortRows } from '../sort.js?v=202611101153';
 
 let range = PRESETS[0];
 let data = null; // {range, table} | {range, needsConnect} | {range, error}
@@ -17,6 +17,7 @@ let customTo = '';
 
 const fmt = (v) => (v == null ? '–' : v.toLocaleString('en-CA'));
 const pct = (v) => (v == null ? '–' : `${Math.round(v * 100)}%`);
+const per = (v) => (v == null ? '–' : v.toLocaleString('en-CA', { minimumFractionDigits: 2, maximumFractionDigits: 2 }));
 
 async function load(r, rerender, { interactive = false } = {}) {
   loading = true;
@@ -47,6 +48,8 @@ const COLUMNS = [
   { label: 'Finishes', key: 'ends' },
   { label: 'Finish rate', key: 'rate' },
   { label: 'Players', key: 'players' },
+  { label: 'Starts / player', key: 'startsPer' },
+  { label: 'Finishes / player', key: 'endsPer' },
 ];
 
 function table(t, rerender) {
@@ -64,13 +67,17 @@ function table(t, rerender) {
         h('td', { class: 'num' }, fmt(r.starts)),
         h('td', { class: 'num' }, fmt(r.ends)),
         h('td', { class: 'num' }, pct(r.rate)),
-        h('td', { class: 'num' }, fmt(r.players))))),
+        h('td', { class: 'num' }, fmt(r.players)),
+        h('td', { class: 'num' }, per(r.startsPer)),
+        h('td', { class: 'num', title: `${fmt(r.finishers)} players finished` }, per(r.endsPer))))),
       h('tfoot', {}, h('tr', {},
         h('th', {}, 'All games'),
         h('th', { class: 'num' }, fmt(t.totals.starts)),
         h('th', { class: 'num' }, fmt(t.totals.ends)),
         h('th', { class: 'num' }, pct(t.totals.rate)),
-        h('th', { class: 'num', title: 'Players who started any game; one player can play several games.' }, fmt(t.totals.players))))));
+        h('th', { class: 'num', title: 'Players who started any game; one player can play several games.' }, fmt(t.totals.players)),
+        h('th', { class: 'num' }, per(t.totals.startsPer)),
+        h('th', { class: 'num', title: `${fmt(t.totals.finishers)} players finished` }, per(t.totals.endsPer))))));
 }
 
 export function renderAnalytics(root, rerender) {
@@ -130,6 +137,7 @@ export function renderAnalytics(root, rerender) {
     h('p', { class: 'muted small' },
       `From GA4 property ${GA_PROPERTY_ID}, the same data as the Analytics dashboard and with the same delay of a few hours; today's numbers keep growing. `
       + 'Starts: level_start (a puzzle begun with no saved game). Finishes: level_end (a puzzle finished; in Canuckle, Canuckle+ and Duo that includes losses). Players: users who started a puzzle in that game. '
+      + 'Starts / player: starts divided by those players. Finishes / player: finishes divided by the players who finished one (hover for how many). '
       + 'The finish rate can pass 100% over short ranges, because a puzzle started one day can be finished the next. '
       + 'Only canucklegame.ca sends analytics; sandbox plays aren\'t counted.'));
 }

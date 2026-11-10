@@ -7,7 +7,7 @@
 // admin/tests/run.mjs. Analytics only runs on *.canucklegame.ca, so sandbox
 // plays never show up here.
 
-import { GA_PROPERTY_ID } from './config.js?v=202611101147';
+import { GA_PROPERTY_ID } from './config.js?v=202611101153';
 
 export const LEVEL_EVENTS = ['level_start', 'level_end'];
 
@@ -85,32 +85,45 @@ export function rowsOf(report) {
   });
 }
 
-const rate = (starts, ends) => (starts ? ends / starts : null);
+const ratio = (n, d) => (d ? n / d : null);
+
+/** Adds the worked-out columns: finish rate and starts / finishes per player. */
+function withRatios(g) {
+  return {
+    ...g,
+    rate: ratio(g.ends, g.starts),
+    startsPer: ratio(g.starts, g.players),
+    endsPer: ratio(g.ends, g.finishers),
+  };
+}
 
 /**
- * The table: one row per game {game, label, starts, ends, rate, players},
- * most starts first, and totals. players is the users who started a puzzle in
- * that game; the totals' players comes from [overall], since a player can play
- * several games and the per-game counts don't add up.
+ * The table: one row per game {game, label, starts, ends, rate, players,
+ * finishers, startsPer, endsPer}, most starts first, and totals. players is
+ * the users who started a puzzle in that game and finishers the users who
+ * finished one; startsPer and endsPer are starts per player and finishes per
+ * finisher. The totals' players and finishers come from [overall], since a
+ * player can play several games and the per-game counts don't add up.
  */
 export function levelTable(byGame, overall) {
   const games = new Map();
   for (const r of rowsOf(byGame)) {
     const id = r['customEvent:game'] || '(not set)';
-    const g = games.get(id) || { game: id, label: gameLabel(id), starts: 0, ends: 0, players: 0 };
+    const g = games.get(id) || { game: id, label: gameLabel(id), starts: 0, ends: 0, players: 0, finishers: 0 };
     if (r.eventName === 'level_start') {
       g.starts += r.eventCount;
       g.players += r.totalUsers;
     } else if (r.eventName === 'level_end') {
       g.ends += r.eventCount;
+      g.finishers += r.totalUsers;
     }
     games.set(id, g);
   }
   const rows = [...games.values()]
-    .map((g) => ({ ...g, rate: rate(g.starts, g.ends) }))
+    .map(withRatios)
     .sort((a, b) => b.starts - a.starts || b.ends - a.ends || a.label.localeCompare(b.label));
 
-  const totals = { starts: 0, ends: 0, players: null };
+  let totals = { starts: 0, ends: 0, players: null, finishers: null };
   const all = rowsOf(overall);
   if (all.length) {
     for (const r of all) {
@@ -119,6 +132,7 @@ export function levelTable(byGame, overall) {
         totals.players = r.totalUsers;
       } else if (r.eventName === 'level_end') {
         totals.ends += r.eventCount;
+        totals.finishers = r.totalUsers;
       }
     }
   } else {
@@ -127,7 +141,7 @@ export function levelTable(byGame, overall) {
       totals.ends += g.ends;
     }
   }
-  totals.rate = rate(totals.starts, totals.ends);
+  totals = withRatios(totals);
 
   const meta = byGame?.metadata || {};
   return {
