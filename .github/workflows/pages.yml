@@ -1,10 +1,13 @@
 # Publishes this repo to GitHub Pages on every push to main.
 #
-# Replaces the classic "deploy from a branch" build, whose deploy step gives
-# up after 10 minutes. From 2026-11-06 every deploy of this ~330 MB site sat
-# in "syncing files" past that limit and failed, so nothing new went live.
-# This uploads the files as they are (the site has no Jekyll content) and
-# waits up to 30 minutes for GitHub to finish syncing them.
+# Replaces the classic "deploy from a branch" build. From 2026-11-06 nearly
+# every classic deploy of this site sat in "syncing files" until its
+# 10-minute limit and failed, so nothing new went live. This uploads the
+# files as they are (the site has no Jekyll content to process); the first
+# run on 2026-11-10 deployed in 37 seconds. deploy-pages allows at most 10
+# minutes for the sync either way, so if deploys start timing out again, the
+# fix is a smaller site: each game's canvaskit/ folder is 37 MB, most of it
+# renderers the games never load.
 name: Deploy sandbox to Pages
 
 on:
@@ -37,5 +40,3 @@ jobs:
           path: .
       - id: deployment
         uses: actions/deploy-pages@v4
-        with:
-          timeout: 1800000
