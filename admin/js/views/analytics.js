@@ -2,11 +2,11 @@
 // the Data API (analytics.js). Read-only; needs a Google Analytics token from
 // a "Connect" popup once an hour (firebase.js analyticsToken).
 
-import { h, clear, sortHead } from '../ui.js?v=202611101153';
-import { USE_EMULATOR, GA_PROPERTY_ID } from '../config.js?v=202611101153';
-import { analyticsToken, dropAnalyticsToken } from '../firebase.js?v=202611101153';
-import { PRESETS, customRange, fetchLevelTable } from '../analytics.js?v=202611101153';
-import { nextSort, sortRows } from '../sort.js?v=202611101153';
+import { h, clear, sortHead } from '../ui.js?v=202611101204';
+import { USE_EMULATOR, GA_PROPERTY_ID } from '../config.js?v=202611101204';
+import { analyticsToken, dropAnalyticsToken } from '../firebase.js?v=202611101204';
+import { PRESETS, customRange, fetchLevelTable, fmtDuration } from '../analytics.js?v=202611101204';
+import { nextSort, sortRows } from '../sort.js?v=202611101204';
 
 let range = PRESETS[0];
 let data = null; // {range, table} | {range, needsConnect} | {range, error}
@@ -50,6 +50,7 @@ const COLUMNS = [
   { label: 'Players', key: 'players' },
   { label: 'Starts / player', key: 'startsPer' },
   { label: 'Finishes / player', key: 'endsPer' },
+  { label: 'Avg time', key: 'avgSeconds' },
 ];
 
 function table(t, rerender) {
@@ -69,7 +70,8 @@ function table(t, rerender) {
         h('td', { class: 'num' }, pct(r.rate)),
         h('td', { class: 'num' }, fmt(r.players)),
         h('td', { class: 'num' }, per(r.startsPer)),
-        h('td', { class: 'num', title: `${fmt(r.finishers)} players finished` }, per(r.endsPer))))),
+        h('td', { class: 'num', title: `${fmt(r.finishers)} players finished` }, per(r.endsPer)),
+        h('td', { class: 'num' }, fmtDuration(r.avgSeconds))))),
       h('tfoot', {}, h('tr', {},
         h('th', {}, 'All games'),
         h('th', { class: 'num' }, fmt(t.totals.starts)),
@@ -77,7 +79,8 @@ function table(t, rerender) {
         h('th', { class: 'num' }, pct(t.totals.rate)),
         h('th', { class: 'num', title: 'Players who started any game; one player can play several games.' }, fmt(t.totals.players)),
         h('th', { class: 'num' }, per(t.totals.startsPer)),
-        h('th', { class: 'num', title: `${fmt(t.totals.finishers)} players finished` }, per(t.totals.endsPer))))));
+        h('th', { class: 'num', title: `${fmt(t.totals.finishers)} players finished` }, per(t.totals.endsPer)),
+        h('th', { class: 'num', title: 'Over the games that send a time' }, fmtDuration(t.totals.avgSeconds))))));
 }
 
 export function renderAnalytics(root, rerender) {
@@ -119,7 +122,10 @@ export function renderAnalytics(root, rerender) {
   } else {
     const t = data.table;
     body = [
-      t.thresholded ? h('p', { class: 'banner warn' }, 'Google is hiding some low counts for privacy (data thresholds), so these may be a little low.') : null,
+      t.secondsMissing ? h('p', { class: 'banner warn' },
+        'Avg time needs "seconds" registered in GA4 as an event-scoped custom metric (Admin → Custom definitions → Custom metrics, '
+        + 'event parameter "seconds", unit Seconds). GA only counts it from the day it\'s registered.') : null,
+      t.thresholded ?h('p', { class: 'banner warn' }, 'Google is hiding some low counts for privacy (data thresholds), so these may be a little low.') : null,
       table(t, rerender),
     ];
   }
@@ -138,6 +144,8 @@ export function renderAnalytics(root, rerender) {
       `From GA4 property ${GA_PROPERTY_ID}, the same data as the Analytics dashboard and with the same delay of a few hours; today's numbers keep growing. `
       + 'Starts: level_start (a puzzle begun with no saved game). Finishes: level_end (a puzzle finished; in Canuckle, Canuckle+ and Duo that includes losses). Players: users who started a puzzle in that game. '
       + 'Starts / player: starts divided by those players. Finishes / player: finishes divided by the players who finished one (hover for how many). '
+      + 'Avg time: the time on the puzzle that level_end reports (its seconds), averaged over finishes, gave-ups included; '
+      + 'Canuckle, Canuckle+ and Duo have no timer. It only covers days since "seconds" was registered as a GA4 custom metric. '
       + 'The finish rate can pass 100% over short ranges, because a puzzle started one day can be finished the next. '
       + 'Only canucklegame.ca sends analytics; sandbox plays aren\'t counted.'));
 }

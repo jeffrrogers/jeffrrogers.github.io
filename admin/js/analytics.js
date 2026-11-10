@@ -7,7 +7,7 @@
 // admin/tests/run.mjs. Analytics only runs on *.canucklegame.ca, so sandbox
 // plays never show up here.
 
-import { GA_PROPERTY_ID } from './config.js?v=202611101153';
+import { GA_PROPERTY_ID } from './config.js?v=202611101204';
 
 export const LEVEL_EVENTS = ['level_start', 'level_end'];
 
@@ -53,14 +53,23 @@ const levelFilter = {
   filter: { fieldName: 'eventName', inListFilter: { values: LEVEL_EVENTS } },
 };
 
-/** The runReport bodies: per game, and overall (for players across all games). */
-export function reportRequests(range) {
+// level_end's `seconds` param (time on the puzzle), registered in GA4 as an
+// event-scoped custom metric. GA reports it as a sum; the average is that over
+// the finishes. Canuckle, Canuckle+ and Duo have no timer and don't send it.
+export const SECONDS_METRIC = 'customEvent:seconds';
+
+/**
+ * The runReport bodies: per game, and overall (for players across all games).
+ * [withSeconds] false leaves out the seconds metric, for when GA4 doesn't
+ * have it registered.
+ */
+export function reportRequests(range, { withSeconds = true } = {}) {
   const dateRanges = [{ startDate: range.startDate, endDate: range.endDate }];
   return {
     byGame: {
       dateRanges,
       dimensions: [{ name: 'customEvent:game' }, { name: 'eventName' }],
-      metrics: [{ name: 'eventCount' }, { name: 'totalUsers' }],
+      metrics: [{ name: 'eventCount' }, { name: 'totalUsers' }, ...(withSeconds ? [{ name: SECONDS_METRIC }] : [])],
       dimensionFilter: levelFilter,
       limit: 1000,
     },
@@ -87,13 +96,17 @@ export function rowsOf(report) {
 
 const ratio = (n, d) => (d ? n / d : null);
 
-/** Adds the worked-out columns: finish rate and starts / finishes per player. */
+/**
+ * Adds the worked-out columns: finish rate, starts / finishes per player and
+ * the average seconds per finish (null for games that send no time).
+ */
 function withRatios(g) {
   return {
     ...g,
     rate: ratio(g.ends, g.starts),
     startsPer: ratio(g.starts, g.players),
     endsPer: ratio(g.ends, g.finishers),
+    avgSeconds: g.seconds > 0 ? ratio(g.seconds, g.timedEnds) : null,
   };
 }
 
@@ -102,20 +115,28 @@ function withRatios(g) {
  * finishers, startsPer, endsPer}, most starts first, and totals. players is
  * the users who started a puzzle in that game and finishers the users who
  * finished one; startsPer and endsPer are starts per player and finishes per
- * finisher. The totals' players and finishers come from [overall], since a
- * player can play several games and the per-game counts don't add up.
+ * finisher. avgSeconds is the average time per finish, from level_end's
+ * seconds. The totals' players and finishers come from [overall], since a
+ * player can play several games and the per-game counts don't add up; the
+ * totals' avgSeconds covers only the games that send a time.
  */
 export function levelTable(byGame, overall) {
   const games = new Map();
   for (const r of rowsOf(byGame)) {
     const id = r['customEvent:game'] || '(not set)';
-    const g = games.get(id) || { game: id, label: gameLabel(id), starts: 0, ends: 0, players: 0, finishers: 0 };
+    const g = games.get(id)
+      || { game: id, label: gameLabel(id), starts: 0, ends: 0, players: 0, finishers: 0, seconds: 0, timedEnds: 0 };
     if (r.eventName === 'level_start') {
       g.starts += r.eventCount;
       g.players += r.totalUsers;
     } else if (r.eventName === 'level_end') {
       g.ends += r.eventCount;
       g.finishers += r.totalUsers;
+      const secs = r[SECONDS_METRIC] || 0;
+      if (secs > 0) {
+        g.seconds += secs;
+        g.timedEnds += r.eventCount;
+      }
     }
     games.set(id, g);
   }
@@ -123,7 +144,14 @@ export function levelTable(byGame, overall) {
     .map(withRatios)
     .sort((a, b) => b.starts - a.starts || b.ends - a.ends || a.label.localeCompare(b.label));
 
-  let totals = { starts: 0, ends: 0, players: null, finishers: null };
+  let totals = {
+    starts: 0,
+    ends: 0,
+    players: null,
+    finishers: null,
+    seconds: rows.reduce((s, g) => s + g.seconds, 0),
+    timedEnds: rows.reduce((s, g) => s + g.timedEnds, 0),
+  };
   const all = rowsOf(overall);
   if (all.length) {
     for (const r of all) {
@@ -178,14 +206,43 @@ async function runReport(token, body) {
     const raw = json.error?.message || '';
     const err = new Error(explainError(res.status, raw));
     err.status = res.status;
+    err.raw = raw;
     throw err;
   }
   return json;
 }
 
-/** Fetches both reports for [range] and returns levelTable()'s result. */
+/** "1:05", "12:30", "1:02:03" for a number of seconds; "–" for none. */
+export function fmtDuration(secs) {
+  if (secs == null || !Number.isFinite(secs)) return '–';
+  const s = Math.round(secs);
+  const hh = Math.floor(s / 3600);
+  const mm = Math.floor((s % 3600) / 60);
+  const ss = String(s % 60).padStart(2, '0');
+  return hh ? `${hh}:${String(mm).padStart(2, '0')}:${ss}` : `${mm}:${ss}`;
+}
+
+/** True for the Data API's complaint that a field (here the seconds metric) isn't registered. */
+export function isUnknownSecondsMetric(err) {
+  return err?.status === 400 && /customEvent:seconds/.test(err.raw || err.message || '');
+}
+
+/**
+ * Fetches both reports for [range] and returns levelTable()'s result, plus
+ * secondsMissing when GA4 has no seconds custom metric (the table then loads
+ * without times rather than failing).
+ */
 export async function fetchLevelTable(token, range) {
-  const req = reportRequests(range);
-  const [byGame, overall] = await Promise.all([runReport(token, req.byGame), runReport(token, req.overall)]);
-  return levelTable(byGame, overall);
+  const get = (withSeconds) => {
+    const req = reportRequests(range, { withSeconds });
+    return Promise.all([runReport(token, req.byGame), runReport(token, req.overall)]);
+  };
+  try {
+    const [byGame, overall] = await get(true);
+    return { ...levelTable(byGame, overall), secondsMissing: false };
+  } catch (e) {
+    if (!isUnknownSecondsMetric(e)) throw e;
+    const [byGame, overall] = await get(false);
+    return { ...levelTable(byGame, overall), secondsMissing: true };
+  }
 }
