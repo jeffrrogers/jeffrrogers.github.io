@@ -4,7 +4,7 @@
 // (privacy_policy.dart in each), so a change to the policy goes to the site
 // page, here and every game together, with LAST_UPDATED moved on.
 
-import { h, openSheet, sheetHead } from './ui.js?v=202611100859';
+import { h, openSheet, sheetHead } from './ui.js?v=202611101310';
 
 export const LAST_UPDATED = 'November 1, 2026';
 
