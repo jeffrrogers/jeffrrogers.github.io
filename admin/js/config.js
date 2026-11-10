@@ -29,6 +29,13 @@ export const FIREBASE_SDK = 'https://www.gstatic.com/firebasejs/13.0.0';
 // actually protect the data; this only gives other accounts a clear message.
 export const ADMIN_EMAILS = ['jrog86@gmail.com', 'rogerscentral@gmail.com'];
 
+// Google Analytics (GA4) for the Analytics tab: the property behind the
+// G-RPLYG6MC2K stream that every game reports to. The tab reads it with the
+// Data API (analyticsdata.googleapis.com, enabled in canuckle-c2157) using a
+// read-only token from the admin's own Google account.
+export const GA_PROPERTY_ID = '331276419';
+export const GA_SCOPE = 'https://www.googleapis.com/auth/analytics.readonly';
+
 // Word lists, same origin on canucklegame.ca and the sandbox. Local dev falls
 // back to the sandbox copy (GitHub Pages allows cross-origin reads).
 export const WORD_LIST_URLS = {

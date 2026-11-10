@@ -1,21 +1,22 @@
 // Canuckle Admin: sign-in gate, header and tabs.
 
-import { h, clear, toast } from './ui.js?v=202611100036';
-import { ADMIN_EMAILS, SITE_LABEL, IS_SANDBOX } from './config.js?v=202611100036';
-import { OFFSET_WEEKS } from './launch.js?v=202611100036';
-import { onUser, signIn, signOut } from './firebase.js?v=202611100036';
-import { ctx, loadAll, loadWords } from './context.js?v=202611100036';
-import { renderPuzzles } from './views/puzzles.js?v=202611100036';
-import { renderDuo } from './views/duo.js?v=202611100036';
-import { renderRunway } from './views/runway.js?v=202611100036';
-import { renderCleanup } from './views/cleanup.js?v=202611100036';
-import { renderLog } from './views/log.js?v=202611100036';
-import { renderRepair } from './views/repair.js?v=202611100036';
-import { renderCanagrams } from './views/canagrams.js?v=202611100036';
-import { renderCanoggle } from './views/canoggle.js?v=202611100036';
-import { renderCanatiles } from './views/canatiles.js?v=202611100036';
-import { renderVersions } from './views/versions.js?v=202611100036';
-import { renderSeed } from './views/seed.js?v=202611100036';
+import { h, clear, toast } from './ui.js?v=202611101147';
+import { ADMIN_EMAILS, SITE_LABEL, IS_SANDBOX } from './config.js?v=202611101147';
+import { OFFSET_WEEKS } from './launch.js?v=202611101147';
+import { onUser, signIn, signOut } from './firebase.js?v=202611101147';
+import { ctx, loadAll, loadWords } from './context.js?v=202611101147';
+import { renderPuzzles } from './views/puzzles.js?v=202611101147';
+import { renderDuo } from './views/duo.js?v=202611101147';
+import { renderRunway } from './views/runway.js?v=202611101147';
+import { renderCleanup } from './views/cleanup.js?v=202611101147';
+import { renderLog } from './views/log.js?v=202611101147';
+import { renderRepair } from './views/repair.js?v=202611101147';
+import { renderCanagrams } from './views/canagrams.js?v=202611101147';
+import { renderCanoggle } from './views/canoggle.js?v=202611101147';
+import { renderCanatiles } from './views/canatiles.js?v=202611101147';
+import { renderVersions } from './views/versions.js?v=202611101147';
+import { renderSeed } from './views/seed.js?v=202611101147';
+import { renderAnalytics } from './views/analytics.js?v=202611101147';
 
 const TABS = [
   ['canuckle', 'Canuckle'],
@@ -28,6 +29,7 @@ const TABS = [
   ['cleanup', 'Cleanup'],
   ['repair', 'Repair'],
   ['versions', 'Versions'],
+  ['analytics', 'Analytics'],
   // QA test accounts: the sandbox only, where testers play them.
   ...(IS_SANDBOX ? [['seed', 'Seed']] : []),
   ['log', 'Log'],
@@ -126,6 +128,7 @@ function rerender() {
   else if (t === 'repair') renderRepair(main, rerender);
   else if (t === 'versions') renderVersions(main, rerender);
   else if (t === 'seed') renderSeed(main, rerender);
+  else if (t === 'analytics') renderAnalytics(main, rerender);
   else renderLog(main, rerender);
 }
 

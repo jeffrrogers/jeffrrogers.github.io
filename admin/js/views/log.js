@@ -1,11 +1,11 @@
 // Log tab: recent admin changes with what they changed, and Restore.
 
-import { h, clear, modal, toast, fmtTime, availabilityGate } from '../ui.js?v=202611100036';
-import { loadLog, restoreLogEntry } from '../store.js?v=202611100036';
-import { decodeAnswer } from '../codec.js?v=202611100036';
-import { loadAll, availabilityMessages } from '../context.js?v=202611100036';
-import { GAMES } from '../dates.js?v=202611100036';
-import { duoPlays } from '../duoSwap.js?v=202611100036';
+import { h, clear, modal, toast, fmtTime, availabilityGate } from '../ui.js?v=202611101147';
+import { loadLog, restoreLogEntry } from '../store.js?v=202611101147';
+import { decodeAnswer } from '../codec.js?v=202611101147';
+import { loadAll, availabilityMessages } from '../context.js?v=202611101147';
+import { GAMES } from '../dates.js?v=202611101147';
+import { duoPlays } from '../duoSwap.js?v=202611101147';
 
 const RESTORABLE = new Set(['add', 'edit', 'swap', 'import', 'restore', 'versions', 'featured-swap']);
 
