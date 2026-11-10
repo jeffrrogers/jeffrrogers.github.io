@@ -13,13 +13,12 @@
 //   Canatiles    dailies_index.json "days" (canatilesSourceCode/lib/model/daily.dart)
 //   Canundrum    dailies_index.json "days" (canundrumSourceCode/lib/model/daily.dart)
 //   Canamaze     dailies_index.json "days" (canamazeSourceCode/lib/model/daily.dart)
-//   Canadrift    dailies_index.json "days" (canadriftSourceCode/lib/model/daily.dart)
 //   Canagrams    dailies_index.json "days"
 //                (canagramsSourceCode/lib/model/daily.dart; extend with
 //                tools/generate_dailies.dart, see tools/PUZZLE_GENERATION.md)
 
-import { epochDay } from './dates.js?v=202611061103';
-import { launchEd } from './launch.js?v=202611061103';
+import { epochDay } from './dates.js?v=202611092233';
+import { launchEd } from './launch.js?v=202611092233';
 
 export const DAILY_GAMES = {
   canoku: {
@@ -68,12 +67,6 @@ export const DAILY_GAMES = {
     name: 'Canamaze',
     startEd: launchEd('canamaze'),
     file: 'canamaze/assets/assets/data/dailies_index.json',
-    afterEnd: 'Puzzles repeat from #1.',
-  },
-  canadrift: {
-    name: 'Canadrift',
-    startEd: launchEd('canadrift'),
-    file: 'canadrift/assets/assets/data/dailies_index.json',
     afterEnd: 'Puzzles repeat from #1.',
   },
 };

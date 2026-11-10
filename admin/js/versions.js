@@ -24,7 +24,6 @@ export const VERSION_DOCS = [
   { doc: 'canatiles', name: 'Canatiles', path: 'canatiles/version.json', checks: true, latch: true },
   { doc: 'canundrum', name: 'Canundrum', path: 'canundrum/version.json', checks: true, latch: true },
   { doc: 'canamaze', name: 'Canamaze', path: 'canamaze/version.json', checks: true, latch: true },
-  { doc: 'canadrift', name: 'Canadrift', path: 'canadrift/version.json', checks: true, latch: true },
 ];
 
 /** What a doc naming a build the site doesn't serve does to open tabs. */

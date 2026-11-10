@@ -1,0 +1,41 @@
+# Publishes this repo to GitHub Pages on every push to main.
+#
+# Replaces the classic "deploy from a branch" build, whose deploy step gives
+# up after 10 minutes. From 2026-11-06 every deploy of this ~330 MB site sat
+# in "syncing files" past that limit and failed, so nothing new went live.
+# This uploads the files as they are (the site has no Jekyll content) and
+# waits up to 30 minutes for GitHub to finish syncing them.
+name: Deploy sandbox to Pages
+
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+# One deploy at a time; a newer push replaces one still waiting.
+concurrency:
+  group: pages
+  cancel-in-progress: true
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    timeout-minutes: 45
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/configure-pages@v5
+      - uses: actions/upload-pages-artifact@v3
+        with:
+          path: .
+      - id: deployment
+        uses: actions/deploy-pages@v4
+        with:
+          timeout: 1800000

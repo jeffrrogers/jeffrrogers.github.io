@@ -12,12 +12,12 @@
 // which runs both versions of each account (as seeded, and with the step
 // played: build(true)) through the Arena's own adapters and badge rules.
 
-import { GAMES, epochDay } from '../dates.js?v=202611061103';
-import { launchEd } from '../launch.js?v=202611061103';
+import { GAMES, epochDay } from '../dates.js?v=202611092233';
+import { launchEd } from '../launch.js?v=202611092233';
 import {
   ts, midnightOf, timeOn, weekdayOf, canuckleGame, duoGame, canuckleStats, duoStats, newUserStub,
   canokuStats, canokuSettings, canokuBoard, canokuSize,
-} from './shapes.js?v=202611061103';
+} from './shapes.js?v=202611092233';
 
 export const TESTERS = { JR: 'Jeff', MR: 'Mark' };
 
@@ -94,7 +94,6 @@ function makeEnv({ todayEd, offsetWeeks, nowMs, words }) {
     canatiles: fromLaunch('canatiles'),
     canundrum: fromLaunch('canundrum'),
     canamaze: fromLaunch('canamaze'),
-    canadrift: fromLaunch('canadrift'),
   };
   return {
     todayEd,
@@ -358,7 +357,6 @@ function parGame(game, collection, env, id, solves) {
   return out;
 }
 const canamaze = (env, id, solves) => parGame('canamaze', 'mazeUserData', env, id, solves);
-const canadrift = (env, id, solves) => parGame('canadrift', 'plowUserData', env, id, solves);
 
 /**
  * rebusUserData (canundrumSourceCode lib/data/stats.dart, user.dart: Canagrams'
@@ -937,13 +935,13 @@ function definitions(env) {
   add({
     code: 'N08', phase: 2, title: 'Explorer and Full Slate',
     story: 'Has played every game except Canolitaire, and today finished all ten other daily games. Canuckle+ played last week.',
-    before: ['Explorer shows 11 of 12. Full Slate shows 10 of 11 today. Badge Collector already earned (10 badges).'],
+    before: ['Explorer shows 10 of 11. Full Slate shows 9 of 10 today. Badge Collector already earned (10 badges).'],
     steps: ['Play any Canolitaire deal today (win or lose).'],
     after: ['New: Canolitaire First Finish, Explorer and Full Slate.'],
     streaks: {},
     expect: {
       before: ['canuckle.first', 'plus.first', 'canoku.first', 'duo.first', 'canagrams.first', 'canoggle.first', 'canominoes.first',
-        'canatiles.first', 'canundrum.first', 'canamaze.first', 'canadrift.first', 'duo.dailydouble', 'family.hattrick', 'family.collector'],
+        'canatiles.first', 'canundrum.first', 'canamaze.first', 'duo.dailydouble', 'family.hattrick', 'family.collector'],
       after: ['canolitaire.first', 'family.explorer', 'family.fullslate'],
     },
     build(id, played) {
@@ -957,7 +955,6 @@ function definitions(env) {
         ...canatiles(env, id, [{ index: env.at('canatiles', 0), tier: 'e', ud: 1 }]),
         ...canundrum(env, id, [{ index: env.at('canundrum', 0), pairs: 5, prize: 'low' }]),
         ...canamaze(env, id, [{ index: env.at('canamaze', 0), tier: 'e', over: 2 }]),
-        ...canadrift(env, id, [{ index: env.at('canadrift', 0), tier: 'e', over: 1, bu: 1 }]),
       ];
       if (played) out.push(...canolitaire(env, id, [{ index: env.at('canolitaire', 0), draw: 1, tier: 'e', won: false }]));
       return out;
