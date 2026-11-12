@@ -2,11 +2,11 @@
 // the Data API (analytics.js). Read-only; needs a Google Analytics token from
 // a "Connect" popup once an hour (firebase.js analyticsToken).
 
-import { h, clear, sortHead } from '../ui.js?v=202611121452';
-import { USE_EMULATOR, GA_PROPERTY_ID } from '../config.js?v=202611121452';
-import { analyticsToken, dropAnalyticsToken } from '../firebase.js?v=202611121452';
-import { PRESETS, customRange, fetchLevelTable, fmtDuration } from '../analytics.js?v=202611121452';
-import { nextSort, sortRows } from '../sort.js?v=202611121452';
+import { h, clear, sortHead } from '../ui.js?v=202611121543';
+import { USE_EMULATOR, GA_PROPERTY_ID } from '../config.js?v=202611121543';
+import { analyticsToken, dropAnalyticsToken } from '../firebase.js?v=202611121543';
+import { PRESETS, customRange, fetchLevelTable, fmtDuration } from '../analytics.js?v=202611121543';
+import { nextSort, sortRows } from '../sort.js?v=202611121543';
 
 let range = PRESETS[0];
 let data = null; // {range, table} | {range, needsConnect} | {range, error}

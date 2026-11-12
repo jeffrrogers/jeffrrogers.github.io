@@ -2,7 +2,7 @@
 // gstatic like the arena. A named app keeps it apart from anything else on
 // the page.
 
-import { FIREBASE_CONFIG, FIREBASE_SDK, USE_EMULATOR, GA_SCOPE } from './config.js?v=202611121452';
+import { FIREBASE_CONFIG, FIREBASE_SDK, USE_EMULATOR, GA_SCOPE } from './config.js?v=202611121543';
 
 let sdkPromise = null;
 

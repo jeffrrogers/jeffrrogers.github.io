@@ -3,11 +3,13 @@
 // canokuNewData/puzzleCount = {count, freshStart?, freshCount?, freshStartSandbox?}.
 // Which doc a day uses is the same as Canoku/lib/puzzle_source.dart
 // (PuzzleSource.docIdFor), which every Canoku build from 3.1.0 follows:
-//   day <= count                          -> doc `day` (the originals, 1..535)
-//   day >= freshStart (pool set)          -> freshStart + (day - freshStart) % freshCount
-//   otherwise (536..freshStart-1)         -> the old loop, ((day - 336) % 200) + 336
-// Pool docs are stored under their own day number (1137..1866 for the first).
-// freshStartSandbox replaces freshStart off production (the sandbox only).
+//   day <= count                     -> doc `day` (the originals, 1..535)
+//   day >= start (pool set)          -> freshStart + (day - start) % freshCount
+//   otherwise (536..start-1)         -> the old loop, ((day - 336) % 200) + 336
+// Pool docs are freshStart..freshStart+freshCount-1, stored under the days
+// production plays them on (1130..1859 for the first). `start` is freshStart,
+// or off production freshStartSandbox: the day the sandbox starts on the
+// pool, from its first doc, so it can test the pool on days it can open.
 //
 // A pool file is what Canoku/tools/puzzle_gen/generate.py writes:
 // {"<day>": {index, original, sixBySix, fourByFour}}, each size {veryEasy,
@@ -20,28 +22,38 @@ export const SIZES = { original: 9, sixBySix: 6, fourByFour: 4 };
 export const LEVELS = ['veryEasy', 'easy', 'medium', 'hard', 'veryHard'];
 const BOX = { 9: [3, 3], 6: [2, 3], 4: [2, 2] };
 
-/** The pool fields of a puzzleCount doc; [production] drops freshStartSandbox. */
+/**
+ * The pool fields of a puzzleCount doc: {count, freshStart, freshCount,
+ * start}. [production] false lets freshStartSandbox set `start`.
+ */
 export function puzzleSource(data, { production = true } = {}) {
   const int = (v) => (Number.isInteger(v) ? v : null);
   const count = int(data?.count) ?? 535;
+  const freshStart = int(data?.freshStart);
   const sandbox = production ? null : int(data?.freshStartSandbox);
-  return { count, freshStart: sandbox ?? int(data?.freshStart), freshCount: int(data?.freshCount) };
+  return { count, freshStart, freshCount: int(data?.freshCount), start: sandbox ?? freshStart };
 }
 
 export function hasPool(src) {
-  return src.freshStart != null && src.freshCount != null && src.freshCount > 0 && src.freshStart > src.count;
+  return src.freshStart != null && src.freshCount != null && src.start != null &&
+    src.freshCount > 0 && src.freshStart > src.count && src.start > src.count;
 }
 
 /** The canokuNewData doc id of [day]'s puzzles under [src] (puzzleSource). */
 export function docIdFor(day, src) {
   if (day <= src.count) return day;
-  if (hasPool(src) && day >= src.freshStart) return src.freshStart + ((day - src.freshStart) % src.freshCount);
+  if (hasPool(src) && day >= src.start) return src.freshStart + ((day - src.start) % src.freshCount);
   return ((day - LOOP_START) % LOOP_LENGTH) + LOOP_START;
 }
 
-/** The last day before puzzles repeat, or null when they already loop. */
+/** The last day before puzzles repeat (the pool's last, or count without one). */
 export function lastFreshDay(src) {
-  return hasPool(src) ? src.freshStart + src.freshCount - 1 : src.count;
+  return hasPool(src) ? src.start + src.freshCount - 1 : src.count;
+}
+
+/** The pool's first and last doc ids, or null without a pool. */
+export function poolDocs(src) {
+  return hasPool(src) ? [src.freshStart, src.freshStart + src.freshCount - 1] : null;
 }
 
 /** "[[1, -1], [2, 3]]" -> rows of ints, 0 for blank; null if malformed. */

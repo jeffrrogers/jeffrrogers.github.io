@@ -12,12 +12,12 @@
 // which runs both versions of each account (as seeded, and with the step
 // played: build(true)) through the Arena's own adapters and badge rules.
 
-import { GAMES, epochDay } from '../dates.js?v=202611121452';
-import { launchEd } from '../launch.js?v=202611121452';
+import { GAMES, epochDay } from '../dates.js?v=202611121543';
+import { launchEd } from '../launch.js?v=202611121543';
 import {
   ts, midnightOf, timeOn, weekdayOf, canuckleGame, duoGame, canuckleStats, duoStats, newUserStub,
   canokuStats, canokuSettings, canokuBoard, canokuSize,
-} from './shapes.js?v=202611121452';
+} from './shapes.js?v=202611121543';
 
 export const TESTERS = { JR: 'Jeff', MR: 'Mark' };
 

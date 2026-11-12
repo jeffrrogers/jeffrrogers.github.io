@@ -2,19 +2,19 @@
 // transaction that also writes an adminLog entry with the docs before and
 // after, so any edit, swap or import can be restored from the Log tab.
 
-import { sdk, currentEmail } from './firebase.js?v=202611121452';
-import { GAMES } from './dates.js?v=202611121452';
-import { decodeAnswer } from './codec.js?v=202611121452';
+import { sdk, currentEmail } from './firebase.js?v=202611121543';
+import { GAMES } from './dates.js?v=202611121543';
+import { decodeAnswer } from './codec.js?v=202611121543';
 import {
   PLAYER_COLLECTIONS, GAMES_SUBCOLLECTION_PARENTS, MAX_GAMES, queryCutoff, accountVerdict, quickVerdict,
-} from './cleanup.js?v=202611121452';
-import { pool } from './pool.js?v=202611121452';
-import { repairAccount } from './repair.js?v=202611121452';
-import { VOTES_COLLECTION } from './polls.js?v=202611121452';
-import { isSeedId } from './seed/accounts.js?v=202611121452';
-import { isTs } from './seed/shapes.js?v=202611121452';
-import { withZeroCounts } from './duoSwap.js?v=202611121452';
-import { puzzleSource, hasPool, lastFreshDay, docIdFor } from './canokuPool.js?v=202611121452';
+} from './cleanup.js?v=202611121543';
+import { pool } from './pool.js?v=202611121543';
+import { repairAccount } from './repair.js?v=202611121543';
+import { VOTES_COLLECTION } from './polls.js?v=202611121543';
+import { isSeedId } from './seed/accounts.js?v=202611121543';
+import { isTs } from './seed/shapes.js?v=202611121543';
+import { withZeroCounts } from './duoSwap.js?v=202611121543';
+import { puzzleSource, hasPool, poolDocs, docIdFor } from './canokuPool.js?v=202611121543';
 
 // ---- Puzzles --------------------------------------------------------------
 
@@ -63,7 +63,7 @@ export async function loadCanokuCount() {
   const src = puzzleSource(data, { production: false });
   const prod = puzzleSource(data, { production: true });
   const ids = [src.count, src.count + 1];
-  if (hasPool(src)) ids.push(src.freshStart, lastFreshDay(src));
+  if (hasPool(src)) ids.push(...poolDocs(src));
   const snaps = await Promise.all(ids.map((i) => fs.getDoc(fs.doc(db, 'canokuNewData', String(i)))));
   return {
     data, src, prod,

@@ -1,13 +1,13 @@
 // Days left tab: how far each daily game's puzzles run past today, and
 // Canoku's puzzle pool (importing one and turning it on).
 
-import { h, clear, modal, toast, issues } from '../ui.js?v=202611121452';
-import { GAMES, longDate, todayEpochDay, todayIndex } from '../dates.js?v=202611121452';
-import { DAILY_GAMES, dailyIndex, dailyEd, daysInFile } from '../runway.js?v=202611121452';
-import { GAME_SITES } from '../config.js?v=202611121452';
-import { loadCanokuCount, importCanokuPool, setCanokuPool } from '../store.js?v=202611121452';
-import { parsePool, hasPool, lastFreshDay, docIdFor } from '../canokuPool.js?v=202611121452';
-import { maxIndex } from '../context.js?v=202611121452';
+import { h, clear, modal, toast, issues } from '../ui.js?v=202611121543';
+import { GAMES, longDate, todayEpochDay, todayIndex } from '../dates.js?v=202611121543';
+import { DAILY_GAMES, dailyIndex, dailyEd, daysInFile } from '../runway.js?v=202611121543';
+import { GAME_SITES } from '../config.js?v=202611121543';
+import { loadCanokuCount, importCanokuPool, setCanokuPool } from '../store.js?v=202611121543';
+import { parsePool, hasPool, lastFreshDay, docIdFor, poolDocs } from '../canokuPool.js?v=202611121543';
+import { maxIndex } from '../context.js?v=202611121543';
 
 const RUNWAY_WARN_DAYS = 30;
 
@@ -44,12 +44,10 @@ async function loadCanoku() {
   if (!r.lastExists) notes.push(`Puzzle ${r.count} is missing, though puzzleCount is ${r.count}.`);
   if (r.nextExists) notes.push(`Puzzle ${r.count + 1} exists: raise puzzleCount to let players have it.`);
   if (r.poolEndsExist === false) {
-    notes.push(`The pool's first or last puzzle (#${r.src.freshStart}, #${lastFreshDay(r.src)}) is missing.`);
+    notes.push(`The pool's first or last puzzle (#${poolDocs(r.src).join(', #')}) is missing.`);
   }
-  if (hasPool(r.prod) && r.src.freshStart !== r.prod.freshStart) {
-    notes.push(`Sandbox switches at #${r.src.freshStart}, production at #${r.prod.freshStart}.`);
-  } else if (!hasPool(r.prod) && hasPool(r.src)) {
-    notes.push(`Only the sandbox uses the pool (from #${r.src.freshStart}).`);
+  if (hasPool(r.src) && r.src.start !== r.prod.start) {
+    notes.push(`The sandbox plays the pool from #${r.src.start}${hasPool(r.prod) ? `, production from #${r.prod.start}` : ''}.`);
   }
   // Production's runway: the pool's last day once it's on there
   return { last: lastFreshDay(r.prod), note: notes.join(' ') || null };
@@ -157,9 +155,10 @@ export function renderRunway(root, rerender) {
 // ---- Canoku pool ------------------------------------------------------------
 
 function poolText(src) {
-  return hasPool(src)
-    ? `#${src.freshStart}–#${lastFreshDay(src)} (${src.freshCount} days), then it loops`
-    : `none: days after #${src.count} loop through #336–#535`;
+  if (!hasPool(src)) return `none: days after #${src.count} loop through #336–#535`;
+  const [first, last] = poolDocs(src);
+  const days = `#${src.start}–#${lastFreshDay(src)} (${src.freshCount} days), then it loops`;
+  return src.start === first ? days : `${days}; plays puzzles #${first}–#${last}`;
 }
 
 function canokuSection(rerender) {
@@ -171,7 +170,7 @@ function canokuSection(rerender) {
       ? h('ul', { class: 'small' },
         h('li', {}, 'Production: ', poolText(r.prod)),
         h('li', {}, 'Sandbox: ', poolText(r.src),
-          r.data.freshStartSandbox != null ? ` (freshStartSandbox #${r.data.freshStartSandbox})` : ''),
+          r.data.freshStartSandbox != null ? ' (freshStartSandbox)' : ''),
         today != null
           ? h('li', {}, `Today (#${today}) uses puzzle #${docIdFor(today, r.prod)} on production and #${docIdFor(today, r.src)} on the sandbox.`)
           : null)
@@ -250,10 +249,11 @@ async function openPoolSettings(rerender) {
       const input = h('input', { type: 'number', min: '1', value: value ?? '' });
       return [input, h('p', { class: 'small' }, h('label', {}, h('b', {}, label), ' ', input), h('span', { class: 'muted' }, ` ${hint}`))];
     };
-    const [start, startRow] = field('freshStart', data.freshStart, 'First day of the pool for everyone. Empty turns the pool off.');
+    const [start, startRow] = field('freshStart', data.freshStart,
+      'The pool\'s first puzzle, and the day production starts on it. Empty turns the pool off.');
     const [count, countRow] = field('freshCount', data.freshCount, 'Days in the pool.');
     const [sandbox, sandboxRow] = field('freshStartSandbox', data.freshStartSandbox,
-      'Replaces freshStart on the sandbox only, to try the pool there first. Empty = same as production.');
+      'Sandbox only: the day it starts on the pool, from its first puzzle. Set it to a recent day to test the pool in the sandbox\'s archive. Empty = same as production.');
     const msg = h('div');
     const save = h('button', { class: 'btn primary' }, 'Save');
     const num = (el) => (el.value.trim() === '' ? null : Number(el.value));
@@ -263,6 +263,7 @@ async function openPoolSettings(rerender) {
       const errors = [];
       for (const [k, v] of Object.entries(fields)) if (v != null && !Number.isInteger(v)) errors.push(`${k} must be a whole number.`);
       if ((fields.freshStart != null || fields.freshStartSandbox != null) && !(fields.freshCount > 0)) errors.push('Set freshCount too.');
+      if (fields.freshStartSandbox != null && fields.freshStart == null) errors.push('freshStartSandbox needs freshStart: the pool starts at that puzzle.');
       for (const k of ['freshStart', 'freshStartSandbox']) {
         if (fields[k] != null && fields[k] <= data.count) errors.push(`${k} must be after #${data.count}.`);
       }
