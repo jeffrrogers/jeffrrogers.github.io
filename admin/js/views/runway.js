@@ -1,13 +1,13 @@
 // Days left tab: how far each daily game's puzzles run past today, and
 // Canoku's puzzle pool (importing one and turning it on).
 
-import { h, clear, modal, toast, issues } from '../ui.js?v=202611121543';
-import { GAMES, longDate, todayEpochDay, todayIndex } from '../dates.js?v=202611121543';
-import { DAILY_GAMES, dailyIndex, dailyEd, daysInFile } from '../runway.js?v=202611121543';
-import { GAME_SITES } from '../config.js?v=202611121543';
-import { loadCanokuCount, importCanokuPool, setCanokuPool } from '../store.js?v=202611121543';
-import { parsePool, hasPool, lastFreshDay, docIdFor, poolDocs } from '../canokuPool.js?v=202611121543';
-import { maxIndex } from '../context.js?v=202611121543';
+import { h, clear, modal, toast, issues } from '../ui.js?v=202611121654';
+import { GAMES, longDate, todayEpochDay, todayIndex } from '../dates.js?v=202611121654';
+import { DAILY_GAMES, dailyIndex, dailyEd, daysInFile } from '../runway.js?v=202611121654';
+import { GAME_SITES } from '../config.js?v=202611121654';
+import { loadCanokuCount, importCanokuPool, setCanokuPool, compareCanokuPool, updateCanokuPool } from '../store.js?v=202611121654';
+import { parsePool, hasPool, lastFreshDay, docIdFor, poolDocs, poolDocReached } from '../canokuPool.js?v=202611121654';
+import { maxIndex } from '../context.js?v=202611121654';
 
 const RUNWAY_WARN_DAYS = 30;
 
@@ -178,20 +178,22 @@ function canokuSection(rerender) {
     h('p', { class: 'muted small' },
       'Pools come from Canoku/tools/puzzle_gen (see its README). Importing only adds days that don\'t exist yet; players get them once the pool settings name them.'),
     h('div', { class: 'actions' },
-      h('button', { class: 'btn', onclick: () => openPoolImport(rerender) }, 'Import pool file…'),
+      h('button', { class: 'btn', onclick: () => openPoolImport(rerender) }, 'Import or update pool file…'),
       h('button', { class: 'btn', disabled: !r, onclick: () => openPoolSettings(rerender) }, 'Pool settings…')));
 }
 
 async function openPoolImport(rerender) {
-  const result = await modal('Import a Canoku pool', (close) => {
+  const result = await modal('Import or update a Canoku pool', (close) => {
     const file = h('input', { type: 'file', accept: '.json,application/json' });
     const report = h('div');
-    const go = h('button', { class: 'btn primary', disabled: true }, 'Import new days');
+    const go = h('button', { class: 'btn primary', disabled: true }, 'Import');
     let docs = {};
+    let plan = null; // {add: [ids], update: [ids]}
 
     file.addEventListener('change', async () => {
       clear(report, h('p', { class: 'small muted' }, 'Checking every board…'));
       go.disabled = true;
+      plan = null;
       try {
         const text = await file.files[0].text();
         // Let the message paint before the check holds the page
@@ -203,40 +205,75 @@ async function openPoolImport(rerender) {
         if (parsed.first != null && parsed.first <= count) errors.push(`The pool must start after #${count}.`);
         errors.push(...parsed.errors.slice(0, 20));
         if (parsed.errors.length > 20) errors.push(`…and ${parsed.errors.length - 20} more`);
+        if (errors.length || !Object.keys(docs).length) {
+          clear(report, h('p', {}, `${Object.keys(docs).length} days, #${parsed.first}–#${parsed.last}.`), issues({ errors }));
+          return;
+        }
+
+        const status = h('p', { class: 'small muted' }, 'Comparing with Firestore…');
+        clear(report, status);
+        const cmp = await compareCanokuPool(docs, (done, total) => { status.textContent = `Comparing with Firestore… ${done} of ${total}`; });
+        const today = dailyIndex('canoku', todayEpochDay()) ?? 0;
+        const prod = canokuDoc?.prod, sand = canokuDoc?.src;
+        const reachedProd = prod ? cmp.differ.filter((id) => poolDocReached(Number(id), prod, today)) : [];
+        const reachedSand = sand ? cmp.differ.filter((id) => poolDocReached(Number(id), sand, today)) : [];
+        const update = cmp.differ.filter((id) => !reachedProd.includes(id));
+        plan = { add: cmp.missing, update };
+        const list = (ids) => `#${ids.slice(0, 12).join(', #')}${ids.length > 12 ? ` …(${ids.length})` : ''}`;
         clear(report,
           h('ul', {},
-            h('li', {}, `${Object.keys(docs).length} days, #${parsed.first}–#${parsed.last}.`),
-            errors.length ? null : h('li', {}, 'Every board has exactly one solution, matching its answer.')),
-          errors.length ? issues({ errors }) : null);
-        go.disabled = errors.length > 0 || !Object.keys(docs).length;
+            h('li', {}, `${Object.keys(docs).length} days, #${parsed.first}–#${parsed.last}. Every board has exactly one solution, matching its answer.`),
+            h('li', {}, `${cmp.missing.length} new days will be added.`),
+            h('li', {}, `${cmp.same.length} days are already there, the same (left alone).`),
+            update.length ? h('li', {}, h('b', {}, `${update.length} days are already there with different boards and will be updated: `), list(update), '.') : null,
+            reachedProd.length
+              ? h('li', { class: 'err' }, `${reachedProd.length} differing days production players have already had are left alone: ${list(reachedProd)}.`)
+              : null,
+            reachedSand.length
+              ? h('li', { class: 'warn' }, `${reachedSand.length} of the updated days are ones the sandbox has already shown (freshStartSandbox); sandbox boards for them will change.`)
+              : null));
+        go.textContent = update.length
+          ? `Add ${cmp.missing.length} and update ${update.length}`
+          : `Add ${cmp.missing.length} new days`;
+        go.disabled = !cmp.missing.length && !update.length;
       } catch (e) {
         clear(report, issues({ errors: [`Couldn't read that file: ${e.message}`] }));
       }
     });
 
     go.addEventListener('click', async () => {
+      if (!plan) return;
+      if (plan.update.length && !confirm(`Replace the boards of ${plan.update.length} Canoku days in Firestore? Each batch is logged and can be restored from the Log tab.`)) return;
       go.disabled = true;
       file.disabled = true;
       const progress = h('p', { class: 'small' });
       report.append(progress);
       try {
-        const r = await importCanokuPool(docs, (done, total) => { progress.textContent = `Written ${done} of ${total}…`; });
-        close(r);
+        let written = 0;
+        if (plan.add.length) {
+          const added = Object.fromEntries(plan.add.map((id) => [id, docs[id]]));
+          const r = await importCanokuPool(added, (done, total) => { progress.textContent = `Added ${done} of ${total}…`; });
+          written = r.written;
+        }
+        if (plan.update.length) {
+          await updateCanokuPool(docs, plan.update, (done, total) => { progress.textContent = `Updated ${done} of ${total}…`; });
+        }
+        close({ written, updated: plan.update.length });
       } catch (e) {
-        toast(`Import stopped: ${e.message}`, { error: true });
+        toast(`Stopped: ${e.message}`, { error: true });
         go.disabled = false;
         file.disabled = false;
       }
     });
 
     return h('div', {},
-      h('p', {}, 'Choose a pool file from Canoku/tools/puzzle_gen/data (pool_<first>_<last>.json). Days that already exist are left alone.'),
+      h('p', {}, 'Choose a pool file from Canoku/tools/puzzle_gen/data (pool_<first>_<last>.json). New days are added. Days already there with different boards are updated, but never ones production players have already had.'),
       file, report,
       h('div', { class: 'actions' }, h('button', { class: 'btn', onclick: () => close() }, 'Cancel'), go));
   }, { wide: true });
 
   if (result) {
-    toast(`Imported ${result.written} Canoku days${result.skipped ? ` (${result.skipped} were already there)` : ''}.`);
+    toast(`Canoku pool: ${result.written} days added, ${result.updated} updated.`);
     other = null;
     rerender();
   }

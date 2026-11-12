@@ -51,6 +51,30 @@ export function lastFreshDay(src) {
   return hasPool(src) ? src.start + src.freshCount - 1 : src.count;
 }
 
+/**
+ * Whether players under [src] have had pool doc [id] by day [today]: from
+ * the start day they play the pool's docs in order, then loop. Changing such
+ * a doc would change a puzzle they already had.
+ */
+export function poolDocReached(id, src, today) {
+  if (!hasPool(src) || today < src.start) return false;
+  const played = today - src.start + 1;
+  if (played >= src.freshCount) return true;
+  return id < src.freshStart + played;
+}
+
+/** Whether two pool docs hold the same index and boards. */
+export function samePoolDoc(a, b) {
+  if (!a || !b || a.index !== b.index) return false;
+  for (const size of Object.keys(SIZES)) {
+    for (const lv of LEVELS) {
+      const x = a[size]?.[lv], y = b[size]?.[lv];
+      if (x?.startingBoard !== y?.startingBoard || x?.answerBoard !== y?.answerBoard) return false;
+    }
+  }
+  return true;
+}
+
 /** The pool's first and last doc ids, or null without a pool. */
 export function poolDocs(src) {
   return hasPool(src) ? [src.freshStart, src.freshStart + src.freshCount - 1] : null;

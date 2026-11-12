@@ -2,19 +2,19 @@
 // transaction that also writes an adminLog entry with the docs before and
 // after, so any edit, swap or import can be restored from the Log tab.
 
-import { sdk, currentEmail } from './firebase.js?v=202611121543';
-import { GAMES } from './dates.js?v=202611121543';
-import { decodeAnswer } from './codec.js?v=202611121543';
+import { sdk, currentEmail } from './firebase.js?v=202611121654';
+import { GAMES } from './dates.js?v=202611121654';
+import { decodeAnswer } from './codec.js?v=202611121654';
 import {
   PLAYER_COLLECTIONS, GAMES_SUBCOLLECTION_PARENTS, MAX_GAMES, queryCutoff, accountVerdict, quickVerdict,
-} from './cleanup.js?v=202611121543';
-import { pool } from './pool.js?v=202611121543';
-import { repairAccount } from './repair.js?v=202611121543';
-import { VOTES_COLLECTION } from './polls.js?v=202611121543';
-import { isSeedId } from './seed/accounts.js?v=202611121543';
-import { isTs } from './seed/shapes.js?v=202611121543';
-import { withZeroCounts } from './duoSwap.js?v=202611121543';
-import { puzzleSource, hasPool, poolDocs, docIdFor } from './canokuPool.js?v=202611121543';
+} from './cleanup.js?v=202611121654';
+import { pool } from './pool.js?v=202611121654';
+import { repairAccount } from './repair.js?v=202611121654';
+import { VOTES_COLLECTION } from './polls.js?v=202611121654';
+import { isSeedId } from './seed/accounts.js?v=202611121654';
+import { isTs } from './seed/shapes.js?v=202611121654';
+import { withZeroCounts } from './duoSwap.js?v=202611121654';
+import { puzzleSource, hasPool, poolDocs, docIdFor, samePoolDoc } from './canokuPool.js?v=202611121654';
 
 // ---- Puzzles --------------------------------------------------------------
 
@@ -108,6 +108,47 @@ export async function importCanokuPool(docs, onProgress) {
     onProgress?.(done, ids.length);
   }
   return { written, skipped: ids.length - written };
+}
+
+/**
+ * Sorts a pool file's days against Firestore: {missing, same, differ}, each
+ * a list of ids. Reads 50 docs at a time.
+ */
+export async function compareCanokuPool(docs, onProgress) {
+  const { fs, db } = await sdk();
+  const ids = Object.keys(docs);
+  const out = { missing: [], same: [], differ: [] };
+  for (let i = 0; i < ids.length; i += 50) {
+    const chunk = ids.slice(i, i + 50);
+    const snaps = await Promise.all(chunk.map((id) => fs.getDoc(fs.doc(db, 'canokuNewData', id))));
+    snaps.forEach((snap, k) => {
+      const id = chunk[k];
+      if (!snap.exists()) out.missing.push(id);
+      else if (samePoolDoc(snap.data(), docs[id])) out.same.push(id);
+      else out.differ.push(id);
+    });
+    onProgress?.(Math.min(i + 50, ids.length), ids.length);
+  }
+  return out;
+}
+
+/**
+ * Replaces the pool docs [ids] (that exist) with the file's [docs], 50 per
+ * logged transaction ('edit', so the Log tab can put each batch back). For
+ * days players haven't had yet only: the caller checks (poolDocReached).
+ */
+export async function updateCanokuPool(docs, ids, onProgress) {
+  let done = 0;
+  for (let i = 0; i < ids.length; i += 50) {
+    const chunk = ids.slice(i, i + 50);
+    await writeWithLog('canokuNewData', chunk, (before) => {
+      const out = {};
+      for (const id of chunk) if (before[id]) out[id] = docs[id];
+      return out;
+    }, { action: 'edit', note: `Canoku pool update ${chunk[0]}–${chunk[chunk.length - 1]}` });
+    done += chunk.length;
+    onProgress?.(done, ids.length);
+  }
 }
 
 /**

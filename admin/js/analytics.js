@@ -7,7 +7,7 @@
 // admin/tests/run.mjs. Analytics only runs on *.canucklegame.ca, so sandbox
 // plays never show up here.
 
-import { GA_PROPERTY_ID } from './config.js?v=202611121543';
+import { GA_PROPERTY_ID } from './config.js?v=202611121654';
 
 export const LEVEL_EVENTS = ['level_start', 'level_end'];
 
