@@ -21,9 +21,9 @@
 // No rebuild is needed anywhere: the game fetches its shards over HTTP when it
 // needs them, and the deployed service worker caches nothing.
 
-import { SWAP_GAMES, calendarOf, patchFiles, overridesText, moveOwnFacts, withAllowed } from './featuredSwap.js?v=202611101204';
-import { readText, writeText, sha256, folderExists, SANDBOX_SITE, PROD_SITE } from './localFiles.js?v=202611101204';
-import { writeWithLog } from './store.js?v=202611101204';
+import { SWAP_GAMES, calendarOf, patchFiles, overridesText, moveOwnFacts, withAllowed } from './featuredSwap.js?v=202611121452';
+import { readText, writeText, sha256, folderExists, SANDBOX_SITE, PROD_SITE } from './localFiles.js?v=202611121452';
+import { writeWithLog } from './store.js?v=202611121452';
 
 const paths = (game) => {
   const g = SWAP_GAMES[game];

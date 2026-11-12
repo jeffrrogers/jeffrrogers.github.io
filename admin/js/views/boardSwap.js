@@ -3,19 +3,19 @@
 // folder and promotes swaps to production. See featuredSwap.js for what a swap
 // does and swapFlow.js for the files it writes.
 
-import { h, clear, modal, toast, issues } from '../ui.js?v=202611101204';
-import { longDate, swapLockedThrough } from '../dates.js?v=202611101204';
-import { launchEd } from '../launch.js?v=202611101204';
-import { ctx } from '../context.js?v=202611101204';
+import { h, clear, modal, toast, issues } from '../ui.js?v=202611121452';
+import { longDate, swapLockedThrough } from '../dates.js?v=202611121452';
+import { launchEd } from '../launch.js?v=202611121452';
+import { ctx } from '../context.js?v=202611121452';
 import {
   SWAP_GAMES, boardLabel, planBoardSwap, buildChanges, factFromRuns, requiredCheck, withAllowed,
   planDayTrade, dayTradeCandidates,
-} from '../featuredSwap.js?v=202611101204';
-import { buildBoard, wordStatus } from '../gen.js?v=202611101204';
-import { hasFolderAccess, arenaFolder, connectArenaFolder } from '../localFiles.js?v=202611101204';
+} from '../featuredSwap.js?v=202611121452';
+import { buildBoard, wordStatus } from '../gen.js?v=202611121452';
+import { hasFolderAccess, arenaFolder, connectArenaFolder } from '../localFiles.js?v=202611121452';
 import {
   loadLocal, applySwap, pendingSwaps, promote, swapPaths, readAllowlist, addToAllowlist,
-} from '../swapFlow.js?v=202611101204';
+} from '../swapFlow.js?v=202611121452';
 
 // Production's dates: the lock and the spoiler check are about real players.
 const startEd = (game) => launchEd(game, 0);

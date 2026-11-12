@@ -1,11 +1,13 @@
-// Days left tab: how far each daily game's puzzles run past today.
+// Days left tab: how far each daily game's puzzles run past today, and
+// Canoku's puzzle pool (importing one and turning it on).
 
-import { h, clear } from '../ui.js?v=202611101204';
-import { GAMES, longDate, todayEpochDay, todayIndex } from '../dates.js?v=202611101204';
-import { DAILY_GAMES, dailyIndex, dailyEd, daysInFile } from '../runway.js?v=202611101204';
-import { GAME_SITES } from '../config.js?v=202611101204';
-import { loadCanokuCount } from '../store.js?v=202611101204';
-import { maxIndex } from '../context.js?v=202611101204';
+import { h, clear, modal, toast, issues } from '../ui.js?v=202611121452';
+import { GAMES, longDate, todayEpochDay, todayIndex } from '../dates.js?v=202611121452';
+import { DAILY_GAMES, dailyIndex, dailyEd, daysInFile } from '../runway.js?v=202611121452';
+import { GAME_SITES } from '../config.js?v=202611121452';
+import { loadCanokuCount, importCanokuPool, setCanokuPool } from '../store.js?v=202611121452';
+import { parsePool, hasPool, lastFreshDay, docIdFor } from '../canokuPool.js?v=202611121452';
+import { maxIndex } from '../context.js?v=202611121452';
 
 const RUNWAY_WARN_DAYS = 30;
 
@@ -13,6 +15,8 @@ const RUNWAY_WARN_DAYS = 30;
 // {[gameId]: {last, note?} | {error}}, null while loading.
 let other = null;
 let loading = false;
+// Canoku's puzzleCount doc as last loaded (store.js loadCanokuCount)
+let canokuDoc = null;
 
 async function fetchFile(path) {
   let lastError = null;
@@ -33,12 +37,22 @@ async function fetchFile(path) {
 }
 
 async function loadCanoku() {
-  const { count, lastExists, nextExists } = await loadCanokuCount();
-  if (count == null) throw new Error('canokuNewData/puzzleCount is missing');
+  const r = await loadCanokuCount();
+  if (r.count == null) throw new Error('canokuNewData/puzzleCount is missing');
+  canokuDoc = r;
   const notes = [];
-  if (!lastExists) notes.push(`Puzzle ${count} is missing, though puzzleCount is ${count}.`);
-  if (nextExists) notes.push(`Puzzle ${count + 1} exists: raise puzzleCount to let players have it.`);
-  return { last: count, note: notes.join(' ') || null };
+  if (!r.lastExists) notes.push(`Puzzle ${r.count} is missing, though puzzleCount is ${r.count}.`);
+  if (r.nextExists) notes.push(`Puzzle ${r.count + 1} exists: raise puzzleCount to let players have it.`);
+  if (r.poolEndsExist === false) {
+    notes.push(`The pool's first or last puzzle (#${r.src.freshStart}, #${lastFreshDay(r.src)}) is missing.`);
+  }
+  if (hasPool(r.prod) && r.src.freshStart !== r.prod.freshStart) {
+    notes.push(`Sandbox switches at #${r.src.freshStart}, production at #${r.prod.freshStart}.`);
+  } else if (!hasPool(r.prod) && hasPool(r.src)) {
+    notes.push(`Only the sandbox uses the pool (from #${r.src.freshStart}).`);
+  }
+  // Production's runway: the pool's last day once it's on there
+  return { last: lastFreshDay(r.prod), note: notes.join(' ') || null };
 }
 
 function loadOther() {
@@ -135,6 +149,160 @@ export function renderRunway(root, rerender) {
           h('td', { class: 'num' }, r.ahead == null ? '—' : h('b', {}, aheadText(r))),
           h('td', {}, status(r))))))),
     h('p', { class: 'muted small' },
-      'Canuckle, Canuckle+ and Duo count the puzzles saved in Firestore. Canoku uses canokuNewData/puzzleCount. ',
-      'Canolitaire, Canominoes, Canoggle, Canagrams, Canatiles, Canundrum and Canamaze read the puzzle files built into each game; a new batch counts once that game is deployed.'));
+      'Canuckle, Canuckle+ and Duo count the puzzles saved in Firestore. Canoku uses canokuNewData/puzzleCount and its pool (below). ',
+      'Canolitaire, Canominoes, Canoggle, Canagrams, Canatiles, Canundrum and Canamaze read the puzzle files built into each game; a new batch counts once that game is deployed.'),
+    canokuSection(rerender));
+}
+
+// ---- Canoku pool ------------------------------------------------------------
+
+function poolText(src) {
+  return hasPool(src)
+    ? `#${src.freshStart}–#${lastFreshDay(src)} (${src.freshCount} days), then it loops`
+    : `none: days after #${src.count} loop through #336–#535`;
+}
+
+function canokuSection(rerender) {
+  const r = canokuDoc;
+  const today = dailyIndex('canoku', todayEpochDay());
+  return h('section', { class: 'card' },
+    h('h3', {}, 'Canoku puzzle pool'),
+    r
+      ? h('ul', { class: 'small' },
+        h('li', {}, 'Production: ', poolText(r.prod)),
+        h('li', {}, 'Sandbox: ', poolText(r.src),
+          r.data.freshStartSandbox != null ? ` (freshStartSandbox #${r.data.freshStartSandbox})` : ''),
+        today != null
+          ? h('li', {}, `Today (#${today}) uses puzzle #${docIdFor(today, r.prod)} on production and #${docIdFor(today, r.src)} on the sandbox.`)
+          : null)
+      : h('p', { class: 'muted small' }, 'Loading…'),
+    h('p', { class: 'muted small' },
+      'Pools come from Canoku/tools/puzzle_gen (see its README). Importing only adds days that don\'t exist yet; players get them once the pool settings name them.'),
+    h('div', { class: 'actions' },
+      h('button', { class: 'btn', onclick: () => openPoolImport(rerender) }, 'Import pool file…'),
+      h('button', { class: 'btn', disabled: !r, onclick: () => openPoolSettings(rerender) }, 'Pool settings…')));
+}
+
+async function openPoolImport(rerender) {
+  const result = await modal('Import a Canoku pool', (close) => {
+    const file = h('input', { type: 'file', accept: '.json,application/json' });
+    const report = h('div');
+    const go = h('button', { class: 'btn primary', disabled: true }, 'Import new days');
+    let docs = {};
+
+    file.addEventListener('change', async () => {
+      clear(report, h('p', { class: 'small muted' }, 'Checking every board…'));
+      go.disabled = true;
+      try {
+        const text = await file.files[0].text();
+        // Let the message paint before the check holds the page
+        await new Promise((res) => setTimeout(res, 30));
+        const parsed = parsePool(JSON.parse(text));
+        docs = parsed.docs;
+        const count = canokuDoc?.count ?? 535;
+        const errors = [];
+        if (parsed.first != null && parsed.first <= count) errors.push(`The pool must start after #${count}.`);
+        errors.push(...parsed.errors.slice(0, 20));
+        if (parsed.errors.length > 20) errors.push(`…and ${parsed.errors.length - 20} more`);
+        clear(report,
+          h('ul', {},
+            h('li', {}, `${Object.keys(docs).length} days, #${parsed.first}–#${parsed.last}.`),
+            errors.length ? null : h('li', {}, 'Every board has exactly one solution, matching its answer.')),
+          errors.length ? issues({ errors }) : null);
+        go.disabled = errors.length > 0 || !Object.keys(docs).length;
+      } catch (e) {
+        clear(report, issues({ errors: [`Couldn't read that file: ${e.message}`] }));
+      }
+    });
+
+    go.addEventListener('click', async () => {
+      go.disabled = true;
+      file.disabled = true;
+      const progress = h('p', { class: 'small' });
+      report.append(progress);
+      try {
+        const r = await importCanokuPool(docs, (done, total) => { progress.textContent = `Written ${done} of ${total}…`; });
+        close(r);
+      } catch (e) {
+        toast(`Import stopped: ${e.message}`, { error: true });
+        go.disabled = false;
+        file.disabled = false;
+      }
+    });
+
+    return h('div', {},
+      h('p', {}, 'Choose a pool file from Canoku/tools/puzzle_gen/data (pool_<first>_<last>.json). Days that already exist are left alone.'),
+      file, report,
+      h('div', { class: 'actions' }, h('button', { class: 'btn', onclick: () => close() }, 'Cancel'), go));
+  }, { wide: true });
+
+  if (result) {
+    toast(`Imported ${result.written} Canoku days${result.skipped ? ` (${result.skipped} were already there)` : ''}.`);
+    other = null;
+    rerender();
+  }
+}
+
+async function openPoolSettings(rerender) {
+  const data = canokuDoc.data;
+  const changed = await modal('Canoku pool settings', (close) => {
+    const field = (label, value, hint) => {
+      const input = h('input', { type: 'number', min: '1', value: value ?? '' });
+      return [input, h('p', { class: 'small' }, h('label', {}, h('b', {}, label), ' ', input), h('span', { class: 'muted' }, ` ${hint}`))];
+    };
+    const [start, startRow] = field('freshStart', data.freshStart, 'First day of the pool for everyone. Empty turns the pool off.');
+    const [count, countRow] = field('freshCount', data.freshCount, 'Days in the pool.');
+    const [sandbox, sandboxRow] = field('freshStartSandbox', data.freshStartSandbox,
+      'Replaces freshStart on the sandbox only, to try the pool there first. Empty = same as production.');
+    const msg = h('div');
+    const save = h('button', { class: 'btn primary' }, 'Save');
+    const num = (el) => (el.value.trim() === '' ? null : Number(el.value));
+
+    save.addEventListener('click', async () => {
+      const fields = { freshStart: num(start), freshCount: num(count), freshStartSandbox: num(sandbox) };
+      const errors = [];
+      for (const [k, v] of Object.entries(fields)) if (v != null && !Number.isInteger(v)) errors.push(`${k} must be a whole number.`);
+      if ((fields.freshStart != null || fields.freshStartSandbox != null) && !(fields.freshCount > 0)) errors.push('Set freshCount too.');
+      for (const k of ['freshStart', 'freshStartSandbox']) {
+        if (fields[k] != null && fields[k] <= data.count) errors.push(`${k} must be after #${data.count}.`);
+      }
+      const today = dailyIndex('canoku', todayEpochDay());
+      if (fields.freshStart != null && fields.freshStart !== (data.freshStart ?? null) && today != null && fields.freshStart <= today) {
+        errors.push(`freshStart #${fields.freshStart} isn't in the future, so it would change puzzles players already have (today is #${today}).`);
+      }
+      // Once a pool has run out it loops, and a new freshCount would change
+      // the days already looped. Extend it (next pool) before then.
+      const end = Number.isInteger(data.freshStart) && Number.isInteger(data.freshCount)
+        ? data.freshStart + data.freshCount : null;
+      if (end != null && today != null && today >= end && fields.freshCount !== data.freshCount) {
+        errors.push(`The pool ran out at #${end - 1} and has looped since #${end}, so a new freshCount would change puzzles players already had. Pools must be extended before they run out.`);
+      }
+      clear(msg, errors.length ? issues({ errors }) : null);
+      if (errors.length) return;
+      const ask = fields.freshStart !== (data.freshStart ?? null)
+        ? `Production players will get the pool from #${fields.freshStart ?? '— (off)'}. Only Canoku 3.1.0 and later read it. Continue?`
+        : 'Save the pool settings?';
+      if (!confirm(ask)) return;
+      save.disabled = true;
+      try {
+        await setCanokuPool(fields, data,
+          `freshStart ${fields.freshStart ?? '—'}, freshCount ${fields.freshCount ?? '—'}, sandbox ${fields.freshStartSandbox ?? '—'}`);
+        close(true);
+      } catch (e) {
+        clear(msg, issues({ errors: [e.message] }));
+        save.disabled = false;
+      }
+    });
+
+    return h('div', {},
+      h('p', { class: 'small' },
+        `Days up to puzzleCount (#${data.count}) keep their puzzles. Days from freshStart use the pool docs (named after their day) and loop through the pool after its last day. The days between loop through #336–#535 as before. Saved to canokuNewData/puzzleCount and restorable from the Log tab.`),
+      startRow, countRow, sandboxRow, msg,
+      h('div', { class: 'actions' }, h('button', { class: 'btn', onclick: () => close() }, 'Cancel'), save));
+  });
+  if (changed) {
+    toast('Canoku pool settings saved.');
+    other = null;
+    rerender();
+  }
 }

@@ -2,18 +2,19 @@
 // transaction that also writes an adminLog entry with the docs before and
 // after, so any edit, swap or import can be restored from the Log tab.
 
-import { sdk, currentEmail } from './firebase.js?v=202611101204';
-import { GAMES } from './dates.js?v=202611101204';
-import { decodeAnswer } from './codec.js?v=202611101204';
+import { sdk, currentEmail } from './firebase.js?v=202611121452';
+import { GAMES } from './dates.js?v=202611121452';
+import { decodeAnswer } from './codec.js?v=202611121452';
 import {
   PLAYER_COLLECTIONS, GAMES_SUBCOLLECTION_PARENTS, MAX_GAMES, queryCutoff, accountVerdict, quickVerdict,
-} from './cleanup.js?v=202611101204';
-import { pool } from './pool.js?v=202611101204';
-import { repairAccount } from './repair.js?v=202611101204';
-import { VOTES_COLLECTION } from './polls.js?v=202611101204';
-import { isSeedId } from './seed/accounts.js?v=202611101204';
-import { isTs } from './seed/shapes.js?v=202611101204';
-import { withZeroCounts } from './duoSwap.js?v=202611101204';
+} from './cleanup.js?v=202611121452';
+import { pool } from './pool.js?v=202611121452';
+import { repairAccount } from './repair.js?v=202611121452';
+import { VOTES_COLLECTION } from './polls.js?v=202611121452';
+import { isSeedId } from './seed/accounts.js?v=202611121452';
+import { isTs } from './seed/shapes.js?v=202611121452';
+import { withZeroCounts } from './duoSwap.js?v=202611121452';
+import { puzzleSource, hasPool, lastFreshDay, docIdFor } from './canokuPool.js?v=202611121452';
 
 // ---- Puzzles --------------------------------------------------------------
 
@@ -48,32 +49,86 @@ export async function loadPuzzles(gameId) {
 }
 
 /**
- * Canoku's puzzleCount (the last puzzle players get before it loops), and
- * whether docs <count> and <count + 1> exist, to catch a count that's out of
- * step with the puzzles. Null count when the doc is missing.
+ * Canoku's puzzleCount doc: {data (the doc as stored), src (puzzleSource:
+ * count and the pool, as the sandbox build sees it)}, plus whether docs
+ * <count> and <count + 1> exist (a count out of step with the puzzles) and,
+ * with a pool, whether its first and last docs exist. Null data when the doc
+ * is missing.
  */
 export async function loadCanokuCount() {
   const { fs, db } = await sdk();
   const snap = await fs.getDoc(fs.doc(db, 'canokuNewData', 'puzzleCount'));
-  const count = snap.exists() && Number.isInteger(snap.data().count) ? snap.data().count : null;
-  if (count == null) return { count };
-  const [last, next] = await Promise.all([count, count + 1]
-    .map((i) => fs.getDoc(fs.doc(db, 'canokuNewData', String(i)))));
-  return { count, lastExists: last.exists(), nextExists: next.exists() };
+  const data = snap.exists() ? snap.data() : null;
+  if (!data || !Number.isInteger(data.count)) return { data, count: null };
+  const src = puzzleSource(data, { production: false });
+  const prod = puzzleSource(data, { production: true });
+  const ids = [src.count, src.count + 1];
+  if (hasPool(src)) ids.push(src.freshStart, lastFreshDay(src));
+  const snaps = await Promise.all(ids.map((i) => fs.getDoc(fs.doc(db, 'canokuNewData', String(i)))));
+  return {
+    data, src, prod,
+    count: src.count,
+    lastExists: snaps[0].exists(),
+    nextExists: snaps[1].exists(),
+    poolEndsExist: hasPool(src) ? snaps[2].exists() && snaps[3].exists() : null,
+  };
 }
 
 /**
- * Canoku day [day]'s puzzle doc (canokuNewData), found as Canoku finds it
- * (user.dart initializeGameData): past puzzleCount the puzzles loop through
- * the last 200. Null when it doesn't exist.
+ * Canoku day [day]'s puzzle doc (canokuNewData), found as the sandbox build
+ * finds it (canokuPool.js docIdFor, Canoku/lib/puzzle_source.dart). Null when
+ * it doesn't exist.
  */
 export async function loadCanokuPuzzle(day) {
   const { fs, db } = await sdk();
   const countSnap = await fs.getDoc(fs.doc(db, 'canokuNewData', 'puzzleCount'));
-  const count = countSnap.exists() && Number.isInteger(countSnap.data().count) ? countSnap.data().count : Infinity;
-  const docId = day <= count ? day : ((day - 336) % 200) + 336;
-  const snap = await fs.getDoc(fs.doc(db, 'canokuNewData', String(docId)));
+  const src = puzzleSource(countSnap.exists() ? countSnap.data() : { count: Infinity }, { production: false });
+  const snap = await fs.getDoc(fs.doc(db, 'canokuNewData', String(docIdFor(day, src))));
   return snap.exists() ? snap.data() : null;
+}
+
+/**
+ * Adds Canoku pool days (canokuPool.js parsePool docs) that don't exist yet,
+ * 50 per logged transaction. Existing docs are never changed. Players don't
+ * get them until puzzleCount has freshStart/freshCount (setCanokuPool).
+ * @returns {written, skipped}
+ */
+export async function importCanokuPool(docs, onProgress) {
+  const ids = Object.keys(docs);
+  let done = 0, written = 0;
+  for (let i = 0; i < ids.length; i += 50) {
+    const chunk = ids.slice(i, i + 50);
+    const after = await writeWithLog('canokuNewData', chunk, (before) => {
+      const out = {};
+      for (const id of chunk) if (!before[id]) out[id] = docs[id];
+      return out;
+    }, { action: 'import', note: `Canoku pool ${chunk[0]}–${chunk[chunk.length - 1]}` });
+    written += Object.keys(after).length;
+    done += chunk.length;
+    onProgress?.(done, ids.length);
+  }
+  return { written, skipped: ids.length - written };
+}
+
+/**
+ * Changes the pool fields of canokuNewData/puzzleCount, logged. [fields]
+ * holds freshStart / freshCount / freshStartSandbox; null removes one.
+ * [expected] is the doc as last read: stops if it changed since.
+ */
+export function setCanokuPool(fields, expected, note = '') {
+  return writeWithLog('canokuNewData', ['puzzleCount'], (before) => {
+    const cur = before.puzzleCount;
+    if (JSON.stringify(cur) !== JSON.stringify(expected)) {
+      throw new Error('puzzleCount changed since it was loaded. Refresh and try again.');
+    }
+    if (!cur || !Number.isInteger(cur.count)) throw new Error('canokuNewData/puzzleCount is missing.');
+    const next = { ...cur };
+    for (const [k, v] of Object.entries(fields)) {
+      if (v == null) delete next[k];
+      else next[k] = v;
+    }
+    return { puzzleCount: next };
+  }, { action: 'canoku-pool', note });
 }
 
 // Firestore rejects undefined anywhere in a document.

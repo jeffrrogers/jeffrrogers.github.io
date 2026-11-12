@@ -4,8 +4,8 @@
 // dates.js). The others number puzzles from 1 on their first day (launch.js,
 // moved earlier on the sandbox; Canoku's is fixed), like the
 // arena's daily() in js/games/common.js:
-//   Canoku       canokuNewData/<n>, players get up to puzzleCount.count
-//                (Canoku/lib/user.dart initializeGameData)
+//   Canoku       canokuNewData/<n>: up to puzzleCount.count, then the pool
+//                from freshStart if set (canokuPool.js, Canoku/lib/puzzle_source.dart)
 //   Canolitaire  dailies.json "days" (solitaireSourceCode/lib/model/daily.dart)
 //   Canominoes   dailies_index.json "days" (pipsSourceCode/lib/model/daily.dart)
 //   Canoggle     dailies_index.json "days", the Mini included
@@ -17,15 +17,15 @@
 //                (canagramsSourceCode/lib/model/daily.dart; extend with
 //                tools/generate_dailies.dart, see tools/PUZZLE_GENERATION.md)
 
-import { epochDay } from './dates.js?v=202611101204';
-import { launchEd } from './launch.js?v=202611101204';
+import { epochDay } from './dates.js?v=202611121452';
+import { launchEd } from './launch.js?v=202611121452';
 
 export const DAILY_GAMES = {
   canoku: {
     name: 'Canoku',
     startEd: epochDay(2023, 10, 16),
     source: 'Firestore canokuNewData/puzzleCount',
-    afterEnd: 'Players loop through puzzles 336–535 again.',
+    afterEnd: 'Puzzles repeat (the pool loops, or #336–#535 without one).',
   },
   canolitaire: {
     name: 'Canolitaire',
