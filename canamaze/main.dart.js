@@ -50355,7 +50355,7 @@ l=s==null
 if(!l)c.push(new A.W(s,o))
 m.push(new A.YI(1200,e,c,j))
 m.push(B.cX)
-d=l?"Everyone avg":"Everyone avg ("+d.b+")"
+d=l?"Everyone":"Everyone ("+d.b+")"
 m.push(A.TH(B.dK,A.b([new A.tV(h.cy,"Your score",e,j),new A.tV(B.hC,"Your best",g,j),new A.tV(h.cx,"Your avg",f,j),new A.tV(o,d,s,j)],n),6,16))
 return A.bQ(j,A.bO(m,B.aA,B.l,B.t),B.n,j,j,new A.bh(h.fx,j,j,r,j,j,B.A),j,j,j,B.Lj,j,j,j)}}
 A.tV.prototype={
