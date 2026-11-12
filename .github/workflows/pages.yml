@@ -27,7 +27,32 @@ concurrency:
   cancel-in-progress: true
 
 jobs:
+  # Publishes only the newest commit. Each run deploys the commit that
+  # triggered it, so a run held up for hours (the 2026-11-11 Actions outage
+  # left one queued that could be neither cancelled nor deleted) would put an
+  # older site over everything pushed since. This checks that the run's commit
+  # is still the tip of main; if not, it skips the deploy and says why.
+  check:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    outputs:
+      current: ${{ steps.tip.outputs.current }}
+    steps:
+      - id: tip
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          tip=$(gh api "repos/${{ github.repository }}/commits/main" --jq .sha)
+          if [ "$tip" = "${{ github.sha }}" ]; then
+            echo "current=true" >> "$GITHUB_OUTPUT"
+          else
+            echo "::notice::Skipped: this run is for ${{ github.sha }}, but main is now at $tip. Deploying it would put an older site over a newer one."
+            echo "current=false" >> "$GITHUB_OUTPUT"
+          fi
+
   deploy:
+    needs: check
+    if: needs.check.outputs.current == 'true'
     runs-on: ubuntu-latest
     timeout-minutes: 45
     environment:
