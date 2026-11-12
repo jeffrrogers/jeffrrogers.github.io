@@ -12,9 +12,9 @@
 // the count survives history scrolling out of the recent window. parts() is
 // the checklist behind a badge that needs several things at once.
 
-import { SOLVED, minEd, finishOn, num } from '../status.js?v=202611101310';
-import { todayEpochDay, weekdayName, shortDate } from '../dates.js?v=202611101310';
-import { LAUNCH_DATE } from '../config.js?v=202611101310';
+import { SOLVED, minEd, finishOn, num } from '../status.js?v=202611121733';
+import { todayEpochDay, weekdayName, shortDate } from '../dates.js?v=202611121733';
+import { LAUNCH_DATE, shownHere } from '../config.js?v=202611121733';
 
 function finishDays(game, p) {
   return [...p.doneIdx].map((i) => finishOn(game, p, i));
@@ -422,7 +422,8 @@ const gameItem = (g, done, detail) => ({ label: g.name, logo: g.logo, done, deta
  */
 export function coversEveryGame(games) {
   const ids = new Set(games.map((g) => g.id));
-  return Object.keys(LAUNCH_DATE).every((id) => ids.has(id));
+  // Production's sandbox-only games aren't part of "every game" until shown
+  return Object.keys(LAUNCH_DATE).filter((id) => shownHere(id)).every((id) => ids.has(id));
 }
 
 /**

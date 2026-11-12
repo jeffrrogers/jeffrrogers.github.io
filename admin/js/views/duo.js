@@ -3,15 +3,15 @@
 // facts) and importing a schedule JSON
 // (canuckleSourceCode/tool/duo_schedule_year1.json).
 
-import { h, clear, modal, toast, issues, availabilityGate, sortHead } from '../ui.js?v=202611121654';
-import { nextSort, sortRows } from '../sort.js?v=202611121654';
-import { segmentsToText, textToSegments, sameFact, duoFactOf, duoFactsToSave } from '../facts.js?v=202611121654';
-import { GAMES, longDate, todayIndex, isAvailable, puzzlesAfterToday, nextIndex } from '../dates.js?v=202611121654';
-import { validateDuo } from '../validate.js?v=202611121654';
-import { savePuzzle, importDuo, applyDuoSwap, zeroDuoCounts } from '../store.js?v=202611121654';
-import { planDuoSwap, duoDocFor, plannedUses, withEditorFields, duoPlays, daysWithPlays } from '../duoSwap.js?v=202611121654';
-import { ctx, loadGame, duoUses, maxIndex, availabilityMessages } from '../context.js?v=202611121654';
-import { factCard, badgeChip, miniSwitch, previewFrame } from '../preview.js?v=202611121654';
+import { h, clear, modal, toast, issues, availabilityGate, sortHead } from '../ui.js?v=202611121733';
+import { nextSort, sortRows } from '../sort.js?v=202611121733';
+import { segmentsToText, textToSegments, sameFact, duoFactOf, duoFactsToSave } from '../facts.js?v=202611121733';
+import { GAMES, longDate, todayIndex, isAvailable, puzzlesAfterToday, nextIndex } from '../dates.js?v=202611121733';
+import { validateDuo } from '../validate.js?v=202611121733';
+import { savePuzzle, importDuo, applyDuoSwap, zeroDuoCounts } from '../store.js?v=202611121733';
+import { planDuoSwap, duoDocFor, plannedUses, withEditorFields, duoPlays, daysWithPlays } from '../duoSwap.js?v=202611121733';
+import { ctx, loadGame, duoUses, maxIndex, availabilityMessages } from '../context.js?v=202611121733';
+import { factCard, badgeChip, miniSwitch, previewFrame } from '../preview.js?v=202611121733';
 
 const PAGE = 150;
 // sort: a clicked column ({key, dir}, sort.js), or null for newest first

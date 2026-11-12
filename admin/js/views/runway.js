@@ -1,13 +1,17 @@
 // Days left tab: how far each daily game's puzzles run past today, and
 // Canoku's puzzle pool (importing one and turning it on).
 
-import { h, clear, modal, toast, issues } from '../ui.js?v=202611121654';
-import { GAMES, longDate, todayEpochDay, todayIndex } from '../dates.js?v=202611121654';
-import { DAILY_GAMES, dailyIndex, dailyEd, daysInFile } from '../runway.js?v=202611121654';
-import { GAME_SITES } from '../config.js?v=202611121654';
-import { loadCanokuCount, importCanokuPool, setCanokuPool, compareCanokuPool, updateCanokuPool } from '../store.js?v=202611121654';
-import { parsePool, hasPool, lastFreshDay, docIdFor, poolDocs, poolDocReached } from '../canokuPool.js?v=202611121654';
-import { maxIndex } from '../context.js?v=202611121654';
+import { h, clear, modal, toast, issues } from '../ui.js?v=202611121733';
+import { GAMES, longDate, todayEpochDay, todayIndex } from '../dates.js?v=202611121733';
+import { DAILY_GAMES, dailyIndex, dailyEd, daysInFile } from '../runway.js?v=202611121733';
+import { GAME_SITES } from '../config.js?v=202611121733';
+import {
+  loadCanokuCount, importCanokuPool, setCanokuPool, compareCanokuPool, updateCanokuPool,
+  loadArenaSwitches, setArenaSwitch,
+} from '../store.js?v=202611121733';
+import { SANDBOX_ONLY, LAUNCH_DATE as ADMIN_LAUNCH_DATE } from '../launch.js?v=202611121733';
+import { parsePool, hasPool, lastFreshDay, docIdFor, poolDocs, poolDocReached } from '../canokuPool.js?v=202611121733';
+import { maxIndex } from '../context.js?v=202611121733';
 
 const RUNWAY_WARN_DAYS = 30;
 
@@ -53,7 +57,13 @@ async function loadCanoku() {
   return { last: lastFreshDay(r.prod), note: notes.join(' ') || null };
 }
 
+// The arena's production switches (arenaConfig/games), loaded with the rest
+let switches = null; // {data, onProduction} | {error}
+
 function loadOther() {
+  loadArenaSwitches()
+    .then((v) => { switches = v; })
+    .catch((e) => { switches = { error: e.message }; });
   const jobs = Object.entries(DAILY_GAMES).map(async ([id, g]) => {
     try {
       return [id, await (id === 'canoku' ? loadCanoku() : fetchFile(g.file))];
@@ -149,7 +159,8 @@ export function renderRunway(root, rerender) {
     h('p', { class: 'muted small' },
       'Canuckle, Canuckle+ and Duo count the puzzles saved in Firestore. Canoku uses canokuNewData/puzzleCount and its pool (below). ',
       'Canolitaire, Canominoes, Canoggle, Canagrams, Canatiles, Canundrum and Canamaze read the puzzle files built into each game; a new batch counts once that game is deployed.'),
-    canokuSection(rerender));
+    canokuSection(rerender),
+    sandboxOnlySection(rerender));
 }
 
 // ---- Canoku pool ------------------------------------------------------------
@@ -344,3 +355,79 @@ async function openPoolSettings(rerender) {
     rerender();
   }
 }
+
+// ---- Sandbox-only games -------------------------------------------------------
+
+const PRODUCTION_SITE = 'https://www.canucklegame.ca/';
+
+const isoOf = ([y, m, d]) => `${y}-${String(m).padStart(2, '0')}-${String(d).padStart(2, '0')}`;
+
+/** Whether [gameId]'s puzzle file is served on canucklegame.ca (it's deployed). */
+async function onProductionSite(gameId) {
+  const file = DAILY_GAMES[gameId]?.file;
+  if (!file) return false;
+  try {
+    const res = await fetch(PRODUCTION_SITE + file, { cache: 'no-store' });
+    return res.ok;
+  } catch {
+    return false;
+  }
+}
+
+function sandboxOnlySection(rerender) {
+  const sw = switches;
+  const rows = SANDBOX_ONLY.map((id) => {
+    const name = DAILY_GAMES[id]?.name ?? id;
+    const date = ADMIN_LAUNCH_DATE[id] ? isoOf(ADMIN_LAUNCH_DATE[id]) : '—';
+    const on = sw?.onProduction?.[id] === true;
+    return h('tr', {},
+      h('td', { class: 'nowrap' }, name),
+      h('td', { class: 'nowrap' }, date),
+      h('td', {}, !sw || sw.error ? '—' : on ? h('span', { class: 'ok-note' }, 'On production') : h('span', { class: 'muted' }, 'Sandbox only')),
+      h('td', {}, !sw || sw.error ? null : h('button', {
+        class: 'btn small',
+        onclick: () => (on ? takeOff(id, name, rerender) : putOn(id, name, date, rerender)),
+      }, on ? 'Take off production…' : 'Put on production…')));
+  });
+  return h('section', { class: 'card' },
+    h('h3', {}, 'Sandbox-only games'),
+    h('p', { class: 'muted small' },
+      'The sandbox shows every game. Production hides these until their switch is on (Firestore arenaConfig/games), ',
+      'then shows each from its launch date, which only changes in code (the game numbers its puzzles from it). ',
+      'Deploy the game to canucklegame.ca first: the switch checks it is there.'),
+    sw?.error ? h('p', { class: 'err small' }, `Couldn't load the switches: ${sw.error}`) : null,
+    !sw ? h('p', { class: 'muted small' }, 'Loading…') : null,
+    h('div', { class: 'table-wrap' },
+      h('table', { class: 'grid compact' },
+        h('thead', {}, h('tr', {}, ['Game', 'Launch date', 'Production', ''].map((t) => h('th', {}, t)))),
+        h('tbody', {}, rows))));
+}
+
+async function putOn(id, name, date, rerender) {
+  if (!(await onProductionSite(id))) {
+    toast(`${name} isn't on canucklegame.ca yet (no ${DAILY_GAMES[id].file}). Deploy it first.`, { error: true });
+    return;
+  }
+  if (!confirm(`Show ${name} on production? It is deployed on canucklegame.ca. Players see it in the Arena from ${date}, its puzzle #1.`)) return;
+  try {
+    await setArenaSwitch(id, true, switches.data, `${name} on production`);
+    toast(`${name} is on production (from ${date}).`);
+  } catch (e) {
+    toast(e.message, { error: true });
+  }
+  other = null;
+  rerender();
+}
+
+async function takeOff(id, name, rerender) {
+  if (!confirm(`Take ${name} off production? The Arena stops showing it there; players' saves and stats stay, and it can be switched back on.`)) return;
+  try {
+    await setArenaSwitch(id, false, switches.data, `${name} off production`);
+    toast(`${name} is sandbox only again.`);
+  } catch (e) {
+    toast(e.message, { error: true });
+  }
+  other = null;
+  rerender();
+}
+

@@ -1,22 +1,22 @@
 // Canuckle Admin: sign-in gate, header and tabs.
 
-import { h, clear, toast } from './ui.js?v=202611121654';
-import { ADMIN_EMAILS, SITE_LABEL, IS_SANDBOX } from './config.js?v=202611121654';
-import { OFFSET_WEEKS } from './launch.js?v=202611121654';
-import { onUser, signIn, signOut } from './firebase.js?v=202611121654';
-import { ctx, loadAll, loadWords } from './context.js?v=202611121654';
-import { renderPuzzles } from './views/puzzles.js?v=202611121654';
-import { renderDuo } from './views/duo.js?v=202611121654';
-import { renderRunway } from './views/runway.js?v=202611121654';
-import { renderCleanup } from './views/cleanup.js?v=202611121654';
-import { renderLog } from './views/log.js?v=202611121654';
-import { renderRepair } from './views/repair.js?v=202611121654';
-import { renderCanagrams } from './views/canagrams.js?v=202611121654';
-import { renderCanoggle } from './views/canoggle.js?v=202611121654';
-import { renderCanatiles } from './views/canatiles.js?v=202611121654';
-import { renderVersions } from './views/versions.js?v=202611121654';
-import { renderSeed } from './views/seed.js?v=202611121654';
-import { renderAnalytics } from './views/analytics.js?v=202611121654';
+import { h, clear, toast } from './ui.js?v=202611121733';
+import { ADMIN_EMAILS, SITE_LABEL, IS_SANDBOX } from './config.js?v=202611121733';
+import { OFFSET_WEEKS } from './launch.js?v=202611121733';
+import { onUser, signIn, signOut } from './firebase.js?v=202611121733';
+import { ctx, loadAll, loadWords } from './context.js?v=202611121733';
+import { renderPuzzles } from './views/puzzles.js?v=202611121733';
+import { renderDuo } from './views/duo.js?v=202611121733';
+import { renderRunway } from './views/runway.js?v=202611121733';
+import { renderCleanup } from './views/cleanup.js?v=202611121733';
+import { renderLog } from './views/log.js?v=202611121733';
+import { renderRepair } from './views/repair.js?v=202611121733';
+import { renderCanagrams } from './views/canagrams.js?v=202611121733';
+import { renderCanoggle } from './views/canoggle.js?v=202611121733';
+import { renderCanatiles } from './views/canatiles.js?v=202611121733';
+import { renderVersions } from './views/versions.js?v=202611121733';
+import { renderSeed } from './views/seed.js?v=202611121733';
+import { renderAnalytics } from './views/analytics.js?v=202611121733';
 
 const TABS = [
   ['canuckle', 'Canuckle'],

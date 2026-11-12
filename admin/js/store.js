@@ -2,19 +2,19 @@
 // transaction that also writes an adminLog entry with the docs before and
 // after, so any edit, swap or import can be restored from the Log tab.
 
-import { sdk, currentEmail } from './firebase.js?v=202611121654';
-import { GAMES } from './dates.js?v=202611121654';
-import { decodeAnswer } from './codec.js?v=202611121654';
+import { sdk, currentEmail } from './firebase.js?v=202611121733';
+import { GAMES } from './dates.js?v=202611121733';
+import { decodeAnswer } from './codec.js?v=202611121733';
 import {
   PLAYER_COLLECTIONS, GAMES_SUBCOLLECTION_PARENTS, MAX_GAMES, queryCutoff, accountVerdict, quickVerdict,
-} from './cleanup.js?v=202611121654';
-import { pool } from './pool.js?v=202611121654';
-import { repairAccount } from './repair.js?v=202611121654';
-import { VOTES_COLLECTION } from './polls.js?v=202611121654';
-import { isSeedId } from './seed/accounts.js?v=202611121654';
-import { isTs } from './seed/shapes.js?v=202611121654';
-import { withZeroCounts } from './duoSwap.js?v=202611121654';
-import { puzzleSource, hasPool, poolDocs, docIdFor, samePoolDoc } from './canokuPool.js?v=202611121654';
+} from './cleanup.js?v=202611121733';
+import { pool } from './pool.js?v=202611121733';
+import { repairAccount } from './repair.js?v=202611121733';
+import { VOTES_COLLECTION } from './polls.js?v=202611121733';
+import { isSeedId } from './seed/accounts.js?v=202611121733';
+import { isTs } from './seed/shapes.js?v=202611121733';
+import { withZeroCounts } from './duoSwap.js?v=202611121733';
+import { puzzleSource, hasPool, poolDocs, docIdFor, samePoolDoc } from './canokuPool.js?v=202611121733';
 
 // ---- Puzzles --------------------------------------------------------------
 
@@ -108,6 +108,37 @@ export async function importCanokuPool(docs, onProgress) {
     onProgress?.(done, ids.length);
   }
   return { written, skipped: ids.length - written };
+}
+
+/**
+ * The arena's production switches, arenaConfig/games: {data (as stored, or
+ * null), onProduction: {gameId: true}}.
+ */
+export async function loadArenaSwitches() {
+  const { fs, db } = await sdk();
+  const snap = await fs.getDoc(fs.doc(db, 'arenaConfig', 'games'));
+  const data = snap.exists() ? snap.data() : null;
+  const onProduction = {};
+  for (const [id, on] of Object.entries(data?.onProduction ?? {})) if (on === true) onProduction[id] = true;
+  return { data, onProduction };
+}
+
+/**
+ * Turns a sandbox-only game's production switch on or off, logged ('edit',
+ * restorable from the Log tab). [expected] is the doc as loaded: stops if it
+ * changed since.
+ */
+export function setArenaSwitch(gameId, on, expected, note = '') {
+  return writeWithLog('arenaConfig', ['games'], (before) => {
+    const cur = before.games;
+    if (JSON.stringify(cur ?? null) !== JSON.stringify(expected ?? null)) {
+      throw new Error('The switches changed since they were loaded. Refresh and try again.');
+    }
+    const onProduction = { ...(cur?.onProduction ?? {}) };
+    if (on) onProduction[gameId] = true;
+    else delete onProduction[gameId];
+    return { games: { ...(cur ?? {}), onProduction } };
+  }, { action: 'edit', note });
 }
 
 /**
