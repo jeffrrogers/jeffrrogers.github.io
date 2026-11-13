@@ -25,9 +25,17 @@
 // planIdSwitch is pure (data in, operations out) so the order and the encoding
 // are unit-tested; applyIdSwitch performs the operations.
 
-import { writePref, removePref } from './local.js?v=202611121733';
+import { writePref, removePref } from './local.js?v=202611130756';
 
-/** Collections read for the new id, by game. */
+/**
+ * Collections read for the new id, by game. Every one must be readable under
+ * the Firestore rules: the lookup reads them all together, and one denied
+ * read fails the whole switch ("Couldn't connect"). So Canadrift, which the
+ * rules deliberately leave out (not being published), is not here; its local
+ * state isn't touched by a switch. Emoku (not an Arena game) is here only so
+ * an id whose sole record is Emoku's is still found; Emoku notices a new id
+ * itself (canuckle_shared SharedIdentity) and loads it.
+ */
 export const ID_DOCS = {
   canuckle: 'newUserData',
   canoku: 'canokuUserData',
@@ -38,7 +46,7 @@ export const ID_DOCS = {
   canatiles: 'tilesUserData',
   canundrum: 'rebusUserData',
   canamaze: 'mazeUserData',
-  canadrift: 'plowUserData',
+  emoku: 'emokuUserData',
 };
 
 /** What an id must look like before it is used in a document path. */

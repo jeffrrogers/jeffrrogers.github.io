@@ -19,14 +19,14 @@
 // done: false and reads as in progress. Today's in-progress boards come from
 // this browser's cmzGame_{day}_{tier} saves.
 
-import { launchDaily, pct, historyStart, readJsonPref, readPendingList } from './common.js?v=202611121733';
-import { duration, edOfMillis } from '../dates.js?v=202611121733';
-import { toMillis } from '../firebase.js?v=202611121733';
-import { launchEd } from '../config.js?v=202611121733';
-import { readPref } from '../local.js?v=202611121733';
+import { launchDaily, pct, historyStart, readJsonPref, readPendingList } from './common.js?v=202611130756';
+import { duration, edOfMillis } from '../dates.js?v=202611130756';
+import { toMillis } from '../firebase.js?v=202611130756';
+import { launchEd } from '../config.js?v=202611130756';
+import { readPref } from '../local.js?v=202611130756';
 import {
   SOLVED, PROGRESS, emptyProgress, mark, currentStreak, longestStreak, intList, num, minEd, maxEd, noteFinish,
-} from '../status.js?v=202611121733';
+} from '../status.js?v=202611130756';
 
 const LEVELS = [
   { key: 'e', label: 'Easy' },

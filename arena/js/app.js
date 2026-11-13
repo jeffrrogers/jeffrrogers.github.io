@@ -1,27 +1,27 @@
 // Boot, routing and the shared app state.
 
-import { IS_SANDBOX, IS_DEMO, isLive, loadProductionSwitches } from './config.js?v=202611121733';
-import { demoRaw } from './demo.js?v=202611121733';
-import { initAnalytics, track } from './analytics.js?v=202611121733';
-import { loadAds } from './ads.js?v=202611121733';
-import { todayEpochDay } from './dates.js?v=202611121733';
-import { playerId } from './local.js?v=202611121733';
-import { initialTheme, initialContrast, applyTheme, applyContrast } from './theme.js?v=202611121733';
-import { ALL_GAMES, liveGames, gameById } from './games/registry.js?v=202611121733';
-import { computeOrder } from './gameOrder.js?v=202611121733';
-import { readFavourites, setFavourite } from './favourites.js?v=202611121733';
-import { loadProgress, loadFullHistory } from './progress.js?v=202611121733';
-import { evaluateBadges } from './badges/rules.js?v=202611121733';
+import { IS_SANDBOX, IS_DEMO, isLive, loadProductionSwitches } from './config.js?v=202611130756';
+import { demoRaw } from './demo.js?v=202611130756';
+import { initAnalytics, track } from './analytics.js?v=202611130756';
+import { loadAds } from './ads.js?v=202611130756';
+import { todayEpochDay } from './dates.js?v=202611130756';
+import { playerId } from './local.js?v=202611130756';
+import { initialTheme, initialContrast, applyTheme, applyContrast } from './theme.js?v=202611130756';
+import { ALL_GAMES, liveGames, gameById } from './games/registry.js?v=202611130756';
+import { computeOrder } from './gameOrder.js?v=202611130756';
+import { readFavourites, setFavourite } from './favourites.js?v=202611130756';
+import { loadProgress, loadFullHistory } from './progress.js?v=202611130756';
+import { evaluateBadges } from './badges/rules.js?v=202611130756';
 import {
   loadStoredBadges, needsDating, planSync, applySync, markAnnounced, markAnnouncedMany, markShared,
-} from './badges/store.js?v=202611121733';
-import { h, ICONS, closeSheet } from './ui.js?v=202611121733';
-import { renderGames } from './views/gamesTab.js?v=202611121733';
-import { renderArchive } from './views/archive.js?v=202611121733';
-import { renderStats, renderStatsDetail } from './views/statsTab.js?v=202611121733';
-import { renderBadgesPage, announce, announceMany, unlockStyle } from './views/badgesView.js?v=202611121733';
-import { openSettings, openSync, safeReturnPath } from './views/settings.js?v=202611121733';
-import { takeLeftForGame } from './views/play.js?v=202611121733';
+} from './badges/store.js?v=202611130756';
+import { h, ICONS, closeSheet } from './ui.js?v=202611130756';
+import { renderGames } from './views/gamesTab.js?v=202611130756';
+import { renderArchive } from './views/archive.js?v=202611130756';
+import { renderStats, renderStatsDetail } from './views/statsTab.js?v=202611130756';
+import { renderBadgesPage, announce, announceMany, unlockStyle } from './views/badgesView.js?v=202611130756';
+import { openSettings, openSync, safeReturnPath } from './views/settings.js?v=202611130756';
+import { takeLeftForGame } from './views/play.js?v=202611130756';
 
 // Production only: which sandbox-only games the admin has put on production.
 // Read before the live games are worked out; a slow or failed read keeps the
