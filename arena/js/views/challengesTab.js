@@ -4,14 +4,14 @@
 // Everything shown comes from the player's social doc (app.social), which
 // only the server writes. Actions call the server, then re-read the doc.
 
-import { h, openSheet, sheetHead, toast, ICONS } from '../ui.js?v=202611151214';
-import { call, loadSocial, reasonText, waitingCount, hasStartedSocial } from '../social/api.js?v=202611151214';
-import { setUpChallenges, gamerIdStep } from '../social/onboarding.js?v=202611151214';
-import { arenaGet, arenaSet, playerId } from '../local.js?v=202611151214';
-import { track } from '../analytics.js?v=202611151214';
-import { gameById } from '../games/registry.js?v=202611151214';
-import { fromPuzzle, puzzleTitle, canChallenge } from '../social/puzzles.js?v=202611151214';
-import * as sheets from './challengeSheets.js?v=202611151214';
+import { h, openSheet, sheetHead, toast, ICONS } from '../ui.js?v=202611151240';
+import { call, loadSocial, reasonText, waitingCount, hasStartedSocial } from '../social/api.js?v=202611151240';
+import { setUpChallenges, gamerIdStep } from '../social/onboarding.js?v=202611151240';
+import { arenaGet, arenaSet, playerId } from '../local.js?v=202611151240';
+import { track } from '../analytics.js?v=202611151240';
+import { gameById } from '../games/registry.js?v=202611151240';
+import { fromPuzzle, puzzleTitle, canChallenge } from '../social/puzzles.js?v=202611151240';
+import * as sheets from './challengeSheets.js?v=202611151240';
 
 export { canChallenge };
 
@@ -100,8 +100,68 @@ export function refreshSocial() {
   return loadingSocial;
 }
 
-/** The count on the Challenges tab. */
-export const badgeCount = () => waitingCount(app?.social);
+// ---- Results not seen yet -----------------------------------------------------
+//
+// Finished challenges the player played in (or missed) but hasn't looked at
+// on this browser. They count on the tab's badge, and opening the tab pops
+// them up: one opens its results, several a summary.
+
+const seenKey = () => `resultsSeen.${app?.uid}`;
+const seenSet = () => new Set(arenaGet(seenKey(), []) || []);
+
+function markSeen(cids) {
+  if (!cids.length) return;
+  const seen = seenSet();
+  for (const c of cids) seen.add(c);
+  try {
+    // Only finished challenges in the doc matter; keep the list short.
+    arenaSet(seenKey(), [...seen].slice(-200));
+  } catch {
+    // No storage: shown again next time.
+  }
+}
+
+/** [[cid, view]] finished, played in (or missed), and not seen yet: newest first. */
+export function unseenResults(social, seen = seenSet()) {
+  return Object.entries(social?.challenges ?? {})
+    .filter(([cid, v]) => v.status === 'final' && ['done', 'expired'].includes(v.me) && !seen.has(cid))
+    .sort(([, a], [, b]) => (b.closedAt ?? 0) - (a.closedAt ?? 0));
+}
+
+/** Opens one challenge's results and remembers they've been seen. */
+function showResult(cid) {
+  markSeen([cid]);
+  sheets.openResults(app, cid);
+  app.refresh();
+}
+
+/** Several new results at once: a summary to tap through. */
+function resultsSummary(list) {
+  let close;
+  close = openSheet(h('div', { class: 'soc-step' },
+    sheetHead(`${list.length} challenges finished`, () => close()),
+    h('p', { class: 'muted', text: 'Here’s how you did. Tap one for the full results.' }),
+    h('div', { class: 'soc-list' }, list.map(([cid, v]) => {
+      const row = resultRow(cid, v, app.social);
+      row.addEventListener('click', () => close(), { capture: true });
+      return row;
+    }))),
+  { label: 'New challenge results', className: 'soc-sheet' });
+}
+
+/** Opening the tab: pop up results not seen yet (never over another sheet). Seen ones never pop again. */
+function popUnseen() {
+  if (document.querySelector('.sheet-backdrop')) return;
+  const list = unseenResults(app.social);
+  if (!list.length) return;
+  markSeen(list.map(([cid]) => cid));
+  if (list.length === 1) sheets.openResults(app, list[0][0]);
+  else resultsSummary(list);
+  app.refresh();
+}
+
+/** The count on the Challenges tab: things waiting on the player, plus results not seen yet. */
+export const badgeCount = () => waitingCount(app?.social) + unseenResults(app?.social).length;
 
 /** Runs server op [op], then re-reads the doc. Shows a toast on failure. Resolves with the result or null. */
 async function act(op, data, done) {
@@ -342,7 +402,7 @@ function resultRow(cid, v, social) {
   const { game, title } = about(v);
   const place = sheets.placeText(v, social.pub);
   const won = /^1st of/.test(place);
-  return h('button', { class: 'soc-row-item as-btn', type: 'button', onClick: () => sheets.openResults(app, cid) },
+  return h('button', { class: 'soc-row-item as-btn', type: 'button', onClick: () => showResult(cid) },
     game ? h('img', { class: 'soc-game-icon', src: game.logo, alt: '' }) : null,
     h('span', { class: 'soc-who' },
       h('strong', { text: title }),
@@ -659,6 +719,8 @@ export function renderChallenges(sub = '', extra = '') {
       }) : null),
     segment(current),
     current === 'record' ? recordView(social) : current === 'friends' ? friendsView(social) : activeView(social));
+  // After this render is on screen
+  setTimeout(popUnseen, 350);
   return page;
 }
 

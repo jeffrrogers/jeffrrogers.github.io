@@ -5,17 +5,17 @@
 // something inside Canuckle, plus the Ko-fi and social links Canuckle keeps in
 // its menu.
 
-import { h, ICONS, openSheet, sheetHead, toast } from '../ui.js?v=202611151214';
+import { h, ICONS, openSheet, sheetHead, toast } from '../ui.js?v=202611151240';
 import {
   ARENA_VERSION, IS_SANDBOX, isLive, sandboxOffsetWeeks, setSandboxOffsetWeeks, parseOffsetWeeks, offsetBannerText,
-} from '../config.js?v=202611151214';
-import { readPref, prefKeys, arenaSet } from '../local.js?v=202611151214';
-import { getDocData, setMerge } from '../firebase.js?v=202611151214';
-import { currentTheme, currentContrast, setTheme, setContrast } from '../theme.js?v=202611151214';
-import { idDocsHere, isValidUserId, planIdSwitch, applyIdSwitch } from '../idSwitch.js?v=202611151214';
-import { track } from '../analytics.js?v=202611151214';
-import { openPrivacy } from '../privacy.js?v=202611151214';
-import { openGameOrder } from './gameOrderSheet.js?v=202611151214';
+} from '../config.js?v=202611151240';
+import { readPref, prefKeys, arenaSet } from '../local.js?v=202611151240';
+import { getDocData, setMerge } from '../firebase.js?v=202611151240';
+import { currentTheme, currentContrast, setTheme, setContrast } from '../theme.js?v=202611151240';
+import { idDocsHere, isValidUserId, planIdSwitch, applyIdSwitch } from '../idSwitch.js?v=202611151240';
+import { track } from '../analytics.js?v=202611151240';
+import { openPrivacy } from '../privacy.js?v=202611151240';
+import { openGameOrder } from './gameOrderSheet.js?v=202611151240';
 
 const SUPPORT_EMAIL = 'info@canucklegame.ca';
 const KOFI_URL = 'https://ko-fi.com/canuckle';
@@ -447,7 +447,7 @@ function build(app, onTheme) {
         class: 'set-row link-row', type: 'button',
         onClick: async () => {
           closeSettings();
-          (await import('./challengesTab.js?v=202611151214')).deleteMySocialData();
+          (await import('./challengesTab.js?v=202611151240')).deleteMySocialData();
         },
       },
       h('span', { class: 'set-text' },

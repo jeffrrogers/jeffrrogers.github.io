@@ -1,14 +1,14 @@
 // The challenge sheets: New challenge, an invite to accept, and results.
 // Only loaded while featureOn('challenges') (through challengesTab.js).
 
-import { h, openSheet, sheetHead, toast, statusIcon, ICONS } from '../ui.js?v=202611151214';
-import { call, reasonText } from '../social/api.js?v=202611151214';
+import { h, openSheet, sheetHead, toast, statusIcon, ICONS } from '../ui.js?v=202611151240';
+import { call, reasonText } from '../social/api.js?v=202611151240';
 import {
   canChallenge, puzzleFor, fromPuzzle, puzzleTitle, startedHere, WINNER_RULE,
-} from '../social/puzzles.js?v=202611151214';
-import { gameById } from '../games/registry.js?v=202611151214';
-import { trackPlay } from './play.js?v=202611151214';
-import { track } from '../analytics.js?v=202611151214';
+} from '../social/puzzles.js?v=202611151240';
+import { gameById } from '../games/registry.js?v=202611151240';
+import { trackPlay } from './play.js?v=202611151240';
+import { track } from '../analytics.js?v=202611151240';
 
 const MAX_FRIENDS = 9;
 const when = (ms) => new Date(ms).toLocaleString('en-CA', { weekday: 'long', month: 'short', day: 'numeric', hour: 'numeric', minute: '2-digit' });
@@ -224,7 +224,7 @@ export function openChallenge(app, cid) {
       track(accept ? 'challenge_accept' : 'challenge_decline', { target_game: view.game });
       close();
       if (accept && game) launch(app, game, index, tier);
-      else (await import('./challengesTab.js?v=202611151214')).refreshSocial();
+      else (await import('./challengesTab.js?v=202611151240')).refreshSocial();
     } catch (e) {
       toast(reasonText(e.reason));
     }
