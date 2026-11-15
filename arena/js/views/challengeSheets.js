@@ -1,14 +1,14 @@
 // The challenge sheets: New challenge, an invite to accept, and results.
 // Only loaded while featureOn('challenges') (through challengesTab.js).
 
-import { h, openSheet, sheetHead, toast, statusIcon, ICONS } from '../ui.js?v=202611151205';
-import { call, reasonText } from '../social/api.js?v=202611151205';
+import { h, openSheet, sheetHead, toast, statusIcon, ICONS } from '../ui.js?v=202611151214';
+import { call, reasonText } from '../social/api.js?v=202611151214';
 import {
   canChallenge, puzzleFor, fromPuzzle, puzzleTitle, startedHere, WINNER_RULE,
-} from '../social/puzzles.js?v=202611151205';
-import { gameById } from '../games/registry.js?v=202611151205';
-import { trackPlay } from './play.js?v=202611151205';
-import { track } from '../analytics.js?v=202611151205';
+} from '../social/puzzles.js?v=202611151214';
+import { gameById } from '../games/registry.js?v=202611151214';
+import { trackPlay } from './play.js?v=202611151214';
+import { track } from '../analytics.js?v=202611151214';
 
 const MAX_FRIENDS = 9;
 const when = (ms) => new Date(ms).toLocaleString('en-CA', { weekday: 'long', month: 'short', day: 'numeric', hour: 'numeric', minute: '2-digit' });
@@ -148,14 +148,17 @@ export function openCreate(app, { gameId = null, friendPub = null, onSent } = {}
     const label = state.sending ? 'Sending…'
       : !g ? 'Pick a game'
         : !state.picked.size ? 'Pick at least one friend'
-          : 'Send & play';
-    body.replaceChildren(
+          : 'Send & Play';
+    // replaceChildren() doesn't unpack lists (it would print them as text),
+    // so flatten the parts and drop the empty ones first.
+    body.replaceChildren(...[
       sheetHead('New challenge', () => close()),
       g ? puzzlePart() : gameList(),
       g ? friendsPart() : null,
       g ? h('p', { class: 'soc-hint soc-center' }, h('span', { class: 'soc-inline-icon', html: ICONS.clock }),
         `Open for 3 days. ${WINNER_RULE[g.id]}`) : null,
-      h('button', { class: 'btn soc-wide', type: 'button', disabled: !ready || state.sending, text: label, onClick: send }));
+      h('button', { class: 'btn soc-wide', type: 'button', disabled: !ready || state.sending, text: label, onClick: send }),
+    ].flat(Infinity).filter(Boolean));
   }
 
   if (state.game) state.tier = state.game.tiers.length ? firstOpenTier(state.game) : null;
@@ -221,7 +224,7 @@ export function openChallenge(app, cid) {
       track(accept ? 'challenge_accept' : 'challenge_decline', { target_game: view.game });
       close();
       if (accept && game) launch(app, game, index, tier);
-      else (await import('./challengesTab.js?v=202611151205')).refreshSocial();
+      else (await import('./challengesTab.js?v=202611151214')).refreshSocial();
     } catch (e) {
       toast(reasonText(e.reason));
     }
@@ -240,7 +243,7 @@ export function openChallenge(app, cid) {
       'Everyone’s results stay hidden until you finish.'),
     invited
       ? h('div', { class: 'soc-stack' },
-        h('button', { class: 'btn soc-wide', type: 'button', text: 'Accept & play', onClick: () => respond(true) }),
+        h('button', { class: 'btn soc-wide', type: 'button', text: 'Accept & Play', onClick: () => respond(true) }),
         h('div', { class: 'actions' },
           h('button', { class: 'btn secondary', type: 'button', text: 'Decline', onClick: () => respond(false) }),
           h('button', { class: 'text-btn', type: 'button', text: 'Not now', onClick: () => close() })))

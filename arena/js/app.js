@@ -1,27 +1,27 @@
 // Boot, routing and the shared app state.
 
-import { IS_SANDBOX, IS_DEMO, isLive, loadProductionSwitches, featureOn } from './config.js?v=202611151205';
-import { demoRaw } from './demo.js?v=202611151205';
-import { initAnalytics, track } from './analytics.js?v=202611151205';
-import { loadAds } from './ads.js?v=202611151205';
-import { todayEpochDay } from './dates.js?v=202611151205';
-import { playerId, arenaGet } from './local.js?v=202611151205';
-import { initialTheme, initialContrast, applyTheme, applyContrast } from './theme.js?v=202611151205';
-import { ALL_GAMES, liveGames, gameById } from './games/registry.js?v=202611151205';
-import { computeOrder } from './gameOrder.js?v=202611151205';
-import { readFavourites, setFavourite } from './favourites.js?v=202611151205';
-import { loadProgress, loadFullHistory } from './progress.js?v=202611151205';
-import { evaluateBadges } from './badges/rules.js?v=202611151205';
+import { IS_SANDBOX, IS_DEMO, isLive, loadProductionSwitches, featureOn } from './config.js?v=202611151214';
+import { demoRaw } from './demo.js?v=202611151214';
+import { initAnalytics, track } from './analytics.js?v=202611151214';
+import { loadAds } from './ads.js?v=202611151214';
+import { todayEpochDay } from './dates.js?v=202611151214';
+import { playerId, arenaGet } from './local.js?v=202611151214';
+import { initialTheme, initialContrast, applyTheme, applyContrast } from './theme.js?v=202611151214';
+import { ALL_GAMES, liveGames, gameById } from './games/registry.js?v=202611151214';
+import { computeOrder } from './gameOrder.js?v=202611151214';
+import { readFavourites, setFavourite } from './favourites.js?v=202611151214';
+import { loadProgress, loadFullHistory } from './progress.js?v=202611151214';
+import { evaluateBadges } from './badges/rules.js?v=202611151214';
 import {
   loadStoredBadges, needsDating, planSync, applySync, markAnnounced, markAnnouncedMany, markShared,
-} from './badges/store.js?v=202611151205';
-import { h, ICONS, closeSheet } from './ui.js?v=202611151205';
-import { renderGames } from './views/gamesTab.js?v=202611151205';
-import { renderArchive } from './views/archive.js?v=202611151205';
-import { renderStats, renderStatsDetail } from './views/statsTab.js?v=202611151205';
-import { renderBadgesPage, announce, announceMany, unlockStyle } from './views/badgesView.js?v=202611151205';
-import { openSettings, openSync, safeReturnPath } from './views/settings.js?v=202611151205';
-import { takeLeftForGame } from './views/play.js?v=202611151205';
+} from './badges/store.js?v=202611151214';
+import { h, ICONS, closeSheet } from './ui.js?v=202611151214';
+import { renderGames } from './views/gamesTab.js?v=202611151214';
+import { renderArchive } from './views/archive.js?v=202611151214';
+import { renderStats, renderStatsDetail } from './views/statsTab.js?v=202611151214';
+import { renderBadgesPage, announce, announceMany, unlockStyle } from './views/badgesView.js?v=202611151214';
+import { openSettings, openSync, safeReturnPath } from './views/settings.js?v=202611151214';
+import { takeLeftForGame } from './views/play.js?v=202611151214';
 
 // Production only: which sandbox-only games the admin has put on production.
 // Read before the live games are worked out; a slow or failed read keeps the
@@ -32,7 +32,7 @@ await loadProductionSwitches();
 // (config.js FEATURES_SANDBOX_ONLY). Off, none of its code is even loaded.
 // Never in ?demo, which doesn't touch Firestore.
 const challenges = featureOn('challenges') && !IS_DEMO
-  ? await import('./views/challengesTab.js?v=202611151205').catch((e) => {
+  ? await import('./views/challengesTab.js?v=202611151214').catch((e) => {
     console.warn('arena: challenges failed to load', e);
     return null;
   })

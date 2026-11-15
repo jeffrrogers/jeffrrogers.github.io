@@ -4,14 +4,14 @@
 // Everything shown comes from the player's social doc (app.social), which
 // only the server writes. Actions call the server, then re-read the doc.
 
-import { h, openSheet, sheetHead, toast, ICONS } from '../ui.js?v=202611151205';
-import { call, loadSocial, reasonText, waitingCount, hasStartedSocial } from '../social/api.js?v=202611151205';
-import { setUpChallenges, gamerIdStep } from '../social/onboarding.js?v=202611151205';
-import { arenaGet, arenaSet, playerId } from '../local.js?v=202611151205';
-import { track } from '../analytics.js?v=202611151205';
-import { gameById } from '../games/registry.js?v=202611151205';
-import { fromPuzzle, puzzleTitle, canChallenge } from '../social/puzzles.js?v=202611151205';
-import * as sheets from './challengeSheets.js?v=202611151205';
+import { h, openSheet, sheetHead, toast, ICONS } from '../ui.js?v=202611151214';
+import { call, loadSocial, reasonText, waitingCount, hasStartedSocial } from '../social/api.js?v=202611151214';
+import { setUpChallenges, gamerIdStep } from '../social/onboarding.js?v=202611151214';
+import { arenaGet, arenaSet, playerId } from '../local.js?v=202611151214';
+import { track } from '../analytics.js?v=202611151214';
+import { gameById } from '../games/registry.js?v=202611151214';
+import { fromPuzzle, puzzleTitle, canChallenge } from '../social/puzzles.js?v=202611151214';
+import * as sheets from './challengeSheets.js?v=202611151214';
 
 export { canChallenge };
 
@@ -306,7 +306,7 @@ function inviteCard(cid, v) {
       h('span', {}, h('span', { html: ICONS.people }), `${v.players.length} players`),
       h('span', {}, h('span', { html: ICONS.clock }), timeLeft(v.expiresAt))),
     h('div', { class: 'actions' },
-      h('button', { class: 'btn', type: 'button', text: 'Accept & play', onClick: () => sheets.openChallenge(app, cid) }),
+      h('button', { class: 'btn', type: 'button', text: 'Accept & Play', onClick: () => sheets.openChallenge(app, cid) }),
       h('button', {
         class: 'btn secondary', type: 'button', text: 'Decline',
         onClick: () => act('respondChallenge', { cid, accept: false }, 'Challenge declined.'),
