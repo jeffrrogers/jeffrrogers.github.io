@@ -8,8 +8,8 @@
 // other way. social/{pid} is this player's own view (gamer ID, friends,
 // requests, challenges, records), which only the server writes.
 
-import { callArenaFunction, getDocData, setMerge, SERVER_TIME } from '../firebase.js?v=202611151324';
-import { playerId, writePref, arenaGet, arenaSet } from '../local.js?v=202611151324';
+import { callArenaFunction, getDocData, setMerge, SERVER_TIME } from '../firebase.js?v=202611151415';
+import { playerId, writePref, arenaGet, arenaSet } from '../local.js?v=202611151415';
 
 /** A refusal from the server, with its reason word (see REASON_TEXT). */
 export class SocialError extends Error {
@@ -84,16 +84,34 @@ export function cachedSocial(pid = playerId()) {
 export async function loadSocial(pid = playerId()) {
   if (!pid) return null;
   const doc = await getDocData(['social', pid]);
+  cacheSocial(pid, doc);
+  return doc;
+}
+
+/**
+ * On a game's page: the social doc from the server (the `mySocial` op)
+ * rather than a Firestore read, which there would load a second Firestore
+ * SDK alongside the game's own (and failed to, on Canagrams). Cached like
+ * loadSocial().
+ */
+export async function loadSocialViaServer(pid = playerId()) {
+  if (!pid) return null;
+  const { social } = await call('mySocial', {});
+  cacheSocial(pid, social ?? null);
+  return social ?? null;
+}
+
+function cacheSocial(pid, doc) {
   try {
     arenaSet(cacheKey(pid), doc);
+    arenaSet(`socialAt.${pid}`, Date.now());
     if (doc) arenaSet(SET_UP_KEY, true);
-    // The games read this to decide whether to show the challenge cover
-    // (Phase 2), without a Firestore read of their own.
+    // The games read this to decide whether to show the challenge cover,
+    // without a Firestore read of their own.
     arenaSet('hasGamerId', !!doc?.gamerId);
   } catch {
     // No storage: just this page then.
   }
-  return doc;
 }
 
 export function markStartedSocial() {

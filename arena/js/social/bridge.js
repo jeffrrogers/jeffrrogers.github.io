@@ -11,22 +11,24 @@
 // the Arena), re-reading it (one Firestore read) only when that copy is a few
 // minutes old.
 
-import { call, cachedSocial, loadSocial, reasonText } from './api.js?v=202611151324';
-import { WINNER_RULE } from './puzzles.js?v=202611151324';
-import { arenaGet, arenaSet, playerId } from '../local.js?v=202611151324';
+import { call, cachedSocial, loadSocialViaServer, reasonText } from './api.js?v=202611151415';
+import { WINNER_RULE } from './puzzles.js?v=202611151415';
+import { arenaGet, playerId } from '../local.js?v=202611151415';
 
 const FRESH_MS = 3 * 60000;
 const atKey = () => `socialAt.${playerId()}`;
 
-/** The player's social doc, re-read if this browser's copy is a few minutes old. */
+/**
+ * The player's social doc, re-read if this browser's copy is a few minutes
+ * old. Asked of the server: a game's page never loads the Firestore SDK.
+ */
 async function social({ fresh = false } = {}) {
   const at = arenaGet(atKey(), 0) || 0;
   if (!fresh && Date.now() - at < FRESH_MS) return cachedSocial();
   try {
-    const doc = await loadSocial();
-    arenaSet(atKey(), Date.now());
-    return doc;
-  } catch {
+    return await loadSocialViaServer();
+  } catch (e) {
+    console.warn('arena: challenge list unavailable', e?.reason ?? e);
     return cachedSocial();
   }
 }

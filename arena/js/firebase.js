@@ -1,17 +1,31 @@
 // Firestore access, loaded lazily so the page paints before the SDK arrives.
 
-import { FIREBASE_CONFIG, FIREBASE_SDK } from './config.js?v=202611151324';
+import { FIREBASE_CONFIG, FIREBASE_SDK } from './config.js?v=202611151415';
 
 const TIMEOUT_MS = 10000;
 
 let sdkPromise = null;
+let appPromise = null;
+
+/** The Arena's Firebase app alone, without Firestore (server calls need no more). */
+function firebaseApp() {
+  if (!appPromise) {
+    appPromise = import(`${FIREBASE_SDK}/firebase-app.js`).then((app) => {
+      const existing = app.getApps().find((a) => a.name === 'arena');
+      return existing ?? app.initializeApp(FIREBASE_CONFIG, 'arena');
+    });
+    appPromise.catch(() => {
+      appPromise = null;
+    });
+  }
+  return appPromise;
+}
 
 function sdk() {
   if (!sdkPromise) {
     sdkPromise = (async () => {
-      const app = await import(`${FIREBASE_SDK}/firebase-app.js`);
+      const instance = await firebaseApp();
       const fs = await import(`${FIREBASE_SDK}/firebase-firestore.js`);
-      const instance = app.initializeApp(FIREBASE_CONFIG, 'arena');
       return { fs, db: fs.getFirestore(instance), instance };
     })();
     // A failed load (offline, blocked CDN) should be retryable on next call.
@@ -35,7 +49,8 @@ let arenaCallable = null;
  */
 export async function callArenaFunction(data) {
   if (!arenaCallable) {
-    const { instance } = await sdk();
+    // The app alone: a game's page calling the server never loads Firestore.
+    const instance = await firebaseApp();
     const fn = await import(`${FIREBASE_SDK}/firebase-functions.js`);
     arenaCallable = fn.httpsCallable(fn.getFunctions(instance, FUNCTIONS_REGION), 'arena', { timeout: 20000 });
   }

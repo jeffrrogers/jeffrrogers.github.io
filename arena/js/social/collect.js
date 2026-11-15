@@ -5,7 +5,7 @@
 // one on this game they're still to play. The server reads the result from
 // the game's own saved data, never from here.
 
-import { cachedSocial, call, loadSocial } from './api.js?v=202611151324';
+import { cachedSocial, call, loadSocialViaServer } from './api.js?v=202611151415';
 
 // The game saves the result as the puzzle finishes; give that a moment to
 // land first, and look once more a little later.
@@ -23,7 +23,8 @@ export function collectAfterFinish(gameId) {
     try {
       const { updated } = await call('collectResult', {});
       if (updated) {
-        await loadSocial();
+        // A game's page: ask the server, never load the Firestore SDK here.
+        await loadSocialViaServer().catch(() => null);
         return;
       }
     } catch {
