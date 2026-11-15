@@ -1,6 +1,6 @@
 // Firestore access, loaded lazily so the page paints before the SDK arrives.
 
-import { FIREBASE_CONFIG, FIREBASE_SDK } from './config.js?v=202611130759';
+import { FIREBASE_CONFIG, FIREBASE_SDK } from './config.js?v=202611142357';
 
 const TIMEOUT_MS = 10000;
 
@@ -12,7 +12,7 @@ function sdk() {
       const app = await import(`${FIREBASE_SDK}/firebase-app.js`);
       const fs = await import(`${FIREBASE_SDK}/firebase-firestore.js`);
       const instance = app.initializeApp(FIREBASE_CONFIG, 'arena');
-      return { fs, db: fs.getFirestore(instance) };
+      return { fs, db: fs.getFirestore(instance), instance };
     })();
     // A failed load (offline, blocked CDN) should be retryable on next call.
     sdkPromise.catch(() => {
@@ -20,6 +20,27 @@ function sdk() {
     });
   }
   return sdkPromise;
+}
+
+// The Cloud Functions behind friends and challenges run in Montreal, next to
+// Firestore (firebase/functions/src/index.js).
+const FUNCTIONS_REGION = 'northamerica-northeast1';
+let arenaCallable = null;
+
+/**
+ * Calls the `arena` Cloud Function with [data] and returns its result. Loads
+ * the Functions SDK on first use only, so pages that never call it never
+ * download it. Throws the SDK's FirebaseError (code 'functions/...',
+ * details.reason) on a refusal.
+ */
+export async function callArenaFunction(data) {
+  if (!arenaCallable) {
+    const { instance } = await sdk();
+    const fn = await import(`${FIREBASE_SDK}/firebase-functions.js`);
+    arenaCallable = fn.httpsCallable(fn.getFunctions(instance, FUNCTIONS_REGION), 'arena', { timeout: 20000 });
+  }
+  const res = await arenaCallable(data);
+  return res.data;
 }
 
 function withTimeout(promise, what) {
