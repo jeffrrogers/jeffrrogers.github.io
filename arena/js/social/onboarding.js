@@ -5,10 +5,10 @@
 // stopped (closed a sheet) or are under 14. Only the outcome of the age
 // check is stored, never the birth year (firebase/functions/src/social.js).
 
-import { h, openSheet, sheetHead, toast, ICONS } from '../ui.js?v=202611142357';
-import { openPrivacy } from '../privacy.js?v=202611142357';
-import { call, loadSocial, ensurePlayerId, markStartedSocial, reasonText } from './api.js?v=202611142357';
-import { suggester } from './names.js?v=202611142357';
+import { h, openSheet, sheetHead, toast, ICONS } from '../ui.js?v=202611150740';
+import { openPrivacy } from '../privacy.js?v=202611150740';
+import { call, loadSocial, ensurePlayerId, markStartedSocial, reasonText } from './api.js?v=202611150740';
+import { suggester } from './names.js?v=202611150740';
 
 const MONTHS = ['January', 'February', 'March', 'April', 'May', 'June', 'July',
   'August', 'September', 'October', 'November', 'December'];
@@ -205,7 +205,8 @@ export function gamerIdStep({ current = null } = {}) {
     return h('div', { class: 'soc-step' },
       sheetHead(current ? 'Change your gamer ID' : 'Pick a gamer ID', close),
       current ? null : h('ul', { class: 'soc-points' },
-        h('li', {}, h('strong', { text: 'Only friends you accept' }), ' see your gamer ID and your results in challenges you play together.'),
+        h('li', {}, 'Your gamer ID is ', h('strong', { text: 'public' }), ': anyone who knows it can send you a friend request. Don’t use your real name.'),
+        h('li', {}, h('strong', { text: 'Only friends you accept' }), ' see your challenges and how you did in them.'),
         h('li', { text: 'Your private User ID is never shown to anyone.' })),
       current ? h('p', { class: 'muted', text: 'You can change it once every 30 days. Your friends see the new one straight away.' }) : null,
       h('div', { class: 'soc-field' },

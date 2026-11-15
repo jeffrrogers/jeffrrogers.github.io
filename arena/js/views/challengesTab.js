@@ -4,11 +4,11 @@
 // Everything shown comes from the player's social doc (app.social), which
 // only the server writes. Actions call the server, then re-read the doc.
 
-import { h, openSheet, sheetHead, toast, ICONS } from '../ui.js?v=202611142357';
-import { call, loadSocial, reasonText, waitingCount, hasStartedSocial } from '../social/api.js?v=202611142357';
-import { setUpChallenges, gamerIdStep } from '../social/onboarding.js?v=202611142357';
-import { arenaGet, arenaSet, playerId } from '../local.js?v=202611142357';
-import { track } from '../analytics.js?v=202611142357';
+import { h, openSheet, sheetHead, toast, ICONS } from '../ui.js?v=202611150740';
+import { call, loadSocial, reasonText, waitingCount, hasStartedSocial } from '../social/api.js?v=202611150740';
+import { setUpChallenges, gamerIdStep } from '../social/onboarding.js?v=202611150740';
+import { arenaGet, arenaSet, playerId } from '../local.js?v=202611150740';
+import { track } from '../analytics.js?v=202611150740';
 
 // ---- Shared state -------------------------------------------------------------
 
@@ -136,7 +136,7 @@ function intro() {
   return h('div', { class: 'card soc-intro' },
     h('span', { class: 'soc-intro-icon', html: ICONS.trophy }),
     h('h2', { text: 'Challenge your friends' }),
-    h('p', { class: 'muted', text: 'Send friends the same puzzle, play whenever you like, and see who did best. Pick a gamer ID to get started. Only friends you accept can see it.' }),
+    h('p', { class: 'muted', text: 'Send friends the same puzzle, play whenever you like, and see who did best. Pick a gamer ID to get started. Only friends you accept see your challenges and results.' }),
     h('button', { class: 'btn', type: 'button', text: 'Set up challenges', onClick: () => setUp() }));
 }
 
@@ -204,8 +204,14 @@ function activeView(social) {
       h('div', { class: 'card soc-list' }, rows.slice(0, incoming))) : null,
     h('section', { class: 'soc-stack' },
       sectionHead('Challenges'),
-      h('div', { class: 'card soc-empty' },
-        h('p', { class: 'muted', text: 'Challenges you send and get will show here. Creating them arrives in the next update.' }))));
+      Object.keys(social.friends ?? {}).length
+        ? h('div', { class: 'card soc-empty' },
+          h('p', { class: 'muted', text: 'Challenges you send and get will show here. Creating them arrives in the next update.' }))
+        : h('div', { class: 'card soc-empty soc-cta' },
+          h('span', { class: 'soc-intro-icon', html: ICONS.people }),
+          h('p', {}, h('strong', { text: 'Add friends to start challenging.' }),
+            ' Send a request by gamer ID, or share your invite link with family and friends.'),
+          h('a', { class: 'btn', href: '#challenges/friends', text: 'Add friends' }))));
 }
 
 // ---- Record -------------------------------------------------------------------------
@@ -300,7 +306,7 @@ function friendsView(social) {
           onClick: async () => { if (await gamerIdStep({ current: social.gamerId })) refreshSocial(); },
         })),
       h('p', { class: 'soc-hint' }, h('span', { class: 'soc-inline-icon', html: ICONS.lock }),
-        'Only friends you accept see your gamer ID and challenge results. Your private User ID is never shown.')),
+        'Anyone who knows your gamer ID can send you a friend request. Only friends you accept see your challenges and results. Your private User ID is never shown.')),
 
     incoming + outgoing ? h('section', { class: 'soc-stack' },
       sectionHead('Requests', incoming + outgoing),

@@ -1,6 +1,6 @@
 // Small DOM helpers, icons, sheets and toasts.
 
-import { SOLVED, FAILED, PLAYED, PROGRESS, STATUS_LABEL } from './status.js?v=202611142357';
+import { SOLVED, FAILED, PLAYED, PROGRESS, STATUS_LABEL } from './status.js?v=202611150740';
 
 /**
  * Creates an element. props: class, text, html (trusted constant markup

@@ -1621,3 +1621,5 @@ a.week-band:hover { border-color: var(--muted); color: var(--text); }
 .soc-error { color: var(--accent-text); font-weight: 600; }
 .soc-points { margin: 0; padding-left: 18px; display: flex; flex-direction: column; gap: 8px; }
 .soc-sheet .actions, .soc-step .actions { display: flex; gap: 10px; justify-content: flex-end; flex-wrap: wrap; }
+.soc-cta { display: flex; flex-direction: column; align-items: flex-start; gap: 10px; }
+.soc-cta .icon { width: 28px; height: 28px; }
