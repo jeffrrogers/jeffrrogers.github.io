@@ -1,27 +1,27 @@
 // Boot, routing and the shared app state.
 
-import { IS_SANDBOX, IS_DEMO, isLive, loadProductionSwitches, featureOn } from './config.js?v=202611150743';
-import { demoRaw } from './demo.js?v=202611150743';
-import { initAnalytics, track } from './analytics.js?v=202611150743';
-import { loadAds } from './ads.js?v=202611150743';
-import { todayEpochDay } from './dates.js?v=202611150743';
-import { playerId } from './local.js?v=202611150743';
-import { initialTheme, initialContrast, applyTheme, applyContrast } from './theme.js?v=202611150743';
-import { ALL_GAMES, liveGames, gameById } from './games/registry.js?v=202611150743';
-import { computeOrder } from './gameOrder.js?v=202611150743';
-import { readFavourites, setFavourite } from './favourites.js?v=202611150743';
-import { loadProgress, loadFullHistory } from './progress.js?v=202611150743';
-import { evaluateBadges } from './badges/rules.js?v=202611150743';
+import { IS_SANDBOX, IS_DEMO, isLive, loadProductionSwitches, featureOn } from './config.js?v=202611151205';
+import { demoRaw } from './demo.js?v=202611151205';
+import { initAnalytics, track } from './analytics.js?v=202611151205';
+import { loadAds } from './ads.js?v=202611151205';
+import { todayEpochDay } from './dates.js?v=202611151205';
+import { playerId, arenaGet } from './local.js?v=202611151205';
+import { initialTheme, initialContrast, applyTheme, applyContrast } from './theme.js?v=202611151205';
+import { ALL_GAMES, liveGames, gameById } from './games/registry.js?v=202611151205';
+import { computeOrder } from './gameOrder.js?v=202611151205';
+import { readFavourites, setFavourite } from './favourites.js?v=202611151205';
+import { loadProgress, loadFullHistory } from './progress.js?v=202611151205';
+import { evaluateBadges } from './badges/rules.js?v=202611151205';
 import {
   loadStoredBadges, needsDating, planSync, applySync, markAnnounced, markAnnouncedMany, markShared,
-} from './badges/store.js?v=202611150743';
-import { h, ICONS, closeSheet } from './ui.js?v=202611150743';
-import { renderGames } from './views/gamesTab.js?v=202611150743';
-import { renderArchive } from './views/archive.js?v=202611150743';
-import { renderStats, renderStatsDetail } from './views/statsTab.js?v=202611150743';
-import { renderBadgesPage, announce, announceMany, unlockStyle } from './views/badgesView.js?v=202611150743';
-import { openSettings, openSync, safeReturnPath } from './views/settings.js?v=202611150743';
-import { takeLeftForGame } from './views/play.js?v=202611150743';
+} from './badges/store.js?v=202611151205';
+import { h, ICONS, closeSheet } from './ui.js?v=202611151205';
+import { renderGames } from './views/gamesTab.js?v=202611151205';
+import { renderArchive } from './views/archive.js?v=202611151205';
+import { renderStats, renderStatsDetail } from './views/statsTab.js?v=202611151205';
+import { renderBadgesPage, announce, announceMany, unlockStyle } from './views/badgesView.js?v=202611151205';
+import { openSettings, openSync, safeReturnPath } from './views/settings.js?v=202611151205';
+import { takeLeftForGame } from './views/play.js?v=202611151205';
 
 // Production only: which sandbox-only games the admin has put on production.
 // Read before the live games are worked out; a slow or failed read keeps the
@@ -32,7 +32,7 @@ await loadProductionSwitches();
 // (config.js FEATURES_SANDBOX_ONLY). Off, none of its code is even loaded.
 // Never in ?demo, which doesn't touch Firestore.
 const challenges = featureOn('challenges') && !IS_DEMO
-  ? await import('./views/challengesTab.js?v=202611150743').catch((e) => {
+  ? await import('./views/challengesTab.js?v=202611151205').catch((e) => {
     console.warn('arena: challenges failed to load', e);
     return null;
   })
@@ -50,6 +50,9 @@ const app = {
   syncError: false,
   // Friends & challenges: social/{uid} (the player's own view), null until read.
   challenges: !!challenges,
+  // The Games tab's Challenge button (null where the feature is off)
+  challengeFromGame: challenges ? (id) => challenges.challengeFromGame(id) : null,
+  canChallengeGame: (id) => !!challenges && challenges.showChallengeButton(id),
   social: null,
   socialLoaded: false,
   socialError: false,
@@ -146,8 +149,8 @@ function renderHeader() {
 // ---- Routing --------------------------------------------------------------
 
 function route() {
-  const [name, arg] = (location.hash.replace(/^#/, '') || 'games').split('/');
-  return { name, arg };
+  const [name, arg, extra] = (location.hash.replace(/^#/, '') || 'games').split('/');
+  return { name, arg, extra };
 }
 
 function renderTabs(r) {
@@ -156,15 +159,17 @@ function renderTabs(r) {
   const note = app.uid
     ? app.syncing ? 'Syncing…' : app.syncError ? 'Showing saved progress' : ''
     : '';
-  const tab = (id, label, count = 0) => h('a', {
+  const tab = (id, label, count = 0, fresh = false) => h('a', {
     class: 'tab', href: `#${id}`, 'aria-current': current === id ? 'page' : null,
-  }, label, count ? h('span', { class: 'tab-badge', 'aria-label': `${count} waiting`, text: String(count) }) : null);
+  }, label,
+  count ? h('span', { class: 'tab-badge', 'aria-label': `${count} waiting`, text: String(count) })
+    : fresh ? h('span', { class: 'tab-new', 'aria-label': 'new', title: 'New' }) : null);
   document.getElementById('tabs').replaceChildren(h('nav', { class: `tabs${challenges ? ' four' : ''}`, 'aria-label': 'Arena sections' },
     h('div', { class: 'wrap' },
       tab('games', 'Games'),
       tab('stats', 'Stats'),
       tab('badges', 'Badges'),
-      challenges ? tab('challenges', 'Challenges', challenges.badgeCount()) : null,
+      challenges ? tab('challenges', 'Challenges', challenges.badgeCount(), !arenaGet('challengesSeen', false)) : null,
       h('span', { class: 'sync-note', role: 'status', text: note }))));
 }
 
@@ -179,7 +184,7 @@ function render() {
   else if (r.name === 'stats' && game && app.games.includes(game)) view = renderStatsDetail(app, game);
   else if (r.name === 'stats') view = renderStats(app);
   else if (r.name === 'badges') view = renderBadgesPage(app);
-  else if (r.name === 'challenges' && challenges) view = challenges.renderChallenges(r.arg);
+  else if (r.name === 'challenges' && challenges) view = challenges.renderChallenges(r.arg, r.extra);
   else view = renderGames(app);
 
   const main = document.getElementById('view');
@@ -319,7 +324,10 @@ function watchForReturn() {
       return;
     }
     loadAll().then(followUpAfterGame);
-    if (challenges && app.social) challenges.refreshSocial();
+    if (challenges && app.social) {
+      challenges.refreshSocial();
+      challenges.afterGame();
+    }
   };
   window.addEventListener('pageshow', (e) => {
     if (!e.persisted) return;
@@ -358,8 +366,9 @@ async function boot() {
     challenges.initChallenges(app);
     challenges.bootSocial();
     // Someone's invite link: /arena/?friend=CODE
-    const code = new URLSearchParams(location.search).get('friend');
-    if (code && !syncing) challenges.openFriendLink(code);
+    const params = new URLSearchParams(location.search);
+    if (!syncing && params.get('friend')) challenges.openFriendLink(params.get('friend'));
+    else if (!syncing && params.get('challenge')) challenges.openChallengeLink(params.get('challenge'));
   }
 
   await loadAll();

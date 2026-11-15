@@ -7,20 +7,20 @@
 // snapshot plus this browser's saves, and the games tell it what they finish
 // (markPlayed) so a finish shows here before the arena has refreshed.
 
-import { liveGames } from './games/registry.js?v=202611150743';
-import { loadProductionSwitches } from './config.js?v=202611150743';
+import { liveGames } from './games/registry.js?v=202611151205';
+import { loadProductionSwitches, featureOn } from './config.js?v=202611151205';
 
 // The game's suggestions use the switches last read (localStorage); refresh
 // them in the background so a game the admin just put on production is
 // suggested from the next page on.
 loadProductionSwitches().catch(() => {});
-import { cachedRaw, derive } from './progress.js?v=202611150743';
-import { arenaGet, arenaSet, playerId } from './local.js?v=202611150743';
-import { todayEpochDay } from './dates.js?v=202611150743';
-import { recentIndices } from './games/common.js?v=202611150743';
-import { isDone, PROGRESS } from './status.js?v=202611150743';
-import { readFavourites } from './favourites.js?v=202611150743';
-import { computeOrder } from './gameOrder.js?v=202611150743';
+import { cachedRaw, derive } from './progress.js?v=202611151205';
+import { arenaGet, arenaSet, playerId } from './local.js?v=202611151205';
+import { todayEpochDay } from './dates.js?v=202611151205';
+import { recentIndices } from './games/common.js?v=202611151205';
+import { isDone, PROGRESS } from './status.js?v=202611151205';
+import { readFavourites } from './favourites.js?v=202611151205';
+import { computeOrder } from './gameOrder.js?v=202611151205';
 
 // Discovery order: the games to try first after each kind of game, once their
 // favourites are done. Canolitaire leads both lists because its long sessions
@@ -326,6 +326,15 @@ if (typeof window !== 'undefined') {
         markPlayed(id);
       } catch {
         // No storage: the suggestion just won't know about this finish.
+      }
+      // Friends & challenges, where it's on: report the finish to an open
+      // challenge on this game. Nothing is loaded where it's off.
+      try {
+        if (featureOn('challenges')) {
+          import('./social/collect.js?v=202611151205').then((m) => m.collectAfterFinish(id)).catch(() => {});
+        }
+      } catch {
+        // Never let challenges break a game's finish.
       }
     },
   };

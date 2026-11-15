@@ -1625,3 +1625,136 @@ a.week-band:hover { border-color: var(--muted); color: var(--text); }
 .soc-cta .icon { width: 28px; height: 28px; }
 .soc-suggestion { display: grid; grid-template-columns: auto minmax(0, 1fr) auto; align-items: center; gap: 12px; }
 .soc-suggestion-more { grid-column: 2 / -1; justify-self: start; padding: 0; min-height: 0; }
+
+/* The Games tab's Challenge button (beside the favourite star) and the
+   one-time promotion card */
+.challenge-btn {
+  position: absolute;
+  top: 15px;
+  left: 53px;
+  width: 32px;
+  height: 32px;
+  padding: 0;
+  border-radius: 50%;
+  border: 1px solid var(--border);
+  background: var(--surface);
+  color: var(--muted);
+  display: grid;
+  place-items: center;
+  cursor: pointer;
+  transition: transform .15s;
+}
+.challenge-btn .icon { width: 18px; height: 18px; }
+.challenge-btn:hover { color: var(--text); }
+.today-wrap:hover .challenge-btn { transform: translateY(-2px); }
+.today-wrap.has-challenge .tc-name { padding-left: 76px; }
+@media (prefers-reduced-motion: reduce) { .challenge-btn { transition: none; } }
+
+.tab-new {
+  display: inline-block;
+  width: 8px;
+  height: 8px;
+  margin-left: 6px;
+  border-radius: 50%;
+  background: var(--accent);
+  vertical-align: 2px;
+}
+
+.promo-card {
+  display: grid;
+  grid-template-columns: auto minmax(0, 1fr) auto auto;
+  align-items: center;
+  gap: 12px;
+  margin-bottom: 16px;
+}
+.promo-icon .icon { width: 30px; height: 30px; color: var(--accent-text); }
+.promo-text { display: flex; flex-direction: column; gap: 2px; }
+.promo-text .muted { font-size: 14px; }
+.promo-kicker { font: 700 11px/1 var(--body); letter-spacing: .08em; text-transform: uppercase; color: var(--accent-text); }
+@media (max-width: 520px) {
+  .promo-card { grid-template-columns: auto minmax(0, 1fr) auto; }
+  .promo-card .btn { grid-column: 2; justify-self: start; }
+  .promo-close { grid-row: 1; grid-column: 3; }
+}
+
+/* Challenge cards, standings and the New challenge sheet */
+.soc-between { display: flex; align-items: baseline; justify-content: space-between; gap: 12px; }
+.soc-challenge { display: flex; flex-direction: column; gap: 12px; }
+.soc-challenge-head { display: flex; align-items: center; gap: 12px; }
+.soc-challenge-head img, .soc-picked-game img { width: 44px; height: 44px; flex: none; }
+.soc-game-icon { width: 34px; height: 34px; flex: none; }
+.as-btn { width: 100%; border: none; background: none; padding: 0; text-align: left; color: inherit; font: inherit; cursor: pointer; }
+.soc-row-item.as-btn, .soc-row-item.as-link { color: inherit; text-decoration: none; }
+.soc-meta { display: flex; gap: 16px; color: var(--muted); font-size: 13px; }
+.soc-meta > span { display: inline-flex; gap: 5px; align-items: center; }
+.soc-meta .icon { width: 16px; height: 16px; }
+.soc-chips { display: flex; flex-wrap: wrap; gap: 6px; }
+.soc-chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  height: 28px;
+  padding: 0 10px;
+  border-radius: 999px;
+  background: var(--surface-2);
+  font-size: 13px;
+  font-weight: 600;
+}
+.soc-chip .icon { width: 14px; height: 14px; }
+.soc-chip.invited, .soc-chip.accepted { background: none; border: 1px dashed var(--border); color: var(--muted); }
+.soc-chip.declined, .soc-chip.expired, .soc-chip.ineligible { background: none; color: var(--muted); text-decoration: line-through; }
+.soc-standings { list-style: none; margin: 0; padding: 0; }
+.soc-standings li {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  min-height: 52px;
+  border-bottom: 1px solid var(--border);
+}
+.soc-standings li:last-child { border-bottom: none; }
+.soc-standings.compact li { min-height: 42px; }
+.soc-standings li.me strong { font-weight: 800; }
+.soc-rank { width: 20px; text-align: center; font: 700 15px/1 var(--display); color: var(--muted); }
+.soc-place { display: inline-flex; align-items: center; gap: 6px; font: 700 14px/1 var(--display); white-space: nowrap; }
+.soc-place .icon { width: 18px; height: 18px; color: var(--played); }
+.soc-win { display: flex; flex-direction: column; align-items: center; gap: 6px; padding: 16px; border-radius: 18px; background: var(--text); color: var(--bg); }
+.soc-win .icon { width: 40px; height: 40px; color: #E2B53E; }
+.soc-note { display: flex; gap: 8px; padding: 12px 14px; border-radius: 14px; background: var(--surface-2); font-size: 14px; }
+.soc-facts { display: grid; grid-template-columns: 80px minmax(0, 1fr); gap: 10px 12px; margin: 0; font-size: 14px; }
+.soc-facts dt { color: var(--muted); font-weight: 600; }
+.soc-facts dd { margin: 0; }
+.soc-picked-game { display: flex; align-items: center; gap: 12px; padding: 12px; border-radius: 16px; background: var(--surface-2); }
+.soc-game-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(140px, 1fr)); gap: 8px; }
+.soc-game-btn {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 10px;
+  border-radius: 14px;
+  border: 1px solid var(--border);
+  background: var(--surface);
+  color: var(--text);
+  font: 700 14px/1.2 var(--display);
+  cursor: pointer;
+  text-align: left;
+}
+.soc-game-btn img { width: 34px; height: 34px; }
+.tier-btn.picked { border-color: var(--text); background: var(--text); color: var(--bg); }
+.tier-btn:disabled { opacity: .6; cursor: default; }
+.soc-played { font-size: 11px; font-weight: 600; margin-left: auto; }
+.soc-checks .soc-check { cursor: pointer; }
+.soc-checks input { width: 22px; height: 22px; accent-color: var(--text); }
+.soc-back { display: inline-flex; align-items: center; gap: 4px; min-height: 44px; color: var(--text); font-weight: 600; text-decoration: none; align-self: flex-start; }
+.soc-back .icon { width: 20px; height: 20px; }
+.soc-friend-head { display: flex; align-items: center; gap: 14px; }
+.soc-h2h { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 12px; text-align: center; }
+.soc-h2h > div { display: flex; flex-direction: column; }
+.soc-h2h strong { font: 800 40px/1 var(--display); }
+.soc-h2h strong.tie { font-size: 24px; color: var(--muted); }
+.soc-h2h span { font-size: 13px; color: var(--muted); font-weight: 600; }
+.soc-h2h .soc-bar { grid-column: 1 / -1; }
+.soc-bar { display: flex; gap: 2px; height: 10px; border-radius: 999px; overflow: hidden; margin-top: 6px; }
+.soc-tiles { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 8px; margin-top: 12px; }
+.soc-tiles > div { display: flex; flex-direction: column; padding: 10px 12px; border-radius: 14px; background: var(--surface-2); }
+.soc-tiles strong { font: 800 20px/1.2 var(--display); }
+.soc-tiles span { font-size: 12px; color: var(--muted); }

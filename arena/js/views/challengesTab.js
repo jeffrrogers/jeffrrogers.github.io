@@ -4,11 +4,24 @@
 // Everything shown comes from the player's social doc (app.social), which
 // only the server writes. Actions call the server, then re-read the doc.
 
-import { h, openSheet, sheetHead, toast, ICONS } from '../ui.js?v=202611150743';
-import { call, loadSocial, reasonText, waitingCount, hasStartedSocial } from '../social/api.js?v=202611150743';
-import { setUpChallenges, gamerIdStep } from '../social/onboarding.js?v=202611150743';
-import { arenaGet, arenaSet, playerId } from '../local.js?v=202611150743';
-import { track } from '../analytics.js?v=202611150743';
+import { h, openSheet, sheetHead, toast, ICONS } from '../ui.js?v=202611151205';
+import { call, loadSocial, reasonText, waitingCount, hasStartedSocial } from '../social/api.js?v=202611151205';
+import { setUpChallenges, gamerIdStep } from '../social/onboarding.js?v=202611151205';
+import { arenaGet, arenaSet, playerId } from '../local.js?v=202611151205';
+import { track } from '../analytics.js?v=202611151205';
+import { gameById } from '../games/registry.js?v=202611151205';
+import { fromPuzzle, puzzleTitle, canChallenge } from '../social/puzzles.js?v=202611151205';
+import * as sheets from './challengeSheets.js?v=202611151205';
+
+export { canChallenge };
+
+function timeLeft(ms, now = Date.now()) {
+  const mins = Math.max(0, Math.round((ms - now) / 60000));
+  if (mins < 60) return `${mins} min left`;
+  const hours = Math.floor(mins / 60);
+  if (hours < 24) return `${hours} h left`;
+  return `${Math.floor(hours / 24)} d ${hours % 24} h left`;
+}
 
 // ---- Shared state -------------------------------------------------------------
 
@@ -21,12 +34,58 @@ export function initChallenges(theApp) {
 }
 
 /** Re-reads the social doc and repaints. Resolves with it. */
+// collectResult at most this often from the Arena (the games' Next up hook
+// covers the moment a puzzle is finished).
+const COLLECT_EVERY_MS = 60000;
+let lastCollect = 0;
+
+/**
+ * Whether the server has anything to collect for this player: an open
+ * challenge they're still to play, or one past its expiry (which any
+ * member's call closes).
+ */
+export function needsCollect(social, now = Date.now()) {
+  return Object.values(social?.challenges ?? {}).some((v) => v.status === 'open'
+    && (['invited', 'accepted'].includes(v.me) || now >= v.expiresAt));
+}
+
+/** Asks the server to record finished results (and close expired challenges); re-reads if anything changed. */
+async function collect(doc) {
+  if (!needsCollect(doc) || Date.now() - lastCollect < COLLECT_EVERY_MS) return;
+  lastCollect = Date.now();
+  try {
+    const { updated } = await call('collectResult', {});
+    if (updated) {
+      app.social = await loadSocial(app.uid);
+      app.refresh();
+    }
+  } catch {
+    // Offline or refused: the next visit, the game's own hook, or the
+    // server's daily cleanup catches it.
+  }
+}
+
+/**
+ * Back from a game: the result may still be on its way to Firestore, so ask
+ * twice, a few seconds apart, whatever the usual once-a-minute limit says.
+ */
+export function afterGame() {
+  if (!app.social) return;
+  for (const ms of [4000, 12000]) {
+    setTimeout(() => {
+      lastCollect = 0;
+      refreshSocial();
+    }, ms);
+  }
+}
+
 export function refreshSocial() {
   if (loadingSocial) return loadingSocial;
   loadingSocial = loadSocial(app.uid)
     .then((doc) => {
       app.social = doc;
       app.socialError = false;
+      collect(doc);
       return doc;
     })
     .catch(() => {
@@ -221,48 +280,212 @@ function suggestionCard(social) {
         : 'You haven’t played a challenge together yet.' })),
     h('button', {
       class: 'btn small', type: 'button', text: 'Challenge',
-      // Starting a challenge arrives in 4b, from here and the Games tab.
-      onClick: () => toast(`Challenging ${f.gamerId} arrives in the next update.`),
+      onClick: () => sheets.openCreate(app, { friendPub: f.pub, onSent: refreshSocial }),
     }),
     others > 0 ? h('a', { class: 'text-btn soc-suggestion-more', href: '#challenges/friends', text: `or one of your ${others} other ${others === 1 ? 'friend' : 'friends'}` }) : null);
+}
+
+/** A challenge's game, puzzle title and the Arena's index/tier. */
+function about(view) {
+  const game = gameById(view.game);
+  const { index, tier } = fromPuzzle(view.game, view.puzzle);
+  return { game, index, tier, title: game ? puzzleTitle(game, index, tier) : view.game };
+}
+
+const byNewest = (key) => ([, a], [, b]) => (b[key] ?? 0) - (a[key] ?? 0);
+
+function inviteCard(cid, v) {
+  const { game, title } = about(v);
+  return h('div', { class: 'card soc-challenge' },
+    h('div', { class: 'soc-challenge-head' },
+      game ? h('img', { src: game.logo, alt: '' }) : null,
+      h('span', { class: 'soc-who' },
+        h('strong', { text: `${v.from} challenged you` }),
+        h('span', { class: 'muted', text: title }))),
+    h('div', { class: 'soc-meta' },
+      h('span', {}, h('span', { html: ICONS.people }), `${v.players.length} players`),
+      h('span', {}, h('span', { html: ICONS.clock }), timeLeft(v.expiresAt))),
+    h('div', { class: 'actions' },
+      h('button', { class: 'btn', type: 'button', text: 'Accept & play', onClick: () => sheets.openChallenge(app, cid) }),
+      h('button', {
+        class: 'btn secondary', type: 'button', text: 'Decline',
+        onClick: () => act('respondChallenge', { cid, accept: false }, 'Challenge declined.'),
+      })));
+}
+
+function progressCard(cid, v, social) {
+  const { game, index, tier, title } = about(v);
+  const mine = v.me === 'done';
+  const done = v.players.filter((p) => p.state === 'done').length;
+  const waiting = v.players.filter((p) => ['invited', 'accepted'].includes(p.state) && p.pub !== social.pub);
+  return h('div', { class: 'card soc-challenge' },
+    h('button', { class: 'soc-challenge-head as-btn', type: 'button', onClick: () => sheets.openChallenge(app, cid) },
+      game ? h('img', { src: game.logo, alt: '' }) : null,
+      h('span', { class: 'soc-who' },
+        h('strong', { text: title }),
+        h('span', { class: 'muted', text: `${v.fromPub === social.pub ? 'You started it' : `From ${v.from}`} · ${v.expiresAt > Date.now() ? `ends in ${timeLeft(v.expiresAt).replace(' left', '')}` : 'ending soon'}` })),
+      h('span', { html: ICONS.chevron })),
+    mine
+      ? h('ol', { class: 'soc-standings compact' }, v.players.map((p) => h('li', { class: p.pub === social.pub ? 'me' : '' },
+        h('span', { class: 'soc-rank', text: p.rank ?? '–' }),
+        h('span', { class: 'soc-who' }, h('strong', { text: p.pub === social.pub ? 'You' : p.gamerId })),
+        h('span', { class: 'soc-score muted', text: p.score ?? (['invited', 'accepted'].includes(p.state) ? 'Hasn’t played' : p.state === 'declined' ? 'Declined' : '') }))))
+      : h('div', { class: 'soc-stack' },
+        sheets.playerChips(v, social.pub),
+        h('p', { class: 'soc-hint' }, h('span', { class: 'soc-inline-icon', html: ICONS.lock }),
+          `${done} of ${v.players.length} done. Their results stay hidden until you finish.`),
+        game ? h('button', { class: 'btn soc-wide', type: 'button', text: 'Play now', onClick: () => sheets.launch(app, game, index, tier) }) : null),
+    mine && waiting.length ? h('p', { class: 'soc-hint', text: `Waiting on ${waiting.map((p) => p.gamerId).join(', ')}.` }) : null);
+}
+
+function resultRow(cid, v, social) {
+  const { game, title } = about(v);
+  const place = sheets.placeText(v, social.pub);
+  const won = /^1st of/.test(place);
+  return h('button', { class: 'soc-row-item as-btn', type: 'button', onClick: () => sheets.openResults(app, cid) },
+    game ? h('img', { class: 'soc-game-icon', src: game.logo, alt: '' }) : null,
+    h('span', { class: 'soc-who' },
+      h('strong', { text: title }),
+      h('span', { class: 'muted', text: `${shortDay(v.closedAt ?? v.expiresAt)} · ${v.players.length} players` })),
+    h('span', { class: `soc-place${won ? ' won' : ''}` }, won ? h('span', { html: ICONS.trophy }) : null, place),
+    h('span', { html: ICONS.chevron }));
 }
 
 function activeView(social) {
   const { rows, incoming } = requestRows(social);
   const joins = newLinkJoins(social);
   if (joins.length) setTimeout(markLinkJoinsSeen, 0);
-  return h('div', { class: 'soc-stack' },
+  const all = Object.entries(social.challenges ?? {});
+  const invites = all.filter(([, v]) => v.status === 'open' && v.me === 'invited').sort(byNewest('createdAt'));
+  const going = all.filter(([, v]) => v.status === 'open' && ['accepted', 'done'].includes(v.me))
+    .sort(([, a], [, b]) => (a.me === 'accepted' ? 0 : 1) - (b.me === 'accepted' ? 0 : 1) || a.expiresAt - b.expiresAt);
+  const results = all.filter(([, v]) => v.status === 'final' || (v.status === 'open' && ['declined', 'ineligible'].includes(v.me)))
+    .sort(([, a], [, b]) => (b.closedAt ?? b.expiresAt) - (a.closedAt ?? a.expiresAt)).slice(0, 10);
+  const hasFriends = Object.keys(social.friends ?? {}).length > 0;
+  const waitingCountHere = incoming + invites.length;
+  return h('div', { class: 'soc-stack soc-active' },
     joins.length ? h('div', { class: 'card soc-notice', role: 'status' },
       joins.map((f) => h('p', {}, h('strong', { text: f.gamerId }), ' joined through your invite link. You’re friends now.'))) : null,
-    incoming ? h('section', { class: 'soc-stack' },
-      sectionHead('Waiting for you', incoming),
-      h('div', { class: 'card soc-list' }, rows.slice(0, incoming))) : null,
-    h('section', { class: 'soc-stack' },
+    waitingCountHere ? h('section', { class: 'soc-stack' },
+      sectionHead('Waiting for you', waitingCountHere),
+      invites.map(([cid, v]) => inviteCard(cid, v)),
+      incoming ? h('div', { class: 'card soc-list' }, rows.slice(0, incoming)) : null) : null,
+    going.length ? h('section', { class: 'soc-stack' },
+      sectionHead('In progress', going.length),
+      going.map(([cid, v]) => progressCard(cid, v, social))) : null,
+    !invites.length && !going.length ? h('section', { class: 'soc-stack' },
       sectionHead('Challenges'),
-      Object.keys(social.friends ?? {}).length
+      hasFriends
         ? suggestionCard(social)
         : h('div', { class: 'card soc-empty soc-cta' },
           h('span', { class: 'soc-intro-icon', html: ICONS.people }),
           h('p', {}, h('strong', { text: 'Add friends to start challenging.' }),
             ' Send a request by gamer ID, or share your invite link with family and friends.'),
-          h('a', { class: 'btn', href: '#challenges/friends', text: 'Add friends' }))));
+          h('a', { class: 'btn', href: '#challenges/friends', text: 'Add friends' }))) : null,
+    results.length ? h('section', { class: 'soc-stack' },
+      h('div', { class: 'soc-between' }, sectionHead('Recent results'),
+        h('a', { class: 'text-btn', href: '#challenges/record', text: 'Record' })),
+      h('div', { class: 'card soc-list' }, results.map(([cid, v]) => resultRow(cid, v, social)))) : null);
 }
 
 // ---- Record -------------------------------------------------------------------------
 
+const played = (r) => (r?.w ?? 0) + (r?.l ?? 0) + (r?.t ?? 0);
+const winRate = (r) => (played(r) ? `${Math.round((100 * (r.w ?? 0)) / played(r))}%` : '–');
+
+function recordBar(r, colours = ['var(--text)', 'var(--muted)', 'var(--border)']) {
+  const n = played(r);
+  if (!n) return null;
+  return h('div', {
+    class: 'soc-bar', role: 'img',
+    'aria-label': `${r.w ?? 0} won, ${r.t ?? 0} tied, ${r.l ?? 0} lost`,
+  },
+  h('span', { style: { flex: String(r.w ?? 0), background: colours[0] } }),
+  h('span', { style: { flex: String(r.t ?? 0), background: colours[1] } }),
+  h('span', { style: { flex: String(r.l ?? 0), background: colours[2] } }));
+}
+
 function recordView(social) {
   const o = social.overall ?? {};
-  const friends = Object.entries(social.friends ?? {});
+  const friends = Object.entries(social.friends ?? {}).sort(([, a], [, b]) => played(b.record) - played(a.record)
+    || a.gamerId.localeCompare(b.gamerId));
+  const games = Object.entries(social.byGame ?? {}).filter(([id]) => gameById(id))
+    .sort(([, a], [, b]) => played(b) - played(a));
   return h('div', { class: 'soc-stack' },
     h('div', { class: 'card soc-record' },
       h('span', { class: 'soc-kicker', text: 'Against everyone' }),
-      h('div', { class: 'soc-big' }, h('strong', { text: record(o) }), h('span', { class: 'muted', text: 'won · lost · tied' }))),
+      h('div', { class: 'soc-big' }, h('strong', { text: record(o) }), h('span', { class: 'muted', text: 'won · lost · tied' })),
+      recordBar(o),
+      h('div', { class: 'soc-tiles' },
+        h('div', {}, h('strong', { text: winRate(o) }), h('span', { text: 'Win rate' })),
+        h('div', {}, h('strong', { text: String(played(o)) }), h('span', { text: 'Challenges' })),
+        h('div', {}, h('strong', { text: String(o.bestStreak ?? 0) }), h('span', { text: 'Best win streak' })))),
+    games.length ? h('section', { class: 'soc-stack' },
+      sectionHead('By game'),
+      h('div', { class: 'card soc-list' }, games.map(([id, r]) => {
+        const g = gameById(id);
+        return h('div', { class: 'soc-row-item' },
+          h('img', { class: 'soc-game-icon', src: g.logo, alt: '' }),
+          h('span', { class: 'soc-who' }, h('strong', { text: g.name }), recordBar(r, [g.color, 'var(--muted)', 'var(--border)'])),
+          h('span', { class: 'soc-score', text: record(r) }));
+      }))) : null,
     friends.length ? h('section', { class: 'soc-stack' },
       sectionHead('Head-to-head'),
-      h('div', { class: 'card soc-list' }, friends.map(([pub, f]) => h('div', { class: 'soc-row-item' },
+      h('div', { class: 'card soc-list' }, friends.map(([pub, f]) => h('a', { class: 'soc-row-item as-link', href: `#challenges/friend/${pub}` },
         avatar(pub, f.gamerId),
-        h('span', { class: 'soc-who' }, h('strong', { text: f.gamerId })),
-        h('span', { class: 'soc-score', text: record(f.record) }))))) : null);
+        h('span', { class: 'soc-who' }, h('strong', { text: f.gamerId }),
+          h('span', { class: 'muted', text: `${played(f.record)} played` })),
+        h('span', { class: 'soc-score', text: record(f.record) }),
+        h('span', { html: ICONS.chevron }))))) : null,
+    !played(o) ? h('p', { class: 'muted soc-center', text: 'Your record fills in as challenges finish.' }) : null);
+}
+
+// ---- One friend -----------------------------------------------------------------------
+
+/** The challenges in this player's doc that [pub] was part of, newest first. */
+function sharedWith(social, pub) {
+  return Object.entries(social.challenges ?? {})
+    .filter(([, v]) => v.players.some((p) => p.pub === pub))
+    .sort(([, a], [, b]) => (b.closedAt ?? b.createdAt ?? 0) - (a.closedAt ?? a.createdAt ?? 0));
+}
+
+function friendView(social, pub) {
+  const f = social.friends?.[pub];
+  const back = h('a', { class: 'soc-back', href: '#challenges/record' }, h('span', { html: ICONS.back }), 'Record');
+  if (!f) {
+    return h('div', { class: 'soc-stack' }, back,
+      h('div', { class: 'card soc-empty' }, h('p', { class: 'muted', text: 'That player isn’t one of your friends.' })));
+  }
+  const r = f.record ?? {};
+  const shared = sharedWith(social, pub);
+  return h('div', { class: 'soc-stack' },
+    back,
+    h('div', { class: 'soc-friend-head' },
+      avatar(pub, f.gamerId, 'lg'),
+      h('span', { class: 'soc-who' },
+        h('h2', { class: 'soc-title', text: f.gamerId }),
+        h('span', { class: 'muted', text: `Friends since ${shortDay(f.since)}${f.via === 'link' ? ' · joined through your link' : ''}` }))),
+    h('div', { class: 'card soc-h2h' },
+      h('div', {}, h('strong', { text: String(r.w ?? 0) }), h('span', { text: 'You' })),
+      h('div', {}, h('strong', { class: 'tie', text: String(r.t ?? 0) }), h('span', { text: 'Tied' })),
+      h('div', {}, h('strong', { text: String(r.l ?? 0) }), h('span', { text: f.gamerId })),
+      recordBar(r, ['var(--text)', 'var(--muted)', 'var(--accent)'])),
+    h('button', {
+      class: 'btn soc-wide', type: 'button', text: `Challenge ${f.gamerId}`,
+      onClick: () => sheets.openCreate(app, { friendPub: pub, onSent: refreshSocial }),
+    }),
+    h('section', { class: 'soc-stack' },
+      sectionHead('Your challenges together', shared.length),
+      shared.length
+        ? h('div', { class: 'card soc-list' }, shared.map(([cid, v]) => (v.status === 'final'
+          ? resultRow(cid, v, social)
+          : h('button', { class: 'soc-row-item as-btn', type: 'button', onClick: () => sheets.openChallenge(app, cid) },
+            gameById(v.game) ? h('img', { class: 'soc-game-icon', src: gameById(v.game).logo, alt: '' }) : null,
+            h('span', { class: 'soc-who' }, h('strong', { text: about(v).title }), h('span', { class: 'muted', text: 'In progress' })),
+            h('span', { html: ICONS.chevron })))))
+        : h('div', { class: 'card soc-empty' }, h('p', { class: 'muted', text: 'No challenges together yet.' }))),
+    h('div', { class: 'actions soc-center' },
+      h('button', { class: 'text-btn', type: 'button', text: 'More…', onClick: () => friendMenu(pub, f) })));
 }
 
 // ---- Friends ------------------------------------------------------------------------
@@ -299,6 +522,8 @@ function friendMenu(pub, f) {
     sheetHead(f.gamerId, () => close()),
     h('p', { class: 'muted', text: `Friends since ${shortDay(f.since)} · ${record(f.record)} against each other` }),
     h('div', { class: 'set-card' },
+      item(`Challenge ${f.gamerId}`, () => sheets.openCreate(app, { friendPub: pub, onSent: refreshSocial })),
+      item('Head-to-head', () => { location.hash = `#challenges/friend/${pub}`; }),
       item('Remove friend', () => confirmSheet('Remove friend?', `${f.gamerId} won’t see your gamer ID or challenges any more. Your open challenges carry on.`, 'Remove',
         () => act('removeFriend', { pub }, `${f.gamerId} removed.`))),
       item('Block', () => confirmSheet(`Block ${f.gamerId}?`, 'They’re removed from your friends and can’t send you requests. They aren’t told.', 'Block',
@@ -385,8 +610,16 @@ function friendsView(social) {
 // ---- The tab ------------------------------------------------------------------------
 
 /** Renders the tab for route arg [sub] ('' | 'record' | 'friends'). */
-export function renderChallenges(sub = '') {
+export function renderChallenges(sub = '', extra = '') {
   const social = app.social;
+  // The Games tab's "New: challenges" promotion stops once the tab is seen
+  if (!arenaGet('challengesSeen', false)) {
+    try {
+      arenaSet('challengesSeen', true);
+    } catch {
+      // No storage: the promotion just shows again.
+    }
+  }
   if (!app.socialLoaded && !loadingSocial && app.uid) refreshSocial();
   const page = h('div', { class: 'wrap soc-page' });
 
@@ -409,16 +642,40 @@ export function renderChallenges(sub = '') {
     return page;
   }
 
+  if (sub === 'friend') {
+    page.append(friendView(social, extra));
+    return page;
+  }
   const current = sub === 'record' || sub === 'friends' ? sub : 'active';
+  const hasFriends = Object.keys(social.friends ?? {}).length > 0;
   page.append(
     h('div', { class: 'soc-top' },
       h('div', {},
         h('h1', { class: 'soc-h1', text: 'Challenges' }),
-        h('p', { class: 'muted' }, 'Playing as ', h('strong', { text: social.gamerId })))),
+        h('p', { class: 'muted' }, 'Playing as ', h('strong', { text: social.gamerId }))),
+      hasFriends ? h('button', {
+        class: 'btn', type: 'button', text: 'New challenge',
+        onClick: () => sheets.openCreate(app, { onSent: refreshSocial }),
+      }) : null),
     segment(current),
     current === 'record' ? recordView(social) : current === 'friends' ? friendsView(social) : activeView(social));
   return page;
 }
+
+/** The Games tab's Challenge button: New challenge on [gameId], or setup first. */
+export async function challengeFromGame(gameId) {
+  const social = app.social?.gamerId ? app.social : await setUp();
+  if (!social?.gamerId) return;
+  if (!Object.keys(social.friends ?? {}).length) {
+    toast('Add a friend first.');
+    location.hash = '#challenges/friends';
+    return;
+  }
+  sheets.openCreate(app, { gameId, onSent: refreshSocial });
+}
+
+/** Whether to show the Games tab's Challenge button for [gameId]. */
+export const showChallengeButton = (gameId) => canChallenge(gameId) && app.social?.challengeAge !== 'under';
 
 // ---- Links -------------------------------------------------------------------------
 
@@ -434,6 +691,18 @@ export async function openFriendLink(code) {
   if (!social?.gamerId) return;
   track('challenge_invite_open');
   await act('sendFriendRequest', { code }, (res) => (res.status === 'friends'
-    ? 'You’re friends now. Challenge them from the Games tab soon!' : 'Request sent.'));
-  location.hash = '#challenges/friends';
+    ? 'You’re friends now. Send them a challenge!' : 'Request sent.'));
+  location.hash = '#challenges';
+}
+
+/**
+ * /arena/?challenge=CID: a link a challenger shared. Opens it once the
+ * player's challenges have loaded (setting up first if needed).
+ */
+export async function openChallengeLink(cid) {
+  history.replaceState(null, '', `${location.pathname}#challenges`);
+  const social = app.social?.gamerId ? await refreshSocial() : await setUp();
+  if (!social?.gamerId) return;
+  track('challenge_link_open');
+  sheets.openChallenge(app, cid);
 }
