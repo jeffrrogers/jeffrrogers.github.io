@@ -2,19 +2,19 @@
 // transaction that also writes an adminLog entry with the docs before and
 // after, so any edit, swap or import can be restored from the Log tab.
 
-import { sdk, currentEmail } from './firebase.js?v=202611121733';
-import { GAMES } from './dates.js?v=202611121733';
-import { decodeAnswer } from './codec.js?v=202611121733';
+import { sdk, currentEmail } from './firebase.js?v=202611142302';
+import { GAMES } from './dates.js?v=202611142302';
+import { decodeAnswer } from './codec.js?v=202611142302';
 import {
   PLAYER_COLLECTIONS, GAMES_SUBCOLLECTION_PARENTS, MAX_GAMES, queryCutoff, accountVerdict, quickVerdict,
-} from './cleanup.js?v=202611121733';
-import { pool } from './pool.js?v=202611121733';
-import { repairAccount } from './repair.js?v=202611121733';
-import { VOTES_COLLECTION } from './polls.js?v=202611121733';
-import { isSeedId } from './seed/accounts.js?v=202611121733';
-import { isTs } from './seed/shapes.js?v=202611121733';
-import { withZeroCounts } from './duoSwap.js?v=202611121733';
-import { puzzleSource, hasPool, poolDocs, docIdFor, samePoolDoc } from './canokuPool.js?v=202611121733';
+} from './cleanup.js?v=202611142302';
+import { pool } from './pool.js?v=202611142302';
+import { repairAccount } from './repair.js?v=202611142302';
+import { VOTES_COLLECTION } from './polls.js?v=202611142302';
+import { isSeedId } from './seed/accounts.js?v=202611142302';
+import { isTs } from './seed/shapes.js?v=202611142302';
+import { withZeroCounts } from './duoSwap.js?v=202611142302';
+import { puzzleSource, hasPool, poolDocs, docIdFor, samePoolDoc } from './canokuPool.js?v=202611142302';
 
 // ---- Puzzles --------------------------------------------------------------
 
@@ -124,7 +124,48 @@ export async function loadArenaSwitches() {
 }
 
 /**
- * Turns a sandbox-only game's production switch on or off, logged ('edit',
+ * The challenges release gate, serverConfig/challenges (admin only; the Cloud
+ * Functions check it on every call): {data (as stored, or null), mode:
+ * 'off'|'testers'|'everyone', testers: [player id]}. No doc means off.
+ */
+export async function loadChallengeGate() {
+  const { fs, db } = await sdk();
+  const snap = await fs.getDoc(fs.doc(db, 'serverConfig', 'challenges'));
+  const data = snap.exists() ? snap.data() : null;
+  return {
+    data,
+    mode: GATE_MODES.includes(data?.mode) ? data.mode : 'off',
+    testers: Array.isArray(data?.testers) ? data.testers : [],
+  };
+}
+
+// firebase/functions/src/access.js GATE_MODES
+export const GATE_MODES = ['off', 'sandbox', 'testers', 'everyone'];
+
+/**
+ * Saves the challenges gate ({mode, testers}), logged ('edit', restorable
+ * from the Log tab). [expected] is the doc as loaded: stops if it changed
+ * since. The Cloud Functions pick it up within a minute (they cache it).
+ */
+export function setChallengeGate({ mode, testers }, expected, note = '') {
+  if (!GATE_MODES.includes(mode)) throw new Error(`Unknown gate mode ${mode}`);
+  return writeWithLog('serverConfig', ['challenges'], (before) => {
+    if (JSON.stringify(before.challenges ?? null) !== JSON.stringify(expected ?? null)) {
+      throw new Error('The challenges gate changed since it was loaded. Refresh and try again.');
+    }
+    return { challenges: { ...(before.challenges ?? {}), mode, testers: [...new Set(testers)] } };
+  }, { action: 'edit', note });
+}
+
+/** The player collections that hold a doc for [id] (to check a tester ID is a real player). */
+export async function collectionsWithPlayer(id) {
+  const { fs, db } = await sdk();
+  const snaps = await Promise.all(PLAYER_COLLECTIONS.map((c) => fs.getDoc(fs.doc(db, c, id))));
+  return PLAYER_COLLECTIONS.filter((c, i) => snaps[i].exists());
+}
+
+/**
+ * Turns a sandbox-only game's (or feature's) production switch on or off, logged ('edit',
  * restorable from the Log tab). [expected] is the doc as loaded: stops if it
  * changed since.
  */

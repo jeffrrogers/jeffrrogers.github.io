@@ -12,12 +12,18 @@
 // explicit ?sandboxOffsetWeeks=N on the admin URL previews shifted dates for
 // that page load only; it is never read from or saved to localStorage.
 
-import { IS_SANDBOX } from './config.js?v=202611121733';
+import { IS_SANDBOX } from './config.js?v=202611142302';
 
 // Games the arena keeps off production until their switch (Firestore
 // arenaConfig/games, onProduction) is on: js/config.js SANDBOX_ONLY in the
 // arena. Keep the two in step (admin/tests/run.mjs checks).
 export const SANDBOX_ONLY = ['canatiles', 'canundrum', 'canamaze'];
+
+// Features the arena keeps off production until their switch (the same
+// onProduction map, keyed by feature id) is on: js/config.js
+// FEATURES_SANDBOX_ONLY in the arena. Keep the two in step.
+export const FEATURES_SANDBOX_ONLY = ['challenges'];
+export const FEATURE_NAMES = { challenges: 'Friends & challenges' };
 
 export const LAUNCH_DATE = {
   duo: [2026, 11, 2],
