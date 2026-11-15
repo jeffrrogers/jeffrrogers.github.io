@@ -11,9 +11,9 @@
 // the Arena), re-reading it (one Firestore read) only when that copy is a few
 // minutes old.
 
-import { call, cachedSocial, loadSocialViaServer, reasonText } from './api.js?v=202611151415';
-import { WINNER_RULE } from './puzzles.js?v=202611151415';
-import { arenaGet, playerId } from '../local.js?v=202611151415';
+import { call, cachedSocial, loadSocialViaServer, reasonText } from './api.js?v=202611151427';
+import { WINNER_RULE } from './puzzles.js?v=202611151427';
+import { arenaGet, playerId } from '../local.js?v=202611151427';
 
 const FRESH_MS = 3 * 60000;
 const atKey = () => `socialAt.${playerId()}`;
@@ -117,12 +117,15 @@ export async function finished(gameId, puzzleJson) {
     rule: WINNER_RULE[gameId] ?? '',
     expiresAt: v.expiresAt,
     myRank: me?.rank ?? null,
+    // For the results chart: whether a bigger value is better
+    better: v.better ?? 'higher',
     players: v.players.map((p) => ({
       name: p.pub === doc.pub ? 'You' : p.gamerId,
       me: p.pub === doc.pub,
       state: p.state,
       rank: p.rank ?? null,
       score: p.score ?? null,
+      value: typeof p.value === 'number' ? p.value : null,
       already: !!p.already,
     })),
   });

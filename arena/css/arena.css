@@ -1758,3 +1758,19 @@ a.week-band:hover { border-color: var(--muted); color: var(--text); }
 .soc-tiles > div { display: flex; flex-direction: column; padding: 10px 12px; border-radius: 14px; background: var(--surface-2); }
 .soc-tiles strong { font: 800 20px/1.2 var(--display); }
 .soc-tiles span { font-size: 12px; color: var(--muted); }
+
+/* Challenge results as bars, with a legend */
+.soc-chart { display: flex; flex-direction: column; gap: 12px; }
+.soc-bars { list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; gap: 12px; }
+.soc-bar-row { display: grid; grid-template-columns: minmax(0, 1fr) auto; grid-template-areas: "name score" "track track"; gap: 4px 12px; }
+.soc-bar-name { grid-area: name; display: inline-flex; align-items: center; gap: 6px; min-width: 0; }
+.soc-bar-row.me .soc-bar-name strong { font-weight: 800; }
+.soc-bar-score { grid-area: score; font: 700 14px/1.2 var(--display); white-space: nowrap; }
+.soc-bar-track { grid-area: track; height: 14px; border-radius: 999px; background: var(--surface-2); overflow: hidden; display: flex; align-items: center; }
+.soc-bar-fill { display: block; height: 100%; border-radius: 999px; }
+.soc-bar-empty { font-size: 12px; color: var(--muted); padding: 0 8px; white-space: nowrap; }
+.soc-trophy .icon { width: 18px; height: 18px; color: #C9971C; }
+.soc-legend { list-style: none; margin: 0; padding: 0; display: flex; flex-wrap: wrap; gap: 6px 14px; font-size: 13px; color: var(--muted); }
+.soc-legend li { display: inline-flex; align-items: center; gap: 6px; }
+.soc-swatch { width: 12px; height: 12px; border-radius: 3px; display: inline-block; }
+.soc-swatch.empty { border: 1px dashed var(--muted); }

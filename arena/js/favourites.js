@@ -2,7 +2,7 @@
 // this browser only, like the game order; the games' "Next up" reads the same
 // key to suggest favourites first.
 
-import { arenaGet, arenaSet } from './local.js?v=202611151415';
+import { arenaGet, arenaSet } from './local.js?v=202611151427';
 
 const KEY = 'favourites';
 

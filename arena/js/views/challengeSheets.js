@@ -1,14 +1,15 @@
 // The challenge sheets: New challenge, an invite to accept, and results.
 // Only loaded while featureOn('challenges') (through challengesTab.js).
 
-import { h, openSheet, sheetHead, toast, statusIcon, ICONS } from '../ui.js?v=202611151415';
-import { call, reasonText } from '../social/api.js?v=202611151415';
+import { h, openSheet, sheetHead, toast, statusIcon, ICONS } from '../ui.js?v=202611151427';
+import { call, reasonText } from '../social/api.js?v=202611151427';
 import {
   canChallenge, puzzleFor, fromPuzzle, puzzleTitle, startedHere, WINNER_RULE,
-} from '../social/puzzles.js?v=202611151415';
-import { gameById } from '../games/registry.js?v=202611151415';
-import { trackPlay } from './play.js?v=202611151415';
-import { track } from '../analytics.js?v=202611151415';
+} from '../social/puzzles.js?v=202611151427';
+import { gameById } from '../games/registry.js?v=202611151427';
+import { barFractions, legendItems, rankColour } from '../social/bars.js?v=202611151427';
+import { trackPlay } from './play.js?v=202611151427';
+import { track } from '../analytics.js?v=202611151427';
 
 const MAX_FRIENDS = 9;
 const when = (ms) => new Date(ms).toLocaleString('en-CA', { weekday: 'long', month: 'short', day: 'numeric', hour: 'numeric', minute: '2-digit' });
@@ -225,7 +226,7 @@ export function openChallenge(app, cid) {
       track(accept ? 'challenge_accept' : 'challenge_decline', { target_game: view.game });
       close();
       if (accept && game) launch(app, game, index, tier);
-      else (await import('./challengesTab.js?v=202611151415')).refreshSocial();
+      else (await import('./challengesTab.js?v=202611151427')).refreshSocial();
     } catch (e) {
       toast(reasonText(e.reason));
     }
@@ -278,6 +279,37 @@ function stateText(p) {
   }[p.state] ?? '';
 }
 
+/**
+ * The players' results as bars: the best result full width, the rest scaled
+ * to it, coloured by rank, with a trophy beside 1st place and a legend.
+ */
+export function resultChart(view, me) {
+  const fractions = barFractions(view.players, view.better);
+  const rows = view.players.map((p, i) => {
+    const f = fractions[i];
+    const name = p.pub === me ? 'You' : p.gamerId;
+    return h('li', { class: `soc-bar-row${p.pub === me ? ' me' : ''}` },
+      h('span', { class: 'soc-bar-name' },
+        p.rank === 1 ? h('span', { class: 'soc-trophy', title: '1st place', html: ICONS.trophy }) : null,
+        h('strong', { text: name }),
+        p.already ? h('span', { class: 'muted', text: ' · already played' }) : null),
+      h('span', { class: 'soc-bar-track' },
+        f == null
+          ? h('span', { class: 'soc-bar-empty', text: stateText(p) })
+          : h('span', {
+            class: 'soc-bar-fill',
+            style: { width: `${Math.round(f * 100)}%`, background: p.rank ? rankColour(p.rank) : 'var(--muted)' },
+          })),
+      h('span', { class: 'soc-bar-score', text: f == null ? '' : stateText(p) }));
+  });
+  const legend = legendItems(view.players);
+  return h('div', { class: 'soc-chart' },
+    h('ol', { class: 'soc-bars', 'aria-label': 'Results' }, rows),
+    legend.length ? h('ul', { class: 'soc-legend', 'aria-label': 'Legend' }, legend.map((it) => h('li', {},
+      h('span', { class: `soc-swatch${it.colour ? '' : ' empty'}`, style: it.colour ? { background: it.colour } : null }),
+      it.label))) : null);
+}
+
 export function openResults(app, cid) {
   const view = app.social?.challenges?.[cid];
   if (!view) return;
@@ -299,11 +331,7 @@ export function openResults(app, cid) {
     sheetHead(final ? `${title} · Final` : title, () => close(), game?.logo),
     won ? h('div', { class: 'soc-win' }, h('span', { html: ICONS.trophy }), h('h2', { text: 'You won!' })) : null,
     heading ? h('h2', { class: 'soc-title', text: heading }) : null,
-    h('ol', { class: 'soc-standings' }, view.players.map((p) => h('li', { class: p.pub === me ? 'me' : '' },
-      h('span', { class: 'soc-rank', text: p.rank ?? '–' }),
-      h('span', { class: 'soc-who' }, h('strong', { text: p.pub === me ? 'You' : p.gamerId }),
-        p.already ? h('span', { class: 'muted', text: 'already played' }) : null),
-      h('span', { class: 'soc-score', text: stateText(p) })))),
+    resultChart(view, me),
     h('p', { class: 'soc-hint', text: WINNER_RULE[view.game] ?? '' }),
     !final && waiting.length ? h('p', { class: 'muted', text: `Final results come in when everyone has played, or when the challenge ends on ${when(view.expiresAt)}.` }) : null),
   { label: title });

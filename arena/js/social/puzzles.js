@@ -2,7 +2,7 @@
 // a tier key from js/games/*) to and from the server's (firebase/functions
 // src/games.js GAMES[id].puzzle), plus how each game picks a winner.
 
-import { SOLVED, FAILED, PLAYED, PROGRESS } from '../status.js?v=202611151415';
+import { SOLVED, FAILED, PLAYED, PROGRESS } from '../status.js?v=202611151427';
 
 /**
  * Games that can be challenged. Canoggle waits for its game update: a
