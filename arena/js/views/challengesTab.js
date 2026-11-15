@@ -4,11 +4,11 @@
 // Everything shown comes from the player's social doc (app.social), which
 // only the server writes. Actions call the server, then re-read the doc.
 
-import { h, openSheet, sheetHead, toast, ICONS } from '../ui.js?v=202611150740';
-import { call, loadSocial, reasonText, waitingCount, hasStartedSocial } from '../social/api.js?v=202611150740';
-import { setUpChallenges, gamerIdStep } from '../social/onboarding.js?v=202611150740';
-import { arenaGet, arenaSet, playerId } from '../local.js?v=202611150740';
-import { track } from '../analytics.js?v=202611150740';
+import { h, openSheet, sheetHead, toast, ICONS } from '../ui.js?v=202611150743';
+import { call, loadSocial, reasonText, waitingCount, hasStartedSocial } from '../social/api.js?v=202611150743';
+import { setUpChallenges, gamerIdStep } from '../social/onboarding.js?v=202611150743';
+import { arenaGet, arenaSet, playerId } from '../local.js?v=202611150743';
+import { track } from '../analytics.js?v=202611150743';
 
 // ---- Shared state -------------------------------------------------------------
 
@@ -192,6 +192,41 @@ function markLinkJoinsSeen() {
   }
 }
 
+/**
+ * The friend to suggest challenging: the one played least against, then the
+ * newest friend. Among equals it changes day to day ([dayNumber]), so the
+ * same name isn't always first.
+ */
+export function suggestFriend(friends, dayNumber = Math.floor(Date.now() / 86400000)) {
+  const list = Object.entries(friends ?? {}).map(([pub, f]) => ({
+    pub, ...f, played: (f.record?.w ?? 0) + (f.record?.l ?? 0) + (f.record?.t ?? 0),
+  }));
+  if (!list.length) return null;
+  const fewest = Math.min(...list.map((f) => f.played));
+  const tied = list.filter((f) => f.played === fewest)
+    .sort((a, b) => (b.since ?? 0) - (a.since ?? 0) || a.gamerId.localeCompare(b.gamerId));
+  return tied[dayNumber % tied.length];
+}
+
+/** Has friends, no challenges yet: suggest one by name. */
+function suggestionCard(social) {
+  const f = suggestFriend(social.friends);
+  const others = Object.keys(social.friends).length - 1;
+  return h('div', { class: 'card soc-suggestion' },
+    avatar(f.pub, f.gamerId, 'lg'),
+    h('div', { class: 'soc-who' },
+      h('strong', { text: `Challenge ${f.gamerId}` }),
+      h('span', { class: 'muted', text: f.played
+        ? `You’ve played ${f.played} ${f.played === 1 ? 'challenge' : 'challenges'} together (${record(f.record)}).`
+        : 'You haven’t played a challenge together yet.' })),
+    h('button', {
+      class: 'btn small', type: 'button', text: 'Challenge',
+      // Starting a challenge arrives in 4b, from here and the Games tab.
+      onClick: () => toast(`Challenging ${f.gamerId} arrives in the next update.`),
+    }),
+    others > 0 ? h('a', { class: 'text-btn soc-suggestion-more', href: '#challenges/friends', text: `or one of your ${others} other ${others === 1 ? 'friend' : 'friends'}` }) : null);
+}
+
 function activeView(social) {
   const { rows, incoming } = requestRows(social);
   const joins = newLinkJoins(social);
@@ -205,8 +240,7 @@ function activeView(social) {
     h('section', { class: 'soc-stack' },
       sectionHead('Challenges'),
       Object.keys(social.friends ?? {}).length
-        ? h('div', { class: 'card soc-empty' },
-          h('p', { class: 'muted', text: 'Challenges you send and get will show here. Creating them arrives in the next update.' }))
+        ? suggestionCard(social)
         : h('div', { class: 'card soc-empty soc-cta' },
           h('span', { class: 'soc-intro-icon', html: ICONS.people }),
           h('p', {}, h('strong', { text: 'Add friends to start challenging.' }),
