@@ -5,7 +5,7 @@
 // write back to Canuckle: Canuckle restores its settings from the player's
 // account each time it opens, so a change made here would not stick there.
 
-import { readPref, arenaGet, arenaSet } from './local.js?v=202611151427';
+import { readPref, arenaGet, arenaSet } from './local.js?v=202611151458';
 
 export function initialTheme() {
   const saved = arenaGet('theme');

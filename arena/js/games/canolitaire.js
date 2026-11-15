@@ -8,14 +8,14 @@
 // write, which for a finished deal is when it finished. A deal left unfinished
 // is uploaded at the next day's launch with st: 0 and a board snapshot.
 
-import { launchDaily, pct, historyStart, readJsonPref, readPendingList } from './common.js?v=202611151427';
-import { duration, edOfMillis } from '../dates.js?v=202611151427';
-import { toMillis } from '../firebase.js?v=202611151427';
-import { launchEd } from '../config.js?v=202611151427';
-import { readPref, prefKeys } from '../local.js?v=202611151427';
+import { launchDaily, pct, historyStart, readJsonPref, readPendingList } from './common.js?v=202611151458';
+import { duration, edOfMillis } from '../dates.js?v=202611151458';
+import { toMillis } from '../firebase.js?v=202611151458';
+import { launchEd } from '../config.js?v=202611151458';
+import { readPref, prefKeys } from '../local.js?v=202611151458';
 import {
   SOLVED, PLAYED, PROGRESS, emptyProgress, mark, currentStreak, longestStreak, intList, num, minEd, maxEd, noteFinish,
-} from '../status.js?v=202611151427';
+} from '../status.js?v=202611151458';
 
 const DRAWS = ['1', '3'];
 const LEVELS = ['e', 'm', 'h'];

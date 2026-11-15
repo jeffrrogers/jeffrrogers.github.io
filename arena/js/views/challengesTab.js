@@ -4,14 +4,14 @@
 // Everything shown comes from the player's social doc (app.social), which
 // only the server writes. Actions call the server, then re-read the doc.
 
-import { h, openSheet, sheetHead, toast, ICONS } from '../ui.js?v=202611151427';
-import { call, loadSocial, reasonText, waitingCount, hasStartedSocial } from '../social/api.js?v=202611151427';
-import { setUpChallenges, gamerIdStep } from '../social/onboarding.js?v=202611151427';
-import { arenaGet, arenaSet, playerId } from '../local.js?v=202611151427';
-import { track } from '../analytics.js?v=202611151427';
-import { gameById } from '../games/registry.js?v=202611151427';
-import { fromPuzzle, puzzleTitle, canChallenge } from '../social/puzzles.js?v=202611151427';
-import * as sheets from './challengeSheets.js?v=202611151427';
+import { h, openSheet, sheetHead, toast, ICONS } from '../ui.js?v=202611151458';
+import { call, loadSocial, reasonText, waitingCount, hasStartedSocial } from '../social/api.js?v=202611151458';
+import { setUpChallenges, gamerIdStep } from '../social/onboarding.js?v=202611151458';
+import { arenaGet, arenaSet, playerId } from '../local.js?v=202611151458';
+import { track } from '../analytics.js?v=202611151458';
+import { gameById } from '../games/registry.js?v=202611151458';
+import { fromPuzzle, puzzleTitle, canChallenge } from '../social/puzzles.js?v=202611151458';
+import * as sheets from './challengeSheets.js?v=202611151458';
 
 export { canChallenge };
 
@@ -456,13 +456,14 @@ const winRate = (r) => (played(r) ? `${Math.round((100 * (r.w ?? 0)) / played(r)
 function recordBar(r, colours = ['var(--text)', 'var(--muted)', 'var(--border)']) {
   const n = played(r);
   if (!n) return null;
+  // Only the parts that have any: an empty part would still leave its gap,
+  // and the bar would end square short of its rounded end.
+  const parts = [[r.w ?? 0, colours[0]], [r.t ?? 0, colours[1]], [r.l ?? 0, colours[2]]]
+    .filter(([count]) => count > 0);
   return h('div', {
     class: 'soc-bar', role: 'img',
     'aria-label': `${r.w ?? 0} won, ${r.t ?? 0} tied, ${r.l ?? 0} lost`,
-  },
-  h('span', { style: { flex: String(r.w ?? 0), background: colours[0] } }),
-  h('span', { style: { flex: String(r.t ?? 0), background: colours[1] } }),
-  h('span', { style: { flex: String(r.l ?? 0), background: colours[2] } }));
+  }, parts.map(([count, colour]) => h('span', { style: { flex: String(count), background: colour } })));
 }
 
 function recordView(social) {
