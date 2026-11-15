@@ -5,7 +5,7 @@
 // one on this game they're still to play. The server reads the result from
 // the game's own saved data, never from here.
 
-import { cachedSocial, call, loadSocial } from './api.js?v=202611151302';
+import { cachedSocial, call, loadSocial } from './api.js?v=202611151316';
 
 // The game saves the result as the puzzle finishes; give that a moment to
 // land first, and look once more a little later.
