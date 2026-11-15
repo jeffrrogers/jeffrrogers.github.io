@@ -11,9 +11,9 @@
 // the Arena), re-reading it (one Firestore read) only when that copy is a few
 // minutes old.
 
-import { call, cachedSocial, loadSocial, reasonText } from './api.js?v=202611151316';
-import { WINNER_RULE } from './puzzles.js?v=202611151316';
-import { arenaGet, arenaSet, playerId } from '../local.js?v=202611151316';
+import { call, cachedSocial, loadSocial, reasonText } from './api.js?v=202611151324';
+import { WINNER_RULE } from './puzzles.js?v=202611151324';
+import { arenaGet, arenaSet, playerId } from '../local.js?v=202611151324';
 
 const FRESH_MS = 3 * 60000;
 const atKey = () => `socialAt.${playerId()}`;
@@ -139,6 +139,7 @@ const STYLE = `
 .ac-head h2{margin:0;font-size:20px;font-weight:800}
 .ac-x{width:40px;height:40px;border-radius:50%;border:0;background:rgba(127,127,127,.15);color:inherit;font-size:20px;cursor:pointer}
 .ac-muted{color:#5e5b57;font-size:14px;margin:0}
+.ac-prompt{margin:0;font-weight:700}
 .ac-list{display:flex;flex-direction:column}
 .ac-row{display:flex;align-items:center;justify-content:space-between;gap:12px;min-height:52px;border-bottom:1px solid #e6e1da;cursor:pointer;font-weight:600}
 .ac-row:last-child{border-bottom:0}
@@ -203,9 +204,16 @@ export async function pick(gameId, puzzleJson, title = '') {
     };
     const err = el('p', { class: 'ac-err' });
     err.hidden = true;
-    const send = el('button', { class: 'ac-btn', type: 'button', text: 'Send & Play', disabled: true });
+    const send = el('button', { class: 'ac-btn', type: 'button' });
+    // The button says what's missing until a friend is picked.
+    const update = () => {
+      send.disabled = picked.size === 0;
+      send.textContent = picked.size ? 'Send & Play' : 'Pick a friend to challenge';
+    };
+    // Only one friend: they're who it's for.
+    if (friends.length === 1) picked.add(friends[0][0]);
     const rows = friends.map(([pub, f]) => {
-      const box = el('input', { type: 'checkbox' });
+      const box = el('input', { type: 'checkbox', checked: picked.has(pub) });
       box.addEventListener('change', () => {
         if (box.checked && picked.size >= 9) {
           box.checked = false;
@@ -214,10 +222,11 @@ export async function pick(gameId, puzzleJson, title = '') {
         }
         if (box.checked) picked.add(pub);
         else picked.delete(pub);
-        send.disabled = picked.size === 0;
+        update();
       });
       return el('label', { class: 'ac-row' }, el('span', { text: f.gamerId }), box);
     });
+    update();
     send.addEventListener('click', async () => {
       send.disabled = true;
       send.textContent = 'Sending…';
@@ -231,8 +240,7 @@ export async function pick(gameId, puzzleJson, title = '') {
           ? 'You’ve already started this puzzle, so it can’t be a challenge.'
           : reasonText(e.reason);
         err.hidden = false;
-        send.disabled = false;
-        send.textContent = 'Send & Play';
+        update();
       }
     });
     const sheet = el('div', { class: 'ac-sheet', role: 'dialog', 'aria-modal': 'true', 'aria-label': 'Challenge friends' },
@@ -240,6 +248,9 @@ export async function pick(gameId, puzzleJson, title = '') {
         el('h2', { text: 'Challenge friends' }),
         el('button', { class: 'ac-x', type: 'button', 'aria-label': 'Close', text: '×', onClick: () => finish(null) })),
       title ? el('p', { class: 'ac-muted', text: title }) : null,
+      friends.length
+        ? el('p', { class: 'ac-prompt', text: friends.length === 1 ? 'Your friend to challenge:' : 'Pick the friends to challenge (up to 9):' })
+        : null,
       friends.length
         ? el('div', { class: 'ac-list' }, rows)
         : el('p', { class: 'ac-muted', text: 'Add friends in the Arena’s Challenges tab first.' }),

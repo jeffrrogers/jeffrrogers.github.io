@@ -1,14 +1,14 @@
 // The challenge sheets: New challenge, an invite to accept, and results.
 // Only loaded while featureOn('challenges') (through challengesTab.js).
 
-import { h, openSheet, sheetHead, toast, statusIcon, ICONS } from '../ui.js?v=202611151316';
-import { call, reasonText } from '../social/api.js?v=202611151316';
+import { h, openSheet, sheetHead, toast, statusIcon, ICONS } from '../ui.js?v=202611151324';
+import { call, reasonText } from '../social/api.js?v=202611151324';
 import {
   canChallenge, puzzleFor, fromPuzzle, puzzleTitle, startedHere, WINNER_RULE,
-} from '../social/puzzles.js?v=202611151316';
-import { gameById } from '../games/registry.js?v=202611151316';
-import { trackPlay } from './play.js?v=202611151316';
-import { track } from '../analytics.js?v=202611151316';
+} from '../social/puzzles.js?v=202611151324';
+import { gameById } from '../games/registry.js?v=202611151324';
+import { trackPlay } from './play.js?v=202611151324';
+import { track } from '../analytics.js?v=202611151324';
 
 const MAX_FRIENDS = 9;
 const when = (ms) => new Date(ms).toLocaleString('en-CA', { weekday: 'long', month: 'short', day: 'numeric', hour: 'numeric', minute: '2-digit' });
@@ -47,7 +47,8 @@ export function openCreate(app, { gameId = null, friendPub = null, onSent } = {}
   const state = {
     game: games.find((g) => g.id === gameId) ?? null,
     tier: null,
-    picked: new Set(friendPub && social.friends[friendPub] ? [friendPub] : []),
+    // The friend it was started from; with only one friend, them.
+    picked: new Set(friendPub && social.friends[friendPub] ? [friendPub] : friends.length === 1 ? [friends[0][0]] : []),
     sending: false,
   };
   let close;
@@ -101,7 +102,7 @@ export function openCreate(app, { gameId = null, friendPub = null, onSent } = {}
   function friendsPart() {
     return h('div', { class: 'soc-stack' },
       h('div', { class: 'soc-between' },
-        h('h3', { text: 'Friends' }),
+        h('h3', { text: friends.length === 1 ? 'Your friend to challenge' : 'Pick the friends to challenge' }),
         h('span', { class: 'muted', text: `${state.picked.size} of ${Math.min(MAX_FRIENDS, friends.length)} picked` })),
       h('div', { class: 'soc-list soc-checks' }, friends.map(([pub, f]) => {
         const box = h('input', { type: 'checkbox', checked: state.picked.has(pub) });
@@ -147,7 +148,7 @@ export function openCreate(app, { gameId = null, friendPub = null, onSent } = {}
     const ready = g && (!g.tiers.length ? !startedHere(g, entryFor(g), null) : !!state.tier) && state.picked.size > 0;
     const label = state.sending ? 'Sending…'
       : !g ? 'Pick a game'
-        : !state.picked.size ? 'Pick at least one friend'
+        : !state.picked.size ? 'Pick a friend to challenge'
           : 'Send & Play';
     // replaceChildren() doesn't unpack lists (it would print them as text),
     // so flatten the parts and drop the empty ones first.
@@ -224,7 +225,7 @@ export function openChallenge(app, cid) {
       track(accept ? 'challenge_accept' : 'challenge_decline', { target_game: view.game });
       close();
       if (accept && game) launch(app, game, index, tier);
-      else (await import('./challengesTab.js?v=202611151316')).refreshSocial();
+      else (await import('./challengesTab.js?v=202611151324')).refreshSocial();
     } catch (e) {
       toast(reasonText(e.reason));
     }
