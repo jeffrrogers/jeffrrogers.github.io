@@ -8,8 +8,8 @@
 // other way. social/{pid} is this player's own view (gamer ID, friends,
 // requests, challenges, records), which only the server writes.
 
-import { callArenaFunction, getDocData, setMerge, SERVER_TIME } from '../firebase.js?v=202611151458';
-import { playerId, writePref, arenaGet, arenaSet } from '../local.js?v=202611151458';
+import { callArenaFunction, getDocData, setMerge, SERVER_TIME } from '../firebase.js?v=202611161048';
+import { playerId, writePref, arenaGet, arenaSet } from '../local.js?v=202611161048';
 
 /** A refusal from the server, with its reason word (see REASON_TEXT). */
 export class SocialError extends Error {
@@ -29,7 +29,8 @@ export const REASON_TEXT = {
   invalid: 'Use 3–16 letters, numbers or underscores, with at least one letter.',
   reserved: 'That gamer ID is reserved. Try another.',
   'not-allowed': 'That gamer ID isn’t allowed. Try another.',
-  taken: 'That gamer ID is taken. Try another.',
+  // Also a name that only looks like one taken (MapIeMom for MapleMom).
+  taken: 'That gamer ID, or one that looks just like it, is taken. Try another.',
   'rename-too-soon': 'You can change your gamer ID once every 30 days.',
   'no-player': 'No player has that gamer ID.',
   self: 'That’s your own gamer ID.',

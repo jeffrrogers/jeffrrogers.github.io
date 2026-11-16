@@ -11,9 +11,9 @@
 // the Arena), re-reading it (one Firestore read) only when that copy is a few
 // minutes old.
 
-import { call, cachedSocial, loadSocialViaServer, reasonText } from './api.js?v=202611151458';
-import { WINNER_RULE } from './puzzles.js?v=202611151458';
-import { arenaGet, playerId } from '../local.js?v=202611151458';
+import { call, cachedSocial, loadSocialViaServer, reasonText } from './api.js?v=202611161048';
+import { WINNER_RULE } from './puzzles.js?v=202611161048';
+import { arenaGet, playerId } from '../local.js?v=202611161048';
 
 const FRESH_MS = 3 * 60000;
 const atKey = () => `socialAt.${playerId()}`;

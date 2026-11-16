@@ -7,8 +7,8 @@
 // rename here reaches friends' lists and open challenges, and a delete is the
 // same erasure as the Arena's "Delete my social data".
 
-import { h, clear, toast, fmtTime } from '../ui.js?v=202611160727';
-import { callAdmin } from '../firebase.js?v=202611160727';
+import { h, clear, toast, fmtTime } from '../ui.js?v=202611161048';
+import { callAdmin } from '../firebase.js?v=202611161048';
 
 const state = {
   query: '',
@@ -17,6 +17,8 @@ const state = {
   reports: null, // null until loaded
   reportsAll: false,
   bans: null,
+  recent: null,
+  recentLimit: 50,
   busy: false,
   error: '',
 };
@@ -29,7 +31,7 @@ const REASONS = {
   invalid: 'Gamer IDs are 3 to 16 letters, digits or underscores, with at least one letter.',
   reserved: 'That name is reserved (it looks official).',
   'not-allowed': 'That name is banned or blocked by the word filter.',
-  taken: 'Someone else has that gamer ID.',
+  taken: 'Someone else has that gamer ID, or one that looks just like it.',
   'not-under': "That player's age result isn't under 14.",
   'bad-name': 'Names are up to 16 letters, digits or underscores.',
   'age-check': "That player hasn't passed the age check.",
@@ -47,6 +49,7 @@ export function renderModeration(root, rerender) {
     loadedOnce = true;
     loadReports(rerender);
     loadBans(rerender);
+    loadRecent(rerender);
   }
   clear(root,
     h('p', { class: 'muted small' },
@@ -54,7 +57,75 @@ export function renderModeration(root, rerender) {
     lookupCard(rerender),
     state.player ? playerCard(state.player, rerender) : null,
     reportsCard(rerender),
+    recentCard(rerender),
     bansCard(rerender));
+}
+
+// ---- Newest gamer IDs ----------------------------------------------------------------
+//
+// The word filter can't catch everything, and nothing else is seen until a
+// friend reports it. Skimming the newest names every few days catches the
+// rest. "New" is anything claimed since this browser last marked them seen.
+
+const SEEN_KEY = 'admin.gamerIdsSeenAt';
+
+function seenAt() {
+  try {
+    return Number(localStorage.getItem(SEEN_KEY)) || 0;
+  } catch {
+    return 0;
+  }
+}
+
+function markSeen(at) {
+  try {
+    localStorage.setItem(SEEN_KEY, String(at));
+  } catch {
+    // fine: everything just stays "new"
+  }
+}
+
+async function loadRecent(rerender) {
+  try {
+    state.recent = (await callAdmin('recentGamerIds', { limit: state.recentLimit })).gamerIds;
+  } catch (e) {
+    state.recent = { error: reasonText(e) };
+  }
+  rerender();
+}
+
+function recentCard(rerender) {
+  const r = state.recent;
+  const seen = seenAt();
+  const fresh = Array.isArray(r) ? r.filter((g) => g.at > seen) : [];
+  let body;
+  if (r === null) body = h('p', { class: 'muted' }, 'Loading…');
+  else if (r.error) body = h('p', { class: 'err' }, r.error);
+  else if (!r.length) body = h('p', { class: 'muted' }, 'No gamer IDs yet.');
+  else {
+    body = h('div', { class: 'table-wrap' }, h('table', { class: 'grid compact' },
+      h('thead', {}, h('tr', {}, ['Gamer ID', 'Claimed or renamed', ''].map((t) => h('th', {}, t)))),
+      h('tbody', {}, r.map((g) => h('tr', {},
+        h('td', {}, g.at > seen ? h('b', {}, g.name) : g.name, g.at > seen ? h('span', { class: 'pill' }, ' new') : null),
+        h('td', { class: 'nowrap' }, g.at ? fmtTime(g.at) : 'before Nov 16'),
+        h('td', {}, h('button', {
+          class: 'btn small', onclick: () => { lookup(rerender, g.pub); window.scrollTo({ top: 0, behavior: 'smooth' }); },
+        }, 'Look up')))))));
+  }
+  return h('div', { class: 'card' },
+    h('h3', {}, `Newest gamer IDs${fresh.length ? ` (${fresh.length} new)` : ''}`),
+    h('p', { class: 'small muted' },
+      'The latest claims and renames, newest first. Skim for anything the word filter missed, then mark them seen. One Firestore read per name listed.'),
+    h('div', { class: 'actions left' },
+      h('button', {
+        class: 'btn small', disabled: !fresh.length,
+        onclick: () => { markSeen(Math.max(...r.map((g) => g.at || 0))); rerender(); },
+      }, 'Mark all seen'),
+      h('button', { class: 'btn small', onclick: () => { state.recent = null; rerender(); loadRecent(rerender); } }, 'Refresh'),
+      Array.isArray(r) && r.length >= state.recentLimit && state.recentLimit < 100
+        ? h('button', { class: 'btn small ghost', onclick: () => { state.recentLimit = 100; state.recent = null; rerender(); loadRecent(rerender); } }, 'Show 100')
+        : null),
+    body);
 }
 
 // ---- Calls ------------------------------------------------------------------------
@@ -312,7 +383,7 @@ function bansCard(rerender) {
   return h('div', { class: 'card' },
     h('h3', {}, 'Banned names'),
     h('p', { class: 'small muted' },
-      'On top of the built-in word filter (functions/src/rules.js). Matched ignoring capitals. A banned name can’t be claimed or renamed to; someone who already has it keeps it until renamed.'),
+      'On top of the built-in word filter (functions/src/rules.js). Matched ignoring capitals, and look-alikes too (RudeName also bans RudeNarne and Rude_Name). A banned name can’t be claimed or renamed to; someone who already has it keeps it until renamed.'),
     h('div', { class: 'actions left' }, name, note,
       h('button', { class: 'btn', disabled: state.busy, onclick: add }, 'Ban')),
     body);

@@ -4,14 +4,14 @@
 // Everything shown comes from the player's social doc (app.social), which
 // only the server writes. Actions call the server, then re-read the doc.
 
-import { h, openSheet, sheetHead, toast, ICONS } from '../ui.js?v=202611151458';
-import { call, loadSocial, reasonText, waitingCount, hasStartedSocial } from '../social/api.js?v=202611151458';
-import { setUpChallenges, gamerIdStep } from '../social/onboarding.js?v=202611151458';
-import { arenaGet, arenaSet, playerId } from '../local.js?v=202611151458';
-import { track } from '../analytics.js?v=202611151458';
-import { gameById } from '../games/registry.js?v=202611151458';
-import { fromPuzzle, puzzleTitle, canChallenge } from '../social/puzzles.js?v=202611151458';
-import * as sheets from './challengeSheets.js?v=202611151458';
+import { h, openSheet, sheetHead, toast, ICONS } from '../ui.js?v=202611161048';
+import { call, loadSocial, reasonText, waitingCount, hasStartedSocial } from '../social/api.js?v=202611161048';
+import { setUpChallenges, gamerIdStep } from '../social/onboarding.js?v=202611161048';
+import { arenaGet, arenaSet, playerId } from '../local.js?v=202611161048';
+import { track } from '../analytics.js?v=202611161048';
+import { gameById } from '../games/registry.js?v=202611161048';
+import { fromPuzzle, puzzleTitle, canChallenge } from '../social/puzzles.js?v=202611161048';
+import * as sheets from './challengeSheets.js?v=202611161048';
 
 export { canChallenge };
 

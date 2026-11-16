@@ -2,10 +2,10 @@
 // unreadable; see ../repair.js) and remove them. Accounts with more than 4 in
 // one list are marked stuck: Canuckle can't save those at all until fixed.
 
-import { h, clear, toast, downloadJson } from '../ui.js?v=202611160727';
-import { analyzeAccount, repairCutoff, MAX_DROP, REPAIR_LATEST } from '../repair.js?v=202611160727';
-import { scanAccounts, repairOneAccount, scanCollection } from '../store.js?v=202611160727';
-import { idProblems, ID_CHECK_COLLECTIONS, MAX_EMAIL } from '../idCheck.js?v=202611160727';
+import { h, clear, toast, downloadJson } from '../ui.js?v=202611161048';
+import { analyzeAccount, repairCutoff, MAX_DROP, REPAIR_LATEST } from '../repair.js?v=202611161048';
+import { scanAccounts, repairOneAccount, scanCollection } from '../store.js?v=202611161048';
+import { idProblems, ID_CHECK_COLLECTIONS, MAX_EMAIL } from '../idCheck.js?v=202611161048';
 
 const state = {
   phase: 'idle', // idle | scanning | scanned | repairing | done
