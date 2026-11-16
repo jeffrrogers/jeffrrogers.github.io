@@ -17,8 +17,8 @@
 //                (canagramsSourceCode/lib/model/daily.dart; extend with
 //                tools/generate_dailies.dart, see tools/PUZZLE_GENERATION.md)
 
-import { epochDay } from './dates.js?v=202611142302';
-import { launchEd } from './launch.js?v=202611142302';
+import { epochDay } from './dates.js?v=202611160727';
+import { launchEd } from './launch.js?v=202611160727';
 
 export const DAILY_GAMES = {
   canoku: {

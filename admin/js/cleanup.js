@@ -7,6 +7,7 @@
 //
 // Always kept, whenever in doubt:
 //  - a linked email in any of the ID's docs
+//  - a gamer ID (friends & challenges)
 //  - any sign of play in Canoku, Canolitaire, Canominoes, Canoggle, Canagrams,
 //    Canatiles, Canundrum, Canamaze or Canadrift
 //  - Canoku accounts whose old per-day saves haven't been migrated
@@ -30,6 +31,11 @@ export const PLAYER_COLLECTIONS = [
   'mazeUserData',
   'plowUserData',
   'arenaUserData',
+  // Friends & challenges (written by the Cloud Functions). An account with a
+  // gamer ID is always kept (see accountVerdict); one whose social doc holds
+  // only an age result loses it with the rest. Its history subcollection only
+  // exists once there's a gamer ID, so nothing is left behind.
+  'social',
 ];
 
 /** Games whose finished puzzles live in a `games` subcollection. */
@@ -110,6 +116,9 @@ export function accountVerdict(docs, nowMs, hasSubGames) {
   if (total > MAX_GAMES) return keep('more than 10 games');
   if (nowMs - last <= days * DAY_MS) return keep('recent');
   if (PLAYER_COLLECTIONS.some((c) => hasEmail(docs[c]))) return keep('email');
+  // Friends see this player: deleting would quietly drop them from friends'
+  // lists. The Moderation tab's delete does that deliberately when needed.
+  if (docs.social?.pub || docs.social?.gamerId) return keep('gamer ID');
   if (hasCanokuProgress(docs.canokuUserData)) return keep('other games');
   if (GAMES_SUBCOLLECTION_PARENTS.some((c) => hasStatsProgress(docs[c]))) return keep('other games');
   if (hasSubGames !== false) return keep('other games');

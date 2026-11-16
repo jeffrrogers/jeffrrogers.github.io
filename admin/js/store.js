@@ -2,19 +2,19 @@
 // transaction that also writes an adminLog entry with the docs before and
 // after, so any edit, swap or import can be restored from the Log tab.
 
-import { sdk, currentEmail } from './firebase.js?v=202611142302';
-import { GAMES } from './dates.js?v=202611142302';
-import { decodeAnswer } from './codec.js?v=202611142302';
+import { sdk, currentEmail } from './firebase.js?v=202611160727';
+import { GAMES } from './dates.js?v=202611160727';
+import { decodeAnswer } from './codec.js?v=202611160727';
 import {
   PLAYER_COLLECTIONS, GAMES_SUBCOLLECTION_PARENTS, MAX_GAMES, queryCutoff, accountVerdict, quickVerdict,
-} from './cleanup.js?v=202611142302';
-import { pool } from './pool.js?v=202611142302';
-import { repairAccount } from './repair.js?v=202611142302';
-import { VOTES_COLLECTION } from './polls.js?v=202611142302';
-import { isSeedId } from './seed/accounts.js?v=202611142302';
-import { isTs } from './seed/shapes.js?v=202611142302';
-import { withZeroCounts } from './duoSwap.js?v=202611142302';
-import { puzzleSource, hasPool, poolDocs, docIdFor, samePoolDoc } from './canokuPool.js?v=202611142302';
+} from './cleanup.js?v=202611160727';
+import { pool } from './pool.js?v=202611160727';
+import { repairAccount } from './repair.js?v=202611160727';
+import { VOTES_COLLECTION } from './polls.js?v=202611160727';
+import { isSeedId } from './seed/accounts.js?v=202611160727';
+import { isTs } from './seed/shapes.js?v=202611160727';
+import { withZeroCounts } from './duoSwap.js?v=202611160727';
+import { puzzleSource, hasPool, poolDocs, docIdFor, samePoolDoc } from './canokuPool.js?v=202611160727';
 
 // ---- Puzzles --------------------------------------------------------------
 
