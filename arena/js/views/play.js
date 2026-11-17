@@ -1,10 +1,10 @@
 // Opening a puzzle: straight into the game, or via a difficulty picker for
 // games with several puzzles per day.
 
-import { h, openSheet, sheetHead, statusIcon } from '../ui.js?v=202611162236';
-import { shortDate, weekdayName } from '../dates.js?v=202611162236';
-import { track } from '../analytics.js?v=202611162236';
-import { isDone } from '../status.js?v=202611162236';
+import { h, openSheet, sheetHead, statusIcon } from '../ui.js?v=202611171737';
+import { shortDate, weekdayName } from '../dates.js?v=202611171737';
+import { track } from '../analytics.js?v=202611171737';
+import { isDone } from '../status.js?v=202611171737';
 
 /** Short label for a puzzle relative to today: "Today", "Yesterday", "Wed". */
 export function whenLabel(game, index, todayIdx) {
