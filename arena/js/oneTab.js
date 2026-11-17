@@ -17,8 +17,8 @@
 // (Safari 15.4+); without it the page carries on as before, and the games'
 // own save guards are the backstop.
 
-/** Games it's switched on for, while it's tried out. */
-export const ONE_TAB_GAMES = new Set(['canoggle']);
+/** Games it's switched on for (tried on Canoggle first, 2026-11-17). */
+export const ONE_TAB_GAMES = new Set(['canuckle', 'canoggle', 'canagrams', 'canominoes', 'canolitaire', 'canoku']);
 
 // The first path segment of each game page, to the group of pages that
 // share one set of saves. Canuckle, Canuckle+ and Duo are one app with one
