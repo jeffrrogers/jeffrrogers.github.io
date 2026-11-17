@@ -21,14 +21,14 @@
 // done: false and reads as in progress. Today's in-progress boards come from
 // this browser's cdrGame_{day}_{tier} saves.
 
-import { launchDaily, pct, historyStart, readJsonPref, readPendingList } from './common.js?v=202611161048';
-import { duration, edOfMillis } from '../dates.js?v=202611161048';
-import { toMillis } from '../firebase.js?v=202611161048';
-import { launchEd } from '../config.js?v=202611161048';
-import { readPref } from '../local.js?v=202611161048';
+import { launchDaily, pct, historyStart, readJsonPref, readPendingList } from './common.js?v=202611162236';
+import { duration, edOfMillis } from '../dates.js?v=202611162236';
+import { toMillis } from '../firebase.js?v=202611162236';
+import { launchEd } from '../config.js?v=202611162236';
+import { readPref } from '../local.js?v=202611162236';
 import {
   SOLVED, PROGRESS, emptyProgress, mark, currentStreak, longestStreak, intList, num, minEd, maxEd, noteFinish,
-} from '../status.js?v=202611161048';
+} from '../status.js?v=202611162236';
 
 const LEVELS = [
   { key: 'e', label: 'Easy' },

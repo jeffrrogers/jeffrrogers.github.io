@@ -11,9 +11,9 @@
 // the Arena), re-reading it (one Firestore read) only when that copy is a few
 // minutes old.
 
-import { call, cachedSocial, loadSocialViaServer, reasonText } from './api.js?v=202611161048';
-import { WINNER_RULE } from './puzzles.js?v=202611161048';
-import { arenaGet, playerId } from '../local.js?v=202611161048';
+import { call, cachedSocial, loadSocialViaServer, reasonText } from './api.js?v=202611162236';
+import { WINNER_RULE } from './puzzles.js?v=202611162236';
+import { arenaGet, playerId } from '../local.js?v=202611162236';
 
 const FRESH_MS = 3 * 60000;
 const atKey = () => `socialAt.${playerId()}`;
@@ -36,11 +36,24 @@ async function social({ fresh = false } = {}) {
 const sameJson = (a, b) => JSON.stringify(Object.keys(a ?? {}).sort().map((k) => [k, a[k]]))
   === JSON.stringify(Object.keys(b ?? {}).sort().map((k) => [k, b[k]]));
 
-/** [cid, view] of the open challenge on this exact puzzle, or null. */
-function challengeOn(doc, gameId, puzzle, { open = true } = {}) {
-  const hit = Object.entries(doc?.challenges ?? {})
-    .find(([, v]) => v.game === gameId && sameJson(v.puzzle, puzzle) && (!open || v.status === 'open'));
-  return hit ?? null;
+// Puzzle fields that are the challenge's terms rather than which puzzle it
+// is: Canoggle's time limit is the challenger's, and a game asking about its
+// board must find the challenge whatever limit the player has set. The game
+// then plays the challenge's (cover() hands it back).
+const TERMS = { canoggle: ['limit'] };
+
+const withoutTerms = (gameId, p) => {
+  const drop = TERMS[gameId] ?? [];
+  return Object.fromEntries(Object.entries(p ?? {}).filter(([k]) => !drop.includes(k)));
+};
+
+/** [cid, view] of the open challenge on this puzzle, or null. */
+export function challengeOn(doc, gameId, puzzle, { open = true } = {}) {
+  const want = withoutTerms(gameId, puzzle);
+  const hits = Object.entries(doc?.challenges ?? {})
+    .filter(([, v]) => v.game === gameId && sameJson(withoutTerms(gameId, v.puzzle), want) && (!open || v.status === 'open'));
+  // Two on one board with different limits: the one on these terms first
+  return hits.find(([, v]) => sameJson(v.puzzle, puzzle)) ?? hits[0] ?? null;
 }
 
 const parse = (json) => {
@@ -72,6 +85,8 @@ export async function cover(gameId, puzzleJson) {
     show: !accepted,
     invite,
     canChallenge: Object.keys(doc.friends ?? {}).length > 0,
+    // The challenge's own terms (Canoggle's time limit), for the game to play
+    puzzle: hit ? hit[1].puzzle : null,
   });
 }
 

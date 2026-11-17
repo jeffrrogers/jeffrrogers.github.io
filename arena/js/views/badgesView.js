@@ -2,15 +2,15 @@
 // announcements: one badge at a time, or a summary of several. A tier family
 // (families.js) shows as one tile and opens to every level.
 
-import { h, ICONS, openSheet, sheetHead, toast } from '../ui.js?v=202611161048';
-import { longDate, shortDate, todayEpochDay } from '../dates.js?v=202611161048';
-import { medalSvg, LEAF_PATH } from '../badges/icons.js?v=202611161048';
-import { shareBadge, shareShelf } from '../badges/share.js?v=202611161048';
-import { groupFamilies, isFamily, countOf } from '../badges/families.js?v=202611161048';
-import { gameById } from '../games/registry.js?v=202611161048';
-import { track } from '../analytics.js?v=202611161048';
-import { playTodayProps } from './play.js?v=202611161048';
-import { listedGames } from '../gameOrder.js?v=202611161048';
+import { h, ICONS, openSheet, sheetHead, toast } from '../ui.js?v=202611162236';
+import { longDate, shortDate, todayEpochDay } from '../dates.js?v=202611162236';
+import { medalSvg, LEAF_PATH } from '../badges/icons.js?v=202611162236';
+import { shareBadge, shareShelf } from '../badges/share.js?v=202611162236';
+import { groupFamilies, isFamily, countOf } from '../badges/families.js?v=202611162236';
+import { gameById } from '../games/registry.js?v=202611162236';
+import { track } from '../analytics.js?v=202611162236';
+import { playTodayProps } from './play.js?v=202611162236';
+import { listedGames } from '../gameOrder.js?v=202611162236';
 
 const FAMILY_COLOR = '#D52B1E';
 const TIER_WORD = { bronze: 'Bronze', silver: 'Silver', gold: 'Gold', platinum: 'Platinum' };

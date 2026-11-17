@@ -11,14 +11,14 @@
 // launch with done: false (absent on a finished record) and reads as in
 // progress; today's in-progress boards are local.
 
-import { launchDaily, pct, historyStart, readJsonPref, readPendingList } from './common.js?v=202611161048';
-import { edOfMillis } from '../dates.js?v=202611161048';
-import { toMillis } from '../firebase.js?v=202611161048';
-import { launchEd } from '../config.js?v=202611161048';
-import { readPref } from '../local.js?v=202611161048';
+import { launchDaily, pct, historyStart, readJsonPref, readPendingList } from './common.js?v=202611162236';
+import { edOfMillis } from '../dates.js?v=202611162236';
+import { toMillis } from '../firebase.js?v=202611162236';
+import { launchEd } from '../config.js?v=202611162236';
+import { readPref } from '../local.js?v=202611162236';
 import {
   SOLVED, FAILED, PROGRESS, emptyProgress, mark, currentStreak, longestStreak, intList, num, minEd, maxEd, noteFinish,
-} from '../status.js?v=202611161048';
+} from '../status.js?v=202611162236';
 
 const KINDS = [
   { key: 'd', label: 'Daily' },
@@ -140,10 +140,13 @@ export const canoggle = {
     return { items, complete: items.every((i) => i.done) };
   },
 
-  link(index, tier, isToday) {
+  // [limit]: a challenge's time limit in seconds (0 for none), which the board
+  // then plays whatever the player's setting (Canoggle's parseStartLink).
+  link(index, tier, isToday, { limit = null } = {}) {
     const params = new URLSearchParams();
     if (!isToday) params.set('day', String(index));
     if (tier) params.set('tier', tier);
+    if (tier && limit != null) params.set('limit', String(limit));
     const q = params.toString();
     return `/canoggle/${q ? '?' + q : ''}`;
   },

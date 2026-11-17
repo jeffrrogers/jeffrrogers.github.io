@@ -4,14 +4,14 @@
 // Everything shown comes from the player's social doc (app.social), which
 // only the server writes. Actions call the server, then re-read the doc.
 
-import { h, openSheet, sheetHead, toast, ICONS } from '../ui.js?v=202611161048';
-import { call, loadSocial, reasonText, waitingCount, hasStartedSocial } from '../social/api.js?v=202611161048';
-import { setUpChallenges, gamerIdStep } from '../social/onboarding.js?v=202611161048';
-import { arenaGet, arenaSet, playerId } from '../local.js?v=202611161048';
-import { track } from '../analytics.js?v=202611161048';
-import { gameById } from '../games/registry.js?v=202611161048';
-import { fromPuzzle, puzzleTitle, canChallenge } from '../social/puzzles.js?v=202611161048';
-import * as sheets from './challengeSheets.js?v=202611161048';
+import { h, openSheet, sheetHead, toast, ICONS } from '../ui.js?v=202611162236';
+import { call, loadSocial, reasonText, waitingCount, hasStartedSocial } from '../social/api.js?v=202611162236';
+import { setUpChallenges, gamerIdStep } from '../social/onboarding.js?v=202611162236';
+import { arenaGet, arenaSet, playerId } from '../local.js?v=202611162236';
+import { track } from '../analytics.js?v=202611162236';
+import { gameById } from '../games/registry.js?v=202611162236';
+import { fromPuzzle, puzzleTitle, canChallenge } from '../social/puzzles.js?v=202611162236';
+import * as sheets from './challengeSheets.js?v=202611162236';
 
 export { canChallenge };
 
@@ -345,11 +345,11 @@ function suggestionCard(social) {
     others > 0 ? h('a', { class: 'text-btn soc-suggestion-more', href: '#challenges/friends', text: `or one of your ${others} other ${others === 1 ? 'friend' : 'friends'}` }) : null);
 }
 
-/** A challenge's game, puzzle title and the Arena's index/tier. */
+/** A challenge's game, puzzle title and the Arena's index/tier (and Canoggle's limit). */
 function about(view) {
   const game = gameById(view.game);
-  const { index, tier } = fromPuzzle(view.game, view.puzzle);
-  return { game, index, tier, title: game ? puzzleTitle(game, index, tier) : view.game };
+  const { index, tier, limit = null } = fromPuzzle(view.game, view.puzzle);
+  return { game, index, tier, limit, title: game ? puzzleTitle(game, index, tier, limit) : view.game };
 }
 
 const byNewest = (key) => ([, a], [, b]) => (b[key] ?? 0) - (a[key] ?? 0);
@@ -374,7 +374,7 @@ function inviteCard(cid, v) {
 }
 
 function progressCard(cid, v, social) {
-  const { game, index, tier, title } = about(v);
+  const { game, index, tier, limit, title } = about(v);
   const mine = v.me === 'done';
   const done = v.players.filter((p) => p.state === 'done').length;
   const waiting = v.players.filter((p) => ['invited', 'accepted'].includes(p.state) && p.pub !== social.pub);
@@ -394,7 +394,7 @@ function progressCard(cid, v, social) {
         sheets.playerChips(v, social.pub),
         h('p', { class: 'soc-hint' }, h('span', { class: 'soc-inline-icon', html: ICONS.lock }),
           `${done} of ${v.players.length} done. Their results stay hidden until you finish.`),
-        game ? h('button', { class: 'btn soc-wide', type: 'button', text: 'Play now', onClick: () => sheets.launch(app, game, index, tier) }) : null),
+        game ? h('button', { class: 'btn soc-wide', type: 'button', text: 'Play now', onClick: () => sheets.launch(app, game, index, tier, limit) }) : null),
     mine && waiting.length ? h('p', { class: 'soc-hint', text: `Waiting on ${waiting.map((p) => p.gamerId).join(', ')}.` }) : null);
 }
 

@@ -2,20 +2,31 @@
 // a tier key from js/games/*) to and from the server's (firebase/functions
 // src/games.js GAMES[id].puzzle), plus how each game picks a winner.
 
-import { SOLVED, FAILED, PLAYED, PROGRESS } from '../status.js?v=202611161048';
+import { SOLVED, FAILED, PLAYED, PROGRESS } from '../status.js?v=202611162236';
 
 /**
- * Games that can be challenged. Canoggle waits for its game update: a
- * challenge locks the challenger's time limit, which Canoggle must accept
- * from the start link (&limit=) first. Sandbox-only games aren't supported
- * by the server yet.
+ * Games that can be challenged. Sandbox-only games aren't supported by the
+ * server yet.
  */
-export const CHALLENGE_GAMES = ['canuckle', 'plus', 'duo', 'canoku', 'canolitaire', 'canominoes', 'canagrams'];
+export const CHALLENGE_GAMES = ['canuckle', 'plus', 'duo', 'canoku', 'canolitaire', 'canominoes', 'canagrams', 'canoggle'];
+
+/**
+ * Canoggle's time limits in seconds, 0 for none, per board (tier key): the
+ * challenger picks one and everyone plays it (squaredleSourceCode
+ * lib/model/time_limit.dart; the server's CANOGGLE_LIMITS).
+ */
+export const CANOGGLE_LIMITS = { d: [0, 180, 300], m: [0, 120, 240] };
+
+/** "No time limit", "3 min". */
+export const limitLabel = (secs) => (secs > 0 ? `${Math.round(secs / 60)} min` : 'No time limit');
 
 export const canChallenge = (gameId) => CHALLENGE_GAMES.includes(gameId);
 
-/** The server's puzzle for [game] puzzle [index], tier [tierKey]. */
-export function puzzleFor(game, index, tierKey) {
+/**
+ * The server's puzzle for [game] puzzle [index], tier [tierKey]. [limit]:
+ * Canoggle's time limit in seconds (0 for none).
+ */
+export function puzzleFor(game, index, tierKey, limit = 0) {
   switch (game.id) {
     case 'canuckle':
     case 'plus':
@@ -29,12 +40,17 @@ export function puzzleFor(game, index, tierKey) {
       return { day: index, tier: tierKey };
     case 'canagrams':
       return { day: index };
+    case 'canoggle':
+      return { day: index, kind: tierKey, limit };
     default:
       throw new Error(`can't challenge ${game.id}`);
   }
 }
 
-/** The Arena's {index, tier} for a server puzzle of game [gameId]. */
+/**
+ * The Arena's {index, tier, limit} for a server puzzle of game [gameId].
+ * [limit] is Canoggle's time limit (seconds); other games have none.
+ */
 export function fromPuzzle(gameId, p) {
   switch (gameId) {
     case 'canuckle':
@@ -49,6 +65,8 @@ export function fromPuzzle(gameId, p) {
       return { index: p.day, tier: p.tier };
     case 'canagrams':
       return { index: p.day, tier: null };
+    case 'canoggle':
+      return { index: p.day, tier: p.kind, limit: p.limit ?? 0 };
     default:
       return { index: p?.day ?? p?.index ?? null, tier: null };
   }
@@ -62,10 +80,11 @@ export function tierLabel(game, tierKey) {
   return game.id === 'canoku' ? `${t.label} ${t.group}` : `${t.group} · ${t.label}`;
 }
 
-/** "Canoku #1126 · Hard 9×9" */
-export function puzzleTitle(game, index, tierKey) {
+/** "Canoku #1126 · Hard 9×9", "Canoggle #12 · Daily · 3 min" */
+export function puzzleTitle(game, index, tierKey, limit = null) {
   const tier = tierLabel(game, tierKey);
-  return `${game.name} ${game.label(index)}${tier ? ` · ${tier}` : ''}`;
+  const clock = limit == null ? '' : ` · ${limitLabel(limit)}`;
+  return `${game.name} ${game.label(index)}${tier ? ` · ${tier}` : ''}${clock}`;
 }
 
 /**
@@ -88,4 +107,5 @@ export const WINNER_RULE = {
   canolitaire: 'Fastest win wins. Fewer moves breaks a tie.',
   canominoes: 'Fewest hints wins, then the fastest time.',
   canagrams: 'Most points wins. A faster time breaks a tie.',
+  canoggle: 'Finding every word beats any score; otherwise most points wins. Everyone plays the same time limit.',
 };

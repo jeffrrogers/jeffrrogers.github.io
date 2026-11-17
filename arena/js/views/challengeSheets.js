@@ -1,15 +1,15 @@
 // The challenge sheets: New challenge, an invite to accept, and results.
 // Only loaded while featureOn('challenges') (through challengesTab.js).
 
-import { h, openSheet, sheetHead, toast, statusIcon, ICONS } from '../ui.js?v=202611161048';
-import { call, reasonText } from '../social/api.js?v=202611161048';
+import { h, openSheet, sheetHead, toast, statusIcon, ICONS } from '../ui.js?v=202611162236';
+import { call, reasonText } from '../social/api.js?v=202611162236';
 import {
-  canChallenge, puzzleFor, fromPuzzle, puzzleTitle, startedHere, WINNER_RULE,
-} from '../social/puzzles.js?v=202611161048';
-import { gameById } from '../games/registry.js?v=202611161048';
-import { barFractions, legendItems, rankColour } from '../social/bars.js?v=202611161048';
-import { trackPlay } from './play.js?v=202611161048';
-import { track } from '../analytics.js?v=202611161048';
+  canChallenge, puzzleFor, fromPuzzle, puzzleTitle, startedHere, WINNER_RULE, CANOGGLE_LIMITS, limitLabel,
+} from '../social/puzzles.js?v=202611162236';
+import { gameById } from '../games/registry.js?v=202611162236';
+import { barFractions, legendItems, rankColour } from '../social/bars.js?v=202611162236';
+import { trackPlay } from './play.js?v=202611162236';
+import { track } from '../analytics.js?v=202611162236';
 
 const MAX_FRIENDS = 9;
 const when = (ms) => new Date(ms).toLocaleString('en-CA', { weekday: 'long', month: 'short', day: 'numeric', hour: 'numeric', minute: '2-digit' });
@@ -23,11 +23,14 @@ function timeLeft(ms, now = Date.now()) {
   return `${days} d ${hours % 24} h left`;
 }
 
-/** Goes into the game on puzzle [index] / [tier], as the Games tab does. */
-export function launch(app, game, index, tier) {
+/**
+ * Goes into the game on puzzle [index] / [tier], as the Games tab does.
+ * [limit]: a Canoggle challenge's time limit, which the board then plays.
+ */
+export function launch(app, game, index, tier, limit = null) {
   const isToday = index === game.todayIndex(app.todayEd);
   trackPlay(game, index, tier, isToday);
-  location.href = game.link(index, tier, isToday);
+  location.href = game.link(index, tier, isToday, { limit });
 }
 
 // ---- New challenge -----------------------------------------------------------------
@@ -48,6 +51,8 @@ export function openCreate(app, { gameId = null, friendPub = null, onSent } = {}
   const state = {
     game: games.find((g) => g.id === gameId) ?? null,
     tier: null,
+    // Canoggle: the time limit everyone plays (seconds, 0 for none)
+    limit: 0,
     // The friend it was started from; with only one friend, them.
     picked: new Set(friendPub && social.friends[friendPub] ? [friendPub] : friends.length === 1 ? [friends[0][0]] : []),
     sending: false,
@@ -61,7 +66,23 @@ export function openCreate(app, { gameId = null, friendPub = null, onSent } = {}
   function pickGame(game) {
     state.game = game;
     state.tier = game.tiers.length ? firstOpenTier(game) : null;
+    state.limit = 0;
     draw();
+  }
+
+  // Canoggle: everyone plays the challenger's time limit.
+  function limitPart() {
+    const options = CANOGGLE_LIMITS[state.tier];
+    if (state.game?.id !== 'canoggle' || !options) return null;
+    if (!options.includes(state.limit)) state.limit = 0;
+    return h('div', { class: 'tier-group' },
+      h('h3', { text: 'Time limit' }),
+      h('div', { class: 'tier-list' }, options.map((secs) => h('button', {
+        class: `tier-btn${state.limit === secs ? ' picked' : ''}`, type: 'button',
+        'aria-pressed': state.limit === secs ? 'true' : 'false',
+        onClick: () => { state.limit = secs; draw(); },
+      }, limitLabel(secs)))),
+      h('p', { class: 'soc-hint', text: 'Everyone plays this limit, whatever their own setting.' }));
   }
 
   function gameList() {
@@ -129,12 +150,13 @@ export function openCreate(app, { gameId = null, friendPub = null, onSent } = {}
     draw();
     try {
       const { cid } = await call('createChallenge', {
-        game: g.id, puzzle: puzzleFor(g, index, state.tier), friends: [...state.picked],
+        game: g.id, puzzle: puzzleFor(g, index, state.tier, state.limit), friends: [...state.picked],
       });
       track('challenge_create', { target_game: g.id, friends: state.picked.size });
       close();
       if (onSent) onSent();
-      sentSheet(app, g, index, state.tier, cid, [...state.picked].map((p) => social.friends[p].gamerId));
+      sentSheet(app, g, index, state.tier, g.id === 'canoggle' ? state.limit : null, cid,
+        [...state.picked].map((p) => social.friends[p].gamerId));
     } catch (e) {
       state.sending = false;
       draw();
@@ -156,6 +178,7 @@ export function openCreate(app, { gameId = null, friendPub = null, onSent } = {}
     body.replaceChildren(...[
       sheetHead('New challenge', () => close()),
       g ? puzzlePart() : gameList(),
+      g ? limitPart() : null,
       g ? friendsPart() : null,
       g ? h('p', { class: 'soc-hint soc-center' }, h('span', { class: 'soc-inline-icon', html: ICONS.clock }),
         `Open for 3 days. ${WINNER_RULE[g.id]}`) : null,
@@ -169,9 +192,9 @@ export function openCreate(app, { gameId = null, friendPub = null, onSent } = {}
 }
 
 /** After sending: play now, or share the news first. */
-function sentSheet(app, game, index, tier, cid, names) {
+function sentSheet(app, game, index, tier, limit, cid, names) {
   let close;
-  const title = puzzleTitle(game, index, tier);
+  const title = puzzleTitle(game, index, tier, limit);
   const who = names.length <= 2 ? names.join(' and ') : `${names.slice(0, -1).join(', ')} and ${names.at(-1)}`;
   const share = async () => {
     const url = `${location.origin}${location.pathname}?challenge=${cid}`;
@@ -190,7 +213,7 @@ function sentSheet(app, game, index, tier, cid, names) {
     h('p', {}, `${who} ${names.length === 1 ? 'has' : 'have'} 3 days to play `, h('strong', { text: title }), '. They’ll see it in their Challenges tab.'),
     h('div', { class: 'actions' },
       h('button', { class: 'btn secondary', type: 'button', onClick: share }, h('span', { html: ICONS.share }), 'Tell them'),
-      h('button', { class: 'btn', type: 'button', text: 'Play now', onClick: () => { close(); launch(app, game, index, tier); } }))),
+      h('button', { class: 'btn', type: 'button', text: 'Play now', onClick: () => { close(); launch(app, game, index, tier, limit); } }))),
   { label: 'Challenge sent' });
 }
 
@@ -217,16 +240,16 @@ export function openChallenge(app, cid) {
     return;
   }
   const game = gameById(view.game);
-  const { index, tier } = fromPuzzle(view.game, view.puzzle);
-  const title = game ? puzzleTitle(game, index, tier) : view.game;
+  const { index, tier, limit = null } = fromPuzzle(view.game, view.puzzle);
+  const title = game ? puzzleTitle(game, index, tier, limit) : view.game;
   let close;
   const respond = async (accept) => {
     try {
       await call('respondChallenge', { cid, accept });
       track(accept ? 'challenge_accept' : 'challenge_decline', { target_game: view.game });
       close();
-      if (accept && game) launch(app, game, index, tier);
-      else (await import('./challengesTab.js?v=202611161048')).refreshSocial();
+      if (accept && game) launch(app, game, index, tier, limit);
+      else (await import('./challengesTab.js?v=202611162236')).refreshSocial();
     } catch (e) {
       toast(reasonText(e.reason));
     }
@@ -249,7 +272,7 @@ export function openChallenge(app, cid) {
         h('div', { class: 'actions' },
           h('button', { class: 'btn secondary', type: 'button', text: 'Decline', onClick: () => respond(false) }),
           h('button', { class: 'text-btn', type: 'button', text: 'Not now', onClick: () => close() })))
-      : h('button', { class: 'btn soc-wide', type: 'button', text: 'Play now', onClick: () => { close(); if (game) launch(app, game, index, tier); } })),
+      : h('button', { class: 'btn soc-wide', type: 'button', text: 'Play now', onClick: () => { close(); if (game) launch(app, game, index, tier, limit); } })),
   { label: title });
 }
 
@@ -314,8 +337,8 @@ export function openResults(app, cid) {
   const view = app.social?.challenges?.[cid];
   if (!view) return;
   const game = gameById(view.game);
-  const { index, tier } = fromPuzzle(view.game, view.puzzle);
-  const title = game ? puzzleTitle(game, index, tier) : view.game;
+  const { index, tier, limit = null } = fromPuzzle(view.game, view.puzzle);
+  const title = game ? puzzleTitle(game, index, tier, limit) : view.game;
   const me = app.social.pub;
   const final = view.status === 'final';
   const place = placeText(view, me);
