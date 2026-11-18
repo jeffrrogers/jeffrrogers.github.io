@@ -25,7 +25,7 @@
 // planIdSwitch is pure (data in, operations out) so the order and the encoding
 // are unit-tested; applyIdSwitch performs the operations.
 
-import { writePref, removePref } from './local.js?v=202611181159';
+import { writePref, removePref } from './local.js?v=202611181223';
 
 /**
  * Player-doc collections, by Arena game (keys are config.js LAUNCH_DATE

@@ -4,18 +4,19 @@
 // Everything shown comes from the player's social doc (app.social), which
 // only the server writes. Actions call the server, then re-read the doc.
 
-import { h, openSheet, sheetHead, toast, ICONS } from '../ui.js?v=202611181159';
-import { call, loadSocial, reasonText, waitingCount, hasStartedSocial } from '../social/api.js?v=202611181159';
-import { setUpChallenges, gamerIdStep } from '../social/onboarding.js?v=202611181159';
-import { arenaGet, arenaSet, playerId } from '../local.js?v=202611181159';
-import { seenResults, markResultsSeen } from '../social/seen.js?v=202611181159';
-import { track } from '../analytics.js?v=202611181159';
-import { gameById } from '../games/registry.js?v=202611181159';
-import { fromPuzzle, puzzleTitle, canChallenge, CHALLENGE_GAMES } from '../social/puzzles.js?v=202611181159';
+import { h, openSheet, sheetHead, toast, ICONS } from '../ui.js?v=202611181223';
+import { call, loadSocial, reasonText, waitingCount, hasStartedSocial } from '../social/api.js?v=202611181223';
+import { setUpChallenges, gamerIdStep } from '../social/onboarding.js?v=202611181223';
+import { arenaGet, arenaSet, playerId } from '../local.js?v=202611181223';
+import { seenResults, markResultsSeen } from '../social/seen.js?v=202611181223';
+import { track } from '../analytics.js?v=202611181223';
+import { gameById } from '../games/registry.js?v=202611181223';
+import { fromPuzzle, puzzleTitle, canChallenge, CHALLENGE_GAMES } from '../social/puzzles.js?v=202611181223';
 import {
   avatarParts, trophyCase, trophySvg, gameLine, recentLine, whenText, PLACE_NAMES,
-} from '../social/podium.js?v=202611181159';
-import * as sheets from './challengeSheets.js?v=202611181159';
+} from '../social/podium.js?v=202611181223';
+import * as sheets from './challengeSheets.js?v=202611181223';
+import { openTutorial, tutorialLink, tutorialSeen } from './challengeTutorial.js?v=202611181223';
 
 export { canChallenge };
 
@@ -242,7 +243,17 @@ function intro() {
     h('span', { class: 'soc-intro-icon', html: ICONS.trophy }),
     h('h2', { text: 'Challenge your friends' }),
     h('p', { class: 'muted', text: 'Send friends the same puzzle, play whenever you like, and see who did best. Pick a gamer ID to get started. Only friends you accept see your challenges and results.' }),
-    h('button', { class: 'btn', type: 'button', text: 'Set up challenges', onClick: () => setUp() }));
+    h('button', { class: 'btn', type: 'button', text: 'Set up challenges', onClick: () => setUp() }),
+    tutorialLink(() => showTutorial()));
+}
+
+// The walkthrough, and where its last button leads
+function showTutorial() {
+  openTutorial(app.social, (kind) => {
+    if (kind === 'setup') setUp();
+    else if (kind === 'friends') location.hash = '#challenges/friends';
+    else sheets.openCreate(app, { onSent: refreshSocial });
+  });
 }
 
 function under() {
@@ -759,6 +770,10 @@ export function renderChallenges(sub = '', extra = '') {
     page.append(under());
     return page;
   }
+  // First visit: how challenges work, once this render is on screen (the
+  // unseen-results popup waits for another visit rather than open over it)
+  const firstVisit = !tutorialSeen();
+  if (firstVisit) setTimeout(showTutorial, 300);
   if (!social?.gamerId) {
     page.append(intro());
     return page;
@@ -774,7 +789,8 @@ export function renderChallenges(sub = '', extra = '') {
     h('div', { class: 'soc-top' },
       h('div', {},
         h('h1', { class: 'soc-h1', text: 'Challenges' }),
-        h('p', { class: 'muted' }, 'Playing as ', h('strong', { text: social.gamerId }))),
+        h('p', { class: 'muted' }, 'Playing as ', h('strong', { text: social.gamerId })),
+        tutorialLink(() => showTutorial())),
       hasFriends ? h('button', {
         class: 'btn', type: 'button', text: 'New challenge',
         onClick: () => sheets.openCreate(app, { onSent: refreshSocial }),
@@ -782,7 +798,7 @@ export function renderChallenges(sub = '', extra = '') {
     segment(current),
     current === 'record' ? recordView(social) : current === 'friends' ? friendsView(social) : activeView(social));
   // After this render is on screen
-  setTimeout(popUnseen, 350);
+  if (!firstVisit) setTimeout(popUnseen, 350);
   return page;
 }
 

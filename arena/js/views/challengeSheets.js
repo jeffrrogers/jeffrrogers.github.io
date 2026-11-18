@@ -1,19 +1,19 @@
 // The challenge sheets: New challenge, an invite to accept, and results.
 // Only loaded while featureOn('challenges') (through challengesTab.js).
 
-import { h, openSheet, sheetHead, toast, statusIcon, ICONS } from '../ui.js?v=202611181159';
-import { call, reasonText } from '../social/api.js?v=202611181159';
+import { h, openSheet, sheetHead, toast, statusIcon, ICONS } from '../ui.js?v=202611181223';
+import { call, reasonText } from '../social/api.js?v=202611181223';
 import {
   canChallenge, puzzleFor, fromPuzzle, puzzleTitle, startedHere, WINNER_RULE, CANOGGLE_LIMITS, limitLabel,
-} from '../social/puzzles.js?v=202611181159';
-import { gameById } from '../games/registry.js?v=202611181159';
+} from '../social/puzzles.js?v=202611181223';
+import { gameById } from '../games/registry.js?v=202611181223';
 import {
   podiumLayout, headline, shareText, arenaLink, trophySvg, avatarParts, restText, whenText, ordinal, PLACE_NAMES,
-} from '../social/podium.js?v=202611181159';
-import { fireworks, SHOWS } from '../social/fireworks.js?v=202611181159';
-import { arenaGet, arenaSet } from '../local.js?v=202611181159';
-import { trackPlay } from './play.js?v=202611181159';
-import { track } from '../analytics.js?v=202611181159';
+} from '../social/podium.js?v=202611181223';
+import { fireworks, SHOWS } from '../social/fireworks.js?v=202611181223';
+import { arenaGet, arenaSet } from '../local.js?v=202611181223';
+import { trackPlay } from './play.js?v=202611181223';
+import { track } from '../analytics.js?v=202611181223';
 
 const MAX_FRIENDS = 9;
 const when = (ms) => new Date(ms).toLocaleString('en-CA', { weekday: 'long', month: 'short', day: 'numeric', hour: 'numeric', minute: '2-digit' });
@@ -256,10 +256,10 @@ export function openChallenge(app, cid) {
       track(accept ? 'challenge_accept' : 'challenge_decline', { target_game: view.game });
       close();
       if (accept && played) {
-        await (await import('./challengesTab.js?v=202611181159')).refreshSocial();
+        await (await import('./challengesTab.js?v=202611181223')).refreshSocial();
         openResults(app, cid);
       } else if (accept && game) launch(app, game, index, tier, limit);
-      else (await import('./challengesTab.js?v=202611181159')).refreshSocial();
+      else (await import('./challengesTab.js?v=202611181223')).refreshSocial();
     } catch (e) {
       toast(reasonText(e.reason));
     }

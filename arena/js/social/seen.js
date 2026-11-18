@@ -2,7 +2,7 @@
 // (resultsSeen.<player id>): the Challenges tab pops up and counts the ones
 // not seen yet, and the games' pre-start cover marks them "new".
 
-import { arenaGet, arenaSet } from '../local.js?v=202611181159';
+import { arenaGet, arenaSet } from '../local.js?v=202611181223';
 
 const key = (uid) => `resultsSeen.${uid}`;
 
