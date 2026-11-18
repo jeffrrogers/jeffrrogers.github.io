@@ -2,7 +2,7 @@
 // gstatic like the arena. A named app keeps it apart from anything else on
 // the page.
 
-import { FIREBASE_CONFIG, FIREBASE_SDK, USE_EMULATOR, GA_SCOPE } from './config.js?v=202611180000';
+import { FIREBASE_CONFIG, FIREBASE_SDK, USE_EMULATOR, GA_SCOPE } from './config.js?v=202611181714';
 
 let sdkPromise = null;
 
@@ -119,28 +119,36 @@ export async function analyticsToken({ interactive = false } = {}) {
 // admin. It runs in Montreal, next to Firestore, as the Arena's does.
 
 const FUNCTIONS_REGION = 'northamerica-northeast1';
-let adminCallable = null;
+const callables = new Map();
 
 /**
- * Calls arenaAdmin({op, ...data}) and returns its result. A refusal throws
- * an Error whose .reason is the function's short reason word.
+ * Calls the admin-only callable [name] with {op, ...data} and returns its
+ * result. A refusal throws an Error whose .reason is the function's short
+ * reason word.
  */
-export async function callAdmin(op, data = {}) {
-  if (!adminCallable) {
+export async function callFunction(name, op, data = {}, { timeout = 60000 } = {}) {
+  const key = `${name}:${timeout}`;
+  if (!callables.has(key)) {
     const { auth } = await sdk();
     const fn = await import(`${FIREBASE_SDK}/firebase-functions.js`);
     const functions = fn.getFunctions(auth.app, FUNCTIONS_REGION);
     if (USE_EMULATOR) fn.connectFunctionsEmulator(functions, '127.0.0.1', 5001);
-    adminCallable = fn.httpsCallable(functions, 'arenaAdmin', { timeout: 60000 });
+    callables.set(key, fn.httpsCallable(functions, name, { timeout }));
   }
   try {
-    return (await adminCallable({ op, ...data })).data;
+    return (await callables.get(key)({ op, ...data })).data;
   } catch (e) {
     const err = new Error(e?.message || String(e));
     err.reason = e?.details?.reason ?? e?.code ?? 'error';
     throw err;
   }
 }
+
+/** arenaAdmin({op, ...data}): the Moderation tab's function. */
+export const callAdmin = (op, data = {}) => callFunction('arenaAdmin', op, data);
+
+/** canokuCleanup({op, ...data}): the Canoku cleanup tab's function (up to 9 minutes a call). */
+export const callCanokuCleanup = (op, data = {}) => callFunction('canokuCleanup', op, data, { timeout: 540000 });
 
 export async function currentEmail() {
   const { auth } = await sdk();

@@ -13,23 +13,23 @@
 // canoggleGameData/{day}'s `facts` map under the board's key (d or m); the game
 // shows that instead, and the Canuckle fact otherwise.
 
-import { h, clear, modal, toast, issues, safeHref, sortHead } from '../ui.js?v=202611180000';
-import { nextSort, sortRows } from '../sort.js?v=202611180000';
-import { GAME_SITES } from '../config.js?v=202611180000';
-import { longDate, todayEpochDay, isSwapLocked } from '../dates.js?v=202611180000';
-import { launchEd } from '../launch.js?v=202611180000';
-import { unpackCanoggle, boardRows } from '../canoggle.js?v=202611180000';
+import { h, clear, modal, toast, issues, safeHref, sortHead } from '../ui.js?v=202611181714';
+import { nextSort, sortRows } from '../sort.js?v=202611181714';
+import { GAME_SITES } from '../config.js?v=202611181714';
+import { longDate, todayEpochDay, isSwapLocked } from '../dates.js?v=202611181714';
+import { launchEd } from '../launch.js?v=202611181714';
+import { unpackCanoggle, boardRows } from '../canoggle.js?v=202611181714';
 import {
   segmentsToText, textToSegments, canoggleFactOf, canagramsFactToSave, looksDateBound,
-} from '../facts.js?v=202611180000';
+} from '../facts.js?v=202611181714';
 import {
   loadCanoggleFacts, saveCanoggleFact, CANOGGLE_BOARDS, CANOGGLE_FACTS, withCanoggleFact,
   loadPlayCounts, CANOGGLE_STATS,
-} from '../store.js?v=202611180000';
-import { factCard, previewFrame } from '../preview.js?v=202611180000';
-import { arenaFolder } from '../localFiles.js?v=202611180000';
-import { loadLocal } from '../swapFlow.js?v=202611180000';
-import { swapCard, openBoardSwap } from './boardSwap.js?v=202611180000';
+} from '../store.js?v=202611181714';
+import { factCard, previewFrame } from '../preview.js?v=202611181714';
+import { arenaFolder } from '../localFiles.js?v=202611181714';
+import { loadLocal } from '../swapFlow.js?v=202611181714';
+import { swapCard, openBoardSwap } from './boardSwap.js?v=202611181714';
 
 const START_ED = launchEd('canoggle');
 const DATA = 'canoggle/assets/assets/data/';
