@@ -12,7 +12,7 @@
 // explicit ?sandboxOffsetWeeks=N on the admin URL previews shifted dates for
 // that page load only; it is never read from or saved to localStorage.
 
-import { IS_SANDBOX } from './config.js?v=202611161048';
+import { IS_SANDBOX } from './config.js?v=202611180000';
 
 // Games the arena keeps off production until their switch (Firestore
 // arenaConfig/games, onProduction) is on: js/config.js SANDBOX_ONLY in the

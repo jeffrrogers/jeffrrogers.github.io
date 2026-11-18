@@ -2,19 +2,22 @@
 // transaction that also writes an adminLog entry with the docs before and
 // after, so any edit, swap or import can be restored from the Log tab.
 
-import { sdk, currentEmail } from './firebase.js?v=202611161048';
-import { GAMES } from './dates.js?v=202611161048';
-import { decodeAnswer } from './codec.js?v=202611161048';
+import { sdk, currentEmail } from './firebase.js?v=202611180000';
+import { GAMES } from './dates.js?v=202611180000';
+import { decodeAnswer } from './codec.js?v=202611180000';
 import {
   PLAYER_COLLECTIONS, GAMES_SUBCOLLECTION_PARENTS, MAX_GAMES, queryCutoff, accountVerdict, quickVerdict,
-} from './cleanup.js?v=202611161048';
-import { pool } from './pool.js?v=202611161048';
-import { repairAccount } from './repair.js?v=202611161048';
-import { VOTES_COLLECTION } from './polls.js?v=202611161048';
-import { isSeedId } from './seed/accounts.js?v=202611161048';
-import { isTs } from './seed/shapes.js?v=202611161048';
-import { withZeroCounts } from './duoSwap.js?v=202611161048';
-import { puzzleSource, hasPool, poolDocs, docIdFor, samePoolDoc } from './canokuPool.js?v=202611161048';
+} from './cleanup.js?v=202611180000';
+import { pool } from './pool.js?v=202611180000';
+import { repairAccount } from './repair.js?v=202611180000';
+import { VOTES_COLLECTION } from './polls.js?v=202611180000';
+import { isSeedId } from './seed/accounts.js?v=202611180000';
+import { isTs } from './seed/shapes.js?v=202611180000';
+import { withZeroCounts } from './duoSwap.js?v=202611180000';
+import { puzzleSource, hasPool, poolDocs, docIdFor, samePoolDoc } from './canokuPool.js?v=202611180000';
+import {
+  ARCHIVES, buildChunks, chunkChanges, patchChunk, chunkDiff, byChunkStart,
+} from './archiveSummary.js?v=202611180000';
 
 // ---- Puzzles --------------------------------------------------------------
 
@@ -252,6 +255,10 @@ function clean(value) {
 /**
  * Reads the docs [ids] of [collection] in a transaction, lets [mutate] return
  * the new data for each (null deletes it), writes them and logs the change.
+ * A Canuckle, Canuckle+ or Duo puzzle write also updates the archive summary
+ * docs it changes (archiveSummary.js), in the same transaction, so they never
+ * disagree with the puzzles. A summary doc that doesn't exist yet is left for
+ * "Build archive summaries" and the nightly check to create.
  * @returns the new data by id
  */
 export async function writeWithLog(collection, ids, mutate, { action, note = '' }) {
@@ -265,6 +272,21 @@ export async function writeWithLog(collection, ids, mutate, { action, note = '' 
       before[ids[i]] = s.exists() ? s.data() : null;
     });
     const after = mutate(structuredClone(before));
+    // Summary docs are read here: a transaction does every read before any write
+    const summaryWrites = [];
+    const archive = ARCHIVES[collection];
+    if (archive && after) {
+      const changes = chunkChanges(collection, before, after);
+      const chunkIds = Object.keys(changes);
+      const chunkRefs = chunkIds.map((c) => fs.doc(db, archive.archive, c));
+      const chunkSnaps = await Promise.all(chunkRefs.map((r) => tx.get(r)));
+      chunkSnaps.forEach((s, i) => {
+        if (!s.exists()) return;
+        const next = patchChunk(collection, s.data(), changes[chunkIds[i]]);
+        if (next) summaryWrites.push([chunkRefs[i], next]);
+      });
+    }
+    for (const [ref, data] of summaryWrites) tx.set(ref, data);
     refs.forEach((ref, i) => {
       const next = after[ids[i]];
       if (next === undefined) return;
@@ -283,6 +305,41 @@ export async function writeWithLog(collection, ids, mutate, { action, note = '' 
     });
     return after;
   });
+}
+
+/**
+ * Builds every archive summary doc (archiveSummary.js) from the Canuckle,
+ * Canuckle+ and Duo puzzle docs as they are now: one read per puzzle, plus
+ * the summary docs. Each game's summary docs are written in one logged
+ * transaction ('archive-build'), and only the ones that differ. Safe to run
+ * again: a second run writes nothing.
+ * @returns [{name, archive, puzzles, chunks: [{id, entries, same, added, changed, removed}]}]
+ */
+export async function buildArchiveSummaries(onProgress) {
+  const { fs, db } = await sdk();
+  const out = [];
+  for (const [collection, a] of Object.entries(ARCHIVES)) {
+    onProgress?.(`Reading ${a.name} puzzles…`);
+    const snap = await fs.getDocs(fs.collection(db, collection));
+    const chunks = buildChunks(collection, snap.docs.map((d) => [d.id, d.data()]));
+    const existing = await fs.getDocs(fs.collection(db, a.archive));
+    const ids = [...new Set([...Object.keys(chunks), ...existing.docs.map((d) => d.id)])].sort(byChunkStart);
+    onProgress?.(`Writing ${a.name} summaries…`);
+    let report = [];
+    await writeWithLog(a.archive, ids, (before) => {
+      report = [];
+      const next = {};
+      for (const id of ids) {
+        const want = chunks[id] ?? null;
+        const diff = chunkDiff(collection, before[id], want);
+        report.push({ id, entries: Object.keys(want?.[a.field] ?? {}).length, ...diff });
+        if (!diff.same) next[id] = want;
+      }
+      return next;
+    }, { action: 'archive-build', note: `${a.name} archive summaries from ${snap.size} puzzles` });
+    out.push({ name: a.name, archive: a.archive, puzzles: snap.size, chunks: report });
+  }
+  return out;
 }
 
 /** The votes on puzzle [index]'s fun fact poll, as stored ({n, c}), or null. */

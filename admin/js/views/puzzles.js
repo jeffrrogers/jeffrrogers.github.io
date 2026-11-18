@@ -1,20 +1,20 @@
 // Canuckle and Canuckle+ tabs: the puzzle table, the editor (edit or add) and
 // swapping two puzzles.
 
-import { h, clear, modal, toast, issues, availabilityGate } from '../ui.js?v=202611161048';
+import { h, clear, modal, toast, issues, availabilityGate } from '../ui.js?v=202611180000';
 import {
   GAMES, longDate, todayIndex, isAvailable, puzzlesAfterToday, nextIndex, missingIndices, parseIndex,
-} from '../dates.js?v=202611161048';
-import { encodeAnswer } from '../codec.js?v=202611161048';
-import { segmentsToText, textToSegments, plainFact, duoFactOf } from '../facts.js?v=202611161048';
-import { validatePuzzle, puzzleFlags } from '../validate.js?v=202611161048';
-import { swapPayload } from '../swap.js?v=202611161048';
-import { savePuzzle, swapPuzzles, loadPollVotes } from '../store.js?v=202611161048';
-import { ctx, loadGame, answerUses, duoUses, wordsFor, maxIndex, availabilityMessages } from '../context.js?v=202611161048';
-import { factCard, previewFrame, pollBlock } from '../preview.js?v=202611161048';
+} from '../dates.js?v=202611180000';
+import { encodeAnswer } from '../codec.js?v=202611180000';
+import { segmentsToText, textToSegments, plainFact, duoFactOf } from '../facts.js?v=202611180000';
+import { validatePuzzle, puzzleFlags } from '../validate.js?v=202611180000';
+import { swapPayload } from '../swap.js?v=202611180000';
+import { savePuzzle, swapPuzzles, loadPollVotes, buildArchiveSummaries } from '../store.js?v=202611180000';
+import { ctx, loadGame, answerUses, duoUses, wordsFor, maxIndex, availabilityMessages } from '../context.js?v=202611180000';
+import { factCard, previewFrame, pollBlock } from '../preview.js?v=202611180000';
 import {
   pollOf, votesOf, resultsLine, pollToSave, validatePoll, POLL_KEYS, MIN_ANSWERS, MAX_ANSWERS,
-} from '../polls.js?v=202611161048';
+} from '../polls.js?v=202611180000';
 
 const PAGE = 150;
 const RUNWAY_WARN_DAYS = 30;
@@ -79,6 +79,11 @@ export function renderPuzzles(root, gameId, rerender) {
     h('div', { class: 'toolbar' },
       search, filter,
       h('span', { class: 'spacer' }),
+      h('button', {
+        class: 'btn',
+        title: 'Rebuild the archive summary docs Canuckle reads for its archive, practice and Duo archive',
+        onclick: () => openArchiveSummaries(),
+      }, 'Archive summaries…'),
       h('button', { class: 'btn', onclick: () => openSwap(gameId, rerender) }, 'Swap two…'),
       h('button', { class: 'btn', onclick: () => openAddAt(gameId, rerender) }, 'Add at…'),
       h('button', { class: 'btn primary', onclick: () => openEditor(gameId, null, rerender) }, `Add ${g.label(nextIndex(gameId, max))}`)),
@@ -445,4 +450,53 @@ export async function openSwap(gameId, rerender) {
     await loadGame(gameId);
     rerender();
   }
+}
+
+/**
+ * Builds the Canuckle, Canuckle+ and Duo archive summary docs from every
+ * puzzle doc (store.js buildArchiveSummaries), then shows what changed. Puzzle
+ * edits keep them up to date after that, and a nightly check repairs them.
+ */
+export async function openArchiveSummaries() {
+  await modal('Archive summaries', (close) => {
+    const status = h('p', { class: 'small' });
+    const result = h('div');
+    const go = h('button', { class: 'btn primary' }, 'Build archive summaries');
+    go.onclick = async () => {
+      if (!confirm('Build the archive summaries for Canuckle, Canuckle+ and Duo from every puzzle doc now? It reads every puzzle once and rewrites only the summary docs that differ.')) return;
+      go.disabled = true;
+      clear(result);
+      try {
+        const games = await buildArchiveSummaries((msg) => { status.textContent = msg; });
+        const written = games.reduce((n, g) => n + g.chunks.filter((c) => !c.same).length, 0);
+        status.textContent = written
+          ? `Done: ${written} summary ${written === 1 ? 'doc' : 'docs'} written. Logged in the Log tab.`
+          : 'Done: every summary doc already matched its puzzles. Nothing written.';
+        const row = (g, c) => h('tr', {},
+          h('td', {}, g.name),
+          h('td', { class: 'num' }, String(g.puzzles)),
+          h('td', { class: 'nowrap' }, c ? `${g.archive}/${c.id}` : '—'),
+          h('td', { class: 'num' }, c ? String(c.entries) : ''),
+          h('td', { class: 'num' }, c ? String(c.added.length) : ''),
+          h('td', { class: 'num' }, c ? String(c.changed.length) : ''),
+          h('td', { class: 'num' }, c ? String(c.removed.length) : ''),
+          h('td', {}, !c ? 'No puzzles' : c.same ? 'Already matched' : c.entries ? 'Written' : 'Deleted'));
+        const heads = ['Game', 'Puzzles', 'Doc', 'Entries', 'Added', 'Changed', 'Removed', ''];
+        clear(result, h('div', { class: 'table-wrap' },
+          h('table', { class: 'grid' },
+            h('thead', {}, h('tr', {}, heads.map((t) => h('th', {}, t)))),
+            h('tbody', {}, games.flatMap((g) => (g.chunks.length ? g.chunks : [null]).map((c) => row(g, c)))))));
+      } catch (e) {
+        status.textContent = '';
+        toast(`Not built: ${e.message}`, { error: true });
+      }
+      go.disabled = false;
+    };
+    return h('div', {},
+      h('p', {}, 'Canuckle reads one small summary doc per 1,000 puzzles (the encoded answer, or a Duo day\'s two puzzles) for its archive calendars, practice and the Duo archive, instead of every puzzle doc. Each fact, poll and result is still read from the puzzle\'s own doc when that puzzle is opened.'),
+      h('p', { class: 'small muted' }, 'Every puzzle save, swap, import and restore here updates them in the same transaction, and a nightly check repairs anything changed elsewhere. Build them once before Canuckle starts reading them; until they exist Canuckle loads every puzzle as before. About 2,100 reads.'),
+      status,
+      result,
+      h('div', { class: 'actions' }, h('button', { class: 'btn', onclick: () => close() }, 'Close'), go));
+  }, { wide: true });
 }
