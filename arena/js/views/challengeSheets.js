@@ -1,15 +1,19 @@
 // The challenge sheets: New challenge, an invite to accept, and results.
 // Only loaded while featureOn('challenges') (through challengesTab.js).
 
-import { h, openSheet, sheetHead, toast, statusIcon, ICONS } from '../ui.js?v=202611171740';
-import { call, reasonText } from '../social/api.js?v=202611171740';
+import { h, openSheet, sheetHead, toast, statusIcon, ICONS } from '../ui.js?v=202611181159';
+import { call, reasonText } from '../social/api.js?v=202611181159';
 import {
   canChallenge, puzzleFor, fromPuzzle, puzzleTitle, startedHere, WINNER_RULE, CANOGGLE_LIMITS, limitLabel,
-} from '../social/puzzles.js?v=202611171740';
-import { gameById } from '../games/registry.js?v=202611171740';
-import { barFractions, legendItems, rankColour } from '../social/bars.js?v=202611171740';
-import { trackPlay } from './play.js?v=202611171740';
-import { track } from '../analytics.js?v=202611171740';
+} from '../social/puzzles.js?v=202611181159';
+import { gameById } from '../games/registry.js?v=202611181159';
+import {
+  podiumLayout, headline, shareText, arenaLink, trophySvg, avatarParts, restText, whenText, ordinal, PLACE_NAMES,
+} from '../social/podium.js?v=202611181159';
+import { fireworks, SHOWS } from '../social/fireworks.js?v=202611181159';
+import { arenaGet, arenaSet } from '../local.js?v=202611181159';
+import { trackPlay } from './play.js?v=202611181159';
+import { track } from '../analytics.js?v=202611181159';
 
 const MAX_FRIENDS = 9;
 const when = (ms) => new Date(ms).toLocaleString('en-CA', { weekday: 'long', month: 'short', day: 'numeric', hour: 'numeric', minute: '2-digit' });
@@ -243,13 +247,19 @@ export function openChallenge(app, cid) {
   const { index, tier, limit = null } = fromPuzzle(view.game, view.puzzle);
   const title = game ? puzzleTitle(game, index, tier, limit) : view.game;
   let close;
+  // Already finished this puzzle before being invited: accepting counts that
+  // result and shows the standings, rather than starting the game.
+  const played = view.me === 'invited' && view.played === true;
   const respond = async (accept) => {
     try {
       await call('respondChallenge', { cid, accept });
       track(accept ? 'challenge_accept' : 'challenge_decline', { target_game: view.game });
       close();
-      if (accept && game) launch(app, game, index, tier, limit);
-      else (await import('./challengesTab.js?v=202611171740')).refreshSocial();
+      if (accept && played) {
+        await (await import('./challengesTab.js?v=202611181159')).refreshSocial();
+        openResults(app, cid);
+      } else if (accept && game) launch(app, game, index, tier, limit);
+      else (await import('./challengesTab.js?v=202611181159')).refreshSocial();
     } catch (e) {
       toast(reasonText(e.reason));
     }
@@ -264,11 +274,14 @@ export function openChallenge(app, cid) {
       h('dt', { text: 'Players' }), h('dd', {}, playerChips(view, app.social.pub)),
       h('dt', { text: 'Ends' }), h('dd', {}, when(view.expiresAt), h('span', { class: 'muted', text: ` · ${timeLeft(view.expiresAt)}` })),
       h('dt', { text: 'Winner' }), h('dd', { text: WINNER_RULE[view.game] ?? '' })),
-    h('p', { class: 'soc-note' }, h('span', { class: 'soc-inline-icon', html: ICONS.lock }),
-      'Everyone’s results stay hidden until you finish.'),
+    played
+      ? h('p', { class: 'soc-note' }, h('span', { class: 'soc-inline-icon', html: ICONS.check }),
+        'You’ve already played this puzzle. Accept to count your result and see everyone’s.')
+      : h('p', { class: 'soc-note' }, h('span', { class: 'soc-inline-icon', html: ICONS.lock }),
+        'Everyone’s results stay hidden until you finish.'),
     invited
       ? h('div', { class: 'soc-stack' },
-        h('button', { class: 'btn soc-wide', type: 'button', text: 'Accept & Play', onClick: () => respond(true) }),
+        h('button', { class: 'btn soc-wide', type: 'button', text: played ? 'Accept & see results' : 'Accept & Play', onClick: () => respond(true) }),
         h('div', { class: 'actions' },
           h('button', { class: 'btn secondary', type: 'button', text: 'Decline', onClick: () => respond(false) }),
           h('button', { class: 'text-btn', type: 'button', text: 'Not now', onClick: () => close() })))
@@ -277,9 +290,16 @@ export function openChallenge(app, cid) {
 }
 
 // ---- Results --------------------------------------------------------------------
-
-const ORD = ['th', 'st', 'nd', 'rd'];
-const ordinal = (n) => `${n}${(n % 100 >= 11 && n % 100 <= 13) ? 'th' : ORD[n % 10] ?? 'th'}`;
+//
+// A podium: the steps rise (lowest first) with each place's score, the
+// players are revealed 3rd to 1st, and a player who placed in a final
+// challenge sees their trophy big and centred with fireworks before it flies
+// to its spot beside their avatar. The animation plays the first time a
+// final result is seen on this browser; after that it's at rest, with Replay.
+// While a challenge is open it shows the results so far, at rest, with dashed
+// steps for places still to be reached. (The podium replaced the bar chart:
+// the steps carry the top three scores and the list below the rest, so the
+// bars only repeated them; bars.js stays, mirroring the games' widget.)
 
 /** "1st of 3", "Tie for 1st", "Didn't play", "Declined" for the player's line. */
 export function placeText(view, myPub) {
@@ -294,43 +314,57 @@ export function placeText(view, myPub) {
   return tied ? `Tie for ${ordinal(me.rank)}` : `${ordinal(me.rank)} of ${ranked.length}`;
 }
 
-function stateText(p) {
-  if (p.score) return p.score;
-  return {
-    invited: 'Hasn’t played yet', accepted: 'Hasn’t played yet', declined: 'Declined',
-    expired: 'Didn’t play', ineligible: 'Played on other terms', done: 'Played',
-  }[p.state] ?? '';
+const reduceMotion = () => typeof matchMedia === 'function' && matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+// Final results whose podium has played on this browser, per player.
+const podiumKey = (app) => `podiumSeen.${app.uid}`;
+const podiumSeen = (app, cid) => (arenaGet(podiumKey(app), []) || []).includes(cid);
+function markPodiumSeen(app, cid) {
+  try {
+    const list = (arenaGet(podiumKey(app), []) || []).filter((c) => c !== cid);
+    list.push(cid);
+    arenaSet(podiumKey(app), list.slice(-200));
+  } catch {
+    // No storage: it plays again next time.
+  }
 }
 
-/**
- * The players' results as bars: the best result full width, the rest scaled
- * to it, coloured by rank, with a trophy beside 1st place and a legend.
- */
-export function resultChart(view, me) {
-  const fractions = barFractions(view.players, view.better);
-  const rows = view.players.map((p, i) => {
-    const f = fractions[i];
-    const name = p.pub === me ? 'You' : p.gamerId;
-    return h('li', { class: `soc-bar-row${p.pub === me ? ' me' : ''}` },
-      h('span', { class: 'soc-bar-name' },
-        p.rank === 1 ? h('span', { class: 'soc-trophy', title: '1st place', html: ICONS.trophy }) : null,
-        h('strong', { text: name }),
-        p.already ? h('span', { class: 'muted', text: ' · already played' }) : null),
-      h('span', { class: 'soc-bar-track' },
-        f == null
-          ? h('span', { class: 'soc-bar-empty', text: stateText(p) })
-          : h('span', {
-            class: 'soc-bar-fill',
-            style: { width: `${Math.round(f * 100)}%`, background: p.rank ? rankColour(p.rank) : 'var(--muted)' },
-          })),
-      h('span', { class: 'soc-bar-score', text: f == null ? '' : stateText(p) }));
-  });
-  const legend = legendItems(view.players);
-  return h('div', { class: 'soc-chart' },
-    h('ol', { class: 'soc-bars', 'aria-label': 'Results' }, rows),
-    legend.length ? h('ul', { class: 'soc-legend', 'aria-label': 'Legend' }, legend.map((it) => h('li', {},
-      h('span', { class: `soc-swatch${it.colour ? '' : ' empty'}`, style: it.colour ? { background: it.colour } : null }),
-      it.label))) : null);
+function avatarEl(p) {
+  const a = avatarParts(p.pub, p.gamerId);
+  return h('span', { class: 'pod-avatar', 'aria-hidden': 'true', text: a.initials, style: { background: a.colour } });
+}
+
+function stepColumn(step, me) {
+  return h('div', {
+    class: `pod-col${step.ghost ? ' ghost' : ''}`, 'data-place': String(step.place), style: { '--h': `${step.height}px` },
+  },
+  h('div', { class: `pod-who${step.players.length > 2 ? ' many' : ''}` },
+    step.ghost
+      ? h('div', { class: 'pod-p' },
+        h('span', { class: 'pod-av-wrap' }, h('span', { class: 'pod-avatar ghost', 'aria-hidden': 'true', text: '?' })),
+        h('span', { class: 'pod-name', text: 'Waiting' }))
+      : step.players.map((p) => h('div', { class: `pod-p${p.pub === me ? ' me' : ''}`, 'data-pub': p.pub },
+        h('span', { class: 'pod-av-wrap' }, avatarEl(p)),
+        h('span', { class: 'pod-name', text: p.pub === me ? 'You' : p.gamerId })))),
+  h('div', { class: 'pod-block' },
+    h('span', { class: 'pod-place', text: ordinal(step.place) }),
+    h('span', { class: 'pod-score', text: step.score })));
+}
+
+function restList(players, me) {
+  return h('ol', { class: 'pod-rest', 'aria-label': 'Everyone else' }, players.map((p) => h('li', {
+    class: `pod-row${p.pub === me ? ' me' : ''}${['invited', 'accepted'].includes(p.state) ? ' pending' : p.rank == null ? ' out' : ''}`,
+  },
+  h('span', { class: 'pod-rk', text: p.rank != null ? String(p.rank) : '·' }),
+  h('span', { class: 'pod-nm' }, h('strong', { text: p.pub === me ? 'You' : p.gamerId }),
+    p.already ? h('span', { class: 'muted', text: ' · already played' }) : null),
+  h('span', { class: 'pod-sc', text: restText(p) }))));
+}
+
+/** "Challenge ended today", "Challenge ended Nov 14". */
+function endedText(ms) {
+  const w = whenText(ms);
+  return `Challenge ended ${/^(Today|Yesterday)$/.test(w) ? w.toLowerCase() : w}`;
 }
 
 export function openResults(app, cid) {
@@ -340,22 +374,200 @@ export function openResults(app, cid) {
   const { index, tier, limit = null } = fromPuzzle(view.game, view.puzzle);
   const title = game ? puzzleTitle(game, index, tier, limit) : view.game;
   const me = app.social.pub;
-  const final = view.status === 'final';
-  const place = placeText(view, me);
-  const myRank = view.players.find((p) => p.pub === me)?.rank;
-  const won = final && /^1st of/.test(place);
-  const heading = won ? null
-    : final ? place
-      : myRank != null ? `You’re ${ordinal(myRank)} so far`
-        : 'Results so far';
-  const waiting = view.players.filter((p) => ['invited', 'accepted'].includes(p.state));
-  let close;
-  close = openSheet(h('div', { class: 'soc-step' },
+  const lay = podiumLayout(view, me);
+  const [head, sub] = headline(view, me);
+  const { final } = lay;
+  const rule = WINNER_RULE[view.game] ?? '';
+
+  const headEl = h('h2', { class: 'pod-headline' });
+  const subEl = h('p', { class: 'pod-sub' });
+  const cols = lay.steps.map((s) => stepColumn(s, me));
+  const stage = cols.length ? h('div', { class: `pod-stage${cols.length === 2 ? ' two' : ''}` }, cols) : null;
+  const rest = lay.rest.length ? restList(lay.rest, me) : null;
+  const shareBtn = final ? h('button', { class: 'btn', type: 'button' }, h('span', { html: ICONS.share }), 'Share results') : null;
+  const replayBtn = h('button', { class: 'btn secondary', type: 'button', text: 'Replay', hidden: true });
+  const skipBtn = h('button', { class: 'btn secondary', type: 'button', text: 'Skip', hidden: true });
+  const sharePre = h('pre', { class: 'pod-share-text' });
+  const shareBox = h('div', { class: 'pod-share', hidden: true },
+    h('p', { class: 'soc-hint', text: 'Copy this and paste it into your group chat.' }), sharePre);
+  let close = () => {};
+  const root = h('div', { class: 'soc-step pod instant' },
     sheetHead(final ? `${title} · Final` : title, () => close(), game?.logo),
-    won ? h('div', { class: 'soc-win' }, h('span', { html: ICONS.trophy }), h('h2', { text: 'You won!' })) : null,
-    heading ? h('h2', { class: 'soc-title', text: heading }) : null,
-    resultChart(view, me),
-    h('p', { class: 'soc-hint', text: WINNER_RULE[view.game] ?? '' }),
-    !final && waiting.length ? h('p', { class: 'muted', text: `Final results come in when everyone has played, or when the challenge ends on ${when(view.expiresAt)}.` }) : null),
-  { label: title });
+    h('p', { class: 'pod-when muted', text: final ? endedText(view.closedAt ?? view.expiresAt) : `Ends ${when(view.expiresAt)} · ${timeLeft(view.expiresAt)}` }),
+    h('div', { class: 'pod-heads', 'aria-live': 'polite' }, headEl, subEl),
+    stage, rest,
+    h('div', { class: 'actions pod-actions' }, shareBtn, replayBtn, skipBtn),
+    shareBox,
+    h('p', { class: 'soc-hint soc-center', text: final ? rule : `${rule} Final results come in when everyone has played, or when the challenge ends.` }));
+
+  // ---- The show
+  const timers = [];
+  let fx = null;
+  let overlay = null;
+  let playing = false;
+  const later = (ms, fn) => timers.push(setTimeout(fn, ms));
+
+  function stopShow() {
+    timers.forEach(clearTimeout);
+    timers.length = 0;
+    fx?.stop();
+    fx = null;
+    overlay?.remove();
+    overlay = null;
+    playing = false;
+  }
+  function setButtons() {
+    skipBtn.hidden = !playing;
+    replayBtn.hidden = playing || !final || !lay.steps.length || reduceMotion();
+  }
+  /** The player's trophy beside their avatar (replacing any already there). */
+  function placeTrophy() {
+    if (!lay.trophy || !stage) return null;
+    const wrap = stage.querySelector(`.pod-p[data-pub="${me}"] .pod-av-wrap`);
+    if (!wrap) return null;
+    wrap.querySelector('.pod-trophy')?.remove();
+    const t = h('span', { class: 'pod-trophy', title: PLACE_NAMES[lay.trophy], html: trophySvg(lay.trophy) });
+    wrap.append(t);
+    return t;
+  }
+  function atRest() {
+    stopShow();
+    root.classList.add('instant');
+    cols.forEach((c) => c.classList.add('risen', 'named'));
+    rest?.classList.add('shown');
+    headEl.textContent = head;
+    subEl.textContent = sub;
+    placeTrophy();
+    setButtons();
+  }
+  function done() {
+    headEl.textContent = head;
+    subEl.textContent = sub;
+    playing = false;
+    setButtons();
+  }
+  function play() {
+    stopShow();
+    root.classList.add('instant');
+    cols.forEach((c) => c.classList.remove('risen', 'named'));
+    rest?.classList.remove('shown');
+    stage?.querySelector('.pod-trophy')?.remove();
+    headEl.textContent = '';
+    subEl.textContent = '';
+    void root.offsetHeight; // start from flat, then turn the transitions back on
+    root.classList.remove('instant');
+    playing = true;
+    setButtons();
+    // 1. The steps rise, lowest first. 2. The players appear, 3rd up to 1st.
+    const up = [...cols].sort((a, b) => Number(b.dataset.place) - Number(a.dataset.place));
+    up.forEach((c, i) => later(150 + i * 260, () => c.classList.add('risen')));
+    const t2 = 150 + up.length * 260 + 700;
+    up.forEach((c, i) => later(t2 + i * 450, () => c.classList.add('named')));
+    const t3 = t2 + up.length * 450 + 300;
+    later(t3, () => rest?.classList.add('shown'));
+    // 3. The player's moment
+    later(t3 + 200, lay.trophy ? bigMoment : done);
+  }
+  function bigMoment() {
+    const place = lay.trophy;
+    const scrim = h('div', { class: 'pod-scrim' });
+    const big = h('div', { class: 'pod-big', html: trophySvg(place) });
+    const label = h('div', { class: 'pod-big-label', text: head });
+    const canvas = h('canvas', { class: 'pod-canvas' });
+    overlay = h('div', { class: 'pod-fx', 'aria-hidden': 'true' }, scrim, big, label, canvas);
+    document.body.append(overlay);
+    fx = fireworks(canvas);
+    requestAnimationFrame(() => requestAnimationFrame(() => {
+      scrim.classList.add('on');
+      big.classList.add('in');
+    }));
+    later(300, () => label.classList.add('on'));
+    const centre = () => {
+      const r = big.getBoundingClientRect();
+      return { x: r.left + r.width / 2, y: r.top + r.height / 2 };
+    };
+    // Fireworks: more and bigger for a better place; leaves from the cup for 1st
+    const show = SHOWS[place];
+    for (let i = 0; i < show.bursts; i++) {
+      later(450 + i * show.every, () => {
+        const c = centre();
+        const spread = i === 0 ? 0 : 110;
+        fx?.burst(c.x + (Math.random() - 0.5) * spread * 2, c.y + (Math.random() - 0.6) * spread, place, show.size);
+      });
+    }
+    if (place === 1) later(500, () => fx?.fountain(centre, 1600));
+    const hold = 450 + show.bursts * show.every + 500;
+    // Then straight to its spot: the final trophy goes in first, unseen, and
+    // the big one flies to its exact centre and size before they swap.
+    later(hold, () => {
+      label.classList.remove('on');
+      scrim.classList.remove('on');
+      const placed = placeTrophy();
+      if (!placed) return;
+      placed.style.visibility = 'hidden';
+      placed.scrollIntoView?.({ block: 'nearest' });
+      const end = placed.getBoundingClientRect();
+      big.classList.add('fly');
+      big.style.left = `${end.left + end.width / 2}px`;
+      big.style.top = `${end.top + end.height / 2}px`;
+      big.style.transform = `translate(-50%, -50%) scale(${end.width / big.offsetWidth})`;
+    });
+    later(hold + 820, () => {
+      const placed = stage?.querySelector('.pod-trophy');
+      if (placed) placed.style.visibility = '';
+      big.remove();
+      if (place === 1 && placed) {
+        const r = placed.getBoundingClientRect();
+        fx?.burst(r.left + r.width / 2, r.top + r.height / 2, 1, 0.5);
+      }
+      done();
+    });
+    // The last sparks fade, then the overlay goes
+    later(hold + 3200, () => {
+      fx?.stop();
+      fx = null;
+      overlay?.remove();
+      overlay = null;
+    });
+  }
+
+  replayBtn.addEventListener('click', play);
+  skipBtn.addEventListener('click', atRest);
+
+  // ---- Sharing (final results only)
+  async function copyText(text) {
+    try {
+      await navigator.clipboard.writeText(text);
+      toast('Results copied. Paste them into your group chat.');
+    } catch {
+      // Refused: show the text selected, to copy by hand
+      sharePre.textContent = text;
+      shareBox.hidden = false;
+      const range = document.createRange();
+      range.selectNodeContents(sharePre);
+      const sel = getSelection();
+      sel.removeAllRanges();
+      sel.addRange(range);
+      toast('Selected. Copy it with your keyboard.');
+    }
+  }
+  shareBtn?.addEventListener('click', () => {
+    const text = shareText(view, me, app.social.gamerId, title, arenaLink(new URL('./', document.baseURI).href));
+    track('challenge_results_share', { target_game: view.game });
+    // Phones: the share sheet, opened inside the tap. Elsewhere: copy.
+    if (navigator.share && matchMedia('(pointer: coarse)').matches) {
+      navigator.share({ title: 'Canuckle challenge results', text })
+        .catch((e) => { if (e?.name !== 'AbortError') copyText(text); });
+      return;
+    }
+    copyText(text);
+  });
+
+  close = openSheet(root, { label: title, className: 'soc-sheet pod-sheet', onClose: stopShow });
+  if (final && lay.steps.length && !reduceMotion() && !podiumSeen(app, cid)) {
+    markPodiumSeen(app, cid);
+    requestAnimationFrame(play);
+  } else {
+    atRest();
+  }
 }

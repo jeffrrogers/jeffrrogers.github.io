@@ -4,14 +4,18 @@
 // Everything shown comes from the player's social doc (app.social), which
 // only the server writes. Actions call the server, then re-read the doc.
 
-import { h, openSheet, sheetHead, toast, ICONS } from '../ui.js?v=202611171740';
-import { call, loadSocial, reasonText, waitingCount, hasStartedSocial } from '../social/api.js?v=202611171740';
-import { setUpChallenges, gamerIdStep } from '../social/onboarding.js?v=202611171740';
-import { arenaGet, arenaSet, playerId } from '../local.js?v=202611171740';
-import { track } from '../analytics.js?v=202611171740';
-import { gameById } from '../games/registry.js?v=202611171740';
-import { fromPuzzle, puzzleTitle, canChallenge } from '../social/puzzles.js?v=202611171740';
-import * as sheets from './challengeSheets.js?v=202611171740';
+import { h, openSheet, sheetHead, toast, ICONS } from '../ui.js?v=202611181159';
+import { call, loadSocial, reasonText, waitingCount, hasStartedSocial } from '../social/api.js?v=202611181159';
+import { setUpChallenges, gamerIdStep } from '../social/onboarding.js?v=202611181159';
+import { arenaGet, arenaSet, playerId } from '../local.js?v=202611181159';
+import { seenResults, markResultsSeen } from '../social/seen.js?v=202611181159';
+import { track } from '../analytics.js?v=202611181159';
+import { gameById } from '../games/registry.js?v=202611181159';
+import { fromPuzzle, puzzleTitle, canChallenge, CHALLENGE_GAMES } from '../social/puzzles.js?v=202611181159';
+import {
+  avatarParts, trophyCase, trophySvg, gameLine, recentLine, whenText, PLACE_NAMES,
+} from '../social/podium.js?v=202611181159';
+import * as sheets from './challengeSheets.js?v=202611181159';
 
 export { canChallenge };
 
@@ -106,20 +110,8 @@ export function refreshSocial() {
 // on this browser. They count on the tab's badge, and opening the tab pops
 // them up: one opens its results, several a summary.
 
-const seenKey = () => `resultsSeen.${app?.uid}`;
-const seenSet = () => new Set(arenaGet(seenKey(), []) || []);
-
-function markSeen(cids) {
-  if (!cids.length) return;
-  const seen = seenSet();
-  for (const c of cids) seen.add(c);
-  try {
-    // Only finished challenges in the doc matter; keep the list short.
-    arenaSet(seenKey(), [...seen].slice(-200));
-  } catch {
-    // No storage: shown again next time.
-  }
-}
+const seenSet = () => seenResults(app?.uid);
+const markSeen = (cids) => markResultsSeen(app?.uid, cids);
 
 /** [[cid, view]] finished, played in (or missed), and not seen yet: newest first. */
 export function unseenResults(social, seen = seenSet()) {
@@ -202,16 +194,10 @@ export function deleteMySocialData() {
 
 // ---- Small pieces ---------------------------------------------------------------
 
-const AVATAR_COLOURS = ['#1F5E96', '#6B3FA0', '#0E7C7B', '#7B4A22', '#1E5A3C', '#B3241A', '#2A2A33'];
-
 function avatar(pub, gamerId, size = 'md') {
-  let n = 0;
-  for (const c of pub || gamerId || '') n = (n * 31 + c.charCodeAt(0)) >>> 0;
-  const caps = (gamerId || '?').replace(/[^A-Z]/g, '');
-  const initials = (caps.length >= 2 ? caps.slice(0, 2) : (gamerId || '?').slice(0, 2)).toUpperCase();
+  const { initials, colour } = avatarParts(pub, gamerId);
   return h('span', {
-    class: `soc-avatar ${size}`, 'aria-hidden': 'true', text: initials,
-    style: { background: AVATAR_COLOURS[n % AVATAR_COLOURS.length] },
+    class: `soc-avatar ${size}`, 'aria-hidden': 'true', text: initials, style: { background: colour },
   });
 }
 
@@ -364,9 +350,13 @@ function inviteCard(cid, v) {
         h('span', { class: 'muted', text: title }))),
     h('div', { class: 'soc-meta' },
       h('span', {}, h('span', { html: ICONS.people }), `${v.players.length} players`),
-      h('span', {}, h('span', { html: ICONS.clock }), timeLeft(v.expiresAt))),
+      h('span', {}, h('span', { html: ICONS.clock }), timeLeft(v.expiresAt)),
+      v.played ? h('span', {}, h('span', { html: ICONS.check }), 'You’ve already played it') : null),
     h('div', { class: 'actions' },
-      h('button', { class: 'btn', type: 'button', text: 'Accept & Play', onClick: () => sheets.openChallenge(app, cid) }),
+      h('button', {
+        class: 'btn', type: 'button', text: v.played ? 'Accept & see results' : 'Accept & Play',
+        onClick: () => sheets.openChallenge(app, cid),
+      }),
       h('button', {
         class: 'btn secondary', type: 'button', text: 'Decline',
         onClick: () => act('respondChallenge', { cid, accept: false }, 'Challenge declined.'),
@@ -466,6 +456,76 @@ function recordBar(r, colours = ['var(--text)', 'var(--muted)', 'var(--border)']
   }, parts.map(([count, colour]) => h('span', { style: { flex: String(count), background: colour } })));
 }
 
+// ---- Trophy case ----------------------------------------------------------------
+//
+// Gold, silver and bronze from final challenges, overall or per game, from
+// the social doc's trophies, challengesPlayed and recentTrophies (written by
+// the server when a challenge closes). No reads of its own.
+
+let caseFilter = 'all';
+
+function recentTrophyRow(e, social) {
+  const game = gameById(e.game);
+  const { index, tier, limit = null } = fromPuzzle(e.game, e.puzzle);
+  const title = game ? puzzleTitle(game, index, tier, limit) : e.game;
+  const inner = [
+    h('span', { class: 'tro-rec-art', html: trophySvg(e.place) }),
+    h('span', { class: 'soc-who' }, h('strong', { text: title }),
+      h('span', { class: 'muted', text: `${recentLine(e)} · ${whenText(e.at)}` })),
+  ];
+  // Still in the doc: tap for its results
+  return social.challenges?.[e.cid]
+    ? h('button', { class: 'tro-rec as-btn', type: 'button', onClick: () => showResult(e.cid) }, ...inner, h('span', { html: ICONS.chevron }))
+    : h('div', { class: 'tro-rec' }, ...inner);
+}
+
+export function trophyCaseCard(social, ids = CHALLENGE_GAMES.filter((id) => gameById(id))) {
+  const card = h('section', { class: 'card tro-case', 'aria-label': 'Trophy case' });
+  const draw = () => {
+    if (caseFilter !== 'all' && !ids.includes(caseFilter)) caseFilter = 'all';
+    const c = trophyCase(social, ids, caseFilter);
+    const chips = [{ id: 'all', name: 'All games' }, ...ids.map((id) => ({ id, name: gameById(id).name }))];
+    card.replaceChildren(
+      h('div', { class: 'tro-head' },
+        h('h2', { class: 'soc-h2', text: 'Trophy case' }),
+        h('span', { class: 'muted', text: `${c.total} ${c.total === 1 ? 'trophy' : 'trophies'} · ${c.played} ${c.played === 1 ? 'challenge' : 'challenges'}` })),
+      h('div', { class: 'tro-filters', role: 'tablist', 'aria-label': 'Game' }, chips.map((g) => h('button', {
+        class: 'tro-chip', type: 'button', role: 'tab', 'aria-selected': String(g.id === caseFilter), text: g.name,
+        onClick: () => { caseFilter = g.id; draw(); },
+      }))),
+      // Silver, gold, bronze, like the podium
+      h('div', { class: 'tro-shelf' }, [2, 1, 3].map((place) => {
+        const n = c.totals[place - 1];
+        return h('div', {
+          class: `tro-slot${place === 1 ? ' big' : ''}${n ? '' : ' none'}`, role: 'img',
+          'aria-label': `${n} ${PLACE_NAMES[place].toLowerCase()}`,
+        },
+        h('span', { class: 'tro-art', html: trophySvg(place) }),
+        h('span', { class: 'tro-n', text: String(n) }),
+        h('span', { class: 'tro-l', text: PLACE_NAMES[place] }));
+      })),
+      h('h3', { class: 'tro-h', text: 'By game' }),
+      h('div', { class: 'tro-games' }, c.games.map((g) => {
+        const game = gameById(g.id);
+        return h('div', { class: 'tro-game' },
+          h('img', { class: 'soc-game-icon', src: game.logo, alt: '' }),
+          h('span', { class: 'soc-who' }, h('strong', { text: game.name }), h('span', { class: 'muted', text: gameLine(g) })),
+          h('span', { class: 'tro-tally', role: 'img', 'aria-label': `${g.t[0]} gold, ${g.t[1]} silver, ${g.t[2]} bronze` },
+            g.t.map((n, i) => h('span', { class: n ? '' : 'zero' }, h('span', { html: trophySvg(i + 1) }), String(n)))));
+      })),
+      h('h3', { class: 'tro-h', text: 'Recent trophies' }),
+      c.recent.length
+        ? h('div', { class: 'tro-recent' }, c.recent.map((e) => recentTrophyRow(e, social)))
+        : h('p', {
+          class: 'muted tro-empty',
+          text: caseFilter === 'all' ? 'No trophies yet. Finish in the top three of a challenge to win one.'
+            : 'No trophies in this game yet. Challenge a friend to win one.',
+        }));
+  };
+  draw();
+  return card;
+}
+
 function recordView(social) {
   const o = social.overall ?? {};
   const friends = Object.entries(social.friends ?? {}).sort(([, a], [, b]) => played(b.record) - played(a.record)
@@ -481,6 +541,7 @@ function recordView(social) {
         h('div', {}, h('strong', { text: winRate(o) }), h('span', { text: 'Win rate' })),
         h('div', {}, h('strong', { text: String(played(o)) }), h('span', { text: 'Challenges' })),
         h('div', {}, h('strong', { text: String(o.bestStreak ?? 0) }), h('span', { text: 'Best win streak' })))),
+    trophyCaseCard(social),
     games.length ? h('section', { class: 'soc-stack' },
       sectionHead('By game'),
       h('div', { class: 'card soc-list' }, games.map(([id, r]) => {
@@ -767,5 +828,7 @@ export async function openChallengeLink(cid) {
   const social = app.social?.gamerId ? await refreshSocial() : await setUp();
   if (!social?.gamerId) return;
   track('challenge_link_open');
+  // A finished one (e.g. from a game's "recent results") opens its podium, and is seen
+  if (social.challenges?.[cid]?.status === 'final') markSeen([cid]);
   sheets.openChallenge(app, cid);
 }

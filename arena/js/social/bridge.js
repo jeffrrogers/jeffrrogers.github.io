@@ -11,9 +11,12 @@
 // the Arena), re-reading it (one Firestore read) only when that copy is a few
 // minutes old.
 
-import { call, cachedSocial, loadSocialViaServer, reasonText } from './api.js?v=202611171740';
-import { WINNER_RULE } from './puzzles.js?v=202611171740';
-import { arenaGet, playerId } from '../local.js?v=202611171740';
+import { call, cachedSocial, loadSocialViaServer, reasonText } from './api.js?v=202611181159';
+import { WINNER_RULE } from './puzzles.js?v=202611181159';
+import { arenaGet, playerId } from '../local.js?v=202611181159';
+import { todayEpochDay, ymd } from '../dates.js?v=202611181159';
+import { listNames, ordinal } from './podium.js?v=202611181159';
+import { seenResults } from './seen.js?v=202611181159';
 
 const FRESH_MS = 3 * 60000;
 const atKey = () => `socialAt.${playerId()}`;
@@ -64,14 +67,131 @@ const parse = (json) => {
   }
 };
 
+export const MAX_ELSEWHERE = 3;
+
+const DAY_NAMES = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'];
+
+/**
+ * Which day's puzzle [index] of [game] is, as a lowercase possessive for
+ * "MapleMom challenged you to yesterday's Canuckle #1738", by the Arena's
+ * calendar (todayEd): "today's", "yesterday's", "Tuesday's" (2–6 back),
+ * else "an older"; Canuckle+ (weekly) "this week's", "last week's", "an older".
+ */
+export function whenLabel(game, index, todayEd) {
+  const today = game?.todayIndex?.(todayEd);
+  if (today == null || index == null) return 'an older';
+  const back = today - index;
+  if (game.cadence === 'weekly') return back === 0 ? 'this week’s' : back === 1 ? 'last week’s' : 'an older';
+  if (back === 0) return 'today’s';
+  if (back === 1) return 'yesterday’s';
+  if (back >= 2 && back <= 6) return `${DAY_NAMES[ymd(todayEd - back).weekday]}’s`;
+  return 'an older';
+}
+
+/**
+ * Other open invites in [gameId], not answered yet, on puzzles other than
+ * [puzzle] (whatever Canoggle limit), newest first, at most MAX_ELSEWHERE:
+ * [{cid, from, title, expiresAt, played, url}]. [titleOf](view) names the
+ * puzzle; [arenaUrl] is this site's Arena ("https://…/arena/").
+ */
+export function elsewhereFor(doc, gameId, puzzle, { titleOf, whenOf, arenaUrl }) {
+  const here = withoutTerms(gameId, puzzle);
+  return Object.entries(doc?.challenges ?? {})
+    .filter(([, v]) => v.game === gameId && v.status === 'open' && v.me === 'invited'
+      && !sameJson(withoutTerms(gameId, v.puzzle), here))
+    .sort(([, a], [, b]) => (b.createdAt ?? 0) - (a.createdAt ?? 0))
+    .slice(0, MAX_ELSEWHERE)
+    .map(([cid, v]) => ({
+      cid, from: v.from ?? '', title: titleOf(v), when: whenOf(v), expiresAt: v.expiresAt, played: v.played === true,
+      url: `${arenaUrl}?challenge=${cid}`,
+    }));
+}
+
+export const MAX_FINALS = 3;
+const FINALS_DAYS = 7;
+
+/**
+ * One line on how the player did in final view [v]: "You won · beat A and
+ * B", "Tied for 1st · with A", "2nd of 4 · A won", head to head "2nd · A won".
+ */
+export function finalLine(v, myPub) {
+  const ranked = v.players.filter((p) => p.rank != null).sort((a, b) => a.rank - b.rank);
+  const me = ranked.find((p) => p.pub === myPub);
+  if (!me) return '';
+  const others = (pred) => ranked.filter((p) => p.pub !== myPub && pred(p)).map((p) => p.gamerId);
+  const tied = others((p) => p.rank === me.rank);
+  if (me.rank === 1) {
+    if (tied.length) return `Tied for 1st · with ${listNames(tied)}`;
+    const beat = others(() => true);
+    if (!beat.length) return 'You won · nobody else played';
+    return `You won · beat ${listNames(beat.length > 3 ? [...beat.slice(0, 3), `${beat.length - 3} more`] : beat)}`;
+  }
+  const winners = others((p) => p.rank === 1);
+  const place = ranked.length === 2 ? ordinal(me.rank) : `${ordinal(me.rank)} of ${ranked.length}`;
+  return `${tied.length ? `Tied for ${place}` : place} · ${listNames(winners)} won`;
+}
+
+/**
+ * The player's recent results in [gameId] for the pre-start cover: final
+ * challenges they played, closed in the last FINALS_DAYS days, newest first:
+ * up to MAX_FINALS when any of them is unseen, else only the latest.
+ * [{cid, title, when, place, of, line, isNew, url}].
+ * [seen]: the results this browser has shown them (social/seen.js).
+ */
+export function finalsFor(doc, gameId, { titleOf, whenOf, arenaUrl, seen = new Set(), now = Date.now() }) {
+  const recent = Object.entries(doc?.challenges ?? {})
+    .filter(([, v]) => v.game === gameId && v.status === 'final' && v.me === 'done'
+      && now - (v.closedAt ?? 0) <= FINALS_DAYS * 86400000)
+    .sort(([, a], [, b]) => (b.closedAt ?? 0) - (a.closedAt ?? 0));
+  // Something new: up to MAX_FINALS. All seen already: just the latest.
+  return recent.slice(0, recent.some(([cid]) => !seen.has(cid)) ? MAX_FINALS : 1)
+    .map(([cid, v]) => ({
+      cid,
+      title: titleOf(v),
+      when: whenOf(v),
+      place: v.players.find((p) => p.pub === doc.pub)?.rank ?? null,
+      of: v.players.filter((p) => p.rank != null).length,
+      line: finalLine(v, doc.pub),
+      isNew: !seen.has(cid),
+      url: `${arenaUrl}?challenge=${cid}`,
+    }));
+}
+
+/**
+ * Namers for a challenge's puzzle, as the Arena names it: titleOf ("Canuckle
+ * #1739", "Canoggle #14 · Daily · 3 min") and whenOf ("yesterday's").
+ */
+async function namers() {
+  const [{ gameById }, { fromPuzzle, puzzleTitle }] = await Promise.all([
+    import('../games/registry.js?v=202611181159'), import('./puzzles.js?v=202611181159'),
+  ]);
+  const todayEd = todayEpochDay();
+  return {
+    titleOf: (v) => {
+      const game = gameById(v.game);
+      const { index, tier, limit = null } = fromPuzzle(v.game, v.puzzle);
+      return game ? puzzleTitle(game, index, tier, limit) : v.game;
+    },
+    whenOf: (v) => whenLabel(gameById(v.game), fromPuzzle(v.game, v.puzzle).index, todayEd),
+  };
+}
+
 /**
  * What the game's pre-start cover shows for this untouched puzzle:
- * {invite: {cid, from, players: [{name, state}], expiresAt, rule} | null}.
+ * {invite: {cid, from, players: [{name, state}], expiresAt, rule} | null,
+ *  elsewhere: other unanswered invites in this game (elsewhereFor),
+ *  finals: the player's recent results in this game (finalsFor)}.
  */
 export async function cover(gameId, puzzleJson) {
   const doc = await social();
   if (!doc?.gamerId || doc.challengeAge !== 'ok') return JSON.stringify({ show: false });
-  const hit = challengeOn(doc, gameId, parse(puzzleJson));
+  const puzzleAsked = parse(puzzleJson);
+  const hit = challengeOn(doc, gameId, puzzleAsked);
+  // Other invites in this game, and recent results in it (to challenge again)
+  const any = Object.values(doc.challenges ?? {}).some((v) => v.game === gameId && (v.me === 'invited' || v.status === 'final'));
+  const names = any ? { ...(await namers()), arenaUrl: `${location.origin}/arena/` } : null;
+  const elsewhere = names ? elsewhereFor(doc, gameId, puzzleAsked, names) : [];
+  const finals = names ? finalsFor(doc, gameId, { ...names, seen: seenResults(playerId()) }) : [];
   const invite = hit && hit[1].me === 'invited' ? {
     cid: hit[0],
     from: hit[1].from,
@@ -87,6 +207,8 @@ export async function cover(gameId, puzzleJson) {
     canChallenge: Object.keys(doc.friends ?? {}).length > 0,
     // The challenge's own terms (Canoggle's time limit), for the game to play
     puzzle: hit ? hit[1].puzzle : null,
+    elsewhere,
+    finals,
   });
 }
 
@@ -123,9 +245,20 @@ export async function finished(gameId, puzzleJson) {
     doc = await social({ fresh: true });
   }
   const [cid, v] = challengeOn(doc, gameId, puzzle, { open: false }) ?? hit;
+  return JSON.stringify(standingsJson(cid, v, doc, gameId, (await namers()).titleOf));
+}
+
+/**
+ * The standings finished() hands the game: challenge [cid]'s view [v] from
+ * the player's doc [doc], with their own gamer ID (myName) and the puzzle's
+ * name as the Arena shows it (title, from [titleOf]) for the share text.
+ */
+export function standingsJson(cid, v, doc, gameId, titleOf) {
   const me = v.players.find((p) => p.pub === doc.pub);
-  return JSON.stringify({
+  return {
     cid,
+    myName: doc.gamerId ?? '',
+    title: titleOf(v),
     status: v.status,
     recorded: v.me === 'done',
     from: v.from,
@@ -143,7 +276,7 @@ export async function finished(gameId, puzzleJson) {
       value: typeof p.value === 'number' ? p.value : null,
       already: !!p.already,
     })),
-  });
+  };
 }
 
 // ---- The friend picker: a small overlay of its own --------------------------------
