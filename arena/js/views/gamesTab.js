@@ -4,15 +4,15 @@
 // card makes the game a favourite, and favourites are listed first. Streaks
 // and stats live on the Stats tab, not here.
 
-import { h, ICONS, gameColours } from '../ui.js?v=202611181223';
-import { longDate, weekdayName, shortDate, ymd } from '../dates.js?v=202611181223';
-import { recentIndices } from '../games/common.js?v=202611181223';
-import { SOLVED, FAILED, PLAYED, PROGRESS, isDone } from '../status.js?v=202611181223';
-import { LEAF_PATH } from '../badges/icons.js?v=202611181223';
-import { playProps } from './play.js?v=202611181223';
-import { listedGames } from '../gameOrder.js?v=202611181223';
-import { launchEd } from '../config.js?v=202611181223';
-import { arenaGet, arenaSet } from '../local.js?v=202611181223';
+import { h, ICONS, gameColours } from '../ui.js?v=202611181229';
+import { longDate, weekdayName, shortDate, ymd } from '../dates.js?v=202611181229';
+import { recentIndices } from '../games/common.js?v=202611181229';
+import { SOLVED, FAILED, PLAYED, PROGRESS, isDone } from '../status.js?v=202611181229';
+import { LEAF_PATH } from '../badges/icons.js?v=202611181229';
+import { playProps } from './play.js?v=202611181229';
+import { listedGames } from '../gameOrder.js?v=202611181229';
+import { launchEd } from '../config.js?v=202611181229';
+import { arenaGet, arenaSet } from '../local.js?v=202611181229';
 
 const DEFAULT_CAPTION = {
   [SOLVED]: 'SOLVED',

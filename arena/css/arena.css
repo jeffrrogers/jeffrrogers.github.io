@@ -1722,12 +1722,13 @@ a.week-band:hover { border-color: var(--muted); color: var(--text); }
 .soc-facts dt { color: var(--muted); font-weight: 600; }
 .soc-facts dd { margin: 0; }
 .soc-picked-game { display: flex; align-items: center; gap: 12px; padding: 12px; border-radius: 16px; background: var(--surface-2); }
-.soc-game-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(140px, 1fr)); gap: 8px; }
+.soc-game-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(min(160px, 100%), 1fr)); gap: 8px; }
 .soc-game-btn {
   display: flex;
   align-items: center;
-  gap: 10px;
-  padding: 10px;
+  gap: 8px;
+  padding: 10px 8px;
+  min-width: 0;
   border-radius: 14px;
   border: 1px solid var(--border);
   background: var(--surface);
@@ -1736,7 +1737,9 @@ a.week-band:hover { border-color: var(--muted); color: var(--text); }
   cursor: pointer;
   text-align: left;
 }
-.soc-game-btn img { width: 34px; height: 34px; }
+.soc-game-btn img { width: 34px; height: 34px; flex: none; }
+/* A long name ("Canominoes") wraps inside its button rather than spilling out */
+.soc-game-btn span { min-width: 0; overflow-wrap: anywhere; }
 .tier-btn.picked { border-color: var(--text); background: var(--text); color: var(--bg); }
 .tier-btn:disabled { opacity: .6; cursor: default; }
 .soc-played { font-size: 11px; font-weight: 600; margin-left: auto; }
