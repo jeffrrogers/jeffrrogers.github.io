@@ -11,12 +11,12 @@
 // the Arena), re-reading it (one Firestore read) only when that copy is a few
 // minutes old.
 
-import { call, cachedSocial, loadSocialViaServer, reasonText } from './api.js?v=202611181229';
-import { WINNER_RULE } from './puzzles.js?v=202611181229';
-import { arenaGet, playerId } from '../local.js?v=202611181229';
-import { todayEpochDay, ymd } from '../dates.js?v=202611181229';
-import { listNames, ordinal } from './podium.js?v=202611181229';
-import { seenResults } from './seen.js?v=202611181229';
+import { call, cachedSocial, loadSocialViaServer, reasonText } from './api.js?v=202611182227';
+import { WINNER_RULE } from './puzzles.js?v=202611182227';
+import { arenaGet, playerId } from '../local.js?v=202611182227';
+import { todayEpochDay, ymd } from '../dates.js?v=202611182227';
+import { listNames, ordinal } from './podium.js?v=202611182227';
+import { seenResults } from './seen.js?v=202611182227';
 
 const FRESH_MS = 3 * 60000;
 const atKey = () => `socialAt.${playerId()}`;
@@ -163,7 +163,7 @@ export function finalsFor(doc, gameId, { titleOf, whenOf, arenaUrl, seen = new S
  */
 async function namers() {
   const [{ gameById }, { fromPuzzle, puzzleTitle }] = await Promise.all([
-    import('../games/registry.js?v=202611181229'), import('./puzzles.js?v=202611181229'),
+    import('../games/registry.js?v=202611182227'), import('./puzzles.js?v=202611182227'),
   ]);
   const todayEd = todayEpochDay();
   return {

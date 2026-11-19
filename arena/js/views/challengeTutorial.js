@@ -8,9 +8,9 @@
 // who hasn't, Add a friend for someone with no friends yet, else Challenge a
 // friend.
 
-import { h, openSheet } from '../ui.js?v=202611181229';
-import { arenaGet, arenaSet } from '../local.js?v=202611181229';
-import { trophySvg } from '../social/podium.js?v=202611181229';
+import { h, openSheet } from '../ui.js?v=202611182227';
+import { arenaGet, arenaSet } from '../local.js?v=202611182227';
+import { trophySvg } from '../social/podium.js?v=202611182227';
 
 const SEEN_KEY = 'challengeTutorialSeen';
 
