@@ -84,7 +84,7 @@ class CompiledApp {
       AJ: x0 => x0.image,
       AK: x0 => x0.repeat,
       AL: x0 => ({cacheSizeBytes: x0}),
-      AM: (x0,x1,x2,x3,x4,x5) => new firebase_firestore.FieldPath(x0,x1,x2,x3,x4,x5),
+      AM: (x0,x1,x2,x3,x4) => new firebase_firestore.FieldPath(x0,x1,x2,x3,x4),
       B: s => printToConsole(s),
       BB: b => !!b,
       BC: Function.prototype.call.bind(DataView.prototype.setUint16),
@@ -97,7 +97,7 @@ class CompiledApp {
       BJ: () => globalThis.window.ImageDecoder,
       BK: (wasmFunction,f) => finalizeWrapper(f, function(x0) { return wasmFunction(f,arguments.length,x0) }),
       BL: x0 => globalThis.firebase_firestore.persistentLocalCache(x0),
-      BM: (x0,x1,x2,x3,x4,x5,x6) => new firebase_firestore.FieldPath(x0,x1,x2,x3,x4,x5,x6),
+      BM: (x0,x1,x2,x3,x4,x5) => new firebase_firestore.FieldPath(x0,x1,x2,x3,x4,x5),
       C: Function.prototype.call.bind(Number.prototype.toString),
       CB: (wasmFunction,f) => finalizeWrapper(f, function(x0) { return wasmFunction(f,arguments.length,x0) }),
       CC: Function.prototype.call.bind(DataView.prototype.setUint8),
@@ -110,7 +110,7 @@ class CompiledApp {
       CJ: (o, p) => p in o,
       CK: x0 => x0.userAgent,
       CL: (x0,x1,x2,x3) => ({ignoreUndefinedProperties: x0,experimentalForceLongPolling: x1,experimentalAutoDetectLongPolling: x2,localCache: x3}),
-      CM: (x0,x1,x2,x3,x4,x5,x6,x7) => new firebase_firestore.FieldPath(x0,x1,x2,x3,x4,x5,x6,x7),
+      CM: (x0,x1,x2,x3,x4,x5,x6) => new firebase_firestore.FieldPath(x0,x1,x2,x3,x4,x5,x6),
       D: Function.prototype.call.bind(BigInt.prototype.toString),
       DB: (x0,x1) => x0.focus(x1),
       DC: Function.prototype.call.bind(DataView.prototype.setInt8),
@@ -127,7 +127,7 @@ class CompiledApp {
       DJ: x0 => x0.groups,
       DK: (x0,x1,x2,x3) => x0.open(x1,x2,x3),
       DL: x0 => x0.fromCache,
-      DM: (x0,x1,x2,x3,x4,x5,x6,x7,x8) => new firebase_firestore.FieldPath(x0,x1,x2,x3,x4,x5,x6,x7,x8),
+      DM: (x0,x1,x2,x3,x4,x5,x6,x7) => new firebase_firestore.FieldPath(x0,x1,x2,x3,x4,x5,x6,x7),
       E: (exn) => {
         let stackString = exn.toString();
         let frames = stackString.split('\n');
@@ -148,7 +148,7 @@ class CompiledApp {
       EJ: (x0,x1) => x0.assign(x1),
       EK: (x0,x1) => x0.key(x1),
       EL: x0 => x0.hasPendingWrites,
-      EM: (x0,x1,x2,x3,x4,x5,x6,x7,x8,x9) => new firebase_firestore.FieldPath(x0,x1,x2,x3,x4,x5,x6,x7,x8,x9),
+      EM: (x0,x1,x2,x3,x4,x5,x6,x7,x8) => new firebase_firestore.FieldPath(x0,x1,x2,x3,x4,x5,x6,x7,x8),
       F: () => new Error().stack,
       FB: (o, p, v) => o[p] = v,
       FC: o => {
@@ -165,7 +165,7 @@ class CompiledApp {
       FJ: x0 => x0.location,
       FK: x0 => x0.length,
       FL: x0 => x0.metadata,
-      FM: () => globalThis.firebase_firestore.documentId(),
+      FM: (x0,x1,x2,x3,x4,x5,x6,x7,x8,x9) => new firebase_firestore.FieldPath(x0,x1,x2,x3,x4,x5,x6,x7,x8,x9),
       G: s => JSON.stringify(s),
       GB: () => [],
       GC: (o, start, length) => new Float64Array(o.buffer, o.byteOffset + start, length),
@@ -182,7 +182,7 @@ class CompiledApp {
       GJ: () => globalThis.window,
       GK: (x0,x1) => x0.removeItem(x1),
       GL: x0 => ({serverTimestamps: x0}),
-      GM: (x0,x1) => new firebase_firestore.GeoPoint(x0,x1),
+      GM: () => globalThis.firebase_firestore.documentId(),
       H: Function.prototype.call.bind(Number.prototype.toString),
       HB: (a, i) => a.push(i),
       HC: (o, start, length) => new Float32Array(o.buffer, o.byteOffset + start, length),
@@ -195,7 +195,7 @@ class CompiledApp {
       HJ: x0 => x0.reload(),
       HK: () => globalThis.removeSplashFromWeb(),
       HL: x0 => x0.metadata,
-      HM: x0 => globalThis.firebase_firestore.vector(x0),
+      HM: (x0,x1) => new firebase_firestore.GeoPoint(x0,x1),
       I: Function.prototype.call.bind(String.prototype.indexOf),
       IB: x0 => new Int8Array(x0),
       IC: (o, start, length) => new Uint32Array(o.buffer, o.byteOffset + start, length),
@@ -208,7 +208,7 @@ class CompiledApp {
       IJ: x0 => ({text: x0}),
       IK: x0 => x0.measurementId,
       IL: x0 => x0.toArray(),
-      IM: x0 => globalThis.firebase_firestore.Bytes.fromUint8Array(x0),
+      IM: x0 => globalThis.firebase_firestore.vector(x0),
       J: (s, p, i) => s.lastIndexOf(p, i),
       JB: (jsArray, jsArrayOffset, wasmArray, wasmArrayOffset, length) => {
         const getValue = dartInstance.exports.$wasmI8ArrayGet;
@@ -226,7 +226,7 @@ class CompiledApp {
       JJ: (x0,x1) => x0.share(x1),
       JK: x0 => x0.appId,
       JL: x0 => x0.toUint8Array(),
-      JM: (x0,x1) => globalThis.firebase_firestore.doc(x0,x1),
+      JM: x0 => globalThis.firebase_firestore.Bytes.fromUint8Array(x0),
       K: o => o,
       KB: x0 => new Uint8Array(x0),
       KC: (o, start, length) => new Uint16Array(o.buffer, o.byteOffset + start, length),
@@ -239,7 +239,7 @@ class CompiledApp {
       KJ: x0 => x0.navigator,
       KK: x0 => x0.messagingSenderId,
       KL: () => globalThis.firebase_firestore.Bytes,
-      KM: () => globalThis.firebase_firestore.updateDoc,
+      KM: (x0,x1) => globalThis.firebase_firestore.doc(x0,x1),
       L: o => {
         if (o === undefined || o === null) return 0;
         if (typeof o === 'number') return 1;
@@ -261,7 +261,7 @@ class CompiledApp {
       LJ: (x0,x1) => x0.matchMedia(x1),
       LK: x0 => x0.authDomain,
       LL: () => globalThis.firebase_firestore.VectorValue,
-      LM: (x0,x1,x2) => globalThis.firebase_firestore.setDoc(x0,x1,x2),
+      LM: () => globalThis.firebase_firestore.updateDoc,
       M: x0 => x0.index,
       MB: x0 => new Int16Array(x0),
       MC: (o, start, length) => new Uint8ClampedArray(o.buffer, o.byteOffset + start, length),
@@ -274,7 +274,7 @@ class CompiledApp {
       MJ: x0 => x0.matches,
       MK: x0 => x0.projectId,
       ML: x0 => x0.longitude,
-      MM: (x0,x1) => globalThis.firebase_firestore.setDoc(x0,x1),
+      MM: (x0,x1,x2) => globalThis.firebase_firestore.setDoc(x0,x1,x2),
       N: o => String(o),
       NB: x0 => new Uint16Array(x0),
       NC: (o, start, length) => new Uint8Array(o.buffer, o.byteOffset + start, length),
@@ -287,7 +287,7 @@ class CompiledApp {
       NJ: (o, t) => typeof o === t,
       NK: x0 => x0.name,
       NL: x0 => x0.latitude,
-      NM: x0 => ({merge: x0}),
+      NM: (x0,x1) => globalThis.firebase_firestore.setDoc(x0,x1),
       O: o => o === undefined,
       OB: (jsArray, jsArrayOffset, wasmArray, wasmArrayOffset, length) => {
         const getValue = dartInstance.exports.$wasmI16ArrayGet;
@@ -306,7 +306,7 @@ class CompiledApp {
       OJ: () => globalThis.arenaChallenge,
       OK: x0 => x0.message,
       OL: () => globalThis.firebase_firestore.GeoPoint,
-      OM: x0 => globalThis.firebase_firestore.getDoc(x0),
+      OM: x0 => ({merge: x0}),
       P: (x0,x1) => x0.exec(x1),
       PB: x0 => new Int32Array(x0),
       PC: (x0,x1) => x0.querySelector(x1),
@@ -319,7 +319,7 @@ class CompiledApp {
       PJ: (x0,x1,x2) => x0.setItem(x1,x2),
       PK: x0 => x0.code,
       PL: (x0,x1) => x0.data(x1),
-      PM: x0 => globalThis.firebase_firestore.getDocFromServer(x0),
+      PM: x0 => globalThis.firebase_firestore.getDoc(x0),
       Q: (x0,x1) => { x0.lastIndex = x1 },
       QB: (jsArray, jsArrayOffset, wasmArray, wasmArrayOffset, length) => {
         const getValue = dartInstance.exports.$wasmI32ArrayGet;
@@ -337,7 +337,7 @@ class CompiledApp {
       QJ: x0 => x0.localStorage,
       QK: x0 => x0.name,
       QL: x0 => x0.nanoseconds,
-      QM: x0 => globalThis.firebase_firestore.getDocFromCache(x0),
+      QM: x0 => globalThis.firebase_firestore.getDocFromServer(x0),
       R: o => o,
       RB: x0 => new Uint32Array(x0),
       RC: x0 => x0.length,
@@ -350,7 +350,7 @@ class CompiledApp {
       RJ: (x0,x1) => x0.getItem(x1),
       RK: (x0,x1,x2,x3,x4,x5,x6,x7) => ({apiKey: x0,authDomain: x1,databaseURL: x2,projectId: x3,storageBucket: x4,messagingSenderId: x5,measurementId: x6,appId: x7}),
       RL: x0 => x0.seconds,
-      RM: x0 => x0.path,
+      RM: x0 => globalThis.firebase_firestore.getDocFromCache(x0),
       S: (s, m) => {
         try {
           return new RegExp(s, m);
@@ -369,7 +369,7 @@ class CompiledApp {
       SJ: () => globalThis.arenaNextUp,
       SK: (x0,x1) => globalThis.firebase_core.initializeApp(x0,x1),
       SL: () => globalThis.firebase_firestore.Timestamp,
-      SM: (x0,x1) => globalThis.firebase_firestore.collection(x0,x1),
+      SM: x0 => x0.path,
       T: o => o instanceof RegExp,
       TB: (jsArray, jsArrayOffset, wasmArray, wasmArrayOffset, length) => {
         const getValue = dartInstance.exports.$wasmF32ArrayGet;
@@ -387,7 +387,7 @@ class CompiledApp {
       TJ: x0 => x0.sessionStorage,
       TK: x0 => globalThis.firebase_core.initializeApp(x0),
       TL: () => globalThis.firebase_firestore.DocumentReference,
-      TM: (x0,x1,x2) => globalThis.firebase_firestore.initializeFirestore(x0,x1,x2),
+      TM: (x0,x1) => globalThis.firebase_firestore.collection(x0,x1),
       U: (string, times) => string.repeat(times),
       UB: x0 => new Float64Array(x0),
       UC: x0 => x0.remove(),
@@ -404,7 +404,7 @@ class CompiledApp {
       },
       UK: x0 => x0.storageBucket,
       UL: x0 => x0.path,
-      UM: (x0,x1) => globalThis.firebase_firestore.getFirestore(x0,x1),
+      UM: (x0,x1,x2) => globalThis.firebase_firestore.initializeFirestore(x0,x1,x2),
       V: o => o,
       VB: (jsArray, jsArrayOffset, wasmArray, wasmArrayOffset, length) => {
         const getValue = dartInstance.exports.$wasmF64ArrayGet;
@@ -422,7 +422,7 @@ class CompiledApp {
       VJ: (a, s, e) => a.slice(s, e),
       VK: x0 => x0.databaseURL,
       VL: x0 => x0.ref,
-      VM: (wasmFunction,f) => finalizeWrapper(f, function(x0) { return wasmFunction(f,arguments.length,x0) }),
+      VM: (x0,x1) => globalThis.firebase_firestore.getFirestore(x0,x1),
       W: o => {
         if (o === undefined || o === null) return 0;
         if (typeof o === 'boolean') return 1;
@@ -466,7 +466,7 @@ class CompiledApp {
       WJ: (x0,x1,x2) => x0.insertBefore(x1,x2),
       WK: x0 => x0.apiKey,
       WL: x0 => x0.doc,
-      WM: x0 => ({maxAttempts: x0}),
+      WM: (wasmFunction,f) => finalizeWrapper(f, function(x0) { return wasmFunction(f,arguments.length,x0) }),
       X: x0 => x0.dotAll,
       XB: (x0,x1,x2) => new Uint8Array(x0,x1,x2),
       XC: (x0,x1,x2,x3) => x0.setProperty(x1,x2,x3),
@@ -479,7 +479,7 @@ class CompiledApp {
       XJ: x0 => x0.id,
       XK: x0 => x0.options,
       XL: x0 => x0.newIndex,
-      XM: (x0,x1,x2) => globalThis.firebase_firestore.runTransaction(x0,x1,x2),
+      XM: x0 => ({maxAttempts: x0}),
       Y: x0 => x0.unicode,
       YB: (x0,x1,x2) => new DataView(x0,x1,x2),
       YC: x0 => x0.style,
@@ -492,7 +492,7 @@ class CompiledApp {
       YJ: x0 => x0.offsetHeight,
       YK: x0 => globalThis.firebase_core.getApp(x0),
       YL: x0 => x0.oldIndex,
-      YM: (wasmFunction,f) => finalizeWrapper(f, function(x0,x1) { return wasmFunction(f,arguments.length,x0,x1) }),
+      YM: (x0,x1,x2) => globalThis.firebase_firestore.runTransaction(x0,x1,x2),
       Z: x0 => x0.ignoreCase,
       ZB: (o, p) => o[p],
       ZC: x0 => x0.debugShowSemanticsNodes,
@@ -505,7 +505,7 @@ class CompiledApp {
       ZJ: x0 => x0.offsetWidth,
       ZK: () => globalThis.firebase_core.getApp(),
       ZL: x0 => x0.type,
-      ZM: (o,s,v) => o[s] = v,
+      ZM: (wasmFunction,f) => finalizeWrapper(f, function(x0,x1) { return wasmFunction(f,arguments.length,x0,x1) }),
       a: x0 => x0.multiline,
       aB: (o) => new DataView(o.buffer, o.byteOffset, o.byteLength),
       aC: (x0,x1) => x0.warn(x1),
@@ -518,7 +518,7 @@ class CompiledApp {
       aJ: x0 => x0.stopPropagation(),
       aK: () => globalThis.firebase_core.SDK_VERSION,
       aL: x0 => x0.docChanges(),
-      aM: () => Symbol("jsBoxedDartObjectProperty"),
+      aM: (o,s,v) => o[s] = v,
       b: (exn) => {
         if (exn instanceof Error) {
           return exn.stack;
@@ -537,7 +537,7 @@ class CompiledApp {
       bJ: x0 => x0.disabled,
       bK: (x0,x1,x2) => globalThis.firebase_core.registerVersion(x0,x1,x2),
       bL: x0 => x0.docs,
-      bM: (x0,x1) => x0.get(x1),
+      bM: () => Symbol("jsBoxedDartObjectProperty"),
       c: (c) =>
       queueMicrotask(() => dartInstance.exports.$invokeCallback(c)),
       cB: o => o.byteOffset,
@@ -551,7 +551,7 @@ class CompiledApp {
       cJ: (x0,x1) => { x0.min = x1 },
       cK: (x0,x1) => x0.createElement(x1),
       cL: x0 => globalThis.firebase_firestore.getDocs(x0),
-      cM: (x0,x1,x2) => x0.set(x1,x2),
+      cM: (x0,x1) => x0.get(x1),
       d: (x0,x1) => x0.didCreateEngineInitializer(x1),
       dB: o => o.buffer,
       dC: (o, c) => o instanceof c,
@@ -572,7 +572,7 @@ class CompiledApp {
       dJ: (x0,x1) => { x0.max = x1 },
       dK: (x0,x1) => x0.debug(x1),
       dL: x0 => globalThis.firebase_firestore.getDocsFromServer(x0),
-      dM: x0 => x0.length,
+      dM: (x0,x1,x2) => x0.set(x1,x2),
       e: (wasmFunction,f) => finalizeWrapper(f, function(x0) { return wasmFunction(f,arguments.length,x0) }),
       eB: Function.prototype.call.bind(DataView.prototype.getUint8),
       eC: (x0,x1) => x0[x1],
@@ -585,7 +585,7 @@ class CompiledApp {
       eJ: (x0,x1) => { x0.disabled = x1 },
       eK: (wasmFunction,f) => finalizeWrapper(f, function(x0,x1) { return wasmFunction(f,arguments.length,x0,x1) }),
       eL: x0 => globalThis.firebase_firestore.getDocsFromCache(x0),
-      eM: x0 => x0.getReader(),
+      eM: x0 => x0.length,
       f: (wasmFunction,f) => finalizeWrapper(f, function() { return wasmFunction(f,arguments.length) }),
       fB: (b, o) => new DataView(b, o),
       fC: x0 => x0.length,
@@ -603,7 +603,7 @@ class CompiledApp {
       fJ: (x0,x1) => { x0.scrollLeft = x1 },
       fK: (wasmFunction,f) => finalizeWrapper(f, function(x0) { return wasmFunction(f,arguments.length,x0) }),
       fL: x0 => x0.source,
-      fM: x0 => x0.value,
+      fM: x0 => x0.getReader(),
       g: (x0,x1) => ({initializeEngine: x0,autoStart: x1}),
       gB: (b, o, l) => new DataView(b, o, l),
       gC: (string, token) => string.split(token),
@@ -616,7 +616,7 @@ class CompiledApp {
       gJ: (x0,x1) => { x0.spellcheck = x1 },
       gK: (x0,x1) => ({createScript: x0,createScriptURL: x1}),
       gL: x0 => ({source: x0}),
-      gM: x0 => x0.done,
+      gM: x0 => x0.value,
       h: (wasmFunction,f) => finalizeWrapper(f, function(x0,x1) { return wasmFunction(f,arguments.length,x0,x1) }),
       hB: Function.prototype.call.bind(DataView.prototype.getFloat64),
       hC: o => o instanceof Array,
@@ -630,7 +630,7 @@ class CompiledApp {
       hJ: (x0,x1) => { x0.disabled = x1 },
       hK: (x0,x1,x2) => x0.createPolicy(x1,x2),
       hL: (x0,x1,x2) => globalThis.firebase_firestore.where(x0,x1,x2),
-      hM: x0 => x0.read(),
+      hM: x0 => x0.done,
       i: x0 => new Promise(x0),
       iB: o => {
         if (o === null || o === undefined) return 0;
@@ -647,7 +647,7 @@ class CompiledApp {
       iJ: (x0,x1) => x0.transferFromImageBitmap(x1),
       iK: (x0,x1) => x0.createScriptURL(x1),
       iL: (x0,x1) => globalThis.firebase_firestore.query(x0,x1),
-      iM: x0 => x0.body,
+      iM: x0 => x0.read(),
       j: (x0,x1,x2) => x0.call(x1,x2),
       jB: Function.prototype.call.bind(DataView.prototype.setFloat64),
       jC: a => a.length,
@@ -666,7 +666,7 @@ class CompiledApp {
       jJ: (x0,x1) => x0.getContext(x1),
       jK: (x0,x1,x2) => x0.createScript(x1,x2),
       jL: (x0,x1) => new firebase_firestore.Timestamp(x0,x1),
-      jM: (x0,x1) => new OffscreenCanvas(x0,x1),
+      jM: x0 => x0.body,
       k: (constructor, args) => {
         const factoryFunction = constructor.bind.apply(
             constructor, [null, ...args]);
@@ -683,7 +683,7 @@ class CompiledApp {
       kJ: (x0,x1) => { x0.height = x1 },
       kK: (x0,x1) => x0.appendChild(x1),
       kL: (wasmFunction,f) => finalizeWrapper(f, function() { return wasmFunction(f,arguments.length) }),
-      kM: x0 => x0.assetBase,
+      kM: (x0,x1) => new OffscreenCanvas(x0,x1),
       l: x0 => new Array(x0),
       lB: Function.prototype.call.bind(DataView.prototype.setFloat32),
       lC: x0 => x0.userAgent,
@@ -695,8 +695,8 @@ class CompiledApp {
       lI: (x0,x1,x2,x3,x4) => ({type: x0,data: x1,premultiplyAlpha: x2,colorSpaceConversion: x3,preferAnimation: x4}),
       lJ: (x0,x1) => { x0.width = x1 },
       lK: (wasmFunction,f) => finalizeWrapper(f, function(x0) { return wasmFunction(f,arguments.length,x0) }),
-      lL: x0 => globalThis.firebase_firestore.increment(x0),
-      lM: x0 => x0.loader,
+      lL: () => globalThis.firebase_firestore.deleteField(),
+      lM: x0 => x0.assetBase,
       m: o => [o],
       mB: Function.prototype.call.bind(DataView.prototype.getFloat32),
       mC: x0 => x0.navigator,
@@ -708,8 +708,8 @@ class CompiledApp {
       mI: x0 => new window.ImageDecoder(x0),
       mJ: x0 => x0.height,
       mK: (o, p) => delete o[p],
-      mL: () => globalThis.firebase_firestore.and,
-      mM: () => globalThis._flutter,
+      mL: x0 => globalThis.firebase_firestore.increment(x0),
+      mM: x0 => x0.loader,
       n: (o0, o1) => [o0, o1],
       nB: o => {
         if (o === null || o === undefined) return 0;
@@ -733,7 +733,8 @@ class CompiledApp {
       nI: x0 => x0.name,
       nJ: x0 => x0.width,
       nK: (o, p, v) => o[p] = v,
-      nL: () => globalThis.firebase_firestore.or,
+      nL: () => globalThis.firebase_firestore.and,
+      nM: () => globalThis._flutter,
       o: (o0, o1, o2) => [o0, o1, o2],
       oB: Function.prototype.call.bind(DataView.prototype.getUint32),
       oC: Object.is,
@@ -750,7 +751,7 @@ class CompiledApp {
       oI: x0 => x0.repetitionCount,
       oJ: x0 => x0.rasterEndMilliseconds,
       oK: (x0,x1) => { x0.text = x1 },
-      oL: x0 => globalThis.firebase_firestore.limitToLast(x0),
+      oL: () => globalThis.firebase_firestore.or,
       p: (o0, o1, o2, o3) => [o0, o1, o2, o3],
       pB: o => {
         if (o === null || o === undefined) return 0;
@@ -771,7 +772,7 @@ class CompiledApp {
       pI: x0 => x0.frameCount,
       pJ: x0 => x0.rasterStartMilliseconds,
       pK: x0 => x0.head,
-      pL: x0 => globalThis.firebase_firestore.limit(x0),
+      pL: x0 => globalThis.firebase_firestore.limitToLast(x0),
       q: (x0,x1,x2) => { x0[x1] = x2 },
       qB: Function.prototype.call.bind(DataView.prototype.getInt32),
       qC: (x0,x1) => x0.createTextNode(x1),
@@ -788,7 +789,7 @@ class CompiledApp {
       qI: x0 => x0.selectedTrack,
       qJ: x0 => x0.imageBitmaps,
       qK: (x0,x1) => { x0.text = x1 },
-      qL: () => globalThis.firebase_firestore.endBefore,
+      qL: x0 => globalThis.firebase_firestore.limit(x0),
       r: (o, p) => o[p],
       rB: o => {
         if (o === null || o === undefined) return 0;
@@ -809,7 +810,7 @@ class CompiledApp {
       rI: x0 => x0.completed,
       rJ: x0 => x0.canvasKitMaximumSurfaces,
       rK: x0 => x0.trustedTypes,
-      rL: () => globalThis.firebase_firestore.endAt,
+      rL: () => globalThis.firebase_firestore.endBefore,
       s: () => globalThis,
       sB: o => o instanceof Uint16Array,
       sC: (x0,x1) => { x0.nonce = x1 },
@@ -821,7 +822,7 @@ class CompiledApp {
       sI: x0 => x0.ready,
       sJ: x0 => x0.hostElement,
       sK: () => globalThis.console,
-      sL: () => globalThis.firebase_firestore.startAfter,
+      sL: () => globalThis.firebase_firestore.endAt,
       t: (wasmFunction,f) => finalizeWrapper(f, function(x0) { return wasmFunction(f,arguments.length,x0) }),
       tB: Function.prototype.call.bind(DataView.prototype.getUint16),
       tC: x0 => x0.nonce,
@@ -833,7 +834,7 @@ class CompiledApp {
       tI: x0 => x0.tracks,
       tJ: x0 => x0.location,
       tK: x0 => x0.trustedTypes,
-      tL: () => globalThis.firebase_firestore.startAt,
+      tL: () => globalThis.firebase_firestore.startAfter,
       u: (wasmFunction,f) => finalizeWrapper(f, function(x0) { return wasmFunction(f,arguments.length,x0) }),
       uB: o => o instanceof Int16Array,
       uC: () => globalThis.window.flutterConfiguration,
@@ -845,7 +846,7 @@ class CompiledApp {
       uI: x0 => x0.close(),
       uJ: (x0,x1) => x0.getModifierState(x1),
       uK: (x0,x1) => { x0.crossOrigin = x1 },
-      uL: (x0,x1) => globalThis.firebase_firestore.orderBy(x0,x1),
+      uL: () => globalThis.firebase_firestore.startAt,
       v: (x0,x1) => ({addView: x0,removeView: x1}),
       vB: Function.prototype.call.bind(DataView.prototype.getInt16),
       vC: (x0,x1) => x0.attachShadow(x1),
@@ -857,7 +858,7 @@ class CompiledApp {
       vI: (x0,x1) => ({frameIndex: x0,completeFramesOnly: x1}),
       vJ: x0 => x0.metaKey,
       vK: (x0,x1) => { x0.type = x1 },
-      vL: x0 => new firebase_firestore.FieldPath(x0),
+      vL: (x0,x1) => globalThis.firebase_firestore.orderBy(x0,x1),
       w: (l, r) => l === r,
       wB: o => o instanceof Uint8ClampedArray,
       wC: (x0,x1) => x0.createElement(x1),
@@ -869,7 +870,7 @@ class CompiledApp {
       wI: (x0,x1) => x0.decode(x1),
       wJ: x0 => x0.altKey,
       wK: () => globalThis.document,
-      wL: (x0,x1) => new firebase_firestore.FieldPath(x0,x1),
+      wL: x0 => new firebase_firestore.FieldPath(x0),
       x: x0 => x0.random(),
       xB: o => {
         if (o === null || o === undefined) return 0;
@@ -885,7 +886,7 @@ class CompiledApp {
       xI: x0 => x0.displayHeight,
       xJ: x0 => x0.ctrlKey,
       xK: (x0,x1,x2,x3) => globalThis.firebase_analytics.logEvent(x0,x1,x2,x3),
-      xL: (x0,x1,x2) => new firebase_firestore.FieldPath(x0,x1,x2),
+      xL: (x0,x1) => new firebase_firestore.FieldPath(x0,x1),
       y: () => globalThis.Math,
       yB: Function.prototype.call.bind(DataView.prototype.setInt32),
       yC: x0 => x0.visualViewport,
@@ -897,7 +898,7 @@ class CompiledApp {
       yI: x0 => x0.displayWidth,
       yJ: x0 => x0.isComposing,
       yK: (x0,x1) => globalThis.firebase_analytics.initializeAnalytics(x0,x1),
-      yL: (x0,x1,x2,x3) => new firebase_firestore.FieldPath(x0,x1,x2,x3),
+      yL: (x0,x1,x2) => new firebase_firestore.FieldPath(x0,x1,x2),
       z: (x0,x1) => x0.prepend(x1),
       zB: Function.prototype.call.bind(DataView.prototype.setUint32),
       zC: x0 => x0.devicePixelRatio,
@@ -909,7 +910,7 @@ class CompiledApp {
       zI: x0 => x0.duration,
       zJ: x0 => x0.code,
       zK: x0 => globalThis.firebase_firestore.memoryLocalCache(x0),
-      zL: (x0,x1,x2,x3,x4) => new firebase_firestore.FieldPath(x0,x1,x2,x3,x4),
+      zL: (x0,x1,x2,x3) => new firebase_firestore.FieldPath(x0,x1,x2,x3),
 
     };
 

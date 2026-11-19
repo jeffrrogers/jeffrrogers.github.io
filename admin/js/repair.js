@@ -9,7 +9,7 @@
 // anything else odd in a list (an old-format game, an entry that isn't JSON)
 // is left alone.
 
-import { PACKED_FIELDS, isPacked, unpackGame, unpackDuo } from './packedGames.js?v=202611190140';
+import { PACKED_FIELDS, isPacked, unpackGame, unpackDuo } from './packedGames.js?v=202611190813';
 
 export const MAX_DROP = 4;
 
@@ -67,8 +67,9 @@ const list = (v) => (Array.isArray(v) ? v : []);
 // A converted doc (formatVersion 2) holds packedGames / packedPlusGames /
 // packedDuoGames instead (packedGames.js); the same two checks apply to its
 // entries, and a repair rewrites the packed field.
-const isBlankPacked = (s) => unpackGame(s)?.answer === '';
-const isUnreadablePackedDuo = (s) => unpackDuo(s) === null;
+// An element starting with '{' is an old JSON game Canuckle couldn't pack.
+const isBlankPacked = (s) => (typeof s === 'string' && s.startsWith('{') ? isBlankGame(s) : unpackGame(s)?.answer === '');
+const isUnreadablePackedDuo = (s) => (typeof s === 'string' && s.startsWith('{') ? isUnreadableDuo(s) : unpackDuo(s) === null);
 
 /** The field [field] lives in on [doc], and how to spot an entry Canuckle would strip there. */
 function view(doc, field) {

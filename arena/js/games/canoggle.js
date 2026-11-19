@@ -11,14 +11,14 @@
 // launch with done: false (absent on a finished record) and reads as in
 // progress; today's in-progress boards are local.
 
-import { launchDaily, pct, historyStart, readJsonPref, readPendingList } from './common.js?v=202611190140';
-import { edOfMillis } from '../dates.js?v=202611190140';
-import { toMillis } from '../firebase.js?v=202611190140';
-import { launchEd } from '../config.js?v=202611190140';
-import { readPref } from '../local.js?v=202611190140';
+import { launchDaily, pct, historyStart, readJsonPref, readPendingList } from './common.js?v=202611190813';
+import { edOfMillis } from '../dates.js?v=202611190813';
+import { toMillis } from '../firebase.js?v=202611190813';
+import { launchEd } from '../config.js?v=202611190813';
+import { readPref } from '../local.js?v=202611190813';
 import {
   SOLVED, FAILED, PROGRESS, emptyProgress, mark, currentStreak, longestStreak, intList, num, minEd, maxEd, noteFinish,
-} from '../status.js?v=202611190140';
+} from '../status.js?v=202611190813';
 
 const KINDS = [
   { key: 'd', label: 'Daily' },

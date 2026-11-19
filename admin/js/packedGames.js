@@ -18,7 +18,11 @@
 //
 // packGame / packDuo return null for a game they can't reproduce exactly
 // (unknown fields, a separator in a word, results that differ from the
-// scoring, ...): such a game, and so its account, stays in the old form.
+// scoring, ...): the bulk converter (packedUpdate) then leaves the account in
+// the old form. Canuckle itself, saving a game it can't pack into a packed
+// doc, keeps that game's old JSON string as the array element instead, so a
+// packed array may hold an element starting with '{'; readers take it as
+// the old JSON.
 //
 // No imports: the same file runs in the browser, the admin and Node.
 
@@ -135,6 +139,7 @@ export function gameStrings(doc, field) {
   if (isPacked(doc, field)) {
     const unpack = isDuoField(field) ? unpackDuo : unpackGame;
     return doc[PACKED_FIELDS[field]].map((s) => {
+      if (typeof s === 'string' && s.startsWith('{')) return s; // an old JSON element, kept as it was
       const g = unpack(s);
       return g ? JSON.stringify(g) : '';
     });
@@ -145,10 +150,6 @@ export function gameStrings(doc, field) {
 
 /** [field]'s games in [doc] as objects (null for one that can't be read), whichever form the doc holds. */
 export function gameObjects(doc, field) {
-  if (isPacked(doc, field)) {
-    const unpack = isDuoField(field) ? unpackDuo : unpackGame;
-    return doc[PACKED_FIELDS[field]].map(unpack);
-  }
   return gameStrings(doc, field).map((s) => {
     try {
       const g = JSON.parse(s);
@@ -166,11 +167,18 @@ export function gameCount(doc, field) {
 }
 
 /**
+ * Fields no build has used for years: the old achievements (ach…,
+ * unreadAchivements) and the retired trivia game (trivia…). Converting a doc
+ * removes them (Canuckle's PackedHistory.isStaleField matches).
+ */
+export const isStaleField = (key) => /^ach[A-Z]/.test(key) || key.startsWith('trivia') || key === 'unreadAchivements';
+
+/**
  * The update that converts [doc] to the packed form: the three packed arrays,
- * formatVersion 2, and the old lists marked for deletion with [del] (the
- * caller's FieldValue.delete() / deleteField()). Null when any game can't be
- * packed exactly (the account stays as it is), with the reason in
- * [why.reason] when [why] is given.
+ * formatVersion 2, and the old lists and stale fields marked for deletion
+ * with [del] (the caller's FieldValue.delete() / deleteField()). Null when
+ * any game can't be packed exactly (the account stays as it is), with the
+ * reason in [why.reason] when [why] is given.
  */
 export function packedUpdate(doc, del, why = {}) {
   if (doc?.formatVersion === FORMAT_VERSION) {
@@ -205,5 +213,6 @@ export function packedUpdate(doc, del, why = {}) {
     update[packedField] = out;
     update[field] = del;
   }
+  for (const key of Object.keys(doc ?? {})) if (isStaleField(key)) update[key] = del;
   return update;
 }

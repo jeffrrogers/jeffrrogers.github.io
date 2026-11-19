@@ -2,7 +2,7 @@
 // in views/challengeSheets.js). The canvas covers whatever it's placed in;
 // coordinates are in its own CSS pixels.
 
-import { LEAF } from './podium.js?v=202611190140';
+import { LEAF } from './podium.js?v=202611190813';
 
 const PALETTES = {
   1: ['#e4b53a', '#f7d76b', '#d52b1e', '#ffffff'],
