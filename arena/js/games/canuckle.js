@@ -6,11 +6,12 @@
 // entries use {guesses: [{guess}]} instead of userGuesses. startTimestamp is
 // local midnight of the day the game was started, archive games included.
 
-import { epochDay, edOfMillis } from '../dates.js?v=202611182227';
-import { parseJsonList, readJsonPref, pct } from './common.js?v=202611182227';
+import { epochDay, edOfMillis } from '../dates.js?v=202611190140';
+import { parseJsonList, readJsonPref, pct } from './common.js?v=202611190140';
+import { gameStrings } from '../packedGames.js?v=202611190140';
 import {
   SOLVED, FAILED, PROGRESS, emptyProgress, mark, currentStreak, longestStreak, num, minEd, noteFinish,
-} from '../status.js?v=202611182227';
+} from '../status.js?v=202611190140';
 
 const ORIGINAL_START = epochDay(2022, 2, 10); // games #1-#142
 const ORIGINAL_END = epochDay(2022, 7, 1);
@@ -138,7 +139,8 @@ export const canuckle = {
     const doc = await reader.getDoc(['newUserData', uid]);
     if (!doc) return null;
     return {
-      games: doc.games || [],
+      // Either form (packedGames once converted; ../packedGames.js)
+      games: gameStrings(doc, 'games'),
       streak: doc.streak,
       maxStreak: doc.maxStreak,
       normalStats: doc.normalStats,

@@ -14,6 +14,8 @@
 //    (savesVersion < 2): those saves can't be inspected from here
 //  - anything with a missing or unreadable lastUpdated
 
+import { gameCount } from './packedGames.js?v=202611190140';
+
 export const MAX_GAMES = 10;
 export const DAY_MS = 86400000;
 export const MAX_CLOCK_SKEW_MS = 10 * 60 * 1000;
@@ -48,14 +50,14 @@ export function thresholdDays(totalGames) {
 
 const isNum = (v) => typeof v === 'number' && Number.isFinite(v);
 const count = (v) => (isNum(v) && v > 0 ? v : 0);
-const len = (v) => (Array.isArray(v) ? v.length : 0);
 
 // The stored counts and the game lists should agree (user.dart keeps them in
 // step); the larger is used so a stale count never costs a real player.
+// Either form: the old lists or, once converted, the packed ones (packedGames.js).
 export function totalGames(doc) {
-  return Math.max(count(doc.gamesCount), len(doc.games))
-    + Math.max(count(doc.plusGamesCount), len(doc.plusGames))
-    + Math.max(count(doc.duoGamesCount), len(doc.duoGames));
+  return Math.max(count(doc.gamesCount), gameCount(doc, 'games'))
+    + Math.max(count(doc.plusGamesCount), gameCount(doc, 'plusGames'))
+    + Math.max(count(doc.duoGamesCount), gameCount(doc, 'duoGames'));
 }
 
 /** The cutoff the Firestore query uses: nothing newer than this can qualify. */

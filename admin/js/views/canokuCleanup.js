@@ -9,8 +9,8 @@
 // every deleted doc to a gzipped backup file in the legacy-export bucket
 // first, so there's no download step here.
 
-import { h, clear, toast } from '../ui.js?v=202611182253';
-import { callCanokuCleanup } from '../firebase.js?v=202611182253';
+import { h, clear, toast } from '../ui.js?v=202611190140';
+import { callCanokuCleanup } from '../firebase.js?v=202611190140';
 
 const MAX_GAMES = 10;
 const threshold = (n) => 10 + (Math.max(n, 1) - 1) * 5;
