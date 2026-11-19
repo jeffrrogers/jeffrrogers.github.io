@@ -9,8 +9,8 @@
 // every deleted doc to a gzipped backup file in the legacy-export bucket
 // first, so there's no download step here.
 
-import { h, clear, toast } from '../ui.js?v=202611182212';
-import { callCanokuCleanup } from '../firebase.js?v=202611182212';
+import { h, clear, toast } from '../ui.js?v=202611182231';
+import { callCanokuCleanup } from '../firebase.js?v=202611182231';
 
 const MAX_GAMES = 10;
 const threshold = (n) => 10 + (Math.max(n, 1) - 1) * 5;
@@ -21,13 +21,40 @@ const BOUNDS = ['0', '1', '2', '4', '6', '8', 'A', 'C', 'E', 'G', 'I', 'K', 'M',
 const RANGES = [[null, BOUNDS[0]], ...BOUNDS.map((b, i) => [b, BOUNDS[i + 1] ?? null])];
 const SCAN_WORKERS = 6;
 const SCAN_PAGE = 100;
+// A scan stops once a batch has checked this many accounts, so they can be
+// deleted before the next batch; the next scan carries on from there.
+const BATCH = 20000;
 const DELETE_CHUNK = 25;
 const DELETE_WORKERS = 3;
+
+// Where each range has got to: [{from, to, after, done}]. A range moves on
+// only after a page succeeds, so a failed or stopped scan loses nothing.
+// Kept in this browser too, so a reload carries on (a convenience: "Start
+// over" or a lost copy just means scanning from the beginning again).
+const CURSORS_KEY = 'admin.canokuCleanup.cursors';
+const freshCursors = () => RANGES.map(([from, to]) => ({ from, to, after: null, done: false }));
+function loadCursors() {
+  try {
+    const c = JSON.parse(localStorage.getItem(CURSORS_KEY) || 'null');
+    return Array.isArray(c) && c.length === RANGES.length ? c : null;
+  } catch {
+    return null;
+  }
+}
+function saveCursors() {
+  try {
+    localStorage.setItem(CURSORS_KEY, JSON.stringify(state.cursors.map(({ from, to, after, done }) => ({ from, to, after, done }))));
+  } catch {
+    // fine: kept for this page only
+  }
+}
 
 const state = {
   phase: 'idle', // idle | scanning | scanned | deleting | done
   total: 0,
-  scanned: 0,
+  cursors: loadCursors() || freshCursors(),
+  scannedBefore: 0, // in earlier batches (this page's batches only)
+  scanned: 0, // this batch
   byReason: {},
   byRule: {},
   byGames: {},
@@ -38,6 +65,9 @@ const state = {
   stop: false,
   error: '',
 };
+
+const started = () => state.cursors.some((c) => c.after || c.done);
+const finished = () => state.cursors.every((c) => c.done);
 
 export function renderCanokuCleanup(root, rerender) {
   const rules = h('div', { class: 'card' },
@@ -51,20 +81,26 @@ export function renderCanokuCleanup(root, rerender) {
     h('p', {}, 'Deleting removes canokuUserData/{id} and everything under it. Other games\' docs for the ID stay. Each account is checked again just before it goes, and kept if it changed since the scan. The function writes a backup of every deleted doc to gs://canuckle-c2157-legacy-export/canoku-cleanup/ first.'));
 
   const busy = state.phase === 'scanning' || state.phase === 'deleting';
-  const scanBtn = h('button', { class: 'btn primary', disabled: busy, onclick: () => scan(rerender) },
-    state.phase === 'idle' ? 'Scan (dry run)' : 'Scan again');
+  const n = BATCH.toLocaleString('en-CA');
+  const scanBtn = h('button', { class: 'btn primary', disabled: busy || finished(), onclick: () => scan(rerender) },
+    finished() ? 'Every account scanned' : started() ? `Scan the next ${n} (dry run)` : `Scan the first ${n} (dry run)`);
+  const restartBtn = !busy && started()
+    ? h('button', { class: 'btn', onclick: () => { state.cursors = freshCursors(); saveCursors(); state.scannedBefore = 0; rerender(); } }, 'Start over')
+    : null;
   const stopBtn = busy ? h('button', { class: 'btn', onclick: () => { state.stop = true; } }, 'Stop') : null;
-  const list = (o, label) => h('ul', {}, Object.entries(o).sort((a, b) => b[1] - a[1]).map(([k, n]) => h('li', {}, `${label(k)}: ${n}`)));
+  const list = (o, label) => h('ul', {}, Object.entries(o).sort((a, b) => b[1] - a[1]).map(([k, c]) => h('li', {}, `${label(k)}: ${c}`)));
 
   const status = h('div', { class: 'card' },
     h('h3', {}, 'Scan'),
-    h('div', { class: 'actions left' }, scanBtn, stopBtn),
+    h('p', {}, `Scans ${n} accounts at a time, then stops so you can delete what it found. The next scan carries on from there, in this browser even after a reload; Start over goes back to the beginning.`),
+    h('div', { class: 'actions left' }, scanBtn, stopBtn, restartBtn),
     state.error ? h('p', { class: 'err' }, state.error) : null,
     state.phase !== 'idle' ? h('p', {},
-      `Checked ${state.scanned} of ${state.total} Canoku accounts. `,
-      h('b', {}, `${state.candidates.length} can be deleted.`),
-      state.phase === 'scanning' ? ' Still scanning…' : '') : null,
-    state.phase === 'scanning' ? h('progress', { max: state.total || 1, value: state.scanned }) : null,
+      `This batch: checked ${state.scanned.toLocaleString('en-CA')} accounts. `,
+      h('b', {}, `${state.candidates.length.toLocaleString('en-CA')} can be deleted.`),
+      state.phase === 'scanning' ? ' Still scanning…' : '',
+      state.total ? ` About ${(state.scannedBefore + state.scanned).toLocaleString('en-CA')} of ${state.total.toLocaleString('en-CA')} checked on this page so far.` : '') : null,
+    state.phase === 'scanning' ? h('progress', { max: BATCH, value: state.scanned }) : null,
     Object.keys(state.byReason).length ? h('div', { class: 'two-col' },
       h('div', {}, h('h4', {}, 'Kept or deleted, by reason'), list(state.byReason, (r) => REASONS[r] || r)),
       h('div', {}, h('h4', {}, 'To delete, by rule'), list(state.byRule, (r) => RULES[r] || r),
@@ -107,7 +143,7 @@ export function renderCanokuCleanup(root, rerender) {
 // again (one already deleted comes back as "gone").
 const RETRY_REASONS = ['internal', 'unavailable', 'deadline-exceeded', 'resource-exhausted',
   'functions/internal', 'functions/unavailable', 'functions/deadline-exceeded', 'functions/resource-exhausted'];
-const RETRY_WAITS_MS = [2000, 5000, 15000, 30000];
+const RETRY_WAITS_MS = [2000, 5000, 15000, 30000, 60000, 60000];
 
 async function call(op, data) {
   for (let attempt = 0; ; attempt++) {
@@ -149,47 +185,61 @@ const REASONS = {
 };
 const RULES = { '9 months': 'Idle 9+ months', games: 'Games rule (≤ 10 games)' };
 
+function tally(rows) {
+  for (const r of rows) {
+    state.byReason[r.reason] = (state.byReason[r.reason] || 0) + 1;
+    if (r.eligible) {
+      state.byRule[r.rule] = (state.byRule[r.rule] || 0) + 1;
+      if (r.rule === 'games') state.byGames[r.total] = (state.byGames[r.total] || 0) + 1;
+      state.candidates.push({ id: r.id, activityMs: r.activityMs, total: r.total, idleDays: r.idleDays, rule: r.rule });
+    }
+  }
+  state.scanned += rows.length;
+}
+
+/**
+ * One batch: up to BATCH accounts, carrying on from each range's cursor.
+ * Whatever it found can be deleted even if it stopped early (stopped, or a
+ * call failed after its retries): the delete judges every account again on
+ * the server, and the cursors only moved past pages that were read.
+ */
 async function scan(rerender) {
+  state.scannedBefore += state.scanned;
   Object.assign(state, {
-    phase: 'scanning', total: 0, scanned: 0, byReason: {}, byRule: {}, byGames: {},
+    phase: 'scanning', scanned: 0, byReason: {}, byRule: {}, byGames: {},
     candidates: [], deleted: 0, skipped: [], backups: [], stop: false, error: '',
   });
   rerender();
   try {
-    state.total = (await call('count')).total;
+    if (!state.total) state.total = (await call('count')).total;
     rerender();
-    const queue = [...RANGES];
     await workers(SCAN_WORKERS, async () => {
-      if (!queue.length) return false;
-      {
-        const [from, to] = queue.shift();
-        let after = null;
-        for (;;) {
-          if (state.stop) return false;
-          const page = await call('scan', { from, to, after, limit: SCAN_PAGE });
-          for (const r of page.rows) {
-            state.byReason[r.reason] = (state.byReason[r.reason] || 0) + 1;
-            if (r.eligible) {
-              state.byRule[r.rule] = (state.byRule[r.rule] || 0) + 1;
-              if (r.rule === 'games') state.byGames[r.total] = (state.byGames[r.total] || 0) + 1;
-              state.candidates.push({ id: r.id, activityMs: r.activityMs, total: r.total, idleDays: r.idleDays, rule: r.rule });
-            }
-          }
-          state.scanned += page.rows.length;
+      if (state.scanned >= BATCH) return false;
+      const c = state.cursors.find((x) => !x.done && !x.busy);
+      if (!c) return false;
+      c.busy = true;
+      try {
+        while (!state.stop && state.scanned < BATCH) {
+          const page = await call('scan', { from: c.from, to: c.to, after: c.after, limit: SCAN_PAGE });
+          tally(page.rows);
+          if (page.last) c.after = page.last;
+          if (page.done) c.done = true;
+          saveCursors();
           rerender();
-          if (page.done) break;
-          after = page.last;
+          if (c.done) break;
         }
+      } finally {
+        c.busy = false;
       }
       return true;
     });
-    state.candidates.sort((a, b) => (a.id < b.id ? -1 : 1));
-    state.phase = state.stop ? 'idle' : 'scanned';
-    if (state.stop) state.error = 'Scan stopped. Scan again before deleting.';
+    if (state.stop) state.error = 'Scan stopped. What it found can still be deleted; the next scan carries on from here.';
   } catch (e) {
-    state.phase = 'idle';
-    state.error = `Scan failed: ${e.message} (${e.reason}). The numbers above are incomplete; scan again before deleting.`;
+    state.error = `A scan call failed after several retries: ${e.message} (${e.reason}). `
+      + 'What this batch found can still be deleted, and the next scan carries on from where it stopped.';
   }
+  state.candidates.sort((a, b) => (a.id < b.id ? -1 : 1));
+  state.phase = 'scanned';
   rerender();
 }
 
