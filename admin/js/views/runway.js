@@ -1,19 +1,19 @@
 // Days left tab: how far each daily game's puzzles run past today, and
 // Canoku's puzzle pool (importing one and turning it on).
 
-import { h, clear, modal, toast, issues } from '../ui.js?v=202611182243';
-import { GAMES, longDate, todayEpochDay, todayIndex } from '../dates.js?v=202611182243';
-import { DAILY_GAMES, dailyIndex, dailyEd, daysInFile } from '../runway.js?v=202611182243';
-import { GAME_SITES } from '../config.js?v=202611182243';
+import { h, clear, modal, toast, issues } from '../ui.js?v=202611182251';
+import { GAMES, longDate, todayEpochDay, todayIndex } from '../dates.js?v=202611182251';
+import { DAILY_GAMES, dailyIndex, dailyEd, daysInFile } from '../runway.js?v=202611182251';
+import { GAME_SITES } from '../config.js?v=202611182251';
 import {
   loadCanokuCount, importCanokuPool, setCanokuPool, compareCanokuPool, updateCanokuPool,
   loadArenaSwitches, setArenaSwitch, loadChallengeGate, setChallengeGate, collectionsWithPlayer, GATE_MODES,
-} from '../store.js?v=202611182243';
+} from '../store.js?v=202611182251';
 import {
   SANDBOX_ONLY, LAUNCH_DATE as ADMIN_LAUNCH_DATE, FEATURES_SANDBOX_ONLY, FEATURE_NAMES,
-} from '../launch.js?v=202611182243';
-import { parsePool, hasPool, lastFreshDay, docIdFor, poolDocs, poolDocReached } from '../canokuPool.js?v=202611182243';
-import { maxIndex } from '../context.js?v=202611182243';
+} from '../launch.js?v=202611182251';
+import { parsePool, hasPool, lastFreshDay, docIdFor, poolDocs, poolDocReached } from '../canokuPool.js?v=202611182251';
+import { maxIndex } from '../context.js?v=202611182251';
 
 const RUNWAY_WARN_DAYS = 30;
 
