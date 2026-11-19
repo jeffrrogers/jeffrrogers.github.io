@@ -9,8 +9,8 @@
 // every deleted doc to a gzipped backup file in the legacy-export bucket
 // first, so there's no download step here.
 
-import { h, clear, toast } from '../ui.js?v=202611182231';
-import { callCanokuCleanup } from '../firebase.js?v=202611182231';
+import { h, clear, toast } from '../ui.js?v=202611182243';
+import { callCanokuCleanup } from '../firebase.js?v=202611182243';
 
 const MAX_GAMES = 10;
 const threshold = (n) => 10 + (Math.max(n, 1) - 1) * 5;
@@ -24,8 +24,9 @@ const SCAN_PAGE = 100;
 // A scan stops once a batch has checked this many accounts, so they can be
 // deleted before the next batch; the next scan carries on from there.
 const BATCH = 20000;
-const DELETE_CHUNK = 25;
-const DELETE_WORKERS = 3;
+// At most canokuCleanup.js's DELETE_MAX a call.
+const DELETE_CHUNK = 100;
+const DELETE_WORKERS = 4;
 
 // Where each range has got to: [{from, to, after, done}]. A range moves on
 // only after a page succeeds, so a failed or stopped scan loses nothing.
