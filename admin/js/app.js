@@ -1,24 +1,24 @@
 // Canuckle Admin: sign-in gate, header and tabs.
 
-import { h, clear, toast } from './ui.js?v=202611181714';
-import { ADMIN_EMAILS, SITE_LABEL, IS_SANDBOX } from './config.js?v=202611181714';
-import { OFFSET_WEEKS } from './launch.js?v=202611181714';
-import { onUser, signIn, signOut } from './firebase.js?v=202611181714';
-import { ctx, loadAll, loadWords } from './context.js?v=202611181714';
-import { renderPuzzles } from './views/puzzles.js?v=202611181714';
-import { renderDuo } from './views/duo.js?v=202611181714';
-import { renderRunway } from './views/runway.js?v=202611181714';
-import { renderCleanup } from './views/cleanup.js?v=202611181714';
-import { renderModeration } from './views/moderation.js?v=202611181714';
-import { renderCanokuCleanup } from './views/canokuCleanup.js?v=202611181714';
-import { renderLog } from './views/log.js?v=202611181714';
-import { renderRepair } from './views/repair.js?v=202611181714';
-import { renderCanagrams } from './views/canagrams.js?v=202611181714';
-import { renderCanoggle } from './views/canoggle.js?v=202611181714';
-import { renderCanatiles } from './views/canatiles.js?v=202611181714';
-import { renderVersions } from './views/versions.js?v=202611181714';
-import { renderSeed } from './views/seed.js?v=202611181714';
-import { renderAnalytics } from './views/analytics.js?v=202611181714';
+import { h, clear, toast } from './ui.js?v=202611182212';
+import { ADMIN_EMAILS, SITE_LABEL, IS_SANDBOX } from './config.js?v=202611182212';
+import { OFFSET_WEEKS } from './launch.js?v=202611182212';
+import { onUser, signIn, signOut } from './firebase.js?v=202611182212';
+import { ctx, loadAll, loadWords } from './context.js?v=202611182212';
+import { renderPuzzles } from './views/puzzles.js?v=202611182212';
+import { renderDuo } from './views/duo.js?v=202611182212';
+import { renderRunway } from './views/runway.js?v=202611182212';
+import { renderCleanup } from './views/cleanup.js?v=202611182212';
+import { renderModeration } from './views/moderation.js?v=202611182212';
+import { renderCanokuCleanup } from './views/canokuCleanup.js?v=202611182212';
+import { renderLog } from './views/log.js?v=202611182212';
+import { renderRepair } from './views/repair.js?v=202611182212';
+import { renderCanagrams } from './views/canagrams.js?v=202611182212';
+import { renderCanoggle } from './views/canoggle.js?v=202611182212';
+import { renderCanatiles } from './views/canatiles.js?v=202611182212';
+import { renderVersions } from './views/versions.js?v=202611182212';
+import { renderSeed } from './views/seed.js?v=202611182212';
+import { renderAnalytics } from './views/analytics.js?v=202611182212';
 
 const TABS = [
   ['canuckle', 'Canuckle'],

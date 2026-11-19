@@ -11,26 +11,26 @@
 // wrong on Canagrams. Giving a day its own fact writes canagramsGameData/{day};
 // the game shows that instead, and the Canuckle fact otherwise.
 
-import { h, clear, modal, toast, issues, safeHref, sortHead } from '../ui.js?v=202611181714';
-import { nextSort, sortRows } from '../sort.js?v=202611181714';
-import { GAME_SITES } from '../config.js?v=202611181714';
-import { longDate, todayEpochDay, isSwapLocked } from '../dates.js?v=202611181714';
-import { sdk } from '../firebase.js?v=202611181714';
-import { launchEd } from '../launch.js?v=202611181714';
+import { h, clear, modal, toast, issues, safeHref, sortHead } from '../ui.js?v=202611182212';
+import { nextSort, sortRows } from '../sort.js?v=202611182212';
+import { GAME_SITES } from '../config.js?v=202611182212';
+import { longDate, todayEpochDay, isSwapLocked } from '../dates.js?v=202611182212';
+import { sdk } from '../firebase.js?v=202611182212';
+import { launchEd } from '../launch.js?v=202611182212';
 import {
   RUNGS, unpackCanagrams, gridRows, rungOf, summarizePlayers,
-} from '../canagrams.js?v=202611181714';
+} from '../canagrams.js?v=202611182212';
 import {
   segmentsToText, textToSegments, canagramsFactOf, canagramsFactToSave, looksDateBound,
-} from '../facts.js?v=202611181714';
+} from '../facts.js?v=202611182212';
 import {
   loadCanagramsFacts, saveCanagramsFact, CANAGRAMS_FACTS, withCanagramsFact,
   loadPlayCounts, CANAGRAMS_STATS,
-} from '../store.js?v=202611181714';
-import { factCard, previewFrame } from '../preview.js?v=202611181714';
-import { arenaFolder } from '../localFiles.js?v=202611181714';
-import { loadLocal } from '../swapFlow.js?v=202611181714';
-import { swapCard, openBoardSwap } from './boardSwap.js?v=202611181714';
+} from '../store.js?v=202611182212';
+import { factCard, previewFrame } from '../preview.js?v=202611182212';
+import { arenaFolder } from '../localFiles.js?v=202611182212';
+import { loadLocal } from '../swapFlow.js?v=202611182212';
+import { swapCard, openBoardSwap } from './boardSwap.js?v=202611182212';
 
 const START_ED = launchEd('canagrams');
 const DATA = 'canagrams/assets/assets/data/';

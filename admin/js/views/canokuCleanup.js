@@ -9,8 +9,8 @@
 // every deleted doc to a gzipped backup file in the legacy-export bucket
 // first, so there's no download step here.
 
-import { h, clear, toast } from '../ui.js?v=202611181714';
-import { callCanokuCleanup } from '../firebase.js?v=202611181714';
+import { h, clear, toast } from '../ui.js?v=202611182212';
+import { callCanokuCleanup } from '../firebase.js?v=202611182212';
 
 const MAX_GAMES = 10;
 const threshold = (n) => 10 + (Math.max(n, 1) - 1) * 5;
@@ -101,6 +101,39 @@ export function renderCanokuCleanup(root, rerender) {
   clear(root, rules, status, del);
 }
 
+// Cloud Run turns calls away while instances start ("waiting too long for an
+// available instance"), which reaches here as internal / unavailable. Both
+// ops are safe to repeat: a scan only reads, and a delete judges each account
+// again (one already deleted comes back as "gone").
+const RETRY_REASONS = ['internal', 'unavailable', 'deadline-exceeded', 'resource-exhausted',
+  'functions/internal', 'functions/unavailable', 'functions/deadline-exceeded', 'functions/resource-exhausted'];
+const RETRY_WAITS_MS = [2000, 5000, 15000, 30000];
+
+async function call(op, data) {
+  for (let attempt = 0; ; attempt++) {
+    try {
+      return await callCanokuCleanup(op, data);
+    } catch (e) {
+      if (attempt >= RETRY_WAITS_MS.length || !RETRY_REASONS.includes(e.reason) || state.stop) throw e;
+      await new Promise((r) => setTimeout(r, RETRY_WAITS_MS[attempt]));
+    }
+  }
+}
+
+/** Runs [n] workers over [work] (a function that returns false when done); the first failure stops them all. */
+async function workers(n, work) {
+  let failure = null;
+  await Promise.all(Array.from({ length: n }, async () => {
+    try {
+      while (!state.stop && !failure && (await work()) !== false) { /* next */ }
+    } catch (e) {
+      failure = failure ?? e;
+      state.stop = true;
+    }
+  }));
+  if (failure) throw failure;
+}
+
 const REASONS = {
   stale: 'Can be deleted',
   gone: 'Gone already',
@@ -123,16 +156,17 @@ async function scan(rerender) {
   });
   rerender();
   try {
-    state.total = (await callCanokuCleanup('count')).total;
+    state.total = (await call('count')).total;
     rerender();
     const queue = [...RANGES];
-    await Promise.all(Array.from({ length: SCAN_WORKERS }, async () => {
-      while (queue.length && !state.stop) {
+    await workers(SCAN_WORKERS, async () => {
+      if (!queue.length) return false;
+      {
         const [from, to] = queue.shift();
         let after = null;
         for (;;) {
-          if (state.stop) return;
-          const page = await callCanokuCleanup('scan', { from, to, after, limit: SCAN_PAGE });
+          if (state.stop) return false;
+          const page = await call('scan', { from, to, after, limit: SCAN_PAGE });
           for (const r of page.rows) {
             state.byReason[r.reason] = (state.byReason[r.reason] || 0) + 1;
             if (r.eligible) {
@@ -147,13 +181,14 @@ async function scan(rerender) {
           after = page.last;
         }
       }
-    }));
+      return true;
+    });
     state.candidates.sort((a, b) => (a.id < b.id ? -1 : 1));
     state.phase = state.stop ? 'idle' : 'scanned';
     if (state.stop) state.error = 'Scan stopped. Scan again before deleting.';
   } catch (e) {
     state.phase = 'idle';
-    state.error = `Scan failed: ${e.message}`;
+    state.error = `Scan failed: ${e.message} (${e.reason}). The numbers above are incomplete; scan again before deleting.`;
   }
   rerender();
 }
@@ -167,15 +202,15 @@ async function remove(rerender) {
     chunks.push(state.candidates.slice(i, i + DELETE_CHUNK).map((c) => ({ id: c.id, activityMs: c.activityMs })));
   }
   try {
-    await Promise.all(Array.from({ length: DELETE_WORKERS }, async () => {
-      while (chunks.length && !state.stop) {
-        const r = await callCanokuCleanup('delete', { accounts: chunks.shift() });
-        state.deleted += r.deleted.length;
-        state.skipped.push(...r.skipped);
-        if (r.backup) state.backups.push(r.backup);
-        rerender();
-      }
-    }));
+    await workers(DELETE_WORKERS, async () => {
+      if (!chunks.length) return false;
+      const r = await call('delete', { accounts: chunks.shift() });
+      state.deleted += r.deleted.length;
+      state.skipped.push(...r.skipped);
+      if (r.backup) state.backups.push(r.backup);
+      rerender();
+      return true;
+    });
     toast(state.stop ? `Stopped after deleting ${state.deleted} accounts.` : `Deleted ${state.deleted} Canoku accounts.`);
   } catch (e) {
     toast(`Delete stopped: ${e.message}`, { error: true });
