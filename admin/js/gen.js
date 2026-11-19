@@ -6,7 +6,7 @@ let nextId = 1;
 const pending = new Map();
 
 function start() {
-  worker = new Worker(new URL('./genWorker.js?v=202611182251', import.meta.url));
+  worker = new Worker(new URL('./genWorker.js?v=202611182253', import.meta.url));
   worker.onmessage = ({ data }) => {
     const p = pending.get(data.id);
     if (!p) return;

@@ -7,8 +7,8 @@
 // rename here reaches friends' lists and open challenges, and a delete is the
 // same erasure as the Arena's "Delete my social data".
 
-import { h, clear, toast, fmtTime } from '../ui.js?v=202611182251';
-import { callAdmin } from '../firebase.js?v=202611182251';
+import { h, clear, toast, fmtTime } from '../ui.js?v=202611182253';
+import { callAdmin } from '../firebase.js?v=202611182253';
 
 const state = {
   query: '',
