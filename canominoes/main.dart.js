@@ -8038,7 +8038,7 @@ if(q)return
 try{s=A.n(t.N,t.K)
 J.lM(s,"game","canominoes")
 J.aJG(s,b)
-J.lM(s,"version","Version 1.0.0")
+J.lM(s,"version","Version 1.1.0")
 r=s
 if(n!=null)n.$2(a,r)
 else if($.aCx.length<50)$.aCx.push(new A.W(a,r))}catch(o){}},
@@ -8635,7 +8635,7 @@ m=n.iE()
 l=m==null?null:m.h(0,"version")
 if(typeof l!="string"||l.length===0){q=!0
 s=1
-break}q=l==="Version 1.0.0"
+break}q=l==="Version 1.1.0"
 s=1
 break
 p=2
@@ -50631,7 +50631,7 @@ n=A.aME(15,20,new A.Ue(n.fr,q),"Privacy Policy",this.d)
 m=A.a9("POWERED BY",q,q,q,q,A.aj(q,q,m,q,q,q,q,q,p,q,q,11,q,q,B.v,q,1,!0,q,0.9,q,q,q,q,q,q),q,q)
 s=o?"assets/icons/cira-darkmode.svg":"assets/icons/cira-logo.svg"
 r=t.p
-return A.bH(A.a([n,B.cA,B.Cz,B.d3,A.fC(A.bH(A.a([m,B.b7,A.lk(s,q,B.bC,30,new A.at4(),q,q)],r),B.u,B.l,B.p),new A.at5(),B.q_,"Powered by CIRA",!1),B.bX,A.a9("Canominoes version "+B.c.hJ("Version 1.0.0","Version ",""),q,q,q,q,l,q,q),B.bt,A.a9("\xa9 2026 Canuckle Games",q,q,q,q,l,q,q)],r),B.u,B.l,B.p)}}
+return A.bH(A.a([n,B.cA,B.Cz,B.d3,A.fC(A.bH(A.a([m,B.b7,A.lk(s,q,B.bC,30,new A.at4(),q,q)],r),B.u,B.l,B.p),new A.at5(),B.q_,"Powered by CIRA",!1),B.bX,A.a9("Canominoes version "+B.c.hJ("Version 1.1.0","Version ",""),q,q,q,q,l,q,q),B.bt,A.a9("\xa9 2026 Canuckle Games",q,q,q,q,l,q,q)],r),B.u,B.l,B.p)}}
 A.at5.prototype={
 $0(){return A.nC("https://www.cira.ca?utm_source=Website&utm_medium=Banner&utm_campaign=Canuckle")},
 $S:0}

@@ -8055,7 +8055,7 @@ if(q)return
 try{s=A.m(t.N,t.K)
 J.q4(s,"game","canoggle")
 J.aKo(s,b)
-J.q4(s,"version","Version 1.0.0")
+J.q4(s,"version","Version 1.1.0")
 r=s
 if(n!=null)n.$2(a,r)
 else if($.aDs.length<50)$.aDs.push(new A.Z(a,r))}catch(o){}},
@@ -8878,7 +8878,7 @@ m=n.hA()
 l=m==null?null:m.h(0,"version")
 if(typeof l!="string"||l.length===0){q=!0
 s=1
-break}q=l==="Version 1.0.0"
+break}q=l==="Version 1.1.0"
 s=1
 break
 p=2
@@ -9077,7 +9077,7 @@ case 2:return A.t(o.at(-1),r)}})
 return A.v($async$lz,r)},
 aQG(){var s=v.G
 if(s.window.sessionStorage.getItem("chnReloadedForVersion")!=null){$.cg().cp("version still stale after a reload; not looping")
-return}s.window.sessionStorage.setItem("chnReloadedForVersion","Version 1.0.0")
+return}s.window.sessionStorage.setItem("chnReloadedForVersion","Version 1.1.0")
 s.window.location.reload()},
 aFj:function aFj(a,b){this.a=a
 this.b=b},
@@ -51521,7 +51521,7 @@ $0(){return A.uL("/arena/")},
 $S:0}
 A.Xi.prototype={
 H(a){var s=null,r="ClearSans",q=a.R(t.A).f.a,p=this.c,o=p.cx,n=A.a4(s,s,o,s,s,s,s,s,r,s,s,13,s,s,s,s,1.3,!0,s,s,s,s,s,s,s,s),m=q?"cira-darkmode":"cira-logo",l=t.p
-return A.ba(A.a([new A.x_("Privacy Policy",this.d,new A.U5(p.dy,s),20,15,s),B.ck,B.Cp,B.aH,A.f4(A.ba(A.a([A.V("POWERED BY",s,s,s,s,A.a4(s,s,o,s,s,s,s,s,r,s,s,11,s,s,B.q,s,1,!0,s,0.9,s,s,s,s,s,s),s,s),B.bM,A.p3("assets/icons/"+m+".svg",30,new A.atL(),s)],l),B.t,B.l,B.n),new A.atM(),B.pQ,"Powered by CIRA",!1),B.aH,A.V("Canoggle "+B.c.hL("Version 1.0.0","Version","version"),s,s,s,s,n,B.R,s),B.b7,A.V("\xa9 2026 Canuckle Games",s,s,s,s,n,B.R,s)],l),B.t,B.l,B.n)}}
+return A.ba(A.a([new A.x_("Privacy Policy",this.d,new A.U5(p.dy,s),20,15,s),B.ck,B.Cp,B.aH,A.f4(A.ba(A.a([A.V("POWERED BY",s,s,s,s,A.a4(s,s,o,s,s,s,s,s,r,s,s,11,s,s,B.q,s,1,!0,s,0.9,s,s,s,s,s,s),s,s),B.bM,A.p3("assets/icons/"+m+".svg",30,new A.atL(),s)],l),B.t,B.l,B.n),new A.atM(),B.pQ,"Powered by CIRA",!1),B.aH,A.V("Canoggle "+B.c.hL("Version 1.1.0","Version","version"),s,s,s,s,n,B.R,s),B.b7,A.V("\xa9 2026 Canuckle Games",s,s,s,s,n,B.R,s)],l),B.t,B.l,B.n)}}
 A.atM.prototype={
 $0(){return A.lE("https://www.cira.ca?utm_source=Website&utm_medium=Banner&utm_campaign=Canuckle")},
 $S:0}

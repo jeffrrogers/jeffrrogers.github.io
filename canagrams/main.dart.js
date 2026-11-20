@@ -8062,7 +8062,7 @@ if(p)return
 try{s=A.n(t.N,t.K)
 r=b
 if(r!=null)J.aKP(s,r)
-J.qk(s,"version","Version 1.0.0")
+J.qk(s,"version","Version 1.1.0")
 q=s
 q.bi("game",new A.aFn())
 if(m!=null)m.$2(a,q)
@@ -8826,7 +8826,7 @@ m=n.hB()
 l=m==null?null:m.h(0,"version")
 if(typeof l!="string"||l.length===0){q=!0
 s=1
-break}q=l==="Version 1.0.0"
+break}q=l==="Version 1.1.0"
 s=1
 break
 p=2
@@ -8995,7 +8995,7 @@ case 1:return A.t(p.at(-1),r)}})
 return A.v($async$nK,r)},
 b5L(){var s=v.G
 if(s.window.sessionStorage.getItem("cgmReloadedForVersion")!=null){$.bY().c2("version still stale after a reload; not looping")
-return}s.window.sessionStorage.setItem("cgmReloadedForVersion","Version 1.0.0")
+return}s.window.sessionStorage.setItem("cgmReloadedForVersion","Version 1.1.0")
 s.window.location.reload()},
 aFt:function aFt(a,b){this.a=a
 this.b=b},
@@ -51434,7 +51434,7 @@ $0(){return A.uZ("/arena/")},
 $S:0}
 A.XH.prototype={
 J(a){var s=null,r="ClearSans",q=a.T(t.q).f.a,p=this.c,o=p.cx,n=A.a7(s,s,o,s,s,s,s,s,r,s,s,13,s,s,s,s,1.3,!0,s,s,s,s,s,s,s,s),m=q?"cira-darkmode":"cira-logo",l=t.p
-return A.ba(A.a([new A.x9("Privacy Policy",this.d,new A.Uu(p.dy,s),20,15,s),B.cf,B.C9,B.au,A.eI(A.ba(A.a([A.Y("POWERED BY",s,s,s,s,A.a7(s,s,o,s,s,s,s,s,r,s,s,11,s,s,B.r,s,1,!0,s,0.9,s,s,s,s,s,s),s,s),B.aX,A.lt("assets/icons/"+m+".svg",30,new A.atW(),s)],l),B.q,B.l,B.o),s,new A.atX(),B.io,"Powered by CIRA",!1,s),B.au,A.Y("Canagrams "+B.c.hK("Version 1.0.0","Version","version"),s,s,s,s,n,B.W,s),B.bA,A.Y("\xa9 2026 Canuckle Games",s,s,s,s,n,B.W,s)],l),B.q,B.l,B.o)}}
+return A.ba(A.a([new A.x9("Privacy Policy",this.d,new A.Uu(p.dy,s),20,15,s),B.cf,B.C9,B.au,A.eI(A.ba(A.a([A.Y("POWERED BY",s,s,s,s,A.a7(s,s,o,s,s,s,s,s,r,s,s,11,s,s,B.r,s,1,!0,s,0.9,s,s,s,s,s,s),s,s),B.aX,A.lt("assets/icons/"+m+".svg",30,new A.atW(),s)],l),B.q,B.l,B.o),s,new A.atX(),B.io,"Powered by CIRA",!1,s),B.au,A.Y("Canagrams "+B.c.hK("Version 1.1.0","Version","version"),s,s,s,s,n,B.W,s),B.bA,A.Y("\xa9 2026 Canuckle Games",s,s,s,s,n,B.W,s)],l),B.q,B.l,B.o)}}
 A.atX.prototype={
 $0(){return A.lQ("https://www.cira.ca?utm_source=Website&utm_medium=Banner&utm_campaign=Canuckle")},
 $S:0}
