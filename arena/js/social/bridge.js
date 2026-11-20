@@ -11,12 +11,12 @@
 // the Arena), re-reading it (one Firestore read) only when that copy is a few
 // minutes old.
 
-import { call, cachedSocial, loadSocialViaServer, reasonText } from './api.js?v=202611190813';
-import { WINNER_RULE } from './puzzles.js?v=202611190813';
-import { arenaGet, playerId } from '../local.js?v=202611190813';
-import { todayEpochDay, ymd } from '../dates.js?v=202611190813';
-import { listNames, ordinal } from './podium.js?v=202611190813';
-import { seenResults } from './seen.js?v=202611190813';
+import { call, cachedSocial, loadSocialViaServer, reasonText } from './api.js?v=202611192342';
+import { WINNER_RULE } from './puzzles.js?v=202611192342';
+import { arenaGet, playerId } from '../local.js?v=202611192342';
+import { todayEpochDay, ymd } from '../dates.js?v=202611192342';
+import { listNames, ordinal } from './podium.js?v=202611192342';
+import { seenResults } from './seen.js?v=202611192342';
 
 const FRESH_MS = 3 * 60000;
 const atKey = () => `socialAt.${playerId()}`;
@@ -163,7 +163,7 @@ export function finalsFor(doc, gameId, { titleOf, whenOf, arenaUrl, seen = new S
  */
 async function namers() {
   const [{ gameById }, { fromPuzzle, puzzleTitle }] = await Promise.all([
-    import('../games/registry.js?v=202611190813'), import('./puzzles.js?v=202611190813'),
+    import('../games/registry.js?v=202611192342'), import('./puzzles.js?v=202611192342'),
   ]);
   const todayEd = todayEpochDay();
   return {
@@ -174,6 +174,17 @@ async function namers() {
     },
     whenOf: (v) => whenLabel(gameById(v.game), fromPuzzle(v.game, v.puzzle).index, todayEd),
   };
+}
+
+/**
+ * Whether the pre-start cover goes up. Not over an accepted challenge (just
+ * play it). Without friends it would offer only Play, so it stays down, unless
+ * it has something of theirs to show: an invite to this puzzle, another one
+ * waiting, or a recent result (a challenge can outlast a friend removed).
+ */
+export function coverShows({ accepted, friends, invite, elsewhere = [], finals = [] }) {
+  if (accepted) return false;
+  return friends > 0 || !!invite || elsewhere.length > 0 || finals.length > 0;
 }
 
 /**
@@ -201,10 +212,11 @@ export async function cover(gameId, puzzleJson) {
   } : null;
   // An accepted challenge on this puzzle needs no cover: just play it.
   const accepted = hit && hit[1].me === 'accepted';
+  const friends = Object.keys(doc.friends ?? {}).length;
   return JSON.stringify({
-    show: !accepted,
+    show: coverShows({ accepted, friends, invite, elsewhere, finals }),
     invite,
-    canChallenge: Object.keys(doc.friends ?? {}).length > 0,
+    canChallenge: friends > 0,
     // The challenge's own terms (Canoggle's time limit), for the game to play
     puzzle: hit ? hit[1].puzzle : null,
     elsewhere,

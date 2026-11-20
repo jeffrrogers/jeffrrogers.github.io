@@ -9,14 +9,14 @@
 // write, which for a finished deal is when it finished. A deal left unfinished
 // is uploaded at the next day's launch with st: 0 and a board snapshot.
 
-import { launchDaily, pct, historyStart, readJsonPref, readPendingList } from './common.js?v=202611190813';
-import { duration, edOfMillis } from '../dates.js?v=202611190813';
-import { toMillis } from '../firebase.js?v=202611190813';
-import { launchEd } from '../config.js?v=202611190813';
-import { readPref, prefKeys } from '../local.js?v=202611190813';
+import { launchDaily, pct, historyStart, readJsonPref, readPendingList } from './common.js?v=202611192342';
+import { duration, edOfMillis } from '../dates.js?v=202611192342';
+import { toMillis } from '../firebase.js?v=202611192342';
+import { launchEd } from '../config.js?v=202611192342';
+import { readPref, prefKeys } from '../local.js?v=202611192342';
 import {
   SOLVED, PLAYED, PROGRESS, emptyProgress, mark, currentStreak, longestStreak, intList, num, minEd, maxEd, noteFinish,
-} from '../status.js?v=202611190813';
+} from '../status.js?v=202611192342';
 
 /** The save rate, in percent, a goalie shootout needs for the Brick Wall badge. */
 export const SAVE_BADGE_PERCENT = 85;

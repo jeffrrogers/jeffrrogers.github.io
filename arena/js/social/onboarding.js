@@ -5,10 +5,10 @@
 // stopped (closed a sheet) or are under 14. Only the outcome of the age
 // check is stored, never the birth year (firebase/functions/src/social.js).
 
-import { h, openSheet, sheetHead, toast, ICONS } from '../ui.js?v=202611190813';
-import { openPrivacy } from '../privacy.js?v=202611190813';
-import { call, loadSocial, ensurePlayerId, markStartedSocial, reasonText } from './api.js?v=202611190813';
-import { suggester } from './names.js?v=202611190813';
+import { h, openSheet, sheetHead, toast, ICONS } from '../ui.js?v=202611192342';
+import { openPrivacy } from '../privacy.js?v=202611192342';
+import { call, loadSocial, ensurePlayerId, markStartedSocial, reasonText } from './api.js?v=202611192342';
+import { suggester } from './names.js?v=202611192342';
 
 const MONTHS = ['January', 'February', 'March', 'April', 'May', 'June', 'July',
   'August', 'September', 'October', 'November', 'December'];

@@ -8,13 +8,13 @@
 // isFromArchive}. Each guess is played on both boards; the puzzle is won once
 // both answers have been guessed and lost after seven guesses without both.
 
-import { edOfMillis } from '../dates.js?v=202611190813';
-import { launchEd } from '../config.js?v=202611190813';
-import { parseJsonList, readJsonPref, pct } from './common.js?v=202611190813';
-import { gameStrings } from '../packedGames.js?v=202611190813';
+import { edOfMillis } from '../dates.js?v=202611192342';
+import { launchEd } from '../config.js?v=202611192342';
+import { parseJsonList, readJsonPref, pct } from './common.js?v=202611192342';
+import { gameStrings } from '../packedGames.js?v=202611192342';
 import {
   SOLVED, FAILED, PROGRESS, emptyProgress, mark, currentStreak, longestStreak, num, minEd, noteFinish,
-} from '../status.js?v=202611190813';
+} from '../status.js?v=202611192342';
 
 const BASE = 120001;
 export const DUO_MAX_GUESSES = 7;

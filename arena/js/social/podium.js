@@ -6,7 +6,7 @@
 // 1st to 3rd in a final challenge, as long as someone else played too. Ties
 // share a place. The server counts them (functions/src/views.js standing).
 
-import { ordinal } from './bars.js?v=202611190813';
+import { ordinal } from './bars.js?v=202611192342';
 
 export { ordinal };
 
