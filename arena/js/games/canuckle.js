@@ -6,12 +6,12 @@
 // entries use {guesses: [{guess}]} instead of userGuesses. startTimestamp is
 // local midnight of the day the game was started, archive games included.
 
-import { epochDay, edOfMillis } from '../dates.js?v=202611192342';
-import { parseJsonList, readJsonPref, pct } from './common.js?v=202611192342';
-import { gameStrings } from '../packedGames.js?v=202611192342';
+import { epochDay, edOfMillis } from '../dates.js?v=202611200014';
+import { parseJsonList, readJsonPref, pct } from './common.js?v=202611200014';
+import { gameStrings } from '../packedGames.js?v=202611200014';
 import {
   SOLVED, FAILED, PROGRESS, emptyProgress, mark, currentStreak, longestStreak, num, minEd, noteFinish,
-} from '../status.js?v=202611192342';
+} from '../status.js?v=202611200014';
 
 const ORIGINAL_START = epochDay(2022, 2, 10); // games #1-#142
 const ORIGINAL_END = epochDay(2022, 7, 1);

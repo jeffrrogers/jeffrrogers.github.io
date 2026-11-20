@@ -4,19 +4,19 @@
 // Everything shown comes from the player's social doc (app.social), which
 // only the server writes. Actions call the server, then re-read the doc.
 
-import { h, openSheet, sheetHead, toast, ICONS } from '../ui.js?v=202611192342';
-import { call, loadSocial, reasonText, waitingCount, hasStartedSocial } from '../social/api.js?v=202611192342';
-import { setUpChallenges, gamerIdStep } from '../social/onboarding.js?v=202611192342';
-import { arenaGet, arenaSet, playerId } from '../local.js?v=202611192342';
-import { seenResults, markResultsSeen } from '../social/seen.js?v=202611192342';
-import { track } from '../analytics.js?v=202611192342';
-import { gameById } from '../games/registry.js?v=202611192342';
-import { fromPuzzle, puzzleTitle, canChallenge, CHALLENGE_GAMES } from '../social/puzzles.js?v=202611192342';
+import { h, openSheet, sheetHead, toast, ICONS } from '../ui.js?v=202611200014';
+import { call, loadSocial, reasonText, waitingCount, hasStartedSocial } from '../social/api.js?v=202611200014';
+import { setUpChallenges, gamerIdStep } from '../social/onboarding.js?v=202611200014';
+import { arenaGet, arenaSet, playerId } from '../local.js?v=202611200014';
+import { seenResults, markResultsSeen } from '../social/seen.js?v=202611200014';
+import { track } from '../analytics.js?v=202611200014';
+import { gameById } from '../games/registry.js?v=202611200014';
+import { fromPuzzle, puzzleTitle, canChallenge, CHALLENGE_GAMES } from '../social/puzzles.js?v=202611200014';
 import {
   avatarParts, trophyCase, trophySvg, gameLine, recentLine, whenText, PLACE_NAMES,
-} from '../social/podium.js?v=202611192342';
-import * as sheets from './challengeSheets.js?v=202611192342';
-import { openTutorial, tutorialLink, tutorialSeen } from './challengeTutorial.js?v=202611192342';
+} from '../social/podium.js?v=202611200014';
+import * as sheets from './challengeSheets.js?v=202611200014';
+import { openTutorial, tutorialLink, tutorialSeen } from './challengeTutorial.js?v=202611200014';
 
 export { canChallenge };
 
