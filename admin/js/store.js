@@ -2,22 +2,26 @@
 // transaction that also writes an adminLog entry with the docs before and
 // after, so any edit, swap or import can be restored from the Log tab.
 
-import { sdk, currentEmail } from './firebase.js?v=202611190813';
-import { GAMES } from './dates.js?v=202611190813';
-import { decodeAnswer } from './codec.js?v=202611190813';
+import { sdk, currentEmail } from './firebase.js?v=202611251019';
+import { GAMES } from './dates.js?v=202611251019';
+import { decodeAnswer } from './codec.js?v=202611251019';
 import {
   PLAYER_COLLECTIONS, GAMES_SUBCOLLECTION_PARENTS, MAX_GAMES, queryCutoff, accountVerdict, quickVerdict,
-} from './cleanup.js?v=202611190813';
-import { pool } from './pool.js?v=202611190813';
-import { repairAccount } from './repair.js?v=202611190813';
-import { VOTES_COLLECTION } from './polls.js?v=202611190813';
-import { isSeedId } from './seed/accounts.js?v=202611190813';
-import { isTs } from './seed/shapes.js?v=202611190813';
-import { withZeroCounts } from './duoSwap.js?v=202611190813';
-import { puzzleSource, hasPool, poolDocs, docIdFor, samePoolDoc } from './canokuPool.js?v=202611190813';
+} from './cleanup.js?v=202611251019';
+import { pool } from './pool.js?v=202611251019';
+import {
+  ARCHIVE_COLLECTION, ARCHIVE_BATCH, RESTORE_IN_PRODUCTION, archiveCutoff, archiveVerdict, archivedDoc, archiveStep, chunk,
+} from './archive.js?v=202611251019';
+import { allSeedIds } from './seed/accounts.js?v=202611251019';
+import { repairAccount } from './repair.js?v=202611251019';
+import { VOTES_COLLECTION } from './polls.js?v=202611251019';
+import { isSeedId } from './seed/accounts.js?v=202611251019';
+import { isTs } from './seed/shapes.js?v=202611251019';
+import { withZeroCounts } from './duoSwap.js?v=202611251019';
+import { puzzleSource, hasPool, poolDocs, docIdFor, samePoolDoc } from './canokuPool.js?v=202611251019';
 import {
   ARCHIVES, buildChunks, chunkChanges, patchChunk, chunkDiff, byChunkStart,
-} from './archiveSummary.js?v=202611190813';
+} from './archiveSummary.js?v=202611251019';
 
 // ---- Puzzles --------------------------------------------------------------
 
@@ -781,6 +785,121 @@ export async function deleteAllAccounts(accounts, { parallel = 4, onBatch, shoul
     onBatch?.({ deleted: b.ids });
   });
   return { deleted };
+}
+
+// ---- Archive: idle Canuckle accounts (archive.js) ------------------------------
+
+/**
+ * The dry run: pages through newUserData docs not updated since the 9-month
+ * cutoff (oldest first), reads their social docs 30 at a time, and decides
+ * each (archiveVerdict). onPage(verdicts, candidates, scanned) after each
+ * page. Candidates carry the lastUpdated the archive must still find, and
+ * the doc as read (the optional backup file).
+ */
+export async function findArchivable(nowMs, { onPage, shouldStop } = {}) {
+  const { fs, db } = await sdk();
+  const base = [
+    fs.collection(db, 'newUserData'),
+    fs.where('lastUpdated', '<', archiveCutoff(nowMs)),
+    fs.orderBy('lastUpdated'),
+    fs.limit(500),
+  ];
+  let last = null;
+  for (;;) {
+    if (shouldStop?.()) return;
+    const q = last ? fs.query(...base, fs.startAfter(last)) : fs.query(...base);
+    const snap = await fs.getDocs(q);
+    if (snap.empty) return;
+    const rows = snap.docs.map((d) => ({ id: d.id, user: d.data() }));
+    onPage?.(...(await decideArchive(rows, nowMs)), rows.length);
+    last = snap.docs[snap.docs.length - 1];
+    if (snap.size < 500) return;
+  }
+}
+
+/** The test run's dry run: the QA seed accounts that exist, idle or not. */
+export async function findSeedArchivable(nowMs) {
+  const { fs, db } = await sdk();
+  const rows = [];
+  await pool(chunk(allSeedIds(), 30), 4, async (ids) => {
+    const s = await fs.getDocs(fs.query(fs.collection(db, 'newUserData'), fs.where(fs.documentId(), 'in', ids)));
+    for (const d of s.docs) rows.push({ id: d.id, user: d.data() });
+  });
+  rows.sort((a, b) => a.id.localeCompare(b.id));
+  const [verdicts, candidates] = await decideArchive(rows, nowMs, { seedTest: true });
+  return { verdicts, candidates, scanned: rows.length };
+}
+
+// Reads the social docs of the accounts still in the running (30 per query)
+// and decides each: [verdicts, candidates].
+async function decideArchive(rows, nowMs, opts) {
+  const { fs, db } = await sdk();
+  const need = rows.filter((r) => archiveVerdict(r.id, r.user, null, nowMs, opts).eligible).map((r) => r.id);
+  const social = {};
+  await pool(chunk(need, 30), 4, async (ids) => {
+    for (const id of ids) social[id] = null;
+    const s = await fs.getDocs(fs.query(fs.collection(db, 'social'), fs.where(fs.documentId(), 'in', ids)));
+    for (const d of s.docs) social[d.id] = d.data();
+  });
+  const verdicts = rows.map((r) => ({ id: r.id, ...archiveVerdict(r.id, r.user, social[r.id], nowMs, opts) }));
+  const candidates = rows.flatMap((r, i) => (verdicts[i].eligible
+    ? [{ id: r.id, idleDays: verdicts[i].idleDays, lastUpdated: r.user.lastUpdated, user: r.user }] : []));
+  return [verdicts, candidates];
+}
+
+/**
+ * Moves each candidate's newUserData doc to archivedUserData, ARCHIVE_BATCH
+ * accounts per transaction, [parallel] transactions at a time. Each account is
+ * re-read in the transaction and skipped if the player came back since the
+ * scan (archiveStep), so a newer save is never archived over or deleted.
+ * Each transaction logs its ids ('archive'; the docs themselves are in the
+ * archive). onBatch({archived, skipped}) after each.
+ */
+export async function archiveAccounts(candidates, { parallel = 4, onBatch, shouldStop } = {}) {
+  if (!RESTORE_IN_PRODUCTION) refuseNonSeed(candidates.map((c) => c.id));
+  const { fs, db } = await sdk();
+  const email = await currentEmail();
+  const out = { archived: [], skipped: {} };
+  await pool(chunk(candidates, ARCHIVE_BATCH), parallel, async (group) => {
+    if (shouldStop?.()) return;
+    const nowMs = Date.now();
+    const r = await fs.runTransaction(db, async (tx) => {
+      const live = group.map((c) => fs.doc(db, 'newUserData', c.id));
+      const arch = group.map((c) => fs.doc(db, ARCHIVE_COLLECTION, c.id));
+      const snaps = await Promise.all([...live, ...arch].map((ref) => tx.get(ref)));
+      const archived = [];
+      const skipped = {};
+      group.forEach((c, i) => {
+        const l = snaps[i];
+        const a = snaps[group.length + i];
+        const step = archiveStep(c.lastUpdated, l.exists() ? l.data() : null, a.exists() ? a.data() : null);
+        if (step !== 'archive') {
+          skipped[c.id] = step;
+          return;
+        }
+        tx.set(arch[i], archivedDoc(l.data(), nowMs));
+        tx.delete(live[i]);
+        archived.push(c.id);
+      });
+      if (archived.length) {
+        tx.set(fs.doc(fs.collection(db, 'adminLog')), {
+          at: fs.serverTimestamp(),
+          email,
+          action: 'archive',
+          note: `${archived.length} accounts moved to ${ARCHIVE_COLLECTION}`,
+          collection: 'newUserData',
+          ids: archived,
+          before: null,
+          after: null,
+        });
+      }
+      return { archived, skipped };
+    });
+    out.archived.push(...r.archived);
+    Object.assign(out.skipped, r.skipped);
+    onBatch?.(r);
+  });
+  return out;
 }
 
 // ---- Repair: accounts Canuckle can't save ------------------------------------

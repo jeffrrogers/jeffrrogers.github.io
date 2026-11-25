@@ -12,12 +12,13 @@
 // which runs both versions of each account (as seeded, and with the step
 // played: build(true)) through the Arena's own adapters and badge rules.
 
-import { GAMES, epochDay } from '../dates.js?v=202611190813';
-import { launchEd } from '../launch.js?v=202611190813';
+import { GAMES, epochDay } from '../dates.js?v=202611251019';
+import { launchEd } from '../launch.js?v=202611251019';
+import { packedUpdate } from '../packedGames.js?v=202611251019';
 import {
   ts, midnightOf, timeOn, weekdayOf, canuckleGame, duoGame, canuckleStats, duoStats, newUserStub,
   canokuStats, canokuSettings, canokuBoard, canokuSize,
-} from './shapes.js?v=202611190813';
+} from './shapes.js?v=202611251019';
 
 export const TESTERS = { JR: 'Jeff', MR: 'Mark' };
 
@@ -170,11 +171,28 @@ const streaksOf = (list, today) => {
 };
 
 /**
- * newUserData/{id}. shape '302' is Canuckle 3.0.2's save (live until the
- * Nov 1 deploy: no Duo fields, the old achievement and trivia fields);
- * 'current' is what Canuckle writes now (user.dart toJson).
+ * newUserData/{id}, in the packed form (formatVersion 2) every real account
+ * has had since the 2026-11-25 bulk conversion: built in the old form, then
+ * converted exactly as convertPacked.mjs did (packedUpdate), unless a game
+ * can't be packed exactly (see below). shape '302'
+ * starts from Canuckle 3.0.2's save (live until the Nov 1 deploy: no Duo
+ * fields, the old achievement and trivia fields, which the conversion drops);
+ * 'current' from what Canuckle wrote before packing (user.dart toJson).
  */
-function newUser(env, { daily = [], plus = [], duo = [], shape = 'current', email = '' }) {
+function newUser(env, opts) {
+  const doc = oldNewUser(env, opts);
+  // Games saved in the oldest format (old: true) can't be packed exactly, so
+  // that account stays in the old form, as the converter left such accounts
+  const update = packedUpdate(doc, DELETE);
+  if (!update) return doc;
+  const out = { ...doc, ...update };
+  for (const k of Object.keys(out)) if (out[k] === DELETE) delete out[k];
+  return out;
+}
+
+const DELETE = Symbol('delete');
+
+function oldNewUser(env, { daily = [], plus = [], duo = [], shape = 'current', email = '' }) {
   const d = daily.map((g) => wordGame(env, 'canuckle', g));
   const p = plus.map((g) => wordGame(env, 'plus', g));
   const [streak, maxStreak] = streaksOf(daily, env.today('canuckle'));
