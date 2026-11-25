@@ -5,17 +5,17 @@
 // something inside Canuckle, plus the Ko-fi and social links Canuckle keeps in
 // its menu.
 
-import { h, ICONS, openSheet, sheetHead, toast } from '../ui.js?v=202611200014';
+import { h, ICONS, openSheet, sheetHead, toast } from '../ui.js?v=202611250819';
 import {
   ARENA_VERSION, IS_SANDBOX, isLive, sandboxOffsetWeeks, setSandboxOffsetWeeks, parseOffsetWeeks, offsetBannerText,
-} from '../config.js?v=202611200014';
-import { readPref, prefKeys, arenaSet } from '../local.js?v=202611200014';
-import { getDocData, setMerge } from '../firebase.js?v=202611200014';
-import { currentTheme, currentContrast, setTheme, setContrast } from '../theme.js?v=202611200014';
-import { idDocsHere, isValidUserId, planIdSwitch, applyIdSwitch } from '../idSwitch.js?v=202611200014';
-import { track } from '../analytics.js?v=202611200014';
-import { openPrivacy } from '../privacy.js?v=202611200014';
-import { openGameOrder } from './gameOrderSheet.js?v=202611200014';
+} from '../config.js?v=202611250819';
+import { readPref, prefKeys, arenaSet } from '../local.js?v=202611250819';
+import { getDocData, getCanuckleDoc, setMerge } from '../firebase.js?v=202611250819';
+import { currentTheme, currentContrast, setTheme, setContrast } from '../theme.js?v=202611250819';
+import { idDocsHere, isValidUserId, planIdSwitch, applyIdSwitch } from '../idSwitch.js?v=202611250819';
+import { track } from '../analytics.js?v=202611250819';
+import { openPrivacy } from '../privacy.js?v=202611250819';
+import { openGameOrder } from './gameOrderSheet.js?v=202611250819';
 
 const SUPPORT_EMAIL = 'info@canucklegame.ca';
 const KOFI_URL = 'https://ko-fi.com/canuckle';
@@ -140,7 +140,8 @@ function emailRow(app) {
 
   const render = (doc) => {
     const caption = h('div', { class: 'set-detail', text: 'Only used for account recovery purposes.' });
-    if (!doc || !Array.isArray(doc.games)) {
+    // Either history form (packedGames once converted; ../packedGames.js)
+    if (!doc || !(Array.isArray(doc.games) || Array.isArray(doc.packedGames))) {
       box.replaceChildren(
         h('div', { class: 'set-label', text: 'Linked Email' }),
         h('div', { class: 'set-detail', text: 'Play Canuckle once to link an email.' }));
@@ -200,7 +201,7 @@ function emailRow(app) {
     box.replaceChildren(h('div', { class: 'set-label', text: 'Linked Email' }), form, caption);
   };
 
-  getDocData(['newUserData', app.uid]).then(render, () => {
+  getCanuckleDoc(app.uid).then(render, () => {
     box.replaceChildren(
       h('div', { class: 'set-label', text: 'Linked Email' }),
       h('div', { class: 'set-detail', text: 'Couldn’t load. Check your connection.' }));
@@ -284,7 +285,9 @@ export function openSync(app, { returnTo = null } = {}) {
       // game that hasn't launched or is still sandbox-only
       const idDocs = idDocsHere(isLive);
       const games = Object.keys(idDocs);
-      const found = await Promise.all(games.map((g) => getDocData([idDocs[g], newId])));
+      // An archived Canuckle account is brought back first (firebase.js)
+      const found = await Promise.all(games.map((g) => (idDocs[g] === 'newUserData'
+        ? getCanuckleDoc(newId) : getDocData([idDocs[g], newId]))));
       docs = Object.fromEntries(games.map((g, i) => [g, found[i]]));
     } catch {
       // An error is never "not found": guessing wrong here would switch to an
@@ -447,7 +450,7 @@ function build(app, onTheme) {
         class: 'set-row link-row', type: 'button',
         onClick: async () => {
           closeSettings();
-          (await import('./challengesTab.js?v=202611200014')).deleteMySocialData();
+          (await import('./challengesTab.js?v=202611250819')).deleteMySocialData();
         },
       },
       h('span', { class: 'set-text' },

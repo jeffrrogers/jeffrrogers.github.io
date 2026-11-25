@@ -1,6 +1,6 @@
 // Shared vocabulary for puzzle status, and streak arithmetic.
 
-import { edOfMillis } from './dates.js?v=202611200014';
+import { edOfMillis } from './dates.js?v=202611250819';
 
 export const SOLVED = 'solved';     // won / completed
 export const FAILED = 'failed';     // finished without a win (Canuckle loss, Canoggle reveal)

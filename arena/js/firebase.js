@@ -1,6 +1,6 @@
 // Firestore access, loaded lazily so the page paints before the SDK arrives.
 
-import { FIREBASE_CONFIG, FIREBASE_SDK } from './config.js?v=202611200014';
+import { FIREBASE_CONFIG, FIREBASE_SDK } from './config.js?v=202611250819';
 
 const TIMEOUT_MS = 10000;
 
@@ -116,6 +116,42 @@ export function toMillis(t) {
   return null;
 }
 
+// Canuckle accounts idle 9+ months are archived (firebase/COST_PLAN.md item 6):
+// newUserData/{id} is gone until the server moves it back (the arena
+// function's restoreAccount op, functions/src/restore.js). Canuckle asks on
+// every load that finds no doc; the Arena, which also sees players who never
+// played Canuckle, asks at most once a month per player on this browser.
+const RESTORE_EVERY_MS = 30 * 86400000;
+
+async function restoreArchived(uid) {
+  const key = `arena.restoreAskedAt.${uid}`;
+  try {
+    const at = Number(localStorage.getItem(key));
+    if (at && Date.now() - at < RESTORE_EVERY_MS) return false;
+  } catch {
+    // No storage: ask
+  }
+  try {
+    const { restored } = await callArenaFunction({ op: 'restoreAccount', pid: uid });
+    try {
+      localStorage.setItem(key, String(Date.now()));
+    } catch {
+      // No storage: asked again next load
+    }
+    return restored === true;
+  } catch (e) {
+    console.warn('arena: restore check', e);
+    return false;
+  }
+}
+
+/** The player's Canuckle doc (newUserData/{uid}), brought back first if it was archived; null when there's none. */
+export async function getCanuckleDoc(uid) {
+  const doc = await getDocData(['newUserData', uid]);
+  if (doc) return doc;
+  return (await restoreArchived(uid)) ? getDocData(['newUserData', uid]) : null;
+}
+
 /**
  * A per-load reader that shares one fetch per document path, so two adapters
  * reading the same document (Canuckle and Canuckle+) cost one read.
@@ -125,7 +161,10 @@ export function createReader() {
   return {
     getDoc(path) {
       const key = path.join('/');
-      if (!docs.has(key)) docs.set(key, getDocData(path));
+      if (!docs.has(key)) {
+        const canuckle = path.length === 2 && path[0] === 'newUserData';
+        docs.set(key, canuckle ? getCanuckleDoc(path[1]) : getDocData(path));
+      }
       return docs.get(key);
     },
     listDocs,

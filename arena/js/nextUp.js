@@ -7,21 +7,21 @@
 // snapshot plus this browser's saves, and the games tell it what they finish
 // (markPlayed) so a finish shows here before the arena has refreshed.
 
-import { liveGames } from './games/registry.js?v=202611200014';
-import { loadProductionSwitches, featureOn } from './config.js?v=202611200014';
+import { liveGames } from './games/registry.js?v=202611250819';
+import { loadProductionSwitches, featureOn } from './config.js?v=202611250819';
 
 // The game's suggestions use the switches last read (localStorage); refresh
 // them in the background so a game the admin just put on production is
 // suggested from the next page on.
 loadProductionSwitches().catch(() => {});
-import { cachedRaw, derive } from './progress.js?v=202611200014';
-import { arenaGet, arenaSet, playerId } from './local.js?v=202611200014';
-import { todayEpochDay } from './dates.js?v=202611200014';
-import { recentIndices } from './games/common.js?v=202611200014';
-import { isDone, PROGRESS } from './status.js?v=202611200014';
-import { readFavourites } from './favourites.js?v=202611200014';
-import { computeOrder } from './gameOrder.js?v=202611200014';
-import { startOneTab } from './oneTab.js?v=202611200014';
+import { cachedRaw, derive } from './progress.js?v=202611250819';
+import { arenaGet, arenaSet, playerId } from './local.js?v=202611250819';
+import { todayEpochDay } from './dates.js?v=202611250819';
+import { recentIndices } from './games/common.js?v=202611250819';
+import { isDone, PROGRESS } from './status.js?v=202611250819';
+import { readFavourites } from './favourites.js?v=202611250819';
+import { computeOrder } from './gameOrder.js?v=202611250819';
+import { startOneTab } from './oneTab.js?v=202611250819';
 
 // Discovery order: the games to try first after each kind of game, once their
 // favourites are done. Canolitaire leads both lists because its long sessions
@@ -327,7 +327,7 @@ export function suggest(currentId) {
  * failure resolves null/false, never breaks the game.
  */
 function challengeBridge() {
-  const mod = () => import('./social/bridge.js?v=202611200014');
+  const mod = () => import('./social/bridge.js?v=202611250819');
   const safe = (fn, fallback) => (...args) => mod().then((m) => fn(m, ...args)).catch((e) => {
     console.warn('arena: challenge bridge', e);
     return fallback;
@@ -373,7 +373,7 @@ if (typeof window !== 'undefined') {
       // challenge on this game. Nothing is loaded where it's off.
       try {
         if (featureOn('challenges')) {
-          import('./social/collect.js?v=202611200014').then((m) => m.collectAfterFinish(id)).catch(() => {});
+          import('./social/collect.js?v=202611250819').then((m) => m.collectAfterFinish(id)).catch(() => {});
         }
       } catch {
         // Never let challenges break a game's finish.

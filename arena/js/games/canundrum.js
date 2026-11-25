@@ -18,14 +18,14 @@
 // when its day ended is uploaded on the next launch with done: false and reads
 // as in progress; today's in-progress board is local (cndGame_{day}).
 
-import { launchDaily, pct, historyStart, readJsonPref, readPendingList } from './common.js?v=202611200014';
-import { edOfMillis } from '../dates.js?v=202611200014';
-import { toMillis } from '../firebase.js?v=202611200014';
-import { launchEd } from '../config.js?v=202611200014';
-import { readPref } from '../local.js?v=202611200014';
+import { launchDaily, pct, historyStart, readJsonPref, readPendingList } from './common.js?v=202611250819';
+import { edOfMillis } from '../dates.js?v=202611250819';
+import { toMillis } from '../firebase.js?v=202611250819';
+import { launchEd } from '../config.js?v=202611250819';
+import { readPref } from '../local.js?v=202611250819';
 import {
   SOLVED, FAILED, PROGRESS, emptyProgress, mark, currentStreak, longestStreak, intList, num, minEd, noteFinish,
-} from '../status.js?v=202611200014';
+} from '../status.js?v=202611250819';
 
 const COUNTS = ['ds', 'pl', 'pt', 'bp', 'mx'];
 

@@ -8,8 +8,8 @@
 // other way. social/{pid} is this player's own view (gamer ID, friends,
 // requests, challenges, records), which only the server writes.
 
-import { callArenaFunction, getDocData, setMerge, SERVER_TIME } from '../firebase.js?v=202611200014';
-import { playerId, writePref, arenaGet, arenaSet } from '../local.js?v=202611200014';
+import { callArenaFunction, getDocData, setMerge, SERVER_TIME } from '../firebase.js?v=202611250819';
+import { playerId, writePref, arenaGet, arenaSet } from '../local.js?v=202611250819';
 
 /** A refusal from the server, with its reason word (see REASON_TEXT). */
 export class SocialError extends Error {
