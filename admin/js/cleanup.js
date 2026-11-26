@@ -14,7 +14,7 @@
 //    (savesVersion < 2): those saves can't be inspected from here
 //  - anything with a missing or unreadable lastUpdated
 
-import { gameCount } from './packedGames.js?v=202611251019';
+import { gameCount } from './packedGames.js?v=202611252312';
 
 export const MAX_GAMES = 10;
 export const DAY_MS = 86400000;

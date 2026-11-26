@@ -14,16 +14,17 @@
 //    result straight from newUserData (functions/src/games.js)
 //  - anything with a missing or unreadable lastUpdated
 
-import { FORMAT_VERSION } from './packedGames.js?v=202611251019';
-import { isSeedId } from './seed/accounts.js?v=202611251019';
+import { FORMAT_VERSION } from './packedGames.js?v=202611252312';
+import { isSeedId } from './seed/accounts.js?v=202611252312';
 
 // Firestore is shared by production and the sandbox, so archiving a real
 // account from the sandbox admin archives it for production players too.
 // Until the restore path (Canuckle's account_restore.dart and the Arena's
 // getCanuckleDoc) is live in production, only QA seed accounts can be
-// archived, as a test (the real accounts can still be scanned). Turn this on
-// only once both are deployed there.
-export const RESTORE_IN_PRODUCTION = false;
+// archived, as a test (the real accounts can still be scanned). Turned on
+// 2026-11-25, after both reached production that night (Canuckle 4.1.1 and
+// the arena bundle, checked to call restoreAccount on www.canucklegame.ca).
+export const RESTORE_IN_PRODUCTION = true;
 
 export const ARCHIVE_COLLECTION = 'archivedUserData';
 export const ARCHIVE_IDLE_DAYS = 274;

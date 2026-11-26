@@ -9,7 +9,7 @@
 // anything else odd in a list (an old-format game, an entry that isn't JSON)
 // is left alone.
 
-import { PACKED_FIELDS, isPacked, unpackGame, unpackDuo } from './packedGames.js?v=202611251019';
+import { PACKED_FIELDS, isPacked, unpackGame, unpackDuo } from './packedGames.js?v=202611252312';
 
 export const MAX_DROP = 4;
 

@@ -1,11 +1,11 @@
 // Archive tab: find Canuckle accounts idle 9+ months (dry run), then move them
 // to archivedUserData. The rule is in ../archive.js.
 
-import { h, clear, toast, downloadJson } from '../ui.js?v=202611251019';
-import { ARCHIVE_IDLE_DAYS, ARCHIVE_COLLECTION, RESTORE_IN_PRODUCTION, summarizeArchive } from '../archive.js?v=202611251019';
-import { clockProblem } from '../cleanup.js?v=202611251019';
-import { findArchivable, findSeedArchivable, archiveAccounts, serverNow } from '../store.js?v=202611251019';
-import { USE_EMULATOR } from '../config.js?v=202611251019';
+import { h, clear, toast, downloadJson } from '../ui.js?v=202611252312';
+import { ARCHIVE_IDLE_DAYS, ARCHIVE_COLLECTION, RESTORE_IN_PRODUCTION, summarizeArchive } from '../archive.js?v=202611252312';
+import { clockProblem } from '../cleanup.js?v=202611252312';
+import { findArchivable, findSeedArchivable, archiveAccounts, serverNow } from '../store.js?v=202611252312';
+import { USE_EMULATOR } from '../config.js?v=202611252312';
 
 const state = {
   phase: 'idle', // idle | scanning | scanned | archiving | done
