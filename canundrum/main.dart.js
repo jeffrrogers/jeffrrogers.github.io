@@ -974,7 +974,7 @@ p.a5k()
 return p},
 aUm(a){return new A.a7A($.al,a)},
 aDl(){var s,r,q,p,o=v.G,n=o.window,m=A.aTW(n.navigator)
-if(m==null||m.length===0)return B.q0
+if(m==null||m.length===0)return B.q1
 s=A.b([],t.ss)
 for(n=m.length,r=0;r<m.length;m.length===n||(0,A.r)(m),++r){q=m[r]
 p=new o.Intl.Locale(q)
@@ -10054,7 +10054,7 @@ this.b=b},
 A3:function A3(a,b,c){this.f=a
 this.b=b
 this.a=c},
-b1n(a){var s,r,q,p,o,n,m,l=B.b.JB(B.pZ,new A.aAr(a+3),new A.aAs()),k=a-(l.b-3),j=a-38,i=A.b([B.WN,B.WQ,B.WR,B.WS,new A.A(j,30,j+28,60)],t.AO)
+b1n(a){var s,r,q,p,o,n,m,l=B.b.JB(B.q_,new A.aAr(a+3),new A.aAs()),k=a-(l.b-3),j=a-38,i=A.b([B.WN,B.WQ,B.WR,B.WS,new A.A(j,30,j+28,60)],t.AO)
 j=A.b([],t.FP)
 for(s=J.b6(l.a);s.p();){r=s.gK()
 q=r.a
@@ -14067,8 +14067,8 @@ break
 case 4:s=l.a
 s===$&&A.a()
 s=A.bE(s,200)
-r=A.bE(A.a6g(l,B.q1,B.Nb),24)
-q=A.bE(A.a6g(l,B.q1,B.O1),32)
+r=A.bE(A.a6g(l,B.q2,B.Nb),24)
+q=A.bE(A.a6g(l,B.q2,B.O1),32)
 p=A.bE(l.a,10)
 o=A.bE(l.a,12)
 l.d===$&&A.a()
@@ -14406,7 +14406,7 @@ aIj(a,b,c){if(b!=null&&!b.j(0,B.P))return A.aHI(b.bO(A.aUg(c)),a)
 return a},
 aUg(a){var s,r,q,p,o,n
 if(a<0)return 0
-for(s=0;r=B.q2[s],q=r.a,a>=q;){if(a===q||s+1===6)return r.b;++s}p=B.q2[s-1]
+for(s=0;r=B.q3[s],q=r.a,a>=q;){if(a===q||s+1===6)return r.b;++s}p=B.q3[s-1]
 o=p.a
 n=p.b
 return n+(a-o)/(q-o)*(r.b-n)},
@@ -49291,10 +49291,10 @@ h.P0()
 s=e.CW
 r=A.a6(g,g,s,g,g,g,g,g,f,g,g,15,g,g,g,g,1.5,!0,g,g,g,g,g,g,g,g)
 q=t.p
-p=A.b([new A.bw(B.oP,A.a9("Last updated: November 1, 2026",g,g,g,g,g,A.a6(g,g,e.cx,g,g,g,g,g,f,g,g,13,g,g,g,g,1.3,!0,g,g,g,g,g,g,g,g),g,g),g)],q)
-for(o=t.VO,n=0;n<50;n=l){m=B.q3[n]
+p=A.b([new A.bw(B.oP,A.a9("Last updated: November 25, 2026",g,g,g,g,g,A.a6(g,g,e.cx,g,g,g,g,g,f,g,g,13,g,g,g,g,1.3,!0,g,g,g,g,g,g,g,g),g,g),g)],q)
+for(o=t.VO,n=0;n<50;n=l){m=B.pZ[n]
 l=n+1
-k=l<50&&B.q3[l].a===B.ds
+k=l<50&&B.pZ[l].a===B.ds
 switch(m.a.a){case 0:j=n===0?0:10
 p.push(new A.bw(new A.ar(0,j,0,8),A.cF(g,A.a9(m.b,g,g,g,g,g,new A.B(!0,s,g,f,g,g,16,B.t,g,g,g,g,g,g,g,g,g,g,g,g,g,g,g,g,g,g),g,g),!1,g,g,!1,!1,g,g,!0,g,g,g,g,g,g,g,g,g,g,g,g,g,g,g,g,g,g,g,g,g,g,g,g,g),g))
 break
@@ -49972,7 +49972,7 @@ A.aAr.prototype={
 $1(a){return a.b<=this.a},
 $S:496}
 A.aAs.prototype={
-$0(){return B.b.gW(B.pZ)},
+$0(){return B.b.gW(B.q_)},
 $S:497}
 A.uw.prototype={
 J(a){var s,r,q,p,o=null,n="ClearSans",m=t.e,l=a.Z(m).f.gbw(),k=a.Z(m).f.a
@@ -56455,7 +56455,7 @@ n=o.e
 o=o.cx
 r=q.gadQ()
 q.a.toString
-return new A.Gt(p,p,p,new A.atq(),p,p,p,p,p,n,B.QY,p,p,p,B.Oo,q.gae_(),o,p,B.a1x,s,p,r,p,p,B.q0,!1,!1,p,p,p,new A.qO(q,t.bT))},
+return new A.Gt(p,p,p,new A.atq(),p,p,p,p,p,n,B.QY,p,p,p,B.Oo,q.gae_(),o,p,B.a1x,s,p,r,p,p,B.q1,!1,!1,p,p,p,new A.qO(q,t.bT))},
 J(a){var s,r=this.a6z(a)
 this.a.toString
 s=this.d
@@ -92482,14 +92482,14 @@ if(h!=null&&h!==4)s.ax=h
 if(i!=null&&i!==0)s.c=i}this.x.push(s)},
 asV(a,b,c,d,e,f,g,h){var s,r,q=A.b([],t.t_)
 for(s=e.length,r=0;r<s;++r)q.push(A.bc(e[r]))
-this.z.push(A.aa5(new A.j(a,b),new A.j(c,d),q,f,B.q_[g],null))},
+this.z.push(A.aa5(new A.j(a,b),new A.j(c,d),q,f,B.q0[g],null))},
 asY(a,b,c,d,e,f,g,h,i,j){var s,r,q,p,o,n=new A.j(a,b)
 if(d==null)s=null
 else{e.toString
 s=new A.j(d,e)}r=A.b([],t.t_)
 for(q=f.length,p=0;p<q;++p)r.push(A.bc(f[p]))
 o=!J.d(s,n)&&s!=null
-q=B.q_[i]
+q=B.q0[i]
 this.z.push(A.aUY(n,c,r,g,q,h,o?s:null))},
 K_(a,b,c,d){return this.asK(a,b,c,d)},
 asK(a,b,c,d){var s=0,r=A.x(t.H),q=this,p,o,n,m,l,k,j
@@ -99370,6 +99370,60 @@ B.KB=new A.eY("Tough one!","Even the Mounties get stumped sometimes.")
 B.Kv=new A.eY("Next time!","Shake it off like snow off a toque.")
 B.Nj=s([B.KA,B.KG,B.KB,B.Kv],t.o6)
 B.Nk=s(["ad_activeview","ad_click","ad_exposure","ad_query","ad_reward","adunit_exposure","app_background","app_clear_data","app_exception","app_remove","app_store_refund","app_store_subscription_cancel","app_store_subscription_convert","app_store_subscription_renew","app_uninstall","app_update","app_upgrade","dynamic_link_app_open","dynamic_link_app_update","dynamic_link_first_open","error","first_open","first_visit","in_app_purchase","notification_dismiss","notification_foreground","notification_open","notification_receive","os_update","session_start","session_start_with_rollout","user_engagement"],t.s)
+B.O=new A.Dy(1,"paragraph")
+B.Ua=new A.bx(B.O,"Canuckle is operated by Canuckle Games, based in Ottawa, Ontario, Canada. At Canuckle, we respect your privacy and are committed to protecting your personal information. This Privacy Policy explains what information may be collected when you visit canucklegame.ca or use Canuckle, Canuckle+, Canoku, and other games or features available through our website (collectively, the \u201cServices\u201d), how we use that information, and the choices available to you.",null)
+B.Ui=new A.bx(B.O,"You can play our games without creating an account or providing your name, email address, or other identifying information.",null)
+B.bO=new A.Dy(0,"heading")
+B.TW=new A.bx(B.bO,"1. Information we collect",null)
+B.Un=new A.bx(B.O,"Canuckle automatically assigns each player a unique User ID. You may choose to provide your email address for recovery purposes, in which case it is linked to your Canuckle User ID so that we can locate your game information in our database if you need assistance recovering it. Providing an email address is optional and is not required to play Canuckle. We use your email address for recovery purposes only.","Optional Email Address:")
+B.TT=new A.bx(B.O,"When you use our Services, certain technical and usage information may be collected automatically. This may include your IP address, browser and device type, operating system, general location, referring website, and information about how and when you use our Services.","Technical and Usage Information:")
+B.Uv=new A.bx(B.O,"This information may be collected through server logs, cookies, analytics tools, and similar technologies and is primarily used to operate, secure, analyze, and improve our Services.",null)
+B.TO=new A.bx(B.O,"If you contact Canuckle directly, we may also receive information you choose to provide, such as your name, email address, and the contents of your message.","Information You Provide:")
+B.U_=new A.bx(B.bO,"2. How do we use your information?",null)
+B.Uu=new A.bx(B.O,"We use the information we collect to:",null)
+B.ds=new A.Dy(2,"bullet")
+B.Uq=new A.bx(B.ds,"provide game data recovery assistance when requested;",null)
+B.TK=new A.bx(B.ds,"operate and maintain our games and website;",null)
+B.TU=new A.bx(B.ds,"understand how players use our Services;",null)
+B.U5=new A.bx(B.ds,"improve website performance, games, features, and the player experience;",null)
+B.Ue=new A.bx(B.ds,"troubleshoot technical problems and maintain security; and",null)
+B.TR=new A.bx(B.ds,"respond to questions, feedback, or other communications.",null)
+B.Ub=new A.bx(B.O,"Where possible, we use aggregated or anonymized information for analytics and reporting.",null)
+B.Ur=new A.bx(B.bO,"3. Will your information be shared with anyone?",null)
+B.TZ=new A.bx(B.O,"We may share limited information with trusted third-party service providers that help us host, operate, secure, analyze, or improve our Services. Our use of third-party advertising services is described in Section 4 below.",null)
+B.TP=new A.bx(B.O,"We may also disclose information when required by law or when reasonably necessary to protect the rights, security, or safety of Canuckle, our players, or others.",null)
+B.U4=new A.bx(B.O,"We do not sell or rent your personal information. Some of the information described in this Privacy Policy is stored and processed outside Canada, including in the United States, by service providers that help us operate and analyze our Services (such as Google, which provides our analytics and database services) and by our advertising partners described in Section 4. While held outside Canada, this information is subject to the laws of the country where it is located and may be accessible to the courts, law enforcement, and national security authorities of that country.",null)
+B.U0=new A.bx(B.bO,"4. Do we use cookies and other technologies?",null)
+B.Uj=new A.bx(B.O,"We use cookies, local storage, and similar browser technologies to operate our Services, remember your preferences, maintain game functionality, provide advertising, and understand how our games are used.",null)
+B.U8=new A.bx(B.O,"We use Yolla Media, LLC (\u201cYolla\u201d) to provide and manage advertising on our website. Yolla and its advertising partners may use cookies and similar technologies to collect certain information about your use of our Services for advertising, analytics, and related purposes. To learn more about Yolla and its data practices, please visit yollamedia.com/advertising-privacy.","Advertising:")
+B.Up=new A.bx(B.O,"Information related to your gameplay, such as puzzle progress, results, streaks, statistics, settings, and game history, may be stored locally in your browser or device and/or associated with your unique Canuckle User ID in our database. This allows Canuckle to maintain game functionality, progress, and statistics between visits and, where applicable, assist with game data recovery.",null)
+B.TL=new A.bx(B.O,"You can control or delete cookies and locally stored information through your browser settings. Doing so may reset your Canuckle statistics, streaks, preferences, or game progress.",null)
+B.Ug=new A.bx(B.bO,"5. How long do we keep your information?",null)
+B.U1=new A.bx(B.O,"We keep personal information only for as long as reasonably necessary for the purposes described in this Privacy Policy or as required by law.",null)
+B.U6=new A.bx(B.O,"Information stored locally in your browser generally remains there until it expires, is overwritten, or is deleted by you or your browser.",null)
+B.TV=new A.bx(B.O,"Information associated with your Canuckle User ID may be retained as necessary to provide game functionality and recovery assistance. If your Canuckle User ID is not used for 9 months, your saved Canuckle game history may be moved to an archive. It is restored automatically the next time you open Canuckle or the Canuckle Games Arena with that User ID, and it is deleted along with the rest of your information if you ask us to delete it.",null)
+B.TQ=new A.bx(B.O,"Aggregated or anonymized information that does not identify individual players may be retained for analytics and statistical purposes.",null)
+B.U9=new A.bx(B.bO,"6. How do we keep your information safe?",null)
+B.Us=new A.bx(B.O,"We use reasonable technical and organizational measures designed to protect information handled through our Services.",null)
+B.Uh=new A.bx(B.O,"However, no website, internet transmission, or electronic storage system can be guaranteed to be completely secure.",null)
+B.TS=new A.bx(B.bO,"7. Do we collect information from children?",null)
+B.U3=new A.bx(B.O,"Canuckle is a general-audience word game enjoyed by players of different ages. We do not require players to create an account or provide personal information in order to play.",null)
+B.Um=new A.bx(B.O,"We do not knowingly solicit personal information from children. If you believe a child has provided personal information to us that should be removed, please contact us.",null)
+B.TM=new A.bx(B.bO,"8. What are your privacy rights?",null)
+B.TN=new A.bx(B.O,"Depending on where you live, you may have certain rights regarding personal information we hold about you, including the right to request access to, correction of, or deletion of that information.",null)
+B.Uo=new A.bx(B.O,"Because Canuckle does not require players to provide identifying information, we may not be able to identify or retrieve information associated with an individual player unless they have linked an email address or can provide their Canuckle User ID.",null)
+B.U2=new A.bx(B.O,"You can manage or delete locally stored Canuckle information through your browser settings.",null)
+B.Uf=new A.bx(B.O,"If you have provided an email address for recovery purposes and have questions or requests regarding that information, please contact us.",null)
+B.TY=new A.bx(B.bO,"9. Controls for Do-Not-Track features",null)
+B.Ud=new A.bx(B.O,"Some web browsers provide a \u201cDo Not Track\u201d (DNT) setting that allows you to signal a preference regarding online tracking.",null)
+B.U7=new A.bx(B.O,"There is currently no universally accepted standard for responding to DNT signals, so our Services may not respond to all such signals. You can use your browser\u2019s privacy settings to manage cookies, local storage, and similar technologies.",null)
+B.Uk=new A.bx(B.bO,"10. Do we make updates to this policy?",null)
+B.Ul=new A.bx(B.O,"Yes. We may update this Privacy Policy from time to time to reflect changes to our Services, technology, practices, or legal requirements.",null)
+B.TX=new A.bx(B.O,"When we make changes, we will update the \u201cLast updated\u201d date at the top of this page. We encourage you to review this Privacy Policy periodically.",null)
+B.Ut=new A.bx(B.bO,"11. How can you contact us about this policy?",null)
+B.Uw=new A.bx(B.O,"Canuckle is responsible for protecting the personal information we hold and for responding to questions, concerns, and requests about this Privacy Policy, including requests to access, correct, or delete your information. If you have questions, concerns, or requests regarding this Privacy Policy or Canuckle\u2019s privacy practices, please contact us at info@canucklegame.ca.",null)
+B.Uc=new A.bx(B.O,"\nWebsite: canucklegame.ca\nEmail: info@canucklegame.ca","Canuckle Games")
+B.pZ=s([B.Ua,B.Ui,B.TW,B.Un,B.TT,B.Uv,B.TO,B.U_,B.Uu,B.Uq,B.TK,B.TU,B.U5,B.Ue,B.TR,B.Ub,B.Ur,B.TZ,B.TP,B.U4,B.U0,B.Uj,B.U8,B.Up,B.TL,B.Ug,B.U1,B.U6,B.TV,B.TQ,B.U9,B.Us,B.Uh,B.TS,B.U3,B.Um,B.TM,B.TN,B.Uo,B.U2,B.Uf,B.TY,B.Ud,B.U7,B.Uk,B.Ul,B.TX,B.Ut,B.Uw,B.Uc],A.a1("q<bx>"))
 B.WD=new A.dH(["canuckle",16.8,25.4,194.5,25.2])
 B.Ww=new A.dH(["canoku",9.7,21.7,236.4,-4.6])
 B.Wt=new A.dH(["canuckle-plus",12.5,29.9,231.5,67.6])
@@ -99397,7 +99451,7 @@ B.WB=new A.dH(["canuckle-duo",-1.5,22.7,183.9,-6])
 B.WK=new A.dH(["canundrum",15.2,29.6,335.9,35.2])
 B.NJ=s([B.WG,B.Wx,B.WA,B.WJ,B.Wr,B.Ws,B.WB,B.WK],t.tV)
 B.UM=new A.yB(B.NJ,420)
-B.pZ=s([B.UT,B.UX,B.UM],A.a1("q<+tiles,width(Q<+asset,degrees,size,x,y(e,G,G,G,G)>,G)>"))
+B.q_=s([B.UT,B.UX,B.UM],A.a1("q<+tiles,width(Q<+asset,degrees,size,x,y(e,G,G,G,G)>,G)>"))
 B.aJ=new A.fb(0,"icon")
 B.aX=new A.fb(1,"input")
 B.af=new A.fb(2,"label")
@@ -99416,17 +99470,17 @@ B.Nq=s([B.P9,B.Pa],A.a1("q<vV>"))
 B.cV=new A.tv(0,"clamp")
 B.mB=new A.tv(2,"mirror")
 B.je=new A.tv(3,"decal")
-B.q_=s([B.cV,B.jd,B.mB,B.je],A.a1("q<tv>"))
+B.q0=s([B.cV,B.jd,B.mB,B.je],A.a1("q<tv>"))
 B.Pb=new A.r9("en",null,"US")
-B.q0=s([B.Pb],t.ss)
-B.q1=s([0,41,61,101,131,181,251,301,360],t.n)
+B.q1=s([B.Pb],t.ss)
+B.q2=s([0,41,61,101,131,181,251,301,360],t.n)
 B.a5w=new A.n2(0,0)
 B.a5B=new A.n2(1,0.05)
 B.a5z=new A.n2(3,0.08)
 B.a5A=new A.n2(6,0.11)
 B.a5y=new A.n2(8,0.12)
 B.a5x=new A.n2(12,0.14)
-B.q2=s([B.a5w,B.a5B,B.a5z,B.a5A,B.a5y,B.a5x],A.a1("q<n2>"))
+B.q3=s([B.a5w,B.a5B,B.a5z,B.a5A,B.a5y,B.a5x],A.a1("q<n2>"))
 B.KE=new A.eY("Beauty!","Puzzled it out like a true Canuck.")
 B.KI=new A.eY("Top shelf!","Read that picture like a road sign.")
 B.Kz=new A.eY("Give'r!","Cracked it before the Zamboni came out.")
@@ -99439,60 +99493,6 @@ B.KD=new A.eY("That's the stuff!","Figured out before supper.")
 B.Kw=new A.eY("Wicked!","Picture perfect.")
 B.Nr=s([B.KE,B.KI,B.Kz,B.Ky,B.KF,B.Kx,B.KC,B.KH,B.KD,B.Kw],t.o6)
 B.fd=s(["","Monday","Tuesday","Wednesday","Thursday","Friday","Saturday","Sunday"],t.s)
-B.O=new A.Dy(1,"paragraph")
-B.Ua=new A.bx(B.O,"Canuckle is operated by Canuckle Games, based in Ottawa, Ontario, Canada. At Canuckle, we respect your privacy and are committed to protecting your personal information. This Privacy Policy explains what information may be collected when you visit canucklegame.ca or use Canuckle, Canuckle+, Canoku, and other games or features available through our website (collectively, the \u201cServices\u201d), how we use that information, and the choices available to you.",null)
-B.Ui=new A.bx(B.O,"You can play our games without creating an account or providing your name, email address, or other identifying information.",null)
-B.bO=new A.Dy(0,"heading")
-B.TW=new A.bx(B.bO,"1. Information we collect",null)
-B.Un=new A.bx(B.O,"Canuckle automatically assigns each player a unique User ID. You may choose to provide your email address for recovery purposes, in which case it is linked to your Canuckle User ID so that we can locate your game information in our database if you need assistance recovering it. Providing an email address is optional and is not required to play Canuckle. We use your email address for recovery purposes only.","Optional Email Address:")
-B.TU=new A.bx(B.O,"When you use our Services, certain technical and usage information may be collected automatically. This may include your IP address, browser and device type, operating system, general location, referring website, and information about how and when you use our Services.","Technical and Usage Information:")
-B.Uv=new A.bx(B.O,"This information may be collected through server logs, cookies, analytics tools, and similar technologies and is primarily used to operate, secure, analyze, and improve our Services.",null)
-B.TP=new A.bx(B.O,"If you contact Canuckle directly, we may also receive information you choose to provide, such as your name, email address, and the contents of your message.","Information You Provide:")
-B.U_=new A.bx(B.bO,"2. How do we use your information?",null)
-B.Uu=new A.bx(B.O,"We use the information we collect to:",null)
-B.ds=new A.Dy(2,"bullet")
-B.Uq=new A.bx(B.ds,"provide game data recovery assistance when requested;",null)
-B.TK=new A.bx(B.ds,"operate and maintain our games and website;",null)
-B.TV=new A.bx(B.ds,"understand how players use our Services;",null)
-B.U5=new A.bx(B.ds,"improve website performance, games, features, and the player experience;",null)
-B.Ue=new A.bx(B.ds,"troubleshoot technical problems and maintain security; and",null)
-B.TS=new A.bx(B.ds,"respond to questions, feedback, or other communications.",null)
-B.Ub=new A.bx(B.O,"Where possible, we use aggregated or anonymized information for analytics and reporting.",null)
-B.Ur=new A.bx(B.bO,"3. Will your information be shared with anyone?",null)
-B.TZ=new A.bx(B.O,"We may share limited information with trusted third-party service providers that help us host, operate, secure, analyze, or improve our Services. Our use of third-party advertising services is described in Section 4 below.",null)
-B.TQ=new A.bx(B.O,"We may also disclose information when required by law or when reasonably necessary to protect the rights, security, or safety of Canuckle, our players, or others.",null)
-B.U4=new A.bx(B.O,"We do not sell or rent your personal information. Some of the information described in this Privacy Policy is stored and processed outside Canada, including in the United States, by service providers that help us operate and analyze our Services (such as Google, which provides our analytics and database services) and by our advertising partners described in Section 4. While held outside Canada, this information is subject to the laws of the country where it is located and may be accessible to the courts, law enforcement, and national security authorities of that country.",null)
-B.U0=new A.bx(B.bO,"4. Do we use cookies and other technologies?",null)
-B.Uj=new A.bx(B.O,"We use cookies, local storage, and similar browser technologies to operate our Services, remember your preferences, maintain game functionality, provide advertising, and understand how our games are used.",null)
-B.U8=new A.bx(B.O,"We use Yolla Media, LLC (\u201cYolla\u201d) to provide and manage advertising on our website. Yolla and its advertising partners may use cookies and similar technologies to collect certain information about your use of our Services for advertising, analytics, and related purposes. To learn more about Yolla and its data practices, please visit yollamedia.com/advertising-privacy.","Advertising:")
-B.Up=new A.bx(B.O,"Information related to your gameplay, such as puzzle progress, results, streaks, statistics, settings, and game history, may be stored locally in your browser or device and/or associated with your unique Canuckle User ID in our database. This allows Canuckle to maintain game functionality, progress, and statistics between visits and, where applicable, assist with game data recovery.",null)
-B.TM=new A.bx(B.O,"You can control or delete cookies and locally stored information through your browser settings. Doing so may reset your Canuckle statistics, streaks, preferences, or game progress.",null)
-B.Ug=new A.bx(B.bO,"5. How long do we keep your information?",null)
-B.U1=new A.bx(B.O,"We keep personal information only for as long as reasonably necessary for the purposes described in this Privacy Policy or as required by law.",null)
-B.U6=new A.bx(B.O,"Information stored locally in your browser generally remains there until it expires, is overwritten, or is deleted by you or your browser.",null)
-B.TL=new A.bx(B.O,"Information associated with your Canuckle User ID may be retained as necessary to provide game functionality and recovery assistance.",null)
-B.TR=new A.bx(B.O,"Aggregated or anonymized information that does not identify individual players may be retained for analytics and statistical purposes.",null)
-B.U9=new A.bx(B.bO,"6. How do we keep your information safe?",null)
-B.Us=new A.bx(B.O,"We use reasonable technical and organizational measures designed to protect information handled through our Services.",null)
-B.Uh=new A.bx(B.O,"However, no website, internet transmission, or electronic storage system can be guaranteed to be completely secure.",null)
-B.TT=new A.bx(B.bO,"7. Do we collect information from children?",null)
-B.U3=new A.bx(B.O,"Canuckle is a general-audience word game enjoyed by players of different ages. We do not require players to create an account or provide personal information in order to play.",null)
-B.Um=new A.bx(B.O,"We do not knowingly solicit personal information from children. If you believe a child has provided personal information to us that should be removed, please contact us.",null)
-B.TN=new A.bx(B.bO,"8. What are your privacy rights?",null)
-B.TO=new A.bx(B.O,"Depending on where you live, you may have certain rights regarding personal information we hold about you, including the right to request access to, correction of, or deletion of that information.",null)
-B.Uo=new A.bx(B.O,"Because Canuckle does not require players to provide identifying information, we may not be able to identify or retrieve information associated with an individual player unless they have linked an email address or can provide their Canuckle User ID.",null)
-B.U2=new A.bx(B.O,"You can manage or delete locally stored Canuckle information through your browser settings.",null)
-B.Uf=new A.bx(B.O,"If you have provided an email address for recovery purposes and have questions or requests regarding that information, please contact us.",null)
-B.TY=new A.bx(B.bO,"9. Controls for Do-Not-Track features",null)
-B.Ud=new A.bx(B.O,"Some web browsers provide a \u201cDo Not Track\u201d (DNT) setting that allows you to signal a preference regarding online tracking.",null)
-B.U7=new A.bx(B.O,"There is currently no universally accepted standard for responding to DNT signals, so our Services may not respond to all such signals. You can use your browser\u2019s privacy settings to manage cookies, local storage, and similar technologies.",null)
-B.Uk=new A.bx(B.bO,"10. Do we make updates to this policy?",null)
-B.Ul=new A.bx(B.O,"Yes. We may update this Privacy Policy from time to time to reflect changes to our Services, technology, practices, or legal requirements.",null)
-B.TX=new A.bx(B.O,"When we make changes, we will update the \u201cLast updated\u201d date at the top of this page. We encourage you to review this Privacy Policy periodically.",null)
-B.Ut=new A.bx(B.bO,"11. How can you contact us about this policy?",null)
-B.Uw=new A.bx(B.O,"Canuckle is responsible for protecting the personal information we hold and for responding to questions, concerns, and requests about this Privacy Policy, including requests to access, correct, or delete your information. If you have questions, concerns, or requests regarding this Privacy Policy or Canuckle\u2019s privacy practices, please contact us at info@canucklegame.ca.",null)
-B.Uc=new A.bx(B.O,"\nWebsite: canucklegame.ca\nEmail: info@canucklegame.ca","Canuckle Games")
-B.q3=s([B.Ua,B.Ui,B.TW,B.Un,B.TU,B.Uv,B.TP,B.U_,B.Uu,B.Uq,B.TK,B.TV,B.U5,B.Ue,B.TS,B.Ub,B.Ur,B.TZ,B.TQ,B.U4,B.U0,B.Uj,B.U8,B.Up,B.TM,B.Ug,B.U1,B.U6,B.TL,B.TR,B.U9,B.Us,B.Uh,B.TT,B.U3,B.Um,B.TN,B.TO,B.Uo,B.U2,B.Uf,B.TY,B.Ud,B.U7,B.Uk,B.Ul,B.TX,B.Ut,B.Uw,B.Uc],A.a1("q<bx>"))
 B.Zq=new A.mG(1,"server")
 B.Zr=new A.mG(2,"cache")
 B.Nt=s([B.mh,B.Zq,B.Zr],A.a1("q<mG>"))
